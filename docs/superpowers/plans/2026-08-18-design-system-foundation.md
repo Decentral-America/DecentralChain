@@ -995,6 +995,174 @@ git commit -m "feat(exchange): every authenticated route renders through PageFra
 
 ---
 
+### Task 10: Intent on-colors
+
+**Added 2026-08-18, after Task 2.** Task 2 established `accent.onPrimary` — an ink
+token defined per mode, because `accent.primary` sits at a medium luminance and no
+single ink clears AA against both modes. The `intent.*` family has exactly the same
+shape and exactly the same gap: nothing names the ink that goes *on* an intent fill,
+so call sites hardcode `white`.
+
+Measured consequence: white on `colors.error` renders at **2.78:1 in dark mode** — a
+real WCAG AA failure on error messaging, the copy that most needs to be readable.
+This is **not a regression** from Task 2; those sites measured 2.44 before it, so the
+token derivation improved them. It is a pre-existing defect that Task 2 made visible
+and is the last of this class.
+
+**Execute this task before Task 5**, since Tasks 5-7 re-theme pages that render error
+and success copy.
+
+**Files:**
+- Modify: `src/theme/tokens/semantic.ts` — extend the `intent` group
+- Modify: `src/theme/mui-theme.ts` — `paletteFor`, add `contrastText` to all four intents
+- Modify: `src/styles/themes/index.ts` — expose the four inks on the styled-components theme
+- Modify: `src/styles/styled.d.ts` — declare them on `DefaultTheme['colors']`
+- Modify: `src/contexts/ToastContext.tsx:78,105`, `src/features/auth/LoginForm.tsx:41`, `src/features/auth/ImportAccount.tsx:72`
+- Test: `src/theme/__tests__/themeDerivation.test.ts`
+
+**Interfaces:**
+- Consumes: `SemanticTokens`, `tokens(mode)`, `contrastRatio(fg, bg)` from Task 1; the
+  per-mode ink pattern established by `accent.onPrimary` in Task 2.
+- Produces: `intent.onSuccess | onDanger | onWarning | onInfo` on `SemanticTokens`;
+  `colors.onSuccess | onError | onWarning | onInfo` on the styled-components theme;
+  `contrastText` on MUI's `success | error | warning | info`.
+
+**These values are measured, not chosen.** Every intent fill in dark mode is a light
+tint and every one in light mode is a deep shade, so the ink inverts per mode — white
+in light, near-black in dark. Verified with the WCAG formula against the existing
+`intent` values:
+
+| intent | light fill | white | dark fill | near-black `#14122b` |
+|---|---|---:|---|---:|
+| danger  | `#c62828` | **5.62** | `#ff6b6b` | **6.57** |
+| info    | `#1565c0` | **5.75** | `#6aa8ff` | **7.52** |
+| success | `#1b7a4b` | **5.34** | `#3ddc97` | **10.32** |
+| warning | `#a15c00` | **5.19** | `#ffb84d` | **10.61** |
+
+All eight clear 4.5:1. Do not substitute your own values without re-measuring.
+
+- [ ] **Step 1: Write the failing test**
+
+Add to `src/theme/__tests__/themeDerivation.test.ts`:
+
+```ts
+describe('intent on-colors', () => {
+  const INTENTS = ['success', 'danger', 'warning', 'info'] as const;
+  const INK: Record<(typeof INTENTS)[number], 'onSuccess' | 'onDanger' | 'onWarning' | 'onInfo'> = {
+    danger: 'onDanger',
+    info: 'onInfo',
+    success: 'onSuccess',
+    warning: 'onWarning',
+  };
+
+  it.each(['light', 'dark'] as const)('every intent ink clears AA in %s mode', (mode) => {
+    const t = tokens(mode);
+    for (const intent of INTENTS) {
+      expect(contrastRatio(t.intent[INK[intent]], t.intent[intent])).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it.each(['light', 'dark'] as const)('MUI contrastText reads the same token in %s mode', (mode) => {
+    const t = tokens(mode);
+    const { palette } = createAppTheme(mode);
+    expect(palette.error.contrastText).toBe(t.intent.onDanger);
+    expect(palette.success.contrastText).toBe(t.intent.onSuccess);
+    expect(palette.warning.contrastText).toBe(t.intent.onWarning);
+    expect(palette.info.contrastText).toBe(t.intent.onInfo);
+  });
+});
+```
+
+- [ ] **Step 2: Run it and watch it fail**
+
+```bash
+./node_modules/.bin/vitest run src/theme/__tests__/themeDerivation.test.ts
+```
+
+Expected: fails — `t.intent.onDanger` is `undefined`, so `contrastRatio` returns `NaN`
+and `toBeGreaterThanOrEqual` fails.
+
+- [ ] **Step 3: Extend the token interface and both value sets**
+
+In `src/theme/tokens/semantic.ts`, replace the `intent` line of `SemanticTokens`:
+
+```ts
+  /**
+   * `on*` is the ink that goes *on* the matching intent fill — the same
+   * per-mode role as `accent.onPrimary`. Every intent fill is a light tint in
+   * dark mode and a deep shade in light mode, so the ink inverts between them:
+   * white on light-mode fills, near-black on dark-mode fills. Ratios are in
+   * the plan's Task 10 table; all eight clear 4.5:1.
+   */
+  intent: {
+    success: string; danger: string; warning: string; info: string;
+    onSuccess: string; onDanger: string; onWarning: string; onInfo: string;
+  };
+```
+
+Dark set:
+
+```ts
+    intent: {
+      danger: '#ff6b6b', info: '#6aa8ff', success: '#3ddc97', warning: '#ffb84d',
+      onDanger: '#14122b', onInfo: '#14122b', onSuccess: '#14122b', onWarning: '#14122b',
+    },
+```
+
+Light set:
+
+```ts
+    intent: {
+      danger: '#c62828', info: '#1565c0', success: '#1b7a4b', warning: '#a15c00',
+      onDanger: '#ffffff', onInfo: '#ffffff', onSuccess: '#ffffff', onWarning: '#ffffff',
+    },
+```
+
+- [ ] **Step 4: Wire both themes**
+
+In `src/theme/mui-theme.ts`'s `paletteFor`, give all four intents their ink:
+
+```ts
+    error: { contrastText: t.intent.onDanger, main: t.intent.danger },
+    info: { contrastText: t.intent.onInfo, main: t.intent.info },
+    success: { contrastText: t.intent.onSuccess, main: t.intent.success },
+    warning: { contrastText: t.intent.onWarning, main: t.intent.warning },
+```
+
+In `src/styles/themes/index.ts`, expose them alongside the existing `onPrimary`, reading
+the same tokens (`lightTokens` / `darkTokens` per theme). Declare all four on
+`DefaultTheme['colors']` in `src/styles/styled.d.ts`.
+
+- [ ] **Step 5: Repoint the hardcoded inks**
+
+Four sites fill with `colors.error` and hardcode white ink. Point each at `colors.onError`:
+`src/contexts/ToastContext.tsx:78` and `:105`, `src/features/auth/LoginForm.tsx:41`,
+`src/features/auth/ImportAccount.tsx:72`.
+
+Then sweep for the same shape across the other three intents — `colors.success`,
+`colors.warning`, `colors.info` used as a fill with a literal ink. State how you searched.
+`${colors.error}10`-style alpha washes are backgrounds for *body* text, not intent fills;
+leave them and say so.
+
+- [ ] **Step 6: Run the full gate**
+
+```bash
+./node_modules/.bin/tsc -b --noEmit
+./node_modules/.bin/vitest run
+pnpm exec biome check .
+```
+
+All green; 15 pre-existing biome warnings are expected, 0 errors.
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add src/theme src/styles src/contexts src/features
+git commit -m "fix(exchange): give every intent fill a per-mode ink that clears AA"
+```
+
+---
+
 ## Deferred
 
 Not part of this plan.
