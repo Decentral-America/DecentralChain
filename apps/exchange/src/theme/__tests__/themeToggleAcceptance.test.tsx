@@ -179,15 +179,30 @@ vi.mock('@/features/auth/ImportLedger', () => ({
   ImportLedger: () => <div data-testid="ledger-form-stub">form</div>,
 }));
 
-/** Nearest ancestor (inclusive) with an explicit, non-transparent background. */
+/**
+ * Nearest ancestor (inclusive) with an explicit, non-transparent background —
+ * **within the page under test**.
+ *
+ * The walk stops at `<body>` and throws. That guard is the point: `<CssBaseline/>`
+ * paints `<body>` with `background.default`, which *does* differ between modes,
+ * so an unguarded walk that fell out of the page landed on the body and
+ * reported a perfect pass for a page that painted nothing at all. `Bridge` did
+ * exactly that — verified by replacing the whole page with
+ * `<div>Cross-Chain Bridge</div>` and watching the assertion stay green.
+ * Anything this returns is now something the page painted itself.
+ */
 function nearestBackground(el: HTMLElement): string {
   let node: HTMLElement | null = el;
-  while (node) {
+  while (node && node !== document.body) {
     const bg = getComputedStyle(node).backgroundColor;
     if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') return bg;
     node = node.parentElement;
   }
-  throw new Error('No ancestor with an explicit background found');
+  throw new Error(
+    'Walked out of the page without finding a background it painted itself. ' +
+      'Reaching <body> means CssBaseline is being measured, not the page — ' +
+      'pick an element the page actually paints.',
+  );
 }
 
 /** Renders `node` under the real MUI theme for `mode`, optionally also the
@@ -389,17 +404,27 @@ describe('Acceptance — the twelve pages render differently in each mode', () =
     expect(dark).toBe(tokens('dark').surface.raised);
   });
 
-  it('Bridge: the "Cross-Chain Bridge" heading background differs, and matches surface.base in each mode', () => {
+  /*
+   * Measured on a network card — a surface `Bridge` paints itself — rather
+   * than on the page heading. The heading's nearest painted ancestor was
+   * `<body>`, i.e. `CssBaseline`, so the old assertion held for a page that
+   * rendered nothing: replacing `Bridge` with `<div>Cross-Chain Bridge</div>`
+   * left it green. `nearestBackground` now refuses to walk that far, so the
+   * flaw cannot come back here or in any other case using it.
+   */
+  it('Bridge: a network card it paints itself differs, and matches surface.raised in each mode', () => {
     authUser = { address: '3P123', name: 'Trader' };
+    const card = () =>
+      nearestBackground(screen.getByText('Ethereum').closest('.MuiCard-root') as HTMLElement);
     const { unmount } = renderPage(<Bridge />, 'light');
-    const light = rgbToHex(nearestBackground(screen.getByText('Cross-Chain Bridge')));
+    const light = rgbToHex(card());
     unmount();
     renderPage(<Bridge />, 'dark');
-    const dark = rgbToHex(nearestBackground(screen.getByText('Cross-Chain Bridge')));
+    const dark = rgbToHex(card());
 
     expect(dark).not.toBe(light);
-    expect(light).toBe(tokens('light').surface.base);
-    expect(dark).toBe(tokens('dark').surface.base);
+    expect(light).toBe(tokens('light').surface.raised);
+    expect(dark).toBe(tokens('dark').surface.raised);
   });
 
   it('CreateToken: the step-0 panel background differs, and matches surface.raised in each mode', () => {
