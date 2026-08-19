@@ -245,7 +245,9 @@ export const ImportAccount = () => {
 
           <InfoBox>
             <InfoIcon>
-              <Icon name={CommonIcons.Info} size={20} color="white" />
+              {/* Inherits InfoBox's `onPrimary` ink — `Icon` defaults to
+                  `currentColor`, so it follows the container. */}
+              <Icon name={CommonIcons.Info} size={20} />
             </InfoIcon>
             <span>Make sure you&apos;re in a private location before entering sensitive data</span>
           </InfoBox>

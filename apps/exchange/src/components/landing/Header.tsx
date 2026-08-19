@@ -123,6 +123,18 @@ export default function Header() {
 
             <IconButton
               aria-label={t('app.landing.header.openMenu')}
+              /*
+               * Explicit rather than the MUI default: unset, IconButton falls
+               * back to `action.active`, which in light mode is
+               * `rgba(0, 0, 0, 0.54)` — near-black on this bar's night canvas,
+               * measured 1.04:1. `inherit` picks up the ink the AppBar itself
+               * already declares (`color: 'common.white'` above) instead of
+               * duplicating that literal here, so once Task 11 makes this
+               * canvas follow the light/dark toggle, updating the AppBar's
+               * own `color` is the one edit this button needs too — it is
+               * not pinned to today's fixed dark canvas independently.
+               */
+              color="inherit"
               edge="end"
               onClick={() => setMobileOpen(true)}
               sx={{ display: { md: 'none' } }}
