@@ -1,47 +1,25 @@
 /**
  * Material UI Theme Configuration
- * Maps current design tokens to MUI theme structure
+ * Maps semantic design tokens to MUI theme structure
  */
 import { createTheme, type ThemeOptions } from '@mui/material/styles';
+import { type ThemeMode, tokens } from './tokens/semantic';
 
-export type ThemeMode = 'light' | 'dark';
+export type { ThemeMode };
 
-const PALETTES: Record<ThemeMode, Omit<NonNullable<ThemeOptions['palette']>, 'mode'>> = {
-  dark: {
-    action: {
-      disabled: '#6B7280',
-      disabledBackground: '#2d3748',
-      hover: '#2d3748',
-      selected: '#2d3748',
-    },
-    background: { default: '#1a202c', paper: '#1a202c' },
-    divider: '#2d3748',
-    error: { dark: '#f56565', light: '#feb2b2', main: '#fc8181' },
-    info: { dark: '#4299e1', light: '#90cdf4', main: '#63b3ed' },
-    primary: { dark: '#5940d4', light: '#9d82ff', main: '#7c5dfa' },
-    secondary: { dark: '#6B7280', light: '#D1D5DB', main: '#9CA3AF' },
-    success: { dark: '#48bb78', light: '#9ae6b4', main: '#68d391' },
-    text: { disabled: '#6B7280', primary: '#f7fafc', secondary: '#9CA3AF' },
-    warning: { dark: '#ed8936', light: '#fbd38d', main: '#f6ad55' },
-  },
-  light: {
-    action: {
-      disabled: '#9CA3AF',
-      disabledBackground: '#F9FAFB',
-      hover: '#f5f3ff',
-      selected: '#ede9fe',
-    },
-    background: { default: '#F3F4F6', paper: '#FFFFFF' },
-    divider: '#E5E7EB',
-    error: { dark: '#B91C1C', light: '#fc8181', main: '#DC2626' },
-    info: { dark: '#2c5282', light: '#63b3ed', main: '#3182ce' },
-    primary: { dark: '#3d26be', light: '#7c5dfa', main: '#5940d4' },
-    secondary: { dark: '#4B5563', light: '#9CA3AF', main: '#6B7280' },
-    success: { dark: '#059669', light: '#34d399', main: '#10b981' },
-    text: { disabled: '#9CA3AF', primary: '#111827', secondary: '#6B7280' },
-    warning: { dark: '#D97706', light: '#f6ad55', main: '#F59E0B' },
-  },
-};
+function paletteFor(mode: ThemeMode) {
+  const t = tokens(mode);
+  return {
+    background: { default: t.surface.base, paper: t.surface.raised },
+    divider: t.border.subtle,
+    error: { main: t.intent.danger },
+    info: { main: t.intent.info },
+    primary: { main: t.accent.primary },
+    success: { main: t.intent.success },
+    text: { primary: t.text.primary, secondary: t.text.secondary },
+    warning: { main: t.intent.warning },
+  };
+}
 
 function createComponentOverrides(): ThemeOptions['components'] {
   return {
@@ -83,7 +61,7 @@ export function createAppTheme(mode: ThemeMode) {
       values: { lg: 1280, md: 1024, sm: 768, xl: 1536, xs: 0 },
     },
     components: createComponentOverrides(),
-    palette: { mode, ...PALETTES[mode] },
+    palette: { mode, ...paletteFor(mode) },
     shadows: [
       'none',
       '0 1px 2px 0 rgba(0, 0, 0, 0.05)', // sm
