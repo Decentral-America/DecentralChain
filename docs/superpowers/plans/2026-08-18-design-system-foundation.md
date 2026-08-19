@@ -1163,6 +1163,112 @@ git commit -m "fix(exchange): give every intent fill a per-mode ink that clears 
 
 ---
 
+### Task 11: Light mode for the landing render tree
+
+**Added 2026-08-19, after Task 5.** Task 5 removed the `landingTheme` override from the
+auth and marketing pages, but deliberately left `LandingPage.tsx`'s own canvas **pinned
+dark**. That deviation was correct: the page's render tree paints fixed ink directly on
+that canvas with no per-mode counterpart, so making the canvas follow the toggle without
+converting the tree first would have made most of the page's text invisible in light mode.
+
+**This task exists because the spec does not permit that as a final state.** The
+Decisions table commits marketing to *"follow the toggle too — no permanently-dark
+surfaces"*, and the acceptance test is *"the toggle demonstrably changes **every** page."*
+Until this task lands, `LandingPage` is the one page that still ignores the toggle — the
+exact defect this plan was written to eliminate.
+
+**Run this before Task 9**, which owns the acceptance test that this task's completion is
+a precondition for.
+
+**Scale, measured:** 1,866 LOC across `src/components/landing/`, ~57 token sites in 11
+components. This is comparable in size to Task 5 and should not be folded into another task.
+
+**Files:**
+- Modify: `src/pages/LandingPage.tsx` — canvas follows `tokens(mode)`
+- Modify, each importing from `@/theme/landingTheme` today:
+  `Header.tsx` (`brandInk`), `HeroSection.tsx` (`brandCanvas`, `brandInk`,
+  `heroGradientStyles`, `onCanvas`), `FeatureBento.tsx` (`brandCanvas`, `brandSurface`,
+  `onCanvas`), `Footer.tsx` (`onCanvas`), `IconBullets.tsx` (`brandCanvas`,
+  `brandSurface`, `onCanvas`), `SecurityStatement.tsx` (`onCanvas`), `FaqSection.tsx`
+  (`brandCanvas`, `brandSurface`, `onCanvas`), `BigCTA.tsx` (`brandInk`, `brandSurface`,
+  `ctaGradientStyles`), plus `MarqueeBand.tsx`, `Blueprint.tsx`, `diagrams.tsx`
+- Leave alone: `AuroraField.tsx` and `BandTexture.tsx` — they import `aurora`/`mesh` and
+  are **dark-only by design** (Task 4). They do not need light values; they simply do not
+  render in light mode. Do not invent a light aurora.
+- Test: `src/components/landing/__tests__/` — extend the existing contrast tests
+
+**Interfaces:**
+- Consumes: `tokens(mode)`, `contrastRatio(fg, bg)`, `accent.onPrimary`, `intent.on*`
+- Produces: no new exports. On completion `landingTheme.ts` should have **no remaining
+  consumers outside Task 6's app pages** — check before deleting it, and delete it only
+  if nothing imports it.
+
+**Mapping.** These are the same substitutions Tasks 4, 5 and 7 used; reuse them rather
+than inventing new ones:
+
+| current | replacement |
+|---|---|
+| `onCanvas.primary` | `tokens(mode).text.primary` |
+| `onCanvas.secondary` | `tokens(mode).text.secondary` |
+| `onCanvas.muted` | `tokens(mode).text.tertiary` |
+| `brandCanvas` | `tokens(mode).surface.base` |
+| `brandSurface` | `tokens(mode).surface.raised` |
+| `brandInk.*` used as ink | the matching `text.*` token |
+| ink on a gradient or accent fill | `accent.onPrimary` |
+
+`heroGradientStyles` and `ctaGradientStyles` are the hard cases — a gradient has two
+stops, and an ink that clears AA against one may fail against the other. Measure against
+**both** stops. If no single ink clears both, the gradient's stops are what must change,
+not the ink; say so and propose stops rather than picking an ink that fails one end.
+
+- [ ] **Step 1: Write the failing test**
+
+Extend the existing landing contrast tests (`Header.contrast.test.tsx`, `BigCTA.contrast.test.tsx`
+already exist and use the established pattern) to cover light mode for every converted
+component. Follow `SignUp.canvasContrast.test.tsx`'s idiom: `getComputedStyle` → hex →
+`expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5)`.
+
+Assert with `toBeGreaterThanOrEqual` directly on `contrastRatio(...)` so a `NaN` from a
+bad parse fails loudly rather than passing.
+
+- [ ] **Step 2: Run them and watch them fail**
+
+```bash
+./node_modules/.bin/vitest run src/components/landing
+```
+
+Expected: light-mode assertions fail — the components still paint fixed light-on-dark ink.
+
+- [ ] **Step 3: Convert the components**
+
+Apply the mapping table. Read `mode` the way the rest of the codebase does — `useTheme().palette.mode`,
+or `tokens(mode)` directly. Do not hand-pick per-mode literals.
+
+- [ ] **Step 4: Inspect every section in both modes**
+
+The inspection is the work, exactly as in Task 5. For each converted component, in **both**
+modes: does every piece of text clear 4.5:1 against what is actually behind it, and did
+anything implicitly light-only become wrong in dark?
+
+Record the per-component results with measured numbers in your report.
+
+- [ ] **Step 5: Run the full gate**
+
+```bash
+./node_modules/.bin/tsc -b --noEmit
+./node_modules/.bin/vitest run
+pnpm exec biome check .
+```
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add src/components/landing src/pages/LandingPage.tsx
+git commit -m "feat(exchange): the landing page follows the theme toggle"
+```
+
+---
+
 ## Deferred
 
 Not part of this plan.
