@@ -10,6 +10,10 @@ import { aurora, mesh } from '@/theme/landingTheme';
  *
  * Decorative and inert — no pointer events, no place in the accessibility tree,
  * and no image request, which keeps it inside the application's strict CSP.
+ *
+ * Dark-only by design, not by omission: it was art-directed for a dark field,
+ * and there is no honest light counterpart. Light mode does not call this
+ * component at all — see `AuthScene` for the gradient wash it uses instead.
  */
 function AuroraField({
   /** Bloom rising from the bottom edge — the signature of the card treatment. */

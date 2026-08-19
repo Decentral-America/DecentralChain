@@ -7,6 +7,11 @@ import { Box } from '@mui/material';
  * Drawn inline rather than loaded, so it costs no image request and stays
  * within the application's strict CSP. It is decorative: it takes no part in
  * the accessibility tree and never receives pointer events.
+ *
+ * Dark-only by design, not by omission: the contour strokes were tuned for a
+ * dark field, and there is no honest light counterpart. Light mode does not
+ * call this component at all — see `AuthScene` for the gradient wash it uses
+ * instead.
  */
 
 /** Precomputed so each path carries a stable identity rather than an index. */
