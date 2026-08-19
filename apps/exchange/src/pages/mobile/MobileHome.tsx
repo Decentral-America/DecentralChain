@@ -56,7 +56,22 @@ export function MobileHome() {
   const visibleAssets = assets.slice(0, 5);
 
   return (
-    <Box sx={{ bgcolor: mobileSurface.canvas, minHeight: '100%' }}>
+    <Box
+      sx={{
+        bgcolor: mobileSurface.canvas,
+        /*
+         * This screen paints its own canvas, so `MobilePageShell`'s move to a
+         * mode-aware surface does not reach it. `mobileSurface.canvas` is one
+         * fixed `#F4F5F7` in both modes, and anything on it without a colour of
+         * its own inherited MUI's mode-aware `text.primary` — `#f5f4ff` on
+         * `#F4F5F7` is 1.00:1 in dark, which is what the "Your assets" section
+         * heading was. Pinning the ink to the fill is the pairing the rest of
+         * `styles/mobileTokens` already assumes.
+         */
+        color: mobileText.primary,
+        minHeight: '100%',
+      }}
+    >
       <MobileAppBar
         unread
         title={`${greeting}, ${displayName}`}

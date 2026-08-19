@@ -61,6 +61,16 @@ export function MobileReceiveSheet({ open, onClose }: { open: boolean; onClose: 
               bgcolor: mobileSurface.sunken,
               border: `1px solid ${mobileSurface.border}`,
               borderRadius: mobileRadius.md,
+              /*
+               * The sheet above already pins its ink, so this repeats it —
+               * deliberately. This well holds the user's own wallet address:
+               * the one string on the mobile shell where getting the ink wrong
+               * costs money, not just legibility. It carries its own fixed fill
+               * (`mobileSurface.sunken`), so it states its own ink rather than
+               * depending on an ancestor that a later refactor could restyle.
+               * It was `#f5f4ff` on `#F7F8FA` — 1.03:1 — in dark mode.
+               */
+              color: mobileText.primary,
               fontSize: 14,
               mb: 2.5,
               // Addresses are long unbroken strings and must wrap, not overflow.

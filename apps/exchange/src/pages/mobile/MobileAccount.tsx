@@ -106,7 +106,14 @@ export function MobileAccount() {
   const shortAddress = address ? `${address.slice(0, 8)}…${address.slice(-6)}` : 'Not connected';
 
   return (
-    <Box sx={{ bgcolor: mobileSurface.canvas, minHeight: '100%' }}>
+    <Box
+      sx={{
+        bgcolor: mobileSurface.canvas,
+        // Fixed fill, fixed ink — see the note on MobileHome's canvas.
+        color: mobileText.primary,
+        minHeight: '100%',
+      }}
+    >
       <MobileAppBar title="Account" subtitle="Your wallet, preferences and session." />
 
       <MobileSection sx={{ pb: `${mobileLayout.scrollPaddingBottom}px` }}>

@@ -60,7 +60,14 @@ export function MobilePortfolio() {
   const splitBands = allocations.slice(0, 4);
 
   return (
-    <Box sx={{ bgcolor: mobileSurface.canvas, minHeight: '100%' }}>
+    <Box
+      sx={{
+        bgcolor: mobileSurface.canvas,
+        // Fixed fill, fixed ink — see the note on MobileHome's canvas.
+        color: mobileText.primary,
+        minHeight: '100%',
+      }}
+    >
       <MobileAppBar title="Portfolio" subtitle="Every asset held by this wallet." />
 
       <MobileSection sx={{ pb: `${mobileLayout.scrollPaddingBottom}px` }}>
@@ -181,8 +188,20 @@ export function MobilePortfolio() {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search your assets"
             inputProps={{ 'aria-label': 'Search your assets' }}
-            // 16px keeps iOS from zooming the viewport when the field is focused.
-            sx={{ flex: 1, fontSize: 16, minHeight: 44 }}
+            sx={{
+              /*
+               * `InputBase` sets `color: text.primary` on its own root — an
+               * explicit, mode-aware ink, not an inherited one, so pinning the
+               * surrounding `Box` would not have reached it. The field sits on
+               * the fixed `mobileSurface.card`, so what the user typed was
+               * `#f5f4ff` on `#ffffff` — 1.09:1 — in dark mode.
+               */
+              color: mobileText.primary,
+              flex: 1,
+              // 16px keeps iOS from zooming the viewport when the field is focused.
+              fontSize: 16,
+              minHeight: 44,
+            }}
           />
         </Box>
 

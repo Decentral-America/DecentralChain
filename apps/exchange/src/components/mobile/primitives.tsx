@@ -102,6 +102,19 @@ export function MobileCard({ children, padded = true, sx, ...rest }: MobileCardP
         bgcolor: mobileSurface.card,
         borderRadius: mobileRadius.card,
         boxShadow: mobileShadow.card,
+        /*
+         * The fill is `styles/mobileTokens`' fixed `#ffffff` — one literal in
+         * both modes — so the card has to carry its ink as well. Without this
+         * line anything inside it that does not set its own `color` inherits
+         * MUI's mode-aware `text.primary` from the `<body>` rule `CssBaseline`
+         * writes, and dark mode paints `#f5f4ff` on `#ffffff`: 1.09:1. That was
+         * live on the balance figures of `MobileHome` and `MobilePortfolio` and
+         * on `MobileAccount`'s wallet name — every one of them a `Typography`
+         * with a size and a weight but no colour. Pinned ink on a pinned fill
+         * is the correct pairing here; `mobileTokens` is deliberately
+         * mode-blind, and this is the half of that bargain the card owes.
+         */
+        color: mobileText.primary,
         p: padded ? `${mobileLayout.cardPadding}px` : 0,
         position: 'relative',
         zIndex: 1,
@@ -475,10 +488,13 @@ interface MobileButtonProps {
  * near-black sheet. `text.primary`/`border.strong` are the same two roles with
  * the mode dimension `styles/mobileTokens` deliberately does not have.
  *
- * The remaining callers (`MobileWelcome`, `MobileReceiveSheet`) are behind
- * `import.meta.env.DEV` — the dev-only mobile-shell preview — and sit on the
- * fixed-light mobile canvas that the wider mobile-shell mode-blindness
- * follow-up still owns.
+ * The other two callers are `MobileWelcome` — which really is behind
+ * `import.meta.env.DEV`, the `/mobile-preview*` tree — and `MobileReceiveSheet`,
+ * which is NOT: `MobileHome` renders it at line 210, and `MobileHome` is routed
+ * at `routes/walletRoutes.tsx:51` through `ResponsiveScreen`, i.e. selected by
+ * VIEWPORT on every phone. Both use the `accent` variant, whose fill and ink
+ * are both fixed, so neither is affected either way — but the DEV claim itself
+ * was wrong and is corrected here rather than left to mislead the next reader.
  */
 export function MobileButton({
   children,

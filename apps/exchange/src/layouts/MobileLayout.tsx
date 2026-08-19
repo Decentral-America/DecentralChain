@@ -1,10 +1,11 @@
-import { Box } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import { Suspense, useEffect } from 'react';
 import { Outlet } from 'react-router';
 import { MobileTabBar } from '@/components/mobile/MobileTabBar';
 import { TransactionNotificationsMonitor } from '@/components/notifications/TransactionNotificationsMonitor';
 import { RouteLoadingFallback } from '@/components/RouteLoadingFallback';
-import { mobileLayout, mobileSurface } from '@/styles/mobileTokens';
+import { mobileLayout } from '@/styles/mobileTokens';
+import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * Mobile application shell.
@@ -20,6 +21,20 @@ import { mobileLayout, mobileSurface } from '@/styles/mobileTokens';
  */
 export function MobileLayout() {
   /*
+   * This shell is the one place in the mobile tree where pinning the ink to the
+   * fill would be wrong. Its subtree holds both halves of a half-converted
+   * system: `MobilePageShell` (twelve authenticated route entries) already
+   * paints `tokens(mode).surface.base` and relies on inheriting the mode-aware
+   * `text.primary` on top of it, while `MobileHome`/`MobilePortfolio`/
+   * `MobileAccount` paint the fixed mobile canvas and pin the fixed mobile ink.
+   * A fixed `color` here would silently override the first group and put
+   * near-black `mobileText.primary` on `MobilePageShell`'s dark canvas. So the
+   * FILL moves instead — the same repoint `MobilePageShell` itself took — and
+   * the three screens that want the fixed canvas keep painting it over the top.
+   */
+  const t = tokens(useTheme().palette.mode);
+
+  /*
    * Flag the document so it can adopt the mobile canvas colour. Doing it here
    * rather than globally keeps the desktop shell on the white page background.
    */
@@ -31,7 +46,7 @@ export function MobileLayout() {
   return (
     <Box
       sx={{
-        bgcolor: mobileSurface.canvas,
+        bgcolor: t.surface.base,
         display: 'flex',
         flexDirection: 'column',
         minHeight: '100dvh',
@@ -48,7 +63,7 @@ export function MobileLayout() {
            * parent and left the canvas ending part-way down the viewport.
            */
           '& > *': { flex: 1, minHeight: 0 },
-          bgcolor: mobileSurface.canvas,
+          bgcolor: t.surface.base,
           display: 'flex',
           flex: 1,
           flexDirection: 'column',

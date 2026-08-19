@@ -84,6 +84,14 @@ export function MobileMenuDrawer({ open, onClose }: { open: boolean; onClose: ()
           sx: {
             backgroundImage: 'none',
             bgcolor: mobileSurface.canvas,
+            /*
+             * Fixed fill, so the ink is fixed with it. The drawer's own rows
+             * all name a colour, but the account name at the top did not, and
+             * inherited MUI's mode-aware `text.primary` through `CssBaseline`:
+             * `#f5f4ff` on `#F4F5F7`, 1.00:1 in dark — the wallet's own name,
+             * invisible, in the shell's primary navigation drawer.
+             */
+            color: mobileText.primary,
             // Leaves the underlying screen partly visible, as a drawer should.
             maxWidth: '92vw',
             width: 320,

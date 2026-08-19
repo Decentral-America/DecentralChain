@@ -1,6 +1,12 @@
 import { Box, Drawer } from '@mui/material';
 import { type ReactNode } from 'react';
-import { mobileLayout, mobileRadius, mobileSurface, mobileText } from '@/styles/mobileTokens';
+import {
+  mobileAccent,
+  mobileLayout,
+  mobileRadius,
+  mobileSurface,
+  mobileText,
+} from '@/styles/mobileTokens';
 
 /**
  * Bottom sheet.
@@ -35,6 +41,16 @@ export function BottomSheet({ open, onClose, children, maxHeightRatio = 0.9 }: B
             borderTopLeftRadius: mobileRadius.sheet,
             borderTopRightRadius: mobileRadius.sheet,
             boxShadow: 'none',
+            /*
+             * The sheet's fill is a fixed `#ffffff`, so its ink is pinned to
+             * match. `Drawer`'s paper is a `Paper`, which sets no `color` of
+             * its own, so without this every unstyled line inside the sheet
+             * inherited MUI's mode-aware `text.primary` from `CssBaseline`'s
+             * `<body>` rule: `#f5f4ff` on `#ffffff`, 1.09:1 in dark. That was
+             * live on `MobileReceiveSheet`'s "Receive" heading and — through
+             * the sunken well nested in it — on the wallet address itself.
+             */
+            color: mobileText.primary,
             maxHeight: `${maxHeightRatio * 100}dvh`,
             // Content must clear the home indicator.
             pb: 'calc(env(safe-area-inset-bottom) + 8px)',
@@ -85,9 +101,18 @@ export function SheetStep({
         sx={{
           alignItems: 'center',
           border: '1.5px solid',
-          borderColor: 'primary.main',
+          // Same reason as the ink below — a fixed fill takes a fixed border.
+          borderColor: mobileAccent.base,
           borderRadius: '50%',
-          color: 'primary.main',
+          /*
+           * `mobileAccent.base`, not MUI's `primary.main`: the step plate sits
+           * on the sheet's fixed `#ffffff`, and `primary.main` is mode-aware
+           * (`#5b4bdb` light, `#8b7dff` dark) — 6.04:1 turning into 3.24:1 the
+           * moment the toggle moves, on a 12px numeral. The mobile accent is
+           * the same hue with no mode dimension: 6.19:1 either way, and it is
+           * the token every other mobile accent already reads.
+           */
+          color: mobileAccent.base,
           display: 'flex',
           flexShrink: 0,
           fontSize: 12,
