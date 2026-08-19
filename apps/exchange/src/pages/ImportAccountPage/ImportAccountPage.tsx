@@ -163,7 +163,12 @@ const ImportAccountInner: React.FC = () => {
                         alignItems: 'center',
                         bgcolor: f.color,
                         borderRadius: '50%',
-                        color: 'white',
+                        // Derived from `f.color`, not a second literal — the
+                        // two can't drift apart. `secondary.main`
+                        // (accent.muted) is light in light mode; a hardcoded
+                        // 'white' measured ~1.2:1 there. See
+                        // task-2-report.md, Fix round 3.
+                        color: f.color.replace('.main', '.contrastText'),
                         display: 'flex',
                         flexShrink: 0,
                         height: 40,

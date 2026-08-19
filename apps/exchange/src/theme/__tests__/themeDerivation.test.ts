@@ -106,6 +106,84 @@ describe('background legibility (regression guard)', () => {
   }
 });
 
+/**
+ * WCAG contrast for a *translucent* foreground colour (MUI's own dark-mode
+ * `contrastText`, `rgba(0, 0, 0, 0.87)`) composited over an opaque
+ * background. `contrastRatio()` in `../tokens/semantic` is intentionally
+ * hex-only — every token is opaque — so this stays local to the test that
+ * needs it rather than widening that contract for one rgba string.
+ */
+function contrastOfTranslucentInk(rgbaCss: string, bgHex: string): number {
+  const m = rgbaCss.match(
+    /rgba?\(\s*(?<r>\d+)\s*,\s*(?<g>\d+)\s*,\s*(?<b>\d+)\s*(?:,\s*(?<a>[\d.]+))?\)/,
+  );
+  const groups = m?.groups;
+  if (!groups) {
+    // Not translucent (e.g. '#fff') — let contrastRatio handle it directly.
+    return contrastRatio(rgbaCss, bgHex);
+  }
+  const alpha = groups['a'] === undefined ? 1 : Number.parseFloat(groups['a']);
+  const hex = bgHex.replace('#', '');
+  const bgR = Number.parseInt(hex.slice(0, 2), 16);
+  const bgG = Number.parseInt(hex.slice(2, 4), 16);
+  const bgB = Number.parseInt(hex.slice(4, 6), 16);
+  const blend = (fg: number, bg: number) =>
+    Math.round(Math.min(255, Math.max(0, alpha * fg + (1 - alpha) * bg)));
+  const apparent = [
+    blend(Number(groups['r']), bgR),
+    blend(Number(groups['g']), bgG),
+    blend(Number(groups['b']), bgB),
+  ];
+  const apparentHex = `#${apparent.map((v) => v.toString(16).padStart(2, '0')).join('')}`;
+  return contrastRatio(apparentHex, bgHex);
+}
+
+describe('white ink on token-driven backgrounds (regression guard)', () => {
+  // Several consumers hardcode `color: 'white'` on a `bgcolor` read from the
+  // palette (icon tiles, badges, toggle buttons) instead of reading
+  // `<variant>.contrastText`. Fine while the background is reliably dark in
+  // both modes; wrong the moment it isn't. `secondary.main` (accent.muted)
+  // is exactly that case — light in light mode, ~1.2:1 for hardcoded white.
+  // Fix round 3 moved the fixed call sites onto `contrastText` and set it
+  // explicitly for `primary`/`secondary`; this pins that mechanism holds.
+  // See task-2-report.md, Fix round 3.
+  for (const mode of ['light', 'dark'] as const) {
+    const mui = createAppTheme(mode);
+
+    it(`${mode}: secondary.contrastText on secondary.main clears 4.5:1`, () => {
+      expect(
+        contrastRatio(mui.palette.secondary.contrastText, mui.palette.secondary.main),
+      ).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it(`${mode}: primary.contrastText is fixed at '#ffffff' (pre-existing accent.primary gap, not this task's to fix)`, () => {
+      // No token clears 4.5:1 against accent.primary in both modes at once
+      // (proven in mui-theme.ts's comment: white 6.04/3.24, black 3.47/6.48,
+      // text.primary 3.02/2.98 — every candidate fails one mode). '#ffffff'
+      // is what every call site already hardcoded, so this is a mechanism
+      // change, not a value change. It still clears the 3:1 icon/large-text
+      // floor in both modes — the body-text 4.5:1 floor is a known,
+      // disclosed dark-mode gap (see task-2-report.md, Fix round 3).
+      expect(mui.palette.primary.contrastText).toBe('#ffffff');
+      expect(
+        contrastRatio(mui.palette.primary.contrastText, mui.palette.primary.main),
+      ).toBeGreaterThanOrEqual(3);
+    });
+
+    it(`${mode}: success.contrastText on success.main clears 4.5:1 (Dex.tsx's Buy toggle)`, () => {
+      expect(
+        contrastOfTranslucentInk(mui.palette.success.contrastText, mui.palette.success.main),
+      ).toBeGreaterThanOrEqual(4.5);
+    });
+
+    it(`${mode}: error.contrastText on error.main clears 4.5:1 (Dex.tsx's Sell toggle)`, () => {
+      expect(
+        contrastOfTranslucentInk(mui.palette.error.contrastText, mui.palette.error.main),
+      ).toBeGreaterThanOrEqual(4.5);
+    });
+  }
+});
+
 describe('hover perceptibility (regression guard)', () => {
   // `colors.hover` / `action.hover` must read as a visibly different surface
   // from the resting background — Task 2 round 1 shipped `surface.raised`,

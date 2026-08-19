@@ -91,7 +91,7 @@ export const ImportLedger: React.FC = () => {
                         alignItems: 'center',
                         bgcolor: 'primary.main',
                         borderRadius: '50%',
-                        color: 'white',
+                        color: 'primary.contrastText',
                         display: 'flex',
                         flexShrink: 0,
                         height: 40,
@@ -134,7 +134,10 @@ export const ImportLedger: React.FC = () => {
                         alignItems: 'center',
                         bgcolor: 'secondary.main',
                         borderRadius: '50%',
-                        color: 'white',
+                        // `secondary.main` (accent.muted) is light in light
+                        // mode; a hardcoded 'white' measured ~1.2:1 there.
+                        // See task-2-report.md, Fix round 3.
+                        color: 'secondary.contrastText',
                         display: 'flex',
                         flexShrink: 0,
                         height: 40,
@@ -177,7 +180,7 @@ export const ImportLedger: React.FC = () => {
                         alignItems: 'center',
                         bgcolor: 'primary.main',
                         borderRadius: '50%',
-                        color: 'white',
+                        color: 'primary.contrastText',
                         display: 'flex',
                         flexShrink: 0,
                         height: 40,

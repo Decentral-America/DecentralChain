@@ -20,7 +20,17 @@ function paletteFor(mode: ThemeMode) {
     divider: t.border.subtle,
     error: { main: t.intent.danger },
     info: { main: t.intent.info },
-    primary: { main: t.accent.primary },
+    // `contrastText` is explicit '#ffffff' rather than a token: no token in
+    // this file clears 4.5:1 against `accent.primary` in *both* modes
+    // (proven — white: 6.04 light / 3.24 dark; black: 3.47 light / 6.48 dark;
+    // text.primary: 3.02 / 2.98; every option fails one mode). '#ffffff' is
+    // the value already hardcoded at every `primary.main` call site in the
+    // app, so this changes no rendered pixel — it only gives call sites a
+    // token-driven way to read the same value instead of hardcoding it. The
+    // 3.24 dark-mode figure is a pre-existing `accent.primary` (Task 1) gap,
+    // left alone per the round-3 review; see task-2-report.md, Fix round 3
+    // for the full disclosure of where it's a body-text (not icon) risk.
+    primary: { contrastText: '#ffffff', main: t.accent.primary },
     // `accent.muted` — same token the styled-components theme's
     // `colors.secondary` reads. It's a *background* role (verified to keep
     // `text.primary` legible on top, in both modes); `contrastText` is set

@@ -522,9 +522,6 @@ export const Dex = () => {
                   fullWidth
                   sx={{
                     '& .MuiToggleButton-root': {
-                      '&.Mui-selected': {
-                        color: 'white',
-                      },
                       border: 'none',
                       fontSize: '1rem',
                       py: 1.5,
@@ -539,6 +536,13 @@ export const Dex = () => {
                           bgcolor: 'success.dark',
                         },
                         bgcolor: 'success.main',
+                        // A shared 'white' on the group above used to cover
+                        // this, but success.main is a bright dark-mode pastel
+                        // (white ink measured ~1.77:1 there). Each button now
+                        // carries its own intent's contrastText — MUI already
+                        // computes it correctly (~5.3 light / ~9.1 dark, see
+                        // task-2-report.md, Fix round 3).
+                        color: 'success.contrastText',
                       },
                       color: 'success.main',
                     }}
@@ -553,6 +557,7 @@ export const Dex = () => {
                           bgcolor: 'error.dark',
                         },
                         bgcolor: 'error.main',
+                        color: 'error.contrastText',
                       },
                       color: 'error.main',
                     }}
