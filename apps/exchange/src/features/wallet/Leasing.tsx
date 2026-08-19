@@ -817,11 +817,26 @@ export const Leasing = () => {
                           </Typography>
                         </TableCell>
                         <TableCell>
+                          {/*
+                           * Filled, not outlined. `<TableRow hover>` paints
+                           * `action.hover` (`surface.hover`) under this cell on
+                           * hover — an outlined chip has no fill of its own, so
+                           * its label read straight off that background:
+                           * `intent.warning` measured 4.1654:1 there in light
+                           * mode, `intent.success` 4.2865:1, both under the
+                           * 4.5:1 AA floor for body text. Filled gives the chip
+                           * its own opaque `intent.*` fill with the matching
+                           * verified `intent.on*` ink (≥4.5:1 in both modes,
+                           * see `theme/tokens/semantic.ts`), so the row's hover
+                           * state underneath it stops mattering — the same
+                           * pattern every other status chip in this codebase
+                           * already uses (Messages' unread badge, Dashboard's
+                           * activity chip, AliasManagement's "Copied!" chip).
+                           */}
                           <Chip
                             size="small"
                             label={lease.status.charAt(0).toUpperCase() + lease.status.slice(1)}
                             color={chipColor}
-                            variant="outlined"
                           />
                         </TableCell>
                         <TableCell align="right">
