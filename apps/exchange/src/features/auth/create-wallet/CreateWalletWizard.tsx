@@ -21,12 +21,12 @@
  * matching the pattern already used by `RecoveryPhraseStep` and `IntroStep`.
  */
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Box, Button } from '@mui/material';
+import { Box, Button, useTheme } from '@mui/material';
 import { type TouchEvent, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { GlassCard } from '@/components/auth/GlassCard';
 import { StepRail } from '@/components/auth/StepRail';
-import { onCanvas } from '@/theme/landingTheme';
+import { tokens } from '@/theme/tokens/semantic';
 import { IntroStep } from './steps/IntroStep';
 import { RecoveryPhraseStep } from './steps/RecoveryPhraseStep';
 import { SecureStep } from './steps/SecureStep';
@@ -66,6 +66,7 @@ const SWIPE_THRESHOLD = 64;
 export function CreateWalletWizard({ wallet }: { wallet: CreateWalletApi }) {
   const navigate = useNavigate();
   const { canGoBack, goBack, goTo, step } = wallet;
+  const t = tokens(useTheme().palette.mode);
 
   // Swipe right to go back, on touch only. Mirrors the button rather than
   // replacing it, so the affordance stays visible either way.
@@ -153,7 +154,7 @@ export function CreateWalletWizard({ wallet }: { wallet: CreateWalletApi }) {
           onClick={goBack}
           size="small"
           startIcon={<ArrowBackIcon />}
-          sx={{ color: onCanvas.secondary, mb: 1, minHeight: 44, textTransform: 'none' }}
+          sx={{ color: t.text.secondary, mb: 1, minHeight: 44, textTransform: 'none' }}
         >
           Back
         </Button>

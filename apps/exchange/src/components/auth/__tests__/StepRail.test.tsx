@@ -7,8 +7,10 @@
  * wizard's three so a reader is not sent looking for a step that no longer
  * exists.
  */
+import { ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { createAppTheme } from '@/theme/mui-theme';
 import { StepRail } from '../StepRail';
 
 const STEPS = ['Start', 'Phrase', 'Secure'];
@@ -74,5 +76,28 @@ describe('StepRail', () => {
     rerender(<StepRail steps={['A', 'B', 'C', 'D']} current={2} />);
     fill = screen.getByTestId('step-rail-fill');
     expect(fill).toHaveStyle({ width: '66.66666666666666%' });
+  });
+});
+
+describe('StepRail in both modes', () => {
+  const STEPS = ['Intro', 'Phrase', 'Secure'];
+
+  it('renders its labels in light mode', () => {
+    render(
+      <ThemeProvider theme={createAppTheme('light')}>
+        <StepRail steps={STEPS} current={1} />
+      </ThemeProvider>,
+    );
+    for (const label of STEPS) expect(screen.getByText(label)).toBeInTheDocument();
+    expect(screen.getByText('Phrase')).toHaveAttribute('data-state', 'current');
+  });
+
+  it('renders its labels in dark mode', () => {
+    render(
+      <ThemeProvider theme={createAppTheme('dark')}>
+        <StepRail steps={STEPS} current={1} />
+      </ThemeProvider>,
+    );
+    for (const label of STEPS) expect(screen.getByText(label)).toBeInTheDocument();
   });
 });

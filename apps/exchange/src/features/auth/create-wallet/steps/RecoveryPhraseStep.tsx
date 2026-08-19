@@ -20,9 +20,8 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DoneIcon from '@mui/icons-material/Done';
 import ShieldIcon from '@mui/icons-material/Shield';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { Alert, Box, Button, Stack, Typography } from '@mui/material';
-import { palette } from '@/styles/tokens';
-import { onCanvas } from '@/theme/landingTheme';
+import { Alert, Box, Button, Stack, Typography, useTheme } from '@mui/material';
+import { tokens } from '@/theme/tokens/semantic';
 
 export function RecoveryPhraseStep({
   isCopied,
@@ -51,6 +50,8 @@ export function RecoveryPhraseStep({
   seedError: string;
   words: string[];
 }) {
+  const mode = useTheme().palette.mode;
+  const t = tokens(mode);
   const revealed = isRevealed;
 
   // Generation failed: there is no phrase to show, so offer a retry rather
@@ -58,18 +59,13 @@ export function RecoveryPhraseStep({
   if (seedError) {
     return (
       <Box>
-        <Typography variant="h5" sx={{ color: onCanvas.primary, fontWeight: 700, mb: 1 }}>
+        <Typography variant="h5" sx={{ color: t.text.primary, fontWeight: 700, mb: 1 }}>
           Your recovery phrase
         </Typography>
         <Alert severity="error" sx={{ mb: 2 }}>
           {seedError}
         </Alert>
-        <Button
-          fullWidth
-          onClick={onRetry}
-          sx={{ bgcolor: palette.indigoHover }}
-          variant="contained"
-        >
+        <Button fullWidth onClick={onRetry} sx={{ bgcolor: t.accent.primary }} variant="contained">
           Try again
         </Button>
       </Box>
@@ -78,10 +74,10 @@ export function RecoveryPhraseStep({
 
   return (
     <Box>
-      <Typography variant="h5" sx={{ color: onCanvas.primary, fontWeight: 700, mb: 0.5 }}>
+      <Typography variant="h5" sx={{ color: t.text.primary, fontWeight: 700, mb: 0.5 }}>
         Your recovery phrase
       </Typography>
-      <Typography variant="body2" sx={{ color: onCanvas.secondary, mb: 2 }}>
+      <Typography variant="body2" sx={{ color: t.text.secondary, mb: 2 }}>
         Write these {words.length} words down in order and store them offline.
       </Typography>
 
@@ -92,15 +88,15 @@ export function RecoveryPhraseStep({
         spacing={1.5}
         sx={{
           alignItems: 'flex-start',
-          bgcolor: 'rgba(124, 92, 255, 0.08)',
-          border: '1px solid rgba(124, 92, 255, 0.35)',
+          bgcolor: t.accent.muted,
+          border: `1px solid ${t.accent.primary}`,
           borderRadius: '12px',
           mb: 2.5,
           p: 1.75,
         }}
       >
-        <ShieldIcon sx={{ color: palette.indigoHover, fontSize: 20, mt: '1px' }} />
-        <Typography variant="body2" sx={{ color: onCanvas.primary }}>
+        <ShieldIcon sx={{ color: t.accent.primary, fontSize: 20, mt: '1px' }} />
+        <Typography variant="body2" sx={{ color: t.text.primary }}>
           Anyone with these words controls your funds. Never type them into a website and never
           store them on this device.
         </Typography>
@@ -140,17 +136,17 @@ export function RecoveryPhraseStep({
                 alignItems: 'baseline',
                 animation: revealed ? 'seed-word-in 260ms ease both' : 'none',
                 animationDelay: revealed ? `${index * 25}ms` : '0ms',
-                bgcolor: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                bgcolor: t.surface.sunken,
+                border: `1px solid ${t.border.subtle}`,
                 borderRadius: '10px',
                 px: 1.25,
                 py: 0.75,
               }}
             >
-              <Typography variant="caption" sx={{ color: onCanvas.secondary, minWidth: 16 }}>
+              <Typography variant="caption" sx={{ color: t.text.secondary, minWidth: 16 }}>
                 {index + 1}
               </Typography>
-              <Typography sx={{ color: onCanvas.primary, fontFamily: 'monospace', fontSize: 14 }}>
+              <Typography sx={{ color: t.text.primary, fontFamily: 'monospace', fontSize: 14 }}>
                 {/* The real word is kept out of the DOM entirely until revealed — the blur
                     above is only a visual belt-and-braces, not the guarantee. */}
                 {revealed ? word : '••••••'}
@@ -164,7 +160,7 @@ export function RecoveryPhraseStep({
             onClick={onReveal}
             startIcon={<VisibilityIcon />}
             sx={{
-              color: onCanvas.primary,
+              color: t.text.primary,
               inset: 0,
               position: 'absolute',
               textTransform: 'none',
@@ -180,7 +176,7 @@ export function RecoveryPhraseStep({
         <Button
           onClick={onCopy}
           startIcon={isCopied ? <DoneIcon /> : <ContentCopyIcon />}
-          sx={{ borderColor: 'rgba(255,255,255,0.25)', color: onCanvas.primary }}
+          sx={{ borderColor: t.border.strong, color: t.text.primary }}
           variant="outlined"
         >
           {isCopied ? 'Copied' : 'Copy'}
@@ -189,7 +185,7 @@ export function RecoveryPhraseStep({
           disabled={!revealed}
           fullWidth
           onClick={onContinue}
-          sx={{ bgcolor: palette.indigoHover }}
+          sx={{ bgcolor: t.accent.primary }}
           variant="contained"
         >
           I've saved it

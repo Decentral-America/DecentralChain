@@ -19,10 +19,9 @@ import KeyIcon from '@mui/icons-material/Key';
 import LockResetIcon from '@mui/icons-material/LockReset';
 import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
 import UsbIcon from '@mui/icons-material/Usb';
-import { Box, Button, Divider, Stack, Typography } from '@mui/material';
+import { Box, Button, Divider, Stack, Typography, useTheme } from '@mui/material';
 import { type ReactNode } from 'react';
-import { palette } from '@/styles/tokens';
-import { onCanvas } from '@/theme/landingTheme';
+import { tokens } from '@/theme/tokens/semantic';
 
 const POINTS: { icon: ReactNode; text: string; title: string }[] = [
   {
@@ -56,12 +55,15 @@ export function IntroStep({
    */
   showLedger: boolean;
 }) {
+  const mode = useTheme().palette.mode;
+  const t = tokens(mode);
+
   return (
     <Box>
-      <Typography variant="h5" sx={{ color: onCanvas.primary, fontWeight: 700, mb: 0.5 }}>
+      <Typography variant="h5" sx={{ color: t.text.primary, fontWeight: 700, mb: 0.5 }}>
         Before you start
       </Typography>
-      <Typography variant="body2" sx={{ color: onCanvas.secondary, mb: 2.5 }}>
+      <Typography variant="body2" sx={{ color: t.text.secondary, mb: 2.5 }}>
         Three things to know about a wallet only you can open.
       </Typography>
 
@@ -82,14 +84,14 @@ export function IntroStep({
               animationDelay: `${index * 60}ms`,
             }}
           >
-            <Box sx={{ color: palette.indigoHover, flexShrink: 0, lineHeight: 0, mt: '3px' }}>
+            <Box sx={{ color: t.accent.primary, flexShrink: 0, lineHeight: 0, mt: '3px' }}>
               {point.icon}
             </Box>
             <Box sx={{ minWidth: 0 }}>
-              <Typography sx={{ color: onCanvas.primary, fontSize: 15, fontWeight: 600 }}>
+              <Typography sx={{ color: t.text.primary, fontSize: 15, fontWeight: 600 }}>
                 {point.title}
               </Typography>
-              <Typography variant="body2" sx={{ color: onCanvas.secondary }}>
+              <Typography variant="body2" sx={{ color: t.text.secondary }}>
                 {point.text}
               </Typography>
             </Box>
@@ -100,7 +102,7 @@ export function IntroStep({
       <Button
         fullWidth
         onClick={onContinue}
-        sx={{ bgcolor: palette.indigoHover, py: 1.25 }}
+        sx={{ bgcolor: t.accent.primary, py: 1.25 }}
         variant="contained"
       >
         Continue
@@ -110,8 +112,8 @@ export function IntroStep({
         <>
           <Divider
             sx={{
-              '&::before, &::after': { borderColor: 'rgba(255,255,255,0.12)' },
-              color: onCanvas.secondary,
+              '&::before, &::after': { borderColor: t.border.subtle },
+              color: t.text.secondary,
               fontSize: 12,
               my: 2,
             }}
@@ -126,11 +128,11 @@ export function IntroStep({
             sx={{
               '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
               '&:hover': {
-                bgcolor: 'rgba(255,255,255,0.06)',
-                borderColor: palette.indigoHover,
+                bgcolor: t.surface.hover,
+                borderColor: t.accent.primary,
               },
-              bgcolor: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.10)',
+              bgcolor: t.surface.sunken,
+              border: `1px solid ${t.border.subtle}`,
               borderRadius: '14px',
               cursor: 'pointer',
               p: 2,
@@ -140,14 +142,14 @@ export function IntroStep({
             }}
           >
             <Stack direction="row" spacing={2} sx={{ alignItems: 'flex-start' }}>
-              <Box sx={{ color: palette.indigoHover, lineHeight: 0, mt: '2px' }}>
+              <Box sx={{ color: t.accent.primary, lineHeight: 0, mt: '2px' }}>
                 <UsbIcon fontSize="small" />
               </Box>
               <Box>
-                <Typography sx={{ color: onCanvas.primary, fontWeight: 600 }}>
+                <Typography sx={{ color: t.text.primary, fontWeight: 600 }}>
                   Ledger hardware wallet
                 </Typography>
-                <Typography variant="body2" sx={{ color: onCanvas.secondary }}>
+                <Typography variant="body2" sx={{ color: t.text.secondary }}>
                   Your private keys stay on the device and never touch this browser.
                 </Typography>
               </Box>

@@ -9,9 +9,8 @@
  * back to re-read their phrase after a failed attempt would otherwise return
  * to two empty boxes.
  */
-import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material';
-import { palette } from '@/styles/tokens';
-import { onCanvas } from '@/theme/landingTheme';
+import { Alert, Box, Button, Stack, TextField, Typography, useTheme } from '@mui/material';
+import { type ThemeMode, tokens } from '@/theme/tokens/semantic';
 
 /** Count how many of the wallet's password rules a candidate satisfies (0-5). */
 export function passwordStrength(password: string): number {
@@ -25,14 +24,17 @@ export function passwordStrength(password: string): number {
   ].filter(Boolean).length;
 }
 
-const FIELD_SX = {
-  '& .MuiInputBase-input': { color: onCanvas.primary },
-  '& .MuiInputLabel-root': { color: onCanvas.secondary },
-  '& .MuiOutlinedInput-root': {
-    '& fieldset': { borderColor: 'rgba(255,255,255,0.18)' },
-    '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.32)' },
-  },
-} as const;
+function fieldSx(mode: ThemeMode) {
+  const t = tokens(mode);
+  return {
+    '& .MuiInputBase-input': { color: t.text.primary },
+    '& .MuiInputLabel-root': { color: t.text.secondary },
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': { borderColor: t.border.subtle },
+      '&:hover fieldset': { borderColor: t.border.strong },
+    },
+  } as const;
+}
 
 export function SecureStep({
   confirm,
@@ -51,6 +53,8 @@ export function SecureStep({
   onSubmit: () => void;
   password: string;
 }) {
+  const mode = useTheme().palette.mode;
+  const t = tokens(mode);
   const strength = passwordStrength(password);
 
   return (
@@ -61,10 +65,10 @@ export function SecureStep({
         onSubmit();
       }}
     >
-      <Typography variant="h5" sx={{ color: onCanvas.primary, fontWeight: 700, mb: 0.5 }}>
+      <Typography variant="h5" sx={{ color: t.text.primary, fontWeight: 700, mb: 0.5 }}>
         Secure your wallet
       </Typography>
-      <Typography variant="body2" sx={{ color: onCanvas.secondary, mb: 3 }}>
+      <Typography variant="body2" sx={{ color: t.text.secondary, mb: 3 }}>
         This password encrypts your wallet on this device. It cannot be reset.
       </Typography>
 
@@ -74,7 +78,7 @@ export function SecureStep({
           fullWidth
           label="Password"
           onChange={(e) => onPasswordChange(e.target.value)}
-          sx={FIELD_SX}
+          sx={fieldSx(mode)}
           type="password"
           value={password}
         />
@@ -85,7 +89,7 @@ export function SecureStep({
               key={i}
               sx={{
                 '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
-                bgcolor: i < strength ? palette.indigoHover : 'rgba(255,255,255,0.12)',
+                bgcolor: i < strength ? t.accent.primary : t.border.subtle,
                 borderRadius: 999,
                 flex: 1,
                 height: 3,
@@ -100,7 +104,7 @@ export function SecureStep({
           fullWidth
           label="Confirm password"
           onChange={(e) => onConfirmChange(e.target.value)}
-          sx={FIELD_SX}
+          sx={fieldSx(mode)}
           type="password"
           value={confirm}
         />
@@ -110,7 +114,7 @@ export function SecureStep({
         <Button
           disabled={isSubmitting}
           fullWidth
-          sx={{ bgcolor: palette.indigoHover, py: 1.25 }}
+          sx={{ bgcolor: t.accent.primary, py: 1.25 }}
           type="submit"
           variant="contained"
         >

@@ -4,9 +4,8 @@
  * Labels carry a `data-state` of complete / current / upcoming so styling and
  * tests read from one source rather than inferring position twice.
  */
-import { Box, Stack, Typography } from '@mui/material';
-import { palette } from '@/styles/tokens';
-import { onCanvas } from '@/theme/landingTheme';
+import { Box, Stack, Typography, useTheme } from '@mui/material';
+import { tokens } from '@/theme/tokens/semantic';
 
 type StepState = 'complete' | 'current' | 'upcoming';
 
@@ -17,6 +16,8 @@ function stateFor(index: number, current: number): StepState {
 }
 
 export function StepRail({ steps, current }: { steps: string[]; current: number }) {
+  const mode = useTheme().palette.mode;
+  const t = tokens(mode);
   const filled = steps.length > 1 ? (current / (steps.length - 1)) * 100 : 100;
 
   return (
@@ -28,12 +29,12 @@ export function StepRail({ steps, current }: { steps: string[]; current: number 
       aria-label="Wallet setup progress"
       sx={{ mb: 3 }}
     >
-      <Box sx={{ bgcolor: 'rgba(255,255,255,0.10)', borderRadius: 999, height: 3, mb: 1.5 }}>
+      <Box sx={{ bgcolor: t.border.subtle, borderRadius: 999, height: 3, mb: 1.5 }}>
         <Box
           data-testid="step-rail-fill"
           sx={{
             '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
-            bgcolor: palette.indigoHover,
+            bgcolor: t.accent.primary,
             borderRadius: 999,
             height: '100%',
             transition: 'width 320ms ease',
@@ -52,7 +53,7 @@ export function StepRail({ steps, current }: { steps: string[]; current: number 
               variant="caption"
               sx={{
                 '@media (prefers-reduced-motion: reduce)': { transition: 'none' },
-                color: state === 'upcoming' ? onCanvas.secondary : onCanvas.primary,
+                color: state === 'upcoming' ? t.text.secondary : t.text.primary,
                 fontWeight: state === 'current' ? 700 : 400,
                 opacity: state === 'upcoming' ? 0.6 : 1,
                 transition: 'opacity 200ms ease, color 200ms ease',
