@@ -24,7 +24,6 @@ const STORAGE_KEYS = {
  */
 interface CommonSettings {
   lng: string; // Language
-  theme: 'default' | 'black';
   advancedMode: boolean;
   lastOpenVersion: string;
   whatsNewList: string[];
@@ -163,7 +162,6 @@ const getDefaultCommonSettings = (): CommonSettings => {
     },
     oracleDCC: NetworkConfig.oracleDCC,
     termsAccepted: true,
-    theme: 'default',
     tradeWithScriptAssets: false,
     whatsNewList: [],
     withScam: false,
@@ -242,16 +240,16 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
 
   /**
    * Apply side effects for setting changes
-   * Matches Angular's side effects (theme changes, data-service config updates, etc.)
+   * Matches Angular's side effects (data-service config updates, etc.)
+   *
+   * No `'theme'` case here: `commonSettings` never drove the real app theme
+   * (that's `ThemeContext`, via `ThemeSettings`) — it only wrote an inert
+   * `data-theme` DOM attribute nothing read. Removed in fix round 1 of
+   * task-9-report.md along with the dead control that set it.
    */
   const applySideEffects = useCallback(async (key: string, value: unknown) => {
     try {
       switch (key) {
-        case 'theme':
-          // Apply theme change to document
-          document.documentElement.setAttribute('data-theme', String(value || 'default'));
-          break;
-
         case 'network':
         case 'oracleDCC': {
           // Update data-service config
@@ -331,10 +329,6 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
       } else {
         setUserSettings(null);
       }
-
-      // Apply theme
-      const theme = storedCommon ? JSON.parse(storedCommon).theme : 'default';
-      document.documentElement.setAttribute('data-theme', theme || 'default');
     } catch (error) {
       logger.error('[Settings] Load failed:', error);
       // Use defaults on error
@@ -427,9 +421,6 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
           JSON.stringify(defaultUser),
         );
       }
-
-      // Re-apply theme
-      document.documentElement.setAttribute('data-theme', defaultCommon.theme);
 
       logger.debug('[Settings] Reset to defaults');
     } catch (error) {

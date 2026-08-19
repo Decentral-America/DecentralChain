@@ -6,8 +6,12 @@
  * - Advanced Mode toggle
  * - Language selector
  * - Session Timeout dropdown (5/10/20/40/60 min)
- * - Theme selector (Light/Dark)
  * - Current Block Height display (polls every 5s)
+ *
+ * No theme control here by design: `ThemeSettings` (Settings → Theme tab)
+ * is the one real theme control, wired to `ThemeContext`. A second,
+ * independent "Theme" dropdown used to live here, bound to the inert
+ * `commonSettings.theme` field — see fix round 1 of task-9-report.md.
  */
 
 import * as ds from 'data-service';
@@ -190,18 +194,6 @@ export const GeneralSettings = () => {
           <option value={20}>20 minutes</option>
           <option value={40}>40 minutes</option>
           <option value={60}>1 hour</option>
-        </Select>
-      </SettingRow>
-
-      {/* Theme Selector */}
-      <SettingRow>
-        <SettingLabel>Theme</SettingLabel>
-        <Select
-          value={commonSettings.theme}
-          onChange={(e) => setCommonSetting('theme', e.target.value as 'default' | 'black')}
-        >
-          <option value="default">● Light</option>
-          <option value="black">● Dark</option>
         </Select>
       </SettingRow>
 
