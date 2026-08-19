@@ -66,6 +66,25 @@ const expectClearsAA = (element: HTMLElement, mode: ThemeMode) => {
   expect(contrastRatio(hex, b)).toBeGreaterThanOrEqual(4.5);
 };
 
+/**
+ * An `rgba(...)` border composited over an opaque ground, as an opaque hex.
+ *
+ * The shared `rgbToHex` helper DROPS the alpha channel — documented after
+ * Task 5 as a systemic blind spot across every contrast suite in this repo.
+ * For an ink or border specified with alpha that makes the reading
+ * optimistically bright, so a translucent value has to be composited by hand
+ * before it can honestly be measured.
+ */
+function compositeOver(value: string, groundHex: string): string {
+  const parts = value.match(/[\d.]+/g);
+  if (!parts) throw new Error(`unparseable colour: ${value}`);
+  const [r, g, b] = parts.slice(0, 3).map(Number) as [number, number, number];
+  const a = parts.length > 3 ? Number(parts[3]) : 1;
+  const ground = [1, 3, 5].map((i) => Number.parseInt(groundHex.slice(i, i + 2), 16));
+  const out = [r, g, b].map((c, i) => Math.round(c * a + ground[i]! * (1 - a)));
+  return `#${out.map((c) => c.toString(16).padStart(2, '0')).join('')}`;
+}
+
 const renderSignUp = (mode: ThemeMode) =>
   render(<SignUp />, {
     wrapper: ({ children }) => (
@@ -119,5 +138,34 @@ describe('SignUp — mode responsiveness', () => {
   it('renders the light wash canvas when the app theme is light', () => {
     renderSignUp('light');
     expect(screen.getByTestId('auth-canvas')).toHaveAttribute('data-decor', 'wash');
+  });
+});
+
+/**
+ * The "Already have an account? Sign in" outline (final-review item 8).
+ *
+ * `variant="outlined"` gives this control no fill, so its border is the only
+ * thing identifying it as a button — WCAG 1.4.11's 3:1 non-text floor. The
+ * light branch was `border.strong` at 1.60:1 against the canvas, a gap parked
+ * twice as unfixable on a claim ("no token clears 3:1 here") that was simply
+ * false: `text.tertiary` clears at 5.01:1.
+ *
+ * The dark branch, `alpha(text.primary, 0.4)`, is measured *composited* here.
+ * The repo's shared `rgbToHex` drops the alpha channel, so reading it through
+ * the usual helper would report an optimistically bright value — the systemic
+ * blind spot recorded after Task 5. Compositing by hand is the only honest
+ * reading for a translucent border.
+ */
+describe.each(['light', 'dark'] as const)('SignUp — outlined-button border (%s mode)', (mode) => {
+  it("clears WCAG 1.4.11's 3:1 non-text floor against the auth canvas", () => {
+    renderSignUp(mode);
+    const button = screen.getByRole('button', { name: /already have an account/i });
+    const raw = getComputedStyle(button).borderTopColor;
+    const t = tokens(mode);
+    // The light canvas is a gradient; the border must clear both stops.
+    const grounds = mode === 'dark' ? [t.surface.base] : [t.surface.base, t.surface.sunken];
+    for (const ground of grounds) {
+      expect(contrastRatio(compositeOver(raw, ground), ground)).toBeGreaterThanOrEqual(3);
+    }
   });
 });

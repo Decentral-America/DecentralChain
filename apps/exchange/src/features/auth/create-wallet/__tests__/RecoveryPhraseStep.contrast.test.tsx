@@ -160,3 +160,37 @@ describe('RecoveryPhraseStep — dark mode ink on GlassCard', () => {
     expectClearsAA(screen.getByRole('button', { name: /^copy$/i }), CARD);
   });
 });
+
+/**
+ * The Copy button's outline (WCAG 1.4.11, final-review item 8).
+ *
+ * This border is the only thing that identifies the control as a button —
+ * `variant="outlined"` gives it no fill — so it is a "visual information
+ * required to identify a user interface component" and owes 3:1 against the
+ * surface behind it.
+ *
+ * It was `border.strong`, which measures 1.71:1 against the light card and
+ * 1.56:1 against the dark one. That gap was recorded twice as unfixable, on a
+ * justification that was factually wrong: it claimed no existing token clears
+ * 3:1 there. `text.tertiary` does, comfortably, in both modes — the Task 8
+ * review had already established this and the record was never acted on.
+ *
+ * `border.strong` remains correct where it is a *hairline between adjacent
+ * surfaces* (`overlaySurface`'s card edge, the landing diagrams); the defect
+ * is using it where a control's identity depends on it.
+ */
+describe.each([
+  'light',
+  'dark',
+] as const)('RecoveryPhraseStep — the Copy button outline (%s mode)', (mode) => {
+  it("clears WCAG 1.4.11's 3:1 non-text floor against the card behind it", () => {
+    render(
+      <ThemeProvider theme={createAppTheme(mode)}>
+        <RecoveryPhraseStep {...baseProps()} />
+      </ThemeProvider>,
+    );
+    const button = screen.getByRole('button', { name: /^copy$/i });
+    const border = rgbToHex(getComputedStyle(button).borderTopColor);
+    expect(contrastRatio(border, tokens(mode).surface.overlay)).toBeGreaterThanOrEqual(3);
+  });
+});

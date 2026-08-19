@@ -157,7 +157,7 @@ const SignUpInner: React.FC = () => {
                 Ink is explicit per mode rather than left to MUI's own
                 outlined-button default: dark needs white to read on the
                 night ground, and pinning light to `text.primary`/
-                `border.strong` keeps this button's contrast verified against
+                `text.tertiary` keeps this button's contrast verified against
                 our own tokens instead of MUI's, which could drift
                 independently of them.
               */}
@@ -171,7 +171,18 @@ const SignUpInner: React.FC = () => {
                   bgcolor: isDark ? alpha(t.text.primary, 0.08) : t.surface.hover,
                   borderColor: isDark ? 'common.white' : t.text.primary,
                 },
-                borderColor: isDark ? alpha(t.text.primary, 0.4) : t.border.strong,
+                /*
+                 * The outline is the only thing identifying this control, so
+                 * it owes WCAG 1.4.11's 3:1. The light branch was
+                 * `border.strong` at 1.60:1 against the canvas — parked twice
+                 * as unfixable on a claim that no token cleared 3:1 here.
+                 * `text.tertiary` does: 5.01:1 on the canvas' top stop,
+                 * 4.61:1 on its bottom one. The dark branch stays as it is —
+                 * `alpha(text.primary, 0.4)` composites to 3.54:1 on the night
+                 * ground, which already clears, and it is tuned to sit over
+                 * the aurora field rather than on a flat fill.
+                 */
+                borderColor: isDark ? alpha(t.text.primary, 0.4) : t.text.tertiary,
                 color: isDark ? 'common.white' : t.text.primary,
                 py: 1.25,
               }}

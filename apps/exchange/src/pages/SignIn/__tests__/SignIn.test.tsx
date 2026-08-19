@@ -121,3 +121,45 @@ describe('SignIn — mode responsiveness', () => {
     expect(screen.getByTestId('auth-canvas')).toHaveAttribute('data-decor', 'wash');
   });
 });
+
+/**
+ * An `rgba(...)` border composited over an opaque ground, as an opaque hex.
+ *
+ * The shared `rgbToHex` helper DROPS the alpha channel — documented after
+ * Task 5 as a systemic blind spot across every contrast suite here. For a
+ * border specified with alpha that reads optimistically bright, so a
+ * translucent value has to be composited before it can honestly be measured.
+ */
+function compositeOver(value: string, groundHex: string): string {
+  const parts = value.match(/[\d.]+/g);
+  if (!parts) throw new Error(`unparseable colour: ${value}`);
+  const [r, g, b] = parts.slice(0, 3).map(Number) as [number, number, number];
+  const a = parts.length > 3 ? Number(parts[3]) : 1;
+  const ground = [1, 3, 5].map((i) => Number.parseInt(groundHex.slice(i, i + 2), 16));
+  const out = [r, g, b].map((c, i) => Math.round(c * a + ground[i]! * (1 - a)));
+  return `#${out.map((c) => c.toString(16).padStart(2, '0')).join('')}`;
+}
+
+/**
+ * The "Create a new wallet" outline (final-review item 8).
+ *
+ * `variant="outlined"` gives this control no fill, so the border is the only
+ * thing identifying it as a button — WCAG 1.4.11's 3:1 non-text floor. The
+ * light branch was `border.strong` at 1.5963:1 against the canvas, a gap
+ * parked twice as unfixable on the claim that no existing token cleared 3:1
+ * here. `text.tertiary` clears at 5.01:1 / 4.61:1 against the wash's two
+ * stops. The dark branch (`alpha(text.primary, 0.4)`) already cleared at
+ * 3.54:1 composited and is unchanged.
+ */
+describe.each(['light', 'dark'] as const)('SignIn — outlined-button border (%s mode)', (mode) => {
+  it("clears WCAG 1.4.11's 3:1 non-text floor against the auth canvas", () => {
+    renderSignIn(mode);
+    const button = screen.getByRole('button', { name: /create a new wallet/i });
+    const raw = getComputedStyle(button).borderTopColor;
+    const t = tokens(mode);
+    const grounds = mode === 'dark' ? [t.surface.base] : [t.surface.base, t.surface.sunken];
+    for (const ground of grounds) {
+      expect(contrastRatio(compositeOver(raw, ground), ground)).toBeGreaterThanOrEqual(3);
+    }
+  });
+});

@@ -176,7 +176,21 @@ export function RecoveryPhraseStep({
         <Button
           onClick={onCopy}
           startIcon={isCopied ? <DoneIcon /> : <ContentCopyIcon />}
-          sx={{ borderColor: t.border.strong, color: t.text.primary }}
+          /*
+           * `variant="outlined"` gives this control no fill, so the border is
+           * the only thing identifying it as a button — WCAG 1.4.11's 3:1
+           * non-text floor applies. `border.strong` measured 1.71:1 against
+           * the light card and 1.56:1 against the dark one. That gap was
+           * parked twice as unfixable on the claim that no token cleared 3:1
+           * here; `text.tertiary` does, in both modes (5.36 light / 5.22
+           * dark against `surface.overlay`), and it is already the app's
+           * quiet low-emphasis role — a border in `accent.primary`, the other
+           * candidate, would read as an active/branded state this button is
+           * not in. `border.strong` stays correct where it is a hairline
+           * between adjacent surfaces; it was wrong only where a control's
+           * identity depended on it.
+           */
+          sx={{ borderColor: t.text.tertiary, color: t.text.primary }}
           variant="outlined"
         >
           {isCopied ? 'Copied' : 'Copy'}
