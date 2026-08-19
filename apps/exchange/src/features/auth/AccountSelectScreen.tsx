@@ -97,7 +97,7 @@ const AccountCard = styled(Card as React.ComponentType<Record<string, unknown>>)
 
   &:hover {
     transform: ${(p) => (p.$disabled ? 'none' : 'translateY(-2px)')};
-    box-shadow: ${(p) => (p.$disabled ? 'none' : '0 4px 12px rgba(0, 0, 0, 0.15)')};
+    box-shadow: ${(p) => (p.$disabled ? 'none' : p.theme.shadows.md)};
   }
 
   &:active {
@@ -120,7 +120,7 @@ const AccountIcon = styled.div`
   width: 48px;
   height: 48px;
   border-radius: ${(p) => p.theme.radii.full};
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: ${(p) => p.theme.colors.primary};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -161,7 +161,7 @@ const LedgerBadge = styled.div`
   align-items: center;
   gap: 4px;
   padding: 4px 8px;
-  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  background: ${(p) => p.theme.colors.info};
   color: white;
   border-radius: ${(p) => p.theme.radii.sm};
   font-size: ${(p) => p.theme.fontSizes.xs};

@@ -8,6 +8,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Portal } from '@/components/atoms/Portal';
 import { useEscapeKey, useFocusTrap } from '@/hooks';
+import { scrim } from '@/styles/tokens';
 
 export interface ModalProps {
   /**
@@ -112,7 +113,7 @@ const slideUp = keyframes`
 const Overlay = styled.div<{ $zIndex: number; $animationDuration: number }>`
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: ${scrim};
   display: flex;
   align-items: center;
   justify-content: center;

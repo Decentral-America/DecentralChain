@@ -177,8 +177,8 @@ const Warning = styled.div`
   display: flex;
   gap: ${(p) => p.theme.spacing.sm};
   padding: ${(p) => p.theme.spacing.md};
-  background: ${(p) => p.theme.colors.warning || '#fff3cd'};
-  border: 1px solid #ffc107;
+  background: ${(p) => p.theme.colors.warning};
+  border: 1px solid ${(p) => p.theme.colors.warning};
   border-radius: ${(p) => p.theme.radii.md};
 `;
 
@@ -320,7 +320,7 @@ const CancelButton = styled.button`
   transition: ${(p) => p.theme.transitions.fast};
 
   &:hover:not(:disabled) {
-    background: ${(p) => p.theme.colors.hover || '#f5f5f5'};
+    background: ${(p) => p.theme.colors.hover};
   }
 
   &:disabled {

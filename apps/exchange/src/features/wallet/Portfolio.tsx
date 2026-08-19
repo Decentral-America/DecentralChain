@@ -460,12 +460,11 @@ export const Portfolio = () => {
                       key={`${asset.assetId}-${asset.isBaseAsset ? 'base' : 'asset'}`}
                       sx={{
                         '&:hover': {
-                          bgcolor: 'rgba(79, 70, 229, 0.03)',
+                          bgcolor: 'action.hover',
                         },
-                        borderBottom:
-                          index < combinedAssets.length - 1
-                            ? '1px solid rgba(0, 0, 0, 0.06)'
-                            : 'none',
+                        borderBottomColor: 'divider',
+                        borderBottomStyle: index < combinedAssets.length - 1 ? 'solid' : 'none',
+                        borderBottomWidth: '1px',
                         p: 3,
                         transition: 'all 0.2s ease',
                       }}

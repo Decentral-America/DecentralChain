@@ -8,6 +8,8 @@
  * Shadow tokens for depth and elevation
  */
 export const shadows = {
+  /** `MuiCard`'s resting elevation and the two elevation steps either side of it. */
+  card: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
   inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)',
   lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
   md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
@@ -20,6 +22,9 @@ export const shadows = {
  * Dark mode shadows with higher opacity
  */
 export const darkShadows = {
+  // Same base alpha family as `shadows.md` (0.1), scaled the same ~4x step
+  // every other level here uses between its light and dark value.
+  card: '0 1px 3px 0 rgba(0, 0, 0, 0.4)',
   inner: 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.4)',
   lg: '0 10px 15px -3px rgba(0, 0, 0, 0.5)',
   md: '0 4px 6px -1px rgba(0, 0, 0, 0.4)',
@@ -27,6 +32,20 @@ export const darkShadows = {
   xl: '0 20px 25px -5px rgba(0, 0, 0, 0.6)',
   xxl: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
 };
+
+/**
+ * Full-viewport backdrop behind a modal. Deliberately mode-invariant, unlike
+ * every other colour in this file: darkening whatever sits behind the modal
+ * is the same job in light or dark mode, since the modal itself (not the
+ * scrim) is what needs to read correctly per mode.
+ *
+ * Two strengths, matching the two that already existed independently before
+ * this token: `scrim` for the general-purpose `Modal`, `scrimStrong` for the
+ * Ledger hardware-wallet flow's three modals, which pull the background
+ * further out of focus during a security-critical device interaction.
+ */
+export const scrim = 'rgba(0, 0, 0, 0.6)';
+export const scrimStrong = 'rgba(0, 0, 0, 0.7)';
 
 /**
  * Transition tokens for consistent animations

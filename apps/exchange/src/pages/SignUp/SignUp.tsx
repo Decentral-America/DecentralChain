@@ -14,7 +14,16 @@ import LoginIcon from '@mui/icons-material/Login';
 import ShieldIcon from '@mui/icons-material/Shield';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import { Box, Button, Grid, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import {
+  alpha,
+  Box,
+  Button,
+  Grid,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import type React from 'react';
 import { useNavigate } from 'react-router';
 import Logo from '@/components/atoms/Logo';
@@ -159,10 +168,10 @@ const SignUpInner: React.FC = () => {
               fullWidth
               sx={{
                 '&:hover': {
-                  bgcolor: isDark ? 'rgba(255, 255, 255, 0.08)' : t.surface.hover,
+                  bgcolor: isDark ? alpha(t.text.primary, 0.08) : t.surface.hover,
                   borderColor: isDark ? 'common.white' : t.text.primary,
                 },
-                borderColor: isDark ? 'rgba(255, 255, 255, 0.4)' : t.border.strong,
+                borderColor: isDark ? alpha(t.text.primary, 0.4) : t.border.strong,
                 color: isDark ? 'common.white' : t.text.primary,
                 py: 1.25,
               }}

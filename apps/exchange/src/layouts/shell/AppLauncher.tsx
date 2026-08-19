@@ -60,7 +60,7 @@ function LauncherCard({
           alignItems: 'center',
           bgcolor: active ? 'primary.main' : palette.periwinkleWash,
           borderRadius: radii.md,
-          color: active ? palette.pureWhite : 'primary.main',
+          color: active ? 'primary.contrastText' : 'primary.main',
           display: 'flex',
           height: 40,
           justifyContent: 'center',

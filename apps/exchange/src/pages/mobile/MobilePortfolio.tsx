@@ -29,7 +29,12 @@ import { formatAmount } from '@/utils/formatters';
  */
 
 /** Tints used for the holdings split, in descending share order. */
-const SPLIT_COLORS = [mobileAccent.base, mobileAccent.bright, '#A99BF5', '#D6D0FB'];
+const SPLIT_COLORS = [
+  mobileAccent.base,
+  mobileAccent.bright,
+  mobileAccent.hover,
+  mobileAccent.wash,
+];
 
 function initialsFor(name: string): string {
   return name.slice(0, 2).toUpperCase();

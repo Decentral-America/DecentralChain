@@ -15,7 +15,7 @@
 import { Box, type SxProps, type Theme, useTheme } from '@mui/material';
 import { type ReactNode } from 'react';
 import { brandInk } from '@/theme/landingTheme';
-import { overlaySurface } from '@/theme/surfaces';
+import { glassRimHighlight, overlaySurface } from '@/theme/surfaces';
 
 /** The properties `overlaySurface('light')` actually sets. */
 interface LightOverlayStyle {
@@ -75,7 +75,7 @@ export function GlassCard({ children, sx }: { children: ReactNode; sx?: SxProps<
         // The lit top rim is what reads as glass rather than as a grey panel.
         // Dark mode only — the same rim on a solid white card is noise.
         '&::before': {
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.14), transparent)',
+          background: glassRimHighlight,
           content: '""',
           height: '1px',
           left: 0,

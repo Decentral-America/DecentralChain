@@ -1,5 +1,5 @@
 import type React from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 /**
  * Main plate container
@@ -8,11 +8,11 @@ const Plate = styled.div`
   padding: 16px;
   background: ${({ theme }) => theme.colors.background};
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: ${({ theme }) => theme.shadows.sm};
   transition: box-shadow 0.2s ease;
 
   &:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: ${({ theme }) => theme.shadows.md};
   }
 `;
 
@@ -171,6 +171,7 @@ export const ChartPlate: React.FC<ChartPlateProps> = ({
   emptyMessage = 'No data available',
   isEmpty = false,
 }) => {
+  const theme = useTheme();
   return (
     <Plate className={className}>
       <Header>
@@ -183,15 +184,19 @@ export const ChartPlate: React.FC<ChartPlateProps> = ({
 
       <Content>
         {loading && (
-          <div style={{ color: '#999', padding: '40px 0', textAlign: 'center' }}>Loading...</div>
+          <div style={{ color: theme.colors.textMuted, padding: '40px 0', textAlign: 'center' }}>
+            Loading...
+          </div>
         )}
 
         {error && (
-          <div style={{ color: '#f44336', padding: '40px 0', textAlign: 'center' }}>{error}</div>
+          <div style={{ color: theme.colors.error, padding: '40px 0', textAlign: 'center' }}>
+            {error}
+          </div>
         )}
 
         {!loading && !error && isEmpty && (
-          <div style={{ color: '#999', padding: '40px 0', textAlign: 'center' }}>
+          <div style={{ color: theme.colors.textMuted, padding: '40px 0', textAlign: 'center' }}>
             {emptyMessage}
           </div>
         )}

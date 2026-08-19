@@ -354,7 +354,7 @@ const Avatar = styled.div<{ $address: string }>`
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: ${(p) => p.theme.colors.primary};
   margin: 0 auto ${(p) => p.theme.spacing.sm};
 `;
 

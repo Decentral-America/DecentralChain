@@ -120,7 +120,7 @@ export function RoundAction({
           bgcolor: filled ? 'primary.main' : 'transparent',
           border: filled ? 'none' : `1px solid ${palette.frost}`,
           borderRadius: '50%',
-          color: filled ? palette.pureWhite : 'text.secondary',
+          color: filled ? 'primary.contrastText' : 'text.secondary',
           flexShrink: 0,
           height: 40,
           transition: 'background-color 160ms ease',

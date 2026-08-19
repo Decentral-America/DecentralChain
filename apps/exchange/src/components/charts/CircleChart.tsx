@@ -1,5 +1,5 @@
 import type React from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 /**
  * Styled SVG element rotated -90 degrees to start from top
@@ -140,8 +140,8 @@ export const CircleChart: React.FC<CircleChartProps> = ({
   value,
   size = 100,
   strokeWidth = 8,
-  backgroundColor = '#e0e0e0',
-  progressColor = '#1f77b4',
+  backgroundColor,
+  progressColor,
   animated = true,
   children,
   className,
@@ -149,6 +149,12 @@ export const CircleChart: React.FC<CircleChartProps> = ({
   showPercentage = false,
   formatPercentage = (val) => `${Math.round(val)}%`,
 }) => {
+  const theme = useTheme();
+  // Undocumented literal defaults replaced with the theme's own track/accent
+  // roles — see `MultiCircleChart` below for the same fallback.
+  const trackColor = backgroundColor ?? theme.colors.border;
+  const indicatorColor = progressColor ?? theme.colors.primary;
+
   // Clamp value between 0 and 100
   const clampedValue = Math.max(0, Math.min(100, value));
 
@@ -167,7 +173,7 @@ export const CircleChart: React.FC<CircleChartProps> = ({
           cy={center}
           r={radius}
           fill="none"
-          stroke={backgroundColor}
+          stroke={trackColor}
           strokeWidth={strokeWidth}
         />
 
@@ -177,7 +183,7 @@ export const CircleChart: React.FC<CircleChartProps> = ({
           cy={center}
           r={radius}
           fill="none"
-          stroke={progressColor}
+          stroke={indicatorColor}
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={offset}
@@ -261,10 +267,12 @@ export const MultiCircleChart: React.FC<MultiCircleChartProps> = ({
   values,
   size = 140,
   strokeWidth = 8,
-  backgroundColor = '#e0e0e0',
+  backgroundColor,
   animated = true,
   gap = 4,
 }) => {
+  const theme = useTheme();
+  const trackColor = backgroundColor ?? theme.colors.border;
   const totalLayers = values.length;
 
   return (
@@ -293,7 +301,7 @@ export const MultiCircleChart: React.FC<MultiCircleChartProps> = ({
                 cy={center}
                 r={radius}
                 fill="none"
-                stroke={backgroundColor}
+                stroke={trackColor}
                 strokeWidth={strokeWidth}
               />
             )}

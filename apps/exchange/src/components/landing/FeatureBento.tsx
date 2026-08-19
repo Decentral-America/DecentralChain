@@ -1,4 +1,4 @@
-import { Box, Container, Typography, useTheme } from '@mui/material';
+import { alpha, Box, Container, Typography, useTheme } from '@mui/material';
 import { type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BlueprintFrame, SectionLabel } from '@/components/landing/Blueprint';
@@ -11,7 +11,7 @@ import {
   StackDiagram,
 } from '@/components/landing/diagrams';
 import Reveal from '@/components/landing/Reveal';
-import { brandSurface } from '@/theme/landingTheme';
+import { brandSurface, onCanvas } from '@/theme/landingTheme';
 import { tokens } from '@/theme/tokens/semantic';
 
 /**
@@ -58,7 +58,7 @@ function FeatureCard({ feature, order }: { feature: Feature; order: number }) {
     >
       <Box
         sx={{
-          '&:hover': { borderColor: isDark ? 'rgba(255, 255, 255, 0.28)' : tk.border.strong },
+          '&:hover': { borderColor: isDark ? alpha(onCanvas.primary, 0.28) : tk.border.strong },
           bgcolor: tk.surface.raised,
           border: isDark ? brandSurface.borderOnDark : `1px solid ${tk.border.subtle}`,
           // Feature panels bow out far past the app's card radius — the soft,

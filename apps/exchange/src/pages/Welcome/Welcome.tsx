@@ -5,6 +5,7 @@
  */
 
 import {
+  alpha,
   Box,
   Fade,
   keyframes,
@@ -19,6 +20,7 @@ import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router';
 import { Button } from '@/components/atoms/Button';
 import { Stack } from '@/components/atoms/Stack';
+import { tokens } from '@/theme/tokens/semantic';
 
 // Animated gradient background
 const gradientAnimation = keyframes`
@@ -39,30 +41,30 @@ const pulseGlow = keyframes`
   50% { opacity: 0.8; transform: scale(1.05); }
 `;
 
-const WelcomeContainer = styled(Box)(({ theme }) => ({
-  animation: `${gradientAnimation} 15s ease infinite`,
-  background:
-    theme.palette.mode === 'dark'
-      ? 'linear-gradient(-45deg, #0a0e27, #1a1f3a, #0f1729, #1e2338)'
-      : 'linear-gradient(-45deg, #f5f7fa, #e8f0fe, #f0f4f8, #e3f2fd)',
-  backgroundSize: '400% 400%',
-  display: 'flex',
-  minHeight: '100svh',
-  overflow: 'hidden',
-  position: 'relative',
+const WelcomeContainer = styled(Box)(({ theme }) => {
+  const t = tokens(theme.palette.mode);
+  return {
+    animation: `${gradientAnimation} 15s ease infinite`,
+    background: `linear-gradient(-45deg, ${t.surface.base}, ${t.surface.hover}, ${t.surface.overlay}, ${t.surface.sunken})`,
+    backgroundSize: '400% 400%',
+    display: 'flex',
+    minHeight: '100svh',
+    overflow: 'hidden',
+    position: 'relative',
 
-  [theme.breakpoints.down('md')]: {
-    flexDirection: 'column',
-  },
-}));
+    [theme.breakpoints.down('md')]: {
+      flexDirection: 'column',
+    },
+  };
+});
 
 const LeftPanel = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   backdropFilter: 'blur(10px)',
-  background:
-    theme.palette.mode === 'dark'
-      ? 'linear-gradient(135deg, rgba(31, 90, 246, 0.15) 0%, rgba(90, 129, 255, 0.15) 100%)'
-      : 'linear-gradient(135deg, rgba(31, 90, 246, 0.08) 0%, rgba(90, 129, 255, 0.08) 100%)',
+  background: `linear-gradient(135deg, ${alpha(
+    theme.palette.primary.main,
+    theme.palette.mode === 'dark' ? 0.15 : 0.08,
+  )} 0%, ${alpha(theme.palette.primary.dark, theme.palette.mode === 'dark' ? 0.15 : 0.08)} 100%)`,
   display: 'flex',
   flex: 1,
   justifyContent: 'center',
@@ -96,10 +98,10 @@ const FloatingShape = styled(Box, {
 })<{ delay?: number; duration?: number }>(({ theme, delay = 0, duration = 6 }) => ({
   animation: `${float} ${duration}s ease-in-out infinite`,
   animationDelay: `${delay}s`,
-  background:
-    theme.palette.mode === 'dark'
-      ? 'radial-gradient(circle, rgba(31, 90, 246, 0.3), transparent)'
-      : 'radial-gradient(circle, rgba(31, 90, 246, 0.2), transparent)',
+  background: `radial-gradient(circle, ${alpha(
+    theme.palette.primary.main,
+    theme.palette.mode === 'dark' ? 0.3 : 0.2,
+  )}, transparent)`,
   borderRadius: '50%',
   filter: 'blur(40px)',
   position: 'absolute',
@@ -134,13 +136,10 @@ const BrandContent = styled(Box)(() => ({
 
 const ContentBox = styled(Box)(({ theme }) => ({
   backdropFilter: 'blur(20px)',
-  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.6)' : 'rgba(255, 255, 255, 0.8)',
-  border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'}`,
+  background: alpha(theme.palette.background.paper, theme.palette.mode === 'dark' ? 0.6 : 0.8),
+  border: `1px solid ${theme.palette.divider}`,
   borderRadius: theme.spacing(3),
-  boxShadow:
-    theme.palette.mode === 'dark'
-      ? '0 20px 60px rgba(0, 0, 0, 0.5)'
-      : '0 20px 60px rgba(0, 0, 0, 0.1)',
+  boxShadow: `0 20px 60px ${alpha(theme.palette.common.black, theme.palette.mode === 'dark' ? 0.5 : 0.1)}`,
   maxWidth: '500px',
   padding: theme.spacing(4),
   position: 'relative',
@@ -194,8 +193,8 @@ export const Welcome = () => {
                 sx={{
                   background:
                     theme.palette.mode === 'dark'
-                      ? 'linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%)'
-                      : 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
+                      ? `linear-gradient(135deg, ${theme.palette.common.white} 0%, ${tokens('light').accent.muted} 100%)`
+                      : `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
                   backgroundClip: 'text',
                   fontSize: { lg: '4rem', md: '3.5rem', sm: '3rem', xs: '2.5rem' },
                   fontWeight: 800,
@@ -235,11 +234,11 @@ export const Welcome = () => {
                   size="large"
                   sx={{
                     '&:hover': {
-                      boxShadow: '0 12px 32px rgba(31, 90, 246, 0.5)',
+                      boxShadow: `0 12px 32px ${alpha(theme.palette.primary.main, 0.5)}`,
                       transform: 'translateY(-2px)',
                     },
                     borderRadius: 2,
-                    boxShadow: '0 8px 24px rgba(31, 90, 246, 0.4)',
+                    boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.4)}`,
                     fontSize: '1.1rem',
                     fontWeight: 600,
                     px: 4,
@@ -256,16 +255,20 @@ export const Welcome = () => {
                   size="large"
                   sx={{
                     '&:hover': {
-                      background:
+                      background: alpha(
                         theme.palette.mode === 'dark'
-                          ? 'rgba(255, 255, 255, 0.15)'
-                          : 'rgba(31, 90, 246, 0.15)',
+                          ? theme.palette.common.white
+                          : theme.palette.primary.main,
+                        0.15,
+                      ),
                       transform: 'translateY(-2px)',
                     },
-                    background:
+                    background: alpha(
                       theme.palette.mode === 'dark'
-                        ? 'rgba(255, 255, 255, 0.1)'
-                        : 'rgba(31, 90, 246, 0.1)',
+                        ? theme.palette.common.white
+                        : theme.palette.primary.main,
+                      0.1,
+                    ),
                     border: `2px solid ${theme.palette.primary.main}`,
                     borderRadius: 2,
                     fontSize: '1.1rem',

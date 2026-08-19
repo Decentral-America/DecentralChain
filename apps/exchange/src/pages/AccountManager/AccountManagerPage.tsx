@@ -65,7 +65,7 @@ const AccountCard = styled.div<{ isActive?: boolean; clickable?: boolean }>`
     `
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      box-shadow: ${p.theme.shadows.md};
       border-color: ${p.theme.colors.primary};
     }
   `}
@@ -75,7 +75,7 @@ const AccountAvatar = styled.div`
   width: 56px;
   height: 56px;
   border-radius: ${(p) => p.theme.radii.full};
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: ${(p) => p.theme.colors.primary};
   display: flex;
   align-items: center;
   justify-content: center;

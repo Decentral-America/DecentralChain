@@ -3,6 +3,7 @@
  * Maps semantic design tokens to MUI theme structure
  */
 import { createTheme, type ThemeOptions } from '@mui/material/styles';
+import { darkShadows, shadows } from '@/styles/tokens';
 import { type ThemeMode, tokens } from './tokens/semantic';
 
 export type { ThemeMode };
@@ -56,7 +57,15 @@ function paletteFor(mode: ThemeMode) {
   };
 }
 
-function createComponentOverrides(): ThemeOptions['components'] {
+/**
+ * `MuiListItemButton` had a hardcoded violet gradient here, identical in both
+ * modes, for its `.Mui-selected` state — but nothing in the app renders a
+ * `<ListItemButton>` (verified: no import anywhere outside this file and its
+ * own test). Deleted rather than tokenized, the same call made on
+ * `AssetCard.tsx`'s dead gradient fallback: see task-8-report.md.
+ */
+function createComponentOverrides(mode: ThemeMode): ThemeOptions['components'] {
+  const s = mode === 'dark' ? darkShadows : shadows;
   return {
     MuiButton: {
       styleOverrides: {
@@ -65,24 +74,9 @@ function createComponentOverrides(): ThemeOptions['components'] {
       },
     },
     MuiCard: {
-      styleOverrides: { root: { borderRadius: 12, boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)' } },
+      styleOverrides: { root: { borderRadius: 12, boxShadow: s.card } },
     },
     MuiChip: { styleOverrides: { root: { borderRadius: 16 } } },
-    MuiListItemButton: {
-      styleOverrides: {
-        root: {
-          '&:hover': { backgroundColor: 'rgba(89, 64, 212, 0.08)' },
-          '&.Mui-selected': {
-            '& .MuiListItemIcon-root': { color: 'white' },
-            '&:hover': { background: 'linear-gradient(135deg, #4a35c0 0%, #6b4ce8 100%)' },
-            background: 'linear-gradient(135deg, #5940d4 0%, #7c5dfa 100%)',
-            color: 'white',
-          },
-          borderRadius: 10,
-          marginBottom: 8,
-        },
-      },
-    },
     MuiPaper: { styleOverrides: { root: { borderRadius: 12 } } },
     MuiTextField: {
       styleOverrides: { root: { '& .MuiOutlinedInput-root': { borderRadius: 10 } } },
@@ -91,38 +85,43 @@ function createComponentOverrides(): ThemeOptions['components'] {
 }
 
 export function createAppTheme(mode: ThemeMode) {
+  const s = mode === 'dark' ? darkShadows : shadows;
   const themeOptions: ThemeOptions = {
     breakpoints: {
       values: { lg: 1280, md: 1024, sm: 768, xl: 1536, xs: 0 },
     },
-    components: createComponentOverrides(),
+    components: createComponentOverrides(mode),
     palette: { mode, ...paletteFor(mode) },
+    // MUI's 25-entry elevation scale, built from the shared `shadows`/
+    // `darkShadows` tokens (`styles/tokens.ts`) instead of repeating their
+    // rgba() literals here — the two used to be hand-copied and had already
+    // drifted from `MuiCard`'s override above (`card` restores that pairing).
     shadows: [
       'none',
-      '0 1px 2px 0 rgba(0, 0, 0, 0.05)', // sm
-      '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-      '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-      '0 4px 6px -1px rgba(0, 0, 0, 0.1)', // md
-      '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-      '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-      '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-      '0 10px 15px -3px rgba(0, 0, 0, 0.1)', // lg
-      '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-      '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-      '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-      '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-      '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-      '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-      '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-      '0 20px 25px -5px rgba(0, 0, 0, 0.1)', // xl
-      '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-      '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-      '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-      '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-      '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-      '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-      '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-      '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+      s.sm,
+      s.card,
+      s.card,
+      s.md,
+      s.md,
+      s.md,
+      s.md,
+      s.lg,
+      s.lg,
+      s.lg,
+      s.lg,
+      s.lg,
+      s.lg,
+      s.lg,
+      s.lg,
+      s.xl,
+      s.xl,
+      s.xl,
+      s.xl,
+      s.xl,
+      s.xl,
+      s.xl,
+      s.xl,
+      s.xxl,
     ],
     shape: {
       borderRadius: 12, // Updated to 12px for cards and elements

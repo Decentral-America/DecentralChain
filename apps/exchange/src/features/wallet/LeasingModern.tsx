@@ -26,9 +26,9 @@ export const LeasingModern = () => {
               <Box
                 sx={{
                   alignItems: 'center',
-                  background: 'linear-gradient(135deg, #F59E0B 0%, #FB923C 100%)',
+                  background: tokens('light').intent.warning,
                   borderRadius: 2.5,
-                  boxShadow: '0 8px 24px rgba(245, 158, 11, 0.3)',
+                  boxShadow: `0 8px 24px ${tokens('light').intent.warning}4D`,
                   display: 'flex',
                   height: 56,
                   justifyContent: 'center',
@@ -50,7 +50,7 @@ export const LeasingModern = () => {
                 <Typography
                   variant="h3"
                   sx={{
-                    background: 'linear-gradient(135deg, #F59E0B 0%, #FB923C 100%)',
+                    background: tokens('light').intent.warning,
                     fontSize: { md: '2.5rem', xs: '2rem' },
                     fontWeight: 800,
                     mb: 0.5,

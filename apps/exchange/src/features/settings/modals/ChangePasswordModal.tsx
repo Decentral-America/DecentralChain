@@ -18,7 +18,7 @@ const ModalBody = styled.div`
 const Description = styled.p`
   margin: 0 0 20px 0;
   font-size: 14px;
-  color: #616161;
+  color: ${(props) => props.theme.colors.textMuted};
   line-height: 1.6;
 `;
 
@@ -31,13 +31,13 @@ const Label = styled.label`
   margin-bottom: 8px;
   font-size: 13px;
   font-weight: 500;
-  color: #424242;
+  color: ${(props) => props.theme.colors.text};
 `;
 
 const Input = styled.input`
   width: 100%;
   padding: 12px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid ${(props) => props.theme.colors.border};
   border-radius: 4px;
   font-size: 14px;
   font-family: inherit;
@@ -48,11 +48,11 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
-    border-color: #2196f3;
+    border-color: ${(props) => props.theme.colors.primary};
   }
 
   &:disabled {
-    background-color: #f5f5f5;
+    background-color: ${(props) => props.theme.colors.hover};
     cursor: not-allowed;
   }
 `;
@@ -60,19 +60,19 @@ const Input = styled.input`
 const ErrorMessage = styled.div`
   margin-top: 8px;
   padding: 8px 12px;
-  background-color: #ffebee;
+  background-color: ${(props) => `${props.theme.colors.error}10`};
   border-radius: 4px;
   font-size: 13px;
-  color: #c62828;
+  color: ${(props) => props.theme.colors.error};
 `;
 
 const SuccessMessage = styled.div`
   margin-top: 8px;
   padding: 8px 12px;
-  background-color: #e8f5e9;
+  background-color: ${(props) => `${props.theme.colors.success}10`};
   border-radius: 4px;
   font-size: 13px;
-  color: #2e7d32;
+  color: ${(props) => props.theme.colors.success};
 `;
 
 const ButtonGroup = styled.div`

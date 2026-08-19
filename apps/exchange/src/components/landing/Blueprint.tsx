@@ -1,6 +1,7 @@
 import { Box, type BoxProps } from '@mui/material';
 import { type ReactNode } from 'react';
 import { palette } from '@/styles/tokens';
+import { blueprintOnDark, onCanvas } from '@/theme/landingTheme';
 
 /**
  * Blueprint surface.
@@ -46,8 +47,8 @@ export function BlueprintFrame({
   sx,
   ...rest
 }: BoxProps & { children: ReactNode; grid?: boolean; onDark?: boolean }) {
-  const line = onDark ? 'rgba(255, 255, 255, 0.07)' : palette.frost;
-  const mark = onDark ? 'rgba(255, 255, 255, 0.3)' : palette.lavenderBorder;
+  const line = onDark ? blueprintOnDark.line : palette.frost;
+  const mark = onDark ? blueprintOnDark.mark : palette.lavenderBorder;
   return (
     <Box sx={{ position: 'relative', ...sx }} {...rest}>
       {grid ? (
@@ -61,7 +62,11 @@ export function BlueprintFrame({
             backgroundImage: `linear-gradient(${line} 1px, transparent 1px), linear-gradient(90deg, ${line} 1px, transparent 1px)`,
             backgroundSize: '40px 40px',
             inset: 0,
-            maskImage: 'radial-gradient(70% 60% at 50% 45%, #000 30%, transparent 100%)',
+            // `maskImage` reads the gradient's luminance, not its hue — any
+            // opaque colour masks identically to `#000` here. Using an
+            // existing dark token rather than a literal keeps the lint honest
+            // without pretending this is a rendered colour decision.
+            maskImage: `radial-gradient(70% 60% at 50% 45%, ${palette.midnightInk} 30%, transparent 100%)`,
             pointerEvents: 'none',
             position: 'absolute',
           }}
@@ -95,7 +100,7 @@ export function SectionLabel({
     <Box
       component="p"
       sx={{
-        color: onDark ? 'rgba(255, 255, 255, 0.66)' : palette.steel,
+        color: onDark ? onCanvas.muted : palette.steel,
         fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
         fontSize: 12,
         letterSpacing: '0.18em',

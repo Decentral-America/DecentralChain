@@ -38,9 +38,9 @@ export const Skeleton = styled.div<{
   borderRadius?: string;
 }>`
   ${(props) => {
-    // Use theme colors with fallbacks
-    const baseColor = props.theme.colors.border || '#e0e0e0';
-    const highlightColor = props.theme.colors.hover || '#f5f5f5';
+    // Use theme colors
+    const baseColor = props.theme.colors.border;
+    const highlightColor = props.theme.colors.hover;
 
     return css`
       background: ${

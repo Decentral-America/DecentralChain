@@ -16,7 +16,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import Logo from '@/components/atoms/Logo';
-import { brandInk } from '@/theme/landingTheme';
+import { brandInk, onCanvas } from '@/theme/landingTheme';
 import { tokens } from '@/theme/tokens/semantic';
 
 /**
@@ -60,13 +60,13 @@ export default function Header() {
           // scroll (LandingPage's own `tokens(mode).surface.base`).
           bgcolor: scrolled
             ? isDark
-              ? 'rgba(11, 7, 36, 0.82)'
+              ? alpha(brandInk.night, 0.82)
               : alpha(tk.surface.base, 0.82)
             : 'transparent',
           borderBottom: '1px solid',
           borderColor: scrolled
             ? isDark
-              ? 'rgba(255, 255, 255, 0.12)'
+              ? alpha(onCanvas.primary, 0.12)
               : tk.border.subtle
             : 'transparent',
           // Pinned to whichever ink reads on the canvas this bar always sits
@@ -108,10 +108,10 @@ export default function Header() {
                 onClick={() => navigate('/sign-in')}
                 sx={{
                   '&:hover': {
-                    bgcolor: isDark ? 'rgba(255, 255, 255, 0.1)' : tk.surface.hover,
+                    bgcolor: isDark ? alpha(onCanvas.primary, 0.1) : tk.surface.hover,
                     borderColor: isDark ? 'common.white' : tk.accent.primary,
                   },
-                  borderColor: isDark ? 'rgba(255, 255, 255, 0.45)' : tk.border.strong,
+                  borderColor: isDark ? alpha(onCanvas.primary, 0.45) : tk.border.strong,
                   color: isDark ? 'common.white' : tk.text.primary,
                 }}
               >
@@ -121,7 +121,7 @@ export default function Header() {
                 variant="contained"
                 onClick={() => navigate('/create-account')}
                 sx={{
-                  '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.88)' },
+                  '&:hover': { bgcolor: alpha(onCanvas.primary, 0.88) },
                   bgcolor: 'common.white',
                   /*
                    * Pinned rather than `primary.main`: this pill's own fill is

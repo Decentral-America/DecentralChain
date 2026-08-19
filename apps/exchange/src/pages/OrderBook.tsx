@@ -3,6 +3,7 @@
  * Shows live order book and market depth
  */
 import { Box, Chip, Paper, Stack, Typography } from '@mui/material';
+import { status } from '@/styles/tokens';
 
 export const OrderBook = () => {
   const buyOrders = [
@@ -38,7 +39,7 @@ export const OrderBook = () => {
       </Stack>
       <Stack direction="row" spacing={2}>
         {/* Sell Orders */}
-        <Paper sx={{ border: '1px solid #EEF2F7', borderRadius: 2, flex: 1, p: 2 }}>
+        <Paper sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, flex: 1, p: 2 }}>
           <Typography
             variant="subtitle1"
             sx={{
@@ -90,7 +91,7 @@ export const OrderBook = () => {
                 key={order.price}
                 direction="row"
                 sx={{
-                  '&:hover': { bgcolor: '#FEF2F2' },
+                  '&:hover': { bgcolor: status.dangerSurface },
                   borderRadius: 1,
                   justifyContent: 'space-between',
                   p: 1,
@@ -120,7 +121,7 @@ export const OrderBook = () => {
         </Paper>
 
         {/* Buy Orders */}
-        <Paper sx={{ border: '1px solid #EEF2F7', borderRadius: 2, flex: 1, p: 2 }}>
+        <Paper sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, flex: 1, p: 2 }}>
           <Typography
             variant="subtitle1"
             sx={{
@@ -172,7 +173,7 @@ export const OrderBook = () => {
                 key={order.price}
                 direction="row"
                 sx={{
-                  '&:hover': { bgcolor: '#F0FDF4' },
+                  '&:hover': { bgcolor: status.successSurface },
                   borderRadius: 1,
                   justifyContent: 'space-between',
                   p: 1,

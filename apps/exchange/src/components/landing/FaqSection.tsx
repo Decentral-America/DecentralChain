@@ -3,6 +3,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  alpha,
   Box,
   Container,
   Typography,
@@ -12,7 +13,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SectionLabel } from '@/components/landing/Blueprint';
 import Reveal from '@/components/landing/Reveal';
-import { brandSurface } from '@/theme/landingTheme';
+import { brandSurface, onCanvas } from '@/theme/landingTheme';
 import { tokens } from '@/theme/tokens/semantic';
 
 /**
@@ -84,7 +85,7 @@ export default function FaqSection() {
                     '&::before': { display: 'none' },
                     bgcolor: expanded
                       ? isDark
-                        ? 'rgba(255, 255, 255, 0.06)'
+                        ? alpha(onCanvas.primary, 0.06)
                         : tk.surface.hover
                       : tk.surface.raised,
                     border: isDark ? brandSurface.borderOnDark : `1px solid ${tk.border.subtle}`,

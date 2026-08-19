@@ -115,8 +115,21 @@ export function tokens(mode: ThemeMode): SemanticTokens {
   return SEMANTIC_TOKENS[mode];
 }
 
+const HEX_COLOUR = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
+
 /** Relative luminance per WCAG 2.1. */
 function luminance(hex: string): number {
+  if (!HEX_COLOUR.test(hex)) {
+    // Documented hex-only (see `contrastRatio`'s docstring). Before this
+    // guard, a non-hex string (e.g. `rgb()`/`rgba()`) fell through to
+    // `Number.parseInt` on the wrong slice and returned `NaN`, which happens
+    // to fail every `toBeGreaterThanOrEqual` comparison today — but silently,
+    // and only by accident. Failing loudly here means a future caller finds
+    // out at the call site, not by staring at an unexplained `NaN`.
+    throw new Error(
+      `contrastRatio expects an opaque 3- or 6-digit hex colour (e.g. "#fff" or "#ffffff"); got ${JSON.stringify(hex)}. Translucent or rgb()/rgba() values are not supported — composite them to an opaque hex first.`,
+    );
+  }
   const h = hex.replace('#', '');
   const full =
     h.length === 3

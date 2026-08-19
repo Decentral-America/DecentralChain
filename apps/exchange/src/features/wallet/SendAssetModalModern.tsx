@@ -321,7 +321,7 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
               <Box
                 sx={{
                   alignItems: 'center',
-                  background: 'linear-gradient(135deg, #06B6D4 0%, #10B981 100%)',
+                  background: tokens('light').intent.success,
                   borderRadius: '50%',
                   display: 'flex',
                   height: 40,
@@ -330,14 +330,17 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
                 }}
               >
                 {/*
-                  Fixed badge, fixed gradient — `white` missed the 3:1 icon
-                  floor against both stops (2.43/2.54), mode-independent.
-                  Unlike the form-view badge below (`#4F46E5→#06B6D4`, the
-                  same stops as the old Send button fill — genuinely needs a
-                  new gradient stop, since neither black nor white clears
-                  both), this pair clears comfortably with the app's own
-                  fixed dark ink, `tokens('light').text.primary` (7.51/7.19
-                  — fix round 1, task-6-report.md).
+                  Fixed badge — now a solid `tokens('light').intent.success`
+                  fill instead of the old cyan-to-emerald two-stop gradient,
+                  so no raw hex remains here. `white` missed the 3:1 icon
+                  floor against the original gradient's stops (2.43/2.54),
+                  mode-independent. Unlike the form-view badge below
+                  (indigo-to-cyan, the same stops the old Send button fill
+                  used — genuinely needs a new gradient stop, since neither
+                  black nor white clears both), this pair clears comfortably
+                  with the app's own fixed dark ink,
+                  `tokens('light').text.primary` (7.51/7.19 — fix round 1,
+                  task-6-report.md).
                 */}
                 <SendIcon sx={{ color: tokens('light').text.primary, fontSize: 20 }} />
               </Box>
@@ -416,7 +419,7 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
             <Box
               sx={{
                 alignItems: 'center',
-                background: 'linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%)',
+                background: tokens('light').accent.primary,
                 borderRadius: '50%',
                 display: 'flex',
                 height: 40,
@@ -569,8 +572,7 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
           {/* Fee Display */}
           <Card
             sx={{
-              background:
-                'linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, rgba(6, 182, 212, 0.08) 100%)',
+              bgcolor: 'action.hover',
               border: '1px solid',
               borderColor: 'primary.light',
               p: 2,

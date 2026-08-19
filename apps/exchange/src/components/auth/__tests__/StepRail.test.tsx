@@ -11,7 +11,31 @@ import { ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { createAppTheme } from '@/theme/mui-theme';
+import { contrastRatio, tokens } from '@/theme/tokens/semantic';
 import { StepRail } from '../StepRail';
+
+/**
+ * Drops any alpha channel: `.slice(0, 3)` keeps r/g/b and discards a 4th
+ * match, so an ink specified with alpha would be measured against its own
+ * r/g/b as if fully opaque — overstating its contrast once alpha actually
+ * composites onto the background. Every current call site here passes an
+ * opaque colour, so this is exact today; it is a structural limitation of
+ * this idiom (duplicated across 15+ contrast test files) rather than a bug
+ * in any one test. See task-8-report.md, Finding 5.
+ */
+function rgbToHex(rgb: string): string {
+  const channels = rgb.match(/\d+(\.\d+)?/g);
+  if (!channels || channels.length < 3) throw new Error(`Unparseable colour: ${rgb}`);
+  return `#${channels
+    .slice(0, 3)
+    .map((c) => Number(c).toString(16).padStart(2, '0'))
+    .join('')}`;
+}
+
+const expectClearsAA = (element: HTMLElement, bg: string) => {
+  const hex = rgbToHex(getComputedStyle(element).color);
+  expect(contrastRatio(hex, bg)).toBeGreaterThanOrEqual(4.5);
+};
 
 const STEPS = ['Start', 'Phrase', 'Secure'];
 
@@ -79,25 +103,39 @@ describe('StepRail', () => {
   });
 });
 
+// `StepRail` always renders inside `<GlassCard>` (`CreateWalletWizard.tsx`),
+// so that is the background its ink has to clear — `overlaySurface(mode)`'s
+// `surface.overlay` token, the same one `IntroStep.contrast.test.tsx` uses.
 describe('StepRail in both modes', () => {
   const STEPS = ['Intro', 'Phrase', 'Secure'];
 
-  it('renders its labels in light mode', () => {
+  // Task 8, test-gap 2: these two used to be `toBeInTheDocument`-only — real
+  // enough to catch a missing label, but any syntactically valid CSS colour
+  // (including a reintroduced hardcoded literal) renders without error in
+  // jsdom, so a contrast regression would have shipped silently. Asserted
+  // directly on `contrastRatio(...)` instead, the pattern the rest of the
+  // suite already uses (see task-7-report.md's Step 3 note).
+  it('current and complete labels clear AA against the card in light mode', () => {
     render(
       <ThemeProvider theme={createAppTheme('light')}>
         <StepRail steps={STEPS} current={1} />
       </ThemeProvider>,
     );
-    for (const label of STEPS) expect(screen.getByText(label)).toBeInTheDocument();
+    const CARD = tokens('light').surface.overlay;
     expect(screen.getByText('Phrase')).toHaveAttribute('data-state', 'current');
+    expectClearsAA(screen.getByText('Intro'), CARD);
+    expectClearsAA(screen.getByText('Phrase'), CARD);
   });
 
-  it('renders its labels in dark mode', () => {
+  it('current and complete labels clear AA against the card in dark mode', () => {
     render(
       <ThemeProvider theme={createAppTheme('dark')}>
         <StepRail steps={STEPS} current={1} />
       </ThemeProvider>,
     );
-    for (const label of STEPS) expect(screen.getByText(label)).toBeInTheDocument();
+    const CARD = tokens('dark').surface.overlay;
+    expect(screen.getByText('Phrase')).toHaveAttribute('data-state', 'current');
+    expectClearsAA(screen.getByText('Intro'), CARD);
+    expectClearsAA(screen.getByText('Phrase'), CARD);
   });
 });

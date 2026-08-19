@@ -18,29 +18,29 @@ const InfoRow = styled.div<{ $border?: boolean }>`
   justify-content: space-between;
   align-items: center;
   padding: 16px 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid ${(props) => props.theme.colors.border};
 
   ${(props) =>
     props.$border &&
     `
-    border-bottom: 2px solid #e0e0e0;
+    border-bottom: 2px solid ${props.theme.colors.border};
   `}
 `;
 
 const Label = styled.div`
   font-size: 12px;
-  color: #757575;
+  color: ${(props) => props.theme.colors.textMuted};
   font-weight: 500;
 `;
 
 const Value = styled.div`
   font-size: 13px;
-  color: #212121;
+  color: ${(props) => props.theme.colors.text};
 `;
 
 const Link = styled.a`
   font-size: 13px;
-  color: #2196f3;
+  color: ${(props) => props.theme.colors.primary};
   text-decoration: none;
 
   &:hover {
@@ -53,18 +53,18 @@ const LegalLinks = styled.div`
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #757575;
+  color: ${(props) => props.theme.colors.textMuted};
 `;
 
 const Copyright = styled.div`
   font-size: 12px;
-  color: #757575;
+  color: ${(props) => props.theme.colors.textMuted};
 `;
 
 const Logo = styled.div`
   font-size: 16px;
   font-weight: bold;
-  color: #5a81ea;
+  color: ${(props) => props.theme.colors.primary};
 `;
 
 export const InfoSettings: React.FC = () => {

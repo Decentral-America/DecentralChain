@@ -14,6 +14,7 @@ import {
   mobileText,
 } from '@/styles/mobileTokens';
 import { lightTheme } from '@/styles/themes';
+import { brandCanvas } from '@/theme/landingTheme';
 import { createAppTheme } from '@/theme/mui-theme';
 
 /**
@@ -100,7 +101,7 @@ export function MobileAuthScreen({
               aria-label="Back"
               onClick={onBack ?? (() => navigate(-1))}
               sx={{
-                bgcolor: 'rgba(255, 255, 255, 0.14)',
+                bgcolor: brandCanvas.glass,
                 borderRadius: '50%',
                 color: 'inherit',
                 height: 44,

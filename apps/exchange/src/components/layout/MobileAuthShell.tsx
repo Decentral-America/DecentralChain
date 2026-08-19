@@ -51,7 +51,7 @@ export const MobileAuthShell: React.FC<MobileAuthShellProps> = ({
   return (
     <Box
       sx={{
-        bgcolor: '#FFFFFF',
+        bgcolor: mobileSurface.card,
         /*
          * The safe default ink for this permanently-white surface. Content
          * rendered inside the shell (`children`) is page content that often
@@ -76,7 +76,7 @@ export const MobileAuthShell: React.FC<MobileAuthShellProps> = ({
       <Box
         sx={{
           alignItems: 'center',
-          bgcolor: '#FFFFFF',
+          bgcolor: mobileSurface.card,
           borderBottom: '1px solid',
           /*
            * This shell's canvas is permanently white — the same fixed mobile

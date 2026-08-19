@@ -5,6 +5,7 @@
 
 import { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { scrimStrong } from '@/styles/tokens';
 
 const STEPS = [
   {
@@ -59,7 +60,7 @@ const Overlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: ${scrimStrong};
   display: flex;
   align-items: center;
   justify-content: center;

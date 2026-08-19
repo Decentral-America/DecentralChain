@@ -32,6 +32,7 @@ import { DepositAsset } from '@/features/bridge/DepositAsset';
 import { WithdrawAsset } from '@/features/bridge/WithdrawAsset';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
 import { useGatewayTransaction } from '@/hooks/useGatewayTransaction';
+import { networkBrandColor } from '@/styles/brandMarks';
 
 interface SelectedAsset {
   assetId: string;
@@ -56,7 +57,7 @@ interface SupportedNetwork {
 const SUPPORTED_NETWORKS: SupportedNetwork[] = [
   {
     available: true,
-    color: '#F7931A',
+    color: networkBrandColor.btc,
     icon: btcIcon,
     id: 'BTC',
     name: 'Bitcoin',
@@ -64,7 +65,7 @@ const SUPPORTED_NETWORKS: SupportedNetwork[] = [
   },
   {
     available: false,
-    color: '#14F195',
+    color: networkBrandColor.sol,
     comingSoon: true,
     icon: solIcon,
     id: 'SOL',
@@ -73,7 +74,7 @@ const SUPPORTED_NETWORKS: SupportedNetwork[] = [
   },
   {
     available: false,
-    color: '#627EEA',
+    color: networkBrandColor.eth,
     comingSoon: true,
     icon: ethIcon,
     id: 'ETH',
@@ -82,7 +83,7 @@ const SUPPORTED_NETWORKS: SupportedNetwork[] = [
   },
   {
     available: false,
-    color: '#F0B90B',
+    color: networkBrandColor.bnb,
     comingSoon: true,
     icon: bnbIcon,
     id: 'BSC',

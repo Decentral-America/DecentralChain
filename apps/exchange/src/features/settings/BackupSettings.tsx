@@ -240,8 +240,7 @@ export const BackupSettings: React.FC = () => {
       </Alert>
       <Paper
         sx={{
-          background: (theme) =>
-            theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)',
+          background: (theme) => theme.palette.action.hover,
           border: (theme) => `1px solid ${theme.palette.divider}`,
           mb: 3,
           p: 2.5,

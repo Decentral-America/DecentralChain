@@ -2,6 +2,7 @@ import { QRCodeCanvas as QRCodeCanvasBase, QRCodeSVG as QRCodeSVGBase } from 'qr
 import React from 'react';
 import styled from 'styled-components';
 import { noTapHighlight } from '@/styles/mixins';
+import { palette } from '@/styles/tokens';
 
 // qrcode.react exports ForwardRefExoticComponents; MUI's `component` prop expects
 // ComponentType. Both are callable with the same props — a single cast (no unknown
@@ -33,7 +34,7 @@ const QRWrapper = styled.div<{ $size: number }>`
   background-color: ${({ theme }) => theme.colors.background};
   border: 2px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: ${({ theme }) => theme.shadows.sm};
   width: fit-content;
 `;
 
@@ -136,8 +137,14 @@ export const QRCode: React.FC<QRCodeProps> = ({
   value,
   size = 200,
   renderAs = 'svg',
-  bgColor = '#ffffff',
-  fgColor = '#000000',
+  // Pinned to fixed near-white/near-black tokens rather than a per-mode
+  // pair: a QR code's own contrast must stay maximal and constant for
+  // scanners regardless of the app's light/dark toggle — `tokens(mode)`
+  // would invert this pairing in dark mode. `palette.pureWhite` /
+  // `palette.midnightInk` are the same fixed, mode-independent tokens
+  // `Blueprint.tsx` already reads for the same "always dark ink" reason.
+  bgColor = palette.pureWhite,
+  fgColor = palette.midnightInk,
   level = 'M',
   includeMargin = true,
   imageSettings,

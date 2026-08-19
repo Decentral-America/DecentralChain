@@ -89,7 +89,7 @@ const DropdownMenu = styled.div<{ $isOpen: boolean }>`
   background: ${(p) => p.theme.colors.background};
   border: 1px solid ${(p) => p.theme.colors.border};
   border-radius: ${(p) => p.theme.radii.md};
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: ${(p) => p.theme.shadows.md};
   opacity: ${(p) => (p.$isOpen ? 1 : 0)};
   visibility: ${(p) => (p.$isOpen ? 'visible' : 'hidden')};
   transform: ${(p) => (p.$isOpen ? 'translateY(0)' : 'translateY(-10px)')};
@@ -156,7 +156,7 @@ const LanguageName = styled.span`
 const CodeBadge = styled.span<{ $isSelected: boolean }>`
   padding: 2px 6px;
   background: ${(p) => (p.$isSelected ? p.theme.colors.primary : p.theme.colors.secondary)};
-  color: ${(p) => (p.$isSelected ? p.theme.colors.background : p.theme.colors.text)};
+  color: ${(p) => (p.$isSelected ? p.theme.colors.onPrimary : p.theme.colors.text)};
   border-radius: ${(p) => p.theme.radii.sm};
   font-size: ${(p) => p.theme.fontSizes.xs};
   font-weight: ${(p) => p.theme.fontWeights.semibold};

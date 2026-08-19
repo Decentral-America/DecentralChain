@@ -4,11 +4,11 @@ import QrCode2Icon from '@mui/icons-material/QrCode2';
 import ShieldIcon from '@mui/icons-material/ShieldOutlined';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import { Box, Container, Typography, useTheme } from '@mui/material';
+import { alpha, Box, Container, Typography, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { SectionLabel } from '@/components/landing/Blueprint';
 import Reveal from '@/components/landing/Reveal';
-import { brandSurface } from '@/theme/landingTheme';
+import { brandSurface, onCanvas } from '@/theme/landingTheme';
 import { tokens } from '@/theme/tokens/semantic';
 
 /**
@@ -67,7 +67,7 @@ export default function IconBullets() {
               <Box
                 sx={{
                   '&:hover': {
-                    borderColor: isDark ? 'rgba(255, 255, 255, 0.28)' : tk.border.strong,
+                    borderColor: isDark ? alpha(onCanvas.primary, 0.28) : tk.border.strong,
                   },
                   alignItems: 'flex-start',
                   bgcolor: tk.surface.raised,
@@ -86,7 +86,7 @@ export default function IconBullets() {
                   sx={{
                     '& svg': { fontSize: 20 },
                     alignItems: 'center',
-                    border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.16)' : tk.border.subtle}`,
+                    border: `1px solid ${isDark ? alpha(onCanvas.primary, 0.16) : tk.border.subtle}`,
                     borderRadius: '12px',
                     color: tk.accent.primary,
                     display: 'flex',

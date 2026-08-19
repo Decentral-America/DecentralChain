@@ -61,7 +61,7 @@ const UserButton = styled(Box)`
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: ${(props) => props.theme.colors.hover};
   }
 `;
 

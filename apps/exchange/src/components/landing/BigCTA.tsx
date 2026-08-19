@@ -2,7 +2,7 @@ import { alpha, Box, Button, Container, Stack, Typography, useTheme } from '@mui
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import BandTexture from '@/components/landing/BandTexture';
-import { brandInk, brandSurface, ctaGradientStyles } from '@/theme/landingTheme';
+import { brandInk, brandSurface, ctaGradientStyles, onCanvas } from '@/theme/landingTheme';
 import { tokens } from '@/theme/tokens/semantic';
 
 /**
@@ -86,7 +86,7 @@ export default function BigCTA() {
               size="large"
               onClick={() => navigate('/create-account')}
               sx={{
-                '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.88)' },
+                '&:hover': { bgcolor: alpha(onCanvas.primary, 0.88) },
                 bgcolor: 'common.white',
                 // Pinned rather than `primary.main` — this pill's own fill is
                 // a fixed white in both app themes (the panel behind it is
@@ -106,7 +106,9 @@ export default function BigCTA() {
               onClick={() => navigate('/sign-in')}
               sx={{
                 '&:hover': {
-                  bgcolor: isDark ? 'rgba(255, 255, 255, 0.08)' : alpha(tk.accent.onPrimary, 0.08),
+                  bgcolor: isDark
+                    ? alpha(onCanvas.primary, 0.08)
+                    : alpha(tk.accent.onPrimary, 0.08),
                   borderColor: isDark ? 'common.white' : tk.accent.onPrimary,
                 },
                 // Both branches read on their own panel fill: `common.white`
@@ -116,7 +118,7 @@ export default function BigCTA() {
                 // happen to be white today, but the light branch follows the
                 // fill's own token rather than a coincidence).
                 borderColor: isDark
-                  ? 'rgba(255, 255, 255, 0.45)'
+                  ? alpha(onCanvas.primary, 0.45)
                   : alpha(tk.accent.onPrimary, 0.45),
                 color: isDark ? 'common.white' : tk.accent.onPrimary,
               }}

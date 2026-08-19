@@ -3,6 +3,7 @@
  * Rendered by React Router v7 when a route loader, action, or component throws.
  * Prevents a white screen of death from propagating to the entire app.
  */
+import { useTheme } from '@mui/material';
 import type React from 'react';
 import { isRouteErrorResponse, useRouteError } from 'react-router';
 
@@ -20,6 +21,11 @@ function isChunkLoadError(err: unknown): boolean {
 }
 
 export const ErrorPage: React.FC = () => {
+  // Safe: `errorElement` renders inside the router tree, below the app's
+  // `ThemeProvider` (see App.tsx) — only reachable once that has already
+  // mounted successfully. A `ThemeProvider` failure itself is caught by the
+  // root `ErrorBoundary` above it, not here.
+  const { palette } = useTheme();
   const error = useRouteError();
 
   // When a lazy chunk 404s (stale HTML after a fresh deployment), silently
@@ -53,8 +59,8 @@ export const ErrorPage: React.FC = () => {
     <div
       style={{
         alignItems: 'center',
-        backgroundColor: '#0f0f1a',
-        color: '#ffffff',
+        backgroundColor: palette.background.default,
+        color: palette.text.primary,
         display: 'flex',
         flexDirection: 'column',
         gap: '16px',
@@ -66,15 +72,17 @@ export const ErrorPage: React.FC = () => {
     >
       <div style={{ fontSize: '48px' }}>⚠</div>
       <h1 style={{ fontSize: '24px', fontWeight: 700, margin: 0 }}>{title}</h1>
-      <p style={{ color: '#9ca3af', fontSize: '14px', margin: 0, maxWidth: '400px' }}>{message}</p>
+      <p style={{ color: palette.text.secondary, fontSize: '14px', margin: 0, maxWidth: '400px' }}>
+        {message}
+      </p>
       <button
         type="button"
         onClick={() => window.location.assign('/')}
         style={{
-          backgroundColor: '#5a81ea',
+          backgroundColor: palette.primary.main,
           border: 'none',
           borderRadius: '8px',
-          color: '#fff',
+          color: palette.primary.contrastText,
           cursor: 'pointer',
           fontSize: '14px',
           marginTop: '8px',

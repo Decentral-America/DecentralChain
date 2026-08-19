@@ -21,6 +21,7 @@ import {
 import {
   Alert,
   Avatar,
+  alpha,
   Box,
   Button,
   Card,
@@ -55,7 +56,7 @@ import { PageFrame } from '@/layouts/PageFrame';
 import { logger } from '@/lib/logger';
 import { TransactionType, transactionService } from '@/services/transactionService';
 import { mobileLayout, mobileSurface } from '@/styles/mobileTokens';
-import { radii } from '@/styles/tokens';
+import { palette as brandPalette, radii } from '@/styles/tokens';
 import { tokens } from '@/theme/tokens/semantic';
 import { formatAmount } from '@/utils/formatters';
 
@@ -314,7 +315,7 @@ export const CreateToken = () => {
         >
           <Card
             sx={{
-              background: '#533afd',
+              background: brandPalette.indigoInk,
               color: 'white',
               height: '100%',
               position: 'sticky',
@@ -325,7 +326,7 @@ export const CreateToken = () => {
               <Box
                 sx={{
                   alignItems: 'center',
-                  bgcolor: 'rgba(255, 255, 255, 0.2)',
+                  bgcolor: alpha(brandPalette.pureWhite, 0.2),
                   borderRadius: '4px',
                   display: 'flex',
                   fontSize: 30,
@@ -356,7 +357,10 @@ export const CreateToken = () => {
                     <Box
                       key={step.label}
                       sx={{
-                        bgcolor: stepIndex <= activeStep ? 'white' : 'rgba(255, 255, 255, 0.3)',
+                        bgcolor:
+                          stepIndex <= activeStep
+                            ? brandPalette.pureWhite
+                            : alpha(brandPalette.pureWhite, 0.3),
                         borderRadius: 2,
                         flex: 1,
                         height: 4,
@@ -370,7 +374,7 @@ export const CreateToken = () => {
               {/* Info Box */}
               <Box
                 sx={{
-                  bgcolor: 'rgba(255, 255, 255, 0.15)',
+                  bgcolor: alpha(brandPalette.pureWhite, 0.15),
                   borderRadius: 2,
                   mt: 4,
                   p: 2,
@@ -809,7 +813,7 @@ export const CreateToken = () => {
                           label="NFT"
                           size="small"
                           sx={{
-                            bgcolor: '#533afd',
+                            bgcolor: brandPalette.indigoInk,
                             color: 'white',
                             fontWeight: 400,
                           }}
@@ -1128,8 +1132,8 @@ export const CreateToken = () => {
             <Box sx={{ flex: 1 }} />
             {/*
                 Neither button below names its own fill/hover/disabled
-                colours any more. Both did (a fixed `#533afd`, hover
-                `#3a26c4`), which duplicated — and once dark mode could
+                colours any more. Both did (a fixed violet fill, hover to a
+                fixed darker violet), which duplicated — and once dark mode could
                 actually reach it, contradicted — what `variant="contained"`
                 already derives from `primary.main`/`primary.dark` with a
                 matching `primary.contrastText` ink. The duplicate was

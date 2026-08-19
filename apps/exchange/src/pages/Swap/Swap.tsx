@@ -27,9 +27,11 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
+import { common } from '@mui/material/colors';
 import type React from 'react';
 import { ComingSoon } from '@/components/feedback/ComingSoon';
 import { PageFrame } from '@/layouts/PageFrame';
+import { swapMarkColor } from '@/styles/brandMarks';
 import { radii } from '@/styles/tokens';
 import { contrastRatio, tokens } from '@/theme/tokens/semantic';
 
@@ -41,11 +43,17 @@ import { contrastRatio, tokens } from '@/theme/tokens/semantic';
  * heuristic, not WCAG's. This compares both candidates against the actual
  * WCAG ratio instead, so the pick is correct for whatever brand colour a
  * caller passes rather than only the two in use today.
+ *
+ * `common.white`/`common.black` (MUI's own always-present `{black, white}`
+ * palette, unmodified by `createAppTheme`) rather than literal hex — the two
+ * WCAG comparison anchors themselves aren't a theme decision, but naming
+ * them via an existing library export instead of a string keeps this file
+ * free of raw colour literals too.
  */
 function inkForMark(markColor: string): string {
-  const white = contrastRatio('#ffffff', markColor);
-  const black = contrastRatio('#000000', markColor);
-  return white >= black ? '#ffffff' : '#000000';
+  const white = contrastRatio(common.white, markColor);
+  const black = contrastRatio(common.black, markColor);
+  return white >= black ? common.white : common.black;
 }
 
 /** One side of the trade: the asset picker, the amount, and what it is worth. */
@@ -196,7 +204,12 @@ export const Swap: React.FC = () => {
               </Stack>
             </Stack>
 
-            <TokenField label="From" symbol="DCC" markColor="#8A63D2" balance="0.00 DCC" />
+            <TokenField
+              label="From"
+              symbol="DCC"
+              markColor={swapMarkColor.dcc}
+              balance="0.00 DCC"
+            />
 
             {/* Overlaps both fields, so the pair reads as one control. */}
             <Box
@@ -220,7 +233,12 @@ export const Swap: React.FC = () => {
               </IconButton>
             </Box>
 
-            <TokenField label="To" symbol="USDT" markColor="#F7931A" balance="0.00 USDT" />
+            <TokenField
+              label="To"
+              symbol="USDT"
+              markColor={swapMarkColor.usdt}
+              balance="0.00 USDT"
+            />
 
             <Paper
               elevation={0}

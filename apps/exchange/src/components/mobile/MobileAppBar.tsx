@@ -3,6 +3,8 @@ import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from 're
 import { useNavigate } from 'react-router';
 import { Icon } from '@/components/atoms/Icon';
 import { mobileBrand, mobileGradient, mobileLayout, mobileText } from '@/styles/mobileTokens';
+import { palette } from '@/styles/tokens';
+import { contourStroke } from '@/theme/landingTheme';
 
 /**
  * The branded band every mobile screen opens with.
@@ -33,7 +35,10 @@ function BandTexture() {
       aria-hidden="true"
       sx={{
         bottom: 0,
-        maskImage: 'linear-gradient(to left, #000 10%, transparent 75%)',
+        // `maskImage` reads the gradient's luminance, not its hue — any
+        // opaque colour masks identically to `#000` here. Same reasoning as
+        // the landing `BandTexture` this band's texture mirrors.
+        maskImage: `linear-gradient(to left, ${palette.midnightInk} 10%, transparent 75%)`,
         opacity: 0.5,
         overflow: 'hidden',
         pointerEvents: 'none',
@@ -46,7 +51,7 @@ function BandTexture() {
       <svg viewBox="0 0 200 200" preserveAspectRatio="xMaxYMid slice">
         <title>Decorative contours</title>
         {CONTOURS.map((d) => (
-          <path key={d} d={d} fill="none" stroke="rgba(196, 170, 255, 0.45)" strokeWidth="0.7" />
+          <path key={d} d={d} fill="none" stroke={contourStroke} strokeWidth="0.7" />
         ))}
       </svg>
     </Box>

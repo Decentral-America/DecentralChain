@@ -270,7 +270,7 @@ export const ImportLedger: React.FC = () => {
               sx={{
                 bgcolor: 'background.paper',
                 borderRadius: 3,
-                boxShadow: '0 10px 40px rgba(0, 0, 0, 0.1)',
+                boxShadow: 8,
                 p: 4,
               }}
             >

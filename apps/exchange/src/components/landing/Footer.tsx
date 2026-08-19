@@ -12,6 +12,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import Logo from '@/components/atoms/Logo';
 import { config } from '@/config';
+import { onCanvas } from '@/theme/landingTheme';
 import { tokens } from '@/theme/tokens/semantic';
 
 const footerLinks = {
@@ -58,7 +59,7 @@ export default function Footer() {
          * exact "mode-aware ink overridden by a fixed value" failure mode
          * task 11 exists to remove.
          */
-        borderTop: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : tk.border.subtle}`,
+        borderTop: `1px solid ${isDark ? alpha(onCanvas.primary, 0.12) : tk.border.subtle}`,
         color: tk.text.primary,
         overflow: 'hidden',
         pb: { md: 4, xs: 3 },
@@ -120,7 +121,7 @@ export default function Footer() {
         </Grid>
 
         <Divider
-          sx={{ borderColor: isDark ? 'rgba(255, 255, 255, 0.12)' : tk.border.subtle, my: 4 }}
+          sx={{ borderColor: isDark ? alpha(onCanvas.primary, 0.12) : tk.border.subtle, my: 4 }}
         />
 
         <Stack
@@ -180,7 +181,7 @@ export default function Footer() {
         <Typography
           aria-hidden="true"
           sx={{
-            color: isDark ? 'rgba(255, 255, 255, 0.36)' : alpha(tk.text.primary, 0.5),
+            color: isDark ? alpha(onCanvas.primary, 0.36) : alpha(tk.text.primary, 0.5),
             fontSize: 'clamp(64px, 13vw, 210px)',
             fontWeight: 700,
             letterSpacing: '-0.04em',

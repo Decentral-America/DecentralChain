@@ -5,6 +5,7 @@
  * the moving-average maths can be unit-tested without mounting a chart (and so
  * the component file stays about rendering).
  */
+import { tokens } from '@/theme/tokens/semantic';
 
 /** A selectable timeframe, in the resolution strings `candlesService` understands. */
 export interface ChartResolution {
@@ -67,10 +68,20 @@ export function historyStartSeconds(
   return toSeconds - minutes * 60 * bars;
 }
 
-/** Moving-average overlays drawn on top of the price series. */
+/**
+ * Moving-average overlays drawn on top of the price series.
+ *
+ * `TradingViewChart` (the sole consumer) reads `.color` as a plain literal at
+ * series-construction time — lightweight-charts takes a resolved string, not
+ * a live theme reference — so these are fixed rather than reactive to the
+ * app's light/dark toggle, matching the fixed literals they replace. Pinned
+ * to the dark-mode tokens specifically: both are the more saturated of each
+ * pair's two stops, which is what an overlay line needs to read against a
+ * candlestick series in either theme.
+ */
 export const MOVING_AVERAGES = [
-  { color: '#F59E0B', period: 7 },
-  { color: '#8B5CF6', period: 25 },
+  { color: tokens('dark').intent.warning, period: 7 },
+  { color: tokens('dark').accent.primary, period: 25 },
 ] as const;
 
 /** A point on a moving-average line. */

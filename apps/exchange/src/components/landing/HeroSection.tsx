@@ -1,4 +1,4 @@
-import { Box, Button, Container, Stack, Typography, useTheme } from '@mui/material';
+import { alpha, Box, Button, Container, Stack, Typography, useTheme } from '@mui/material';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
@@ -6,7 +6,13 @@ import AuroraField from '@/components/landing/AuroraField';
 import BandTexture from '@/components/landing/BandTexture';
 import Reveal from '@/components/landing/Reveal';
 import { hasStoredAccount } from '@/lib/accountStorage';
-import { brandCanvas, brandInk, heroGradientStyles, onCanvas } from '@/theme/landingTheme';
+import {
+  brandCanvas,
+  brandInk,
+  heroGradientStyles,
+  heroHeadlineGradient,
+  onCanvas,
+} from '@/theme/landingTheme';
 import { tokens } from '@/theme/tokens/semantic';
 
 /**
@@ -105,8 +111,7 @@ export default function HeroSection() {
               ...(isDark
                 ? {
                     backgroundClip: 'text',
-                    backgroundImage:
-                      'linear-gradient(180deg, rgba(196, 170, 255, 0.92) 0%, #ffffff 62%)',
+                    backgroundImage: heroHeadlineGradient,
                     color: onCanvas.primary,
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
@@ -154,7 +159,7 @@ export default function HeroSection() {
               size="large"
               onClick={() => navigate(hasAccount ? '/sign-in' : '/create-account')}
               sx={{
-                '&:hover': { bgcolor: 'rgba(255, 255, 255, 0.9)' },
+                '&:hover': { bgcolor: alpha(onCanvas.primary, 0.9) },
                 bgcolor: 'common.white',
                 /*
                  * A pill, where the application uses square ledger buttons.
@@ -178,10 +183,10 @@ export default function HeroSection() {
               onClick={() => navigate(hasAccount ? '/create-account' : '/sign-in')}
               sx={{
                 '&:hover': {
-                  bgcolor: isDark ? 'rgba(255, 255, 255, 0.08)' : tk.surface.hover,
-                  borderColor: isDark ? 'rgba(255, 255, 255, 0.6)' : tk.accent.primary,
+                  bgcolor: isDark ? alpha(onCanvas.primary, 0.08) : tk.surface.hover,
+                  borderColor: isDark ? alpha(onCanvas.primary, 0.6) : tk.accent.primary,
                 },
-                borderColor: isDark ? 'rgba(255, 255, 255, 0.32)' : tk.border.strong,
+                borderColor: isDark ? alpha(onCanvas.primary, 0.32) : tk.border.strong,
                 borderRadius: 999,
                 color: isDark ? onCanvas.primary : tk.text.primary,
                 px: 4.5,

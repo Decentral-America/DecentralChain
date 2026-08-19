@@ -28,7 +28,7 @@ const SettingRow = styled.div`
 
 const Label = styled.div`
   font-size: 12px;
-  color: #757575;
+  color: ${(props) => props.theme.colors.textMuted};
   display: flex;
   align-items: center;
   gap: 8px;
@@ -38,25 +38,26 @@ const Input = styled.input<{ error?: boolean }>`
   flex: 1;
   padding: 8px 12px;
   font-size: 13px;
-  border: 1px solid ${(props) => (props.error ? '#f44336' : '#e0e0e0')};
+  border: 1px solid
+    ${(props) => (props.error ? props.theme.colors.error : props.theme.colors.border)};
 
   /* iOS Safari zooms the page on focus below 16px; touch only. */
   ${noTouchZoom}
   border-radius: 4px;
   background: white;
-  color: #212121;
+  color: ${(props) => props.theme.colors.text};
   font-family: 'Courier New', monospace;
 
   &:focus {
     outline: none;
-    border-color: ${(props) => (props.error ? '#f44336' : '#2196f3')};
+    border-color: ${(props) => (props.error ? props.theme.colors.error : props.theme.colors.primary)};
   }
 `;
 
 const CopyLink = styled.button`
   background: none;
   border: none;
-  color: #2196f3;
+  color: ${(props) => props.theme.colors.primary};
   font-size: 11px;
   cursor: pointer;
   padding: 0;
@@ -81,22 +82,22 @@ const Checkbox = styled.input.attrs({ type: 'checkbox' })`
 
 const CheckboxLabel = styled.label`
   font-size: 13px;
-  color: #212121;
+  color: ${(props) => props.theme.colors.text};
   cursor: pointer;
 `;
 
 const Button = styled.button`
   padding: 10px 24px;
   font-size: 13px;
-  color: #2196f3;
+  color: ${(props) => props.theme.colors.primary};
   background: white;
-  border: 1px solid #2196f3;
+  border: 1px solid ${(props) => props.theme.colors.primary};
   border-radius: 4px;
   cursor: pointer;
   margin-top: 16px;
 
   &:hover {
-    background-color: #e3f2fd;
+    background-color: ${(props) => props.theme.colors.hover};
   }
 `;
 

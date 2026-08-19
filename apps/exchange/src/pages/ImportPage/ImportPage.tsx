@@ -78,7 +78,7 @@ function MethodCard({ method, onSelect }: { method: ImportMethod; onSelect: () =
       sx={{
         '&:hover': {
           borderColor: 'primary.main',
-          boxShadow: '0 12px 32px rgba(0, 0, 0, 0.1)',
+          boxShadow: 8,
           transform: 'translateY(-4px)',
         },
         border: '2px solid',

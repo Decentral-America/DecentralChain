@@ -90,7 +90,7 @@ const OptionCard = styled.button`
     border-color: ${(p) => p.theme.colors.primary};
     background: ${(p) => p.theme.colors.primary}08;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: ${(p) => p.theme.shadows.md};
   }
 
   &:active {

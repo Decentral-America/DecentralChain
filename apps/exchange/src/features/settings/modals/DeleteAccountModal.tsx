@@ -19,8 +19,8 @@ const ModalBody = styled.div`
 
 const WarningBox = styled.div`
   padding: 16px;
-  background-color: #fff3e0;
-  border-left: 4px solid #ff9800;
+  background-color: ${(props) => `${props.theme.colors.warning}10`};
+  border-left: 4px solid ${(props) => props.theme.colors.warning};
   border-radius: 4px;
   margin-bottom: 20px;
 `;
@@ -28,7 +28,7 @@ const WarningBox = styled.div`
 const WarningTitle = styled.div`
   font-size: 15px;
   font-weight: 600;
-  color: #e65100;
+  color: ${(props) => props.theme.colors.warning};
   margin-bottom: 8px;
   display: flex;
   align-items: center;
@@ -43,7 +43,7 @@ const WarningTitle = styled.div`
 const WarningText = styled.p`
   margin: 0;
   font-size: 13px;
-  color: #bf360c;
+  color: ${(props) => props.theme.colors.warning};
   line-height: 1.6;
 `;
 
@@ -64,7 +64,7 @@ const Checkbox = styled.input`
 
 const CheckboxLabel = styled.span`
   font-size: 14px;
-  color: #424242;
+  color: ${(props) => props.theme.colors.text};
   line-height: 1.5;
 `;
 
@@ -76,10 +76,10 @@ const ButtonGroup = styled.div`
 `;
 
 const DangerButton = styled(Button as React.ComponentType<Record<string, unknown>>)`
-  background-color: #d32f2f !important;
+  background-color: ${(props) => props.theme.colors.error} !important;
 
   &:hover:not(:disabled) {
-    background-color: #c62828 !important;
+    background-color: ${(props) => props.theme.colors.error} !important;
   }
 
   &:disabled {
@@ -89,10 +89,10 @@ const DangerButton = styled(Button as React.ComponentType<Record<string, unknown
 `;
 
 const FormError = styled.div`
-  background-color: #ffebee;
-  border: 1px solid #ef9a9a;
+  background-color: ${(props) => `${props.theme.colors.error}10`};
+  border: 1px solid ${(props) => props.theme.colors.error};
   border-radius: 4px;
-  color: #c62828;
+  color: ${(props) => props.theme.colors.error};
   font-size: 13px;
   line-height: 1.5;
   margin-bottom: 8px;

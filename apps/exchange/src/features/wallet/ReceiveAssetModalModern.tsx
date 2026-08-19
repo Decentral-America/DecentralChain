@@ -21,6 +21,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { darken } from '@mui/material/styles';
 import type React from 'react';
 import { QRCodeSVG } from '@/components/display/QRCode';
 import { useAuth } from '@/contexts/AuthContext';
@@ -73,7 +74,7 @@ export const ReceiveAssetModalModern: React.FC<ReceiveAssetModalModernProps> = (
             <Box
               sx={{
                 alignItems: 'center',
-                background: 'linear-gradient(135deg, #10B981 0%, #06B6D4 100%)',
+                background: tokens('light').intent.success,
                 borderRadius: '50%',
                 display: 'flex',
                 height: 40,
@@ -82,12 +83,15 @@ export const ReceiveAssetModalModern: React.FC<ReceiveAssetModalModernProps> = (
               }}
             >
               {/*
-                Fixed badge, fixed gradient — the same `#06B6D4`/`#10B981`
-                pair as `SendAssetModalModern`'s success-view badge. `white`
-                missed the 3:1 icon floor against both stops (2.54/2.43),
+                Fixed badge — now a solid `tokens('light').intent.success`
+                fill (same role `SendAssetModalModern`'s success-view badge
+                uses) instead of the old cyan-to-emerald two-stop gradient,
+                so no raw hex remains here. `white` missed the 3:1 icon
+                floor against the original gradient's stops (2.54/2.43),
                 mode-independent; found via the extended sweep (fix round 1,
                 task-6-report.md), not named in the original list, but the
-                same one-word repoint applies.
+                same one-word repoint (`tokens('light').text.primary`)
+                still applies to the icon ink.
               */}
               <ReceiveIcon sx={{ color: tokens('light').text.primary, fontSize: 20 }} />
             </Box>
@@ -168,9 +172,16 @@ export const ReceiveAssetModalModern: React.FC<ReceiveAssetModalModernProps> = (
             startIcon={<CopyIcon />}
             sx={{
               '&:hover': {
-                background: 'linear-gradient(135deg, #059669 0%, #0891B2 100%)',
+                background: darken(tokens('light').intent.success, 0.15),
               },
-              background: 'linear-gradient(135deg, #10B981 0%, #06B6D4 100%)',
+              background: tokens('light').intent.success,
+              // Fixed background needs fixed ink: `variant="contained"`
+              // otherwise takes MUI's mode-aware `primary.contrastText`,
+              // which on this fixed fill measures 5.34:1 in light mode but
+              // only 3.42:1 in dark (computed, not observed) — a regression
+              // this task's own flattening would have introduced. `onSuccess`
+              // is the token built for exactly this fill.
+              color: tokens('light').intent.onSuccess,
             }}
           >
             {isCopied ? '✓ Copied!' : 'Copy Address'}

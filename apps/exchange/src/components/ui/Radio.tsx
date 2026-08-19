@@ -48,14 +48,14 @@ const StyledRadio = styled.div<{
     ${({ theme, checked, hasError }) => {
       if (hasError) return theme.colors.error;
       if (checked) return theme.colors.primary;
-      return theme.colors.border || '#e0e0e0';
+      return theme.colors.border;
     }};
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
-  background: ${({ theme }) => theme.colors.background || '#ffffff'};
+  background: ${({ theme }) => theme.colors.background};
 
   &::after {
     content: '';

@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { Card } from '@/components/atoms/Card';
 import { useTheme } from '@/contexts/ThemeContext';
 import { noTapHighlight } from '@/styles/mixins';
+import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * Styled Components
@@ -83,8 +84,10 @@ const ThemeIcon = styled.div<{ isDark?: boolean }>`
   height: 64px;
   margin-bottom: ${({ theme }) => theme.spacing.md};
   border-radius: ${({ theme }) => theme.radii.md};
-  background: ${({ isDark }) => (isDark ? '#1a1a1a' : '#ffffff')};
-  border: 2px solid ${({ isDark }) => (isDark ? '#2d2d2d' : '#e0e0e0')};
+  background: ${({ isDark }) =>
+    isDark ? tokens('dark').surface.base : tokens('light').surface.raised};
+  border: 2px solid
+    ${({ isDark }) => (isDark ? tokens('dark').border.subtle : tokens('light').border.subtle)};
   display: flex;
   align-items: center;
   justify-content: center;

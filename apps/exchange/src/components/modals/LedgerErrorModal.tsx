@@ -6,6 +6,7 @@
 import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
 import { Stack } from '@/components/atoms/Stack';
+import { scrimStrong } from '@/styles/tokens';
 
 interface LedgerErrorModalProps {
   error: Error | null;
@@ -65,7 +66,7 @@ const Overlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: ${scrimStrong};
   display: flex;
   align-items: center;
   justify-content: center;

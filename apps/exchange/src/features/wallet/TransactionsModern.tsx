@@ -5,6 +5,7 @@
 
 import { AccountBalanceWalletOutlined } from '@mui/icons-material';
 import { Box, Container, Stack, Typography } from '@mui/material';
+import { tokens } from '@/theme/tokens/semantic';
 import { Transactions as LegacyTransactions } from './Transactions';
 
 export const TransactionsModern = () => {
@@ -25,9 +26,9 @@ export const TransactionsModern = () => {
               <Box
                 sx={{
                   alignItems: 'center',
-                  background: 'linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%)',
+                  background: tokens('light').accent.primary,
                   borderRadius: 2.5,
-                  boxShadow: '0 8px 24px rgba(79, 70, 229, 0.3)',
+                  boxShadow: `0 8px 24px ${tokens('light').accent.primary}4D`,
                   display: 'flex',
                   height: 56,
                   justifyContent: 'center',
@@ -40,7 +41,7 @@ export const TransactionsModern = () => {
                 <Typography
                   variant="h3"
                   sx={{
-                    background: 'linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%)',
+                    background: tokens('light').accent.primary,
                     fontSize: { md: '2.5rem', xs: '2rem' },
                     fontWeight: 800,
                     mb: 0.5,

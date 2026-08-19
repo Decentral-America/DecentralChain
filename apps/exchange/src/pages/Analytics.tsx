@@ -10,7 +10,7 @@ import {
   TrendingDown,
   TrendingUp,
 } from '@mui/icons-material';
-import { Alert, Box, Grid, Paper, Skeleton, Stack, Typography } from '@mui/material';
+import { Alert, Box, Grid, Paper, Skeleton, Stack, Typography, useTheme } from '@mui/material';
 import { useMemo } from 'react';
 import { useAddressTransactions } from '@/api/services/addressService';
 import { useAuth } from '@/contexts/AuthContext';
@@ -18,6 +18,7 @@ import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
 import { formatAmount } from '@/utils/formatters';
 
 export const Analytics = () => {
+  const { palette } = useTheme();
   const { user } = useAuth();
   const { balances, isLoading: isLoadingBalance } = useBalanceWatcher({
     enabled: !!user?.address,
@@ -146,8 +147,9 @@ export const Analytics = () => {
           >
             <Paper
               sx={{
-                background: 'linear-gradient(135deg, #FFFFFF 0%, #F9FAFB 100%)',
-                border: '1px solid #EEF2F7',
+                bgcolor: 'background.paper',
+                border: '1px solid',
+                borderColor: 'divider',
                 borderRadius: 2,
                 p: 2.5,
               }}
@@ -156,9 +158,9 @@ export const Analytics = () => {
                 <Box
                   sx={{
                     alignItems: 'center',
-                    background: 'linear-gradient(180deg, #5940d4 0%, #3d26be 100%)',
+                    background: `linear-gradient(180deg, ${palette.primary.main} 0%, ${palette.primary.dark} 100%)`,
                     borderRadius: 2,
-                    color: '#fff',
+                    color: 'primary.contrastText',
                     display: 'flex',
                     height: 48,
                     justifyContent: 'center',
@@ -211,7 +213,8 @@ export const Analytics = () => {
       </Grid>
       <Paper
         sx={{
-          border: '1px solid #EEF2F7',
+          border: '1px solid',
+          borderColor: 'divider',
           borderRadius: 2,
           mt: 3,
           p: 3,

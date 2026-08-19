@@ -4,6 +4,7 @@
  * everything else (spacing, fonts, radii, ...) is not yet token-driven.
  */
 import { type DefaultTheme } from 'styled-components';
+import { darkShadows, shadows } from '@/styles/tokens';
 import { tokens } from '@/theme/tokens/semantic';
 
 const lightTokens = tokens('light');
@@ -67,12 +68,7 @@ export const lightTheme: DefaultTheme = {
     md: '8px',
     sm: '4px',
   },
-  shadows: {
-    lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
-    md: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-    sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-    xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-  },
+  shadows,
   spacing: {
     lg: '1.5rem',
     md: '1rem',
@@ -147,12 +143,7 @@ export const darkTheme: DefaultTheme = {
     md: '8px',
     sm: '4px',
   },
-  shadows: {
-    lg: '0 10px 15px -3px rgba(0, 0, 0, 0.5)',
-    md: '0 4px 6px -1px rgba(0, 0, 0, 0.4)',
-    sm: '0 1px 2px 0 rgba(0, 0, 0, 0.3)',
-    xl: '0 20px 25px -5px rgba(0, 0, 0, 0.6)',
-  },
+  shadows: darkShadows,
   spacing: {
     lg: '1.5rem',
     md: '1rem',

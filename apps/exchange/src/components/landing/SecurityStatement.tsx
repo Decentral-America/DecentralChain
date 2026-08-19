@@ -1,7 +1,8 @@
-import { Box, Container, Typography, useTheme } from '@mui/material';
+import { alpha, Box, Container, Typography, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { BlueprintFrame, SectionLabel } from '@/components/landing/Blueprint';
 import Reveal from '@/components/landing/Reveal';
+import { onCanvas } from '@/theme/landingTheme';
 import { tokens } from '@/theme/tokens/semantic';
 
 /**
@@ -74,7 +75,7 @@ export default function SecurityStatement() {
                 {/* The annotation voice of the feature sheets, carried through. */}
                 <Box
                   sx={{
-                    borderTop: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.18)' : tk.border.subtle}`,
+                    borderTop: `1px solid ${isDark ? alpha(onCanvas.primary, 0.18) : tk.border.subtle}`,
                     pt: 3,
                   }}
                 >

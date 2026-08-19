@@ -52,7 +52,7 @@ const DateWithTooltip = styled.span`
     pointer-events: none;
     margin-bottom: 4px;
 
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: ${({ theme }) => theme.shadows.lg};
   }
 
   &:hover::before {

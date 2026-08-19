@@ -11,6 +11,7 @@ import { Spinner } from '@/components/atoms/Spinner';
 import { Modal } from '@/components/organisms/Modal';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
+import { status } from '@/styles/tokens';
 
 interface ReissueAssetModalProps {
   isOpen: boolean;
@@ -312,8 +313,8 @@ const Warning = styled.div`
   display: flex;
   gap: 12px;
   padding: 16px;
-  background: #fff3cd;
-  border: 1px solid #ffc107;
+  background: ${status.warningSurface};
+  border: 1px solid ${status.warning};
   border-radius: 8px;
 `;
 
@@ -325,7 +326,7 @@ const WarningIcon = styled.div`
 const WarningText = styled.div`
   font-size: 14px;
   line-height: 1.5;
-  color: #856404;
+  color: ${status.warning};
 
   strong {
     font-weight: 600;
@@ -334,10 +335,10 @@ const WarningText = styled.div`
 
 const ErrorMessage = styled.div`
   padding: 12px 16px;
-  background: #f8d7da;
-  border: 1px solid #dc3545;
+  background: ${status.dangerSurface};
+  border: 1px solid ${status.danger};
   border-radius: 8px;
-  color: #721c24;
+  color: ${status.danger};
   font-size: 14px;
 `;
 

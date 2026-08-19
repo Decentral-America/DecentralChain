@@ -55,10 +55,11 @@ export const Messages = () => {
             key={message.id}
             sx={{
               '&:hover': {
-                boxShadow: '0 4px 12px rgba(61, 38, 190, 0.15)',
+                boxShadow: 4,
               },
-              bgcolor: message.unread ? '#F9F7FF' : '#fff',
-              border: message.unread ? '1px solid #3d26be' : '1px solid #EEF2F7',
+              bgcolor: message.unread ? 'action.selected' : 'background.paper',
+              border: '1px solid',
+              borderColor: message.unread ? 'primary.main' : 'divider',
               borderRadius: 2,
               cursor: 'pointer',
               p: 2.5,
@@ -68,7 +69,8 @@ export const Messages = () => {
             <Stack direction="row" spacing={2}>
               <Avatar
                 sx={{
-                  bgcolor: message.unread ? 'primary.main' : 'grey.300',
+                  bgcolor: message.unread ? 'primary.main' : 'action.selected',
+                  color: message.unread ? 'primary.contrastText' : 'text.secondary',
                   height: 48,
                   width: 48,
                 }}

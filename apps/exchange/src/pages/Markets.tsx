@@ -4,9 +4,10 @@
  */
 
 import { TrendingDown, TrendingUp } from '@mui/icons-material';
-import { Box, Grid, Paper, Stack, Typography } from '@mui/material';
+import { alpha, Box, Grid, Paper, Stack, Typography, useTheme } from '@mui/material';
 
 export const Markets = () => {
+  const { palette } = useTheme();
   const marketData = [
     { change: '+2.19%', pair: 'DCC/USDT', positive: true, price: '135.22', volume: '1.2M' },
     { change: '+1.85%', pair: 'BTC/USDT', positive: true, price: '42,567.10', volume: '15.3M' },
@@ -33,9 +34,10 @@ export const Markets = () => {
               sx={{
                 '&:hover': {
                   borderColor: 'primary.main',
-                  boxShadow: '0 4px 12px rgba(61, 38, 190, 0.15)',
+                  boxShadow: `0 4px 12px ${alpha(palette.primary.main, 0.15)}`,
                 },
-                border: '1px solid #EEF2F7',
+                border: '1px solid',
+                borderColor: 'divider',
                 borderRadius: 2,
                 cursor: 'pointer',
                 p: 2.5,

@@ -9,6 +9,7 @@ import ShieldIcon from '@mui/icons-material/Shield';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import {
+  alpha,
   Box,
   Button,
   Container,
@@ -27,7 +28,6 @@ const ImportAccountInner: React.FC = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const isDark = theme.palette.mode === 'dark';
 
   /* ─── MOBILE: full-screen app-like shell ─── */
   if (isMobile) {
@@ -123,7 +123,7 @@ const ImportAccountInner: React.FC = () => {
                   startIcon={<LoginIcon />}
                   onClick={() => navigate('/sign-in')}
                   sx={{
-                    '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.04)' },
+                    '&:hover': { bgcolor: 'action.hover' },
                     color: 'text.primary',
                     fontWeight: 600,
                   }}
@@ -214,12 +214,13 @@ const ImportAccountInner: React.FC = () => {
             <Box
               sx={{
                 alignItems: 'center',
-                background: `
-                  radial-gradient(1200px 600px at 20% -10%, #FF7A59 0%, rgba(255,122,89,0) 60%),
-                  radial-gradient(900px 500px at 70% 0%, #5B8CFF 0%, rgba(91,140,255,0) 60%),
-                  radial-gradient(800px 400px at 40% 30%, #9D4EDD 0%, rgba(157,78,221,0) 60%),
-                  linear-gradient(180deg, #0A0E1A 0%, #111827 100%)
-                `,
+                // The mesh-gradient hero was fixed-dark decoration behind the
+                // glass panel below — flattened to a token rather than
+                // inventing a multi-stop combination no token set specifies.
+                // `background.default` (not `.paper`, which the glass panel
+                // itself reads at 95% alpha below) so the panel still reads
+                // as a raised surface over a backdrop, not one flat block.
+                bgcolor: 'background.default',
                 borderRadius: 3,
                 display: 'flex',
                 filter: 'saturate(1.05)',
@@ -247,9 +248,9 @@ const ImportAccountInner: React.FC = () => {
                    * modes. See task-5-report.md, "ImportAccountPage decorative
                    * panel".
                    */
-                  bgcolor: isDark ? 'rgba(20, 16, 41, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+                  bgcolor: alpha(theme.palette.background.paper, 0.95),
                   borderRadius: 2.5,
-                  boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
+                  boxShadow: 24,
                   p: 4,
                   position: 'relative',
                   width: '100%',

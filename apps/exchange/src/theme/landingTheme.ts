@@ -319,6 +319,37 @@ export const onCanvas = {
 } as const;
 
 /**
+ * `HeroSection`'s H1 text-fill in dark mode (`backgroundClip: 'text'`): a
+ * light-violet highlight resolving into white down the lines. The violet is
+ * the same hue `contourStroke` uses, at a much higher opacity — that one is a
+ * background decoration, this is the headline's own ink, so the two can't
+ * honestly share one constant. Declared after `onCanvas` because it composes
+ * `onCanvas.primary` rather than repeating the literal.
+ */
+export const heroHeadlineGradient = `linear-gradient(180deg, rgba(196, 170, 255, 0.92) 0%, ${onCanvas.primary} 62%)`;
+
+/**
+ * `BlueprintFrame`'s measured grid and corner registration marks, on the dark
+ * canvas only (the light-mode branch reads `palette.frost`/`lavenderBorder`
+ * instead). Same translucent-white family as `onCanvas`, fainter still —
+ * this is a background texture, not text, so it has no contrast floor to
+ * clear.
+ */
+export const blueprintOnDark = {
+  line: 'rgba(255, 255, 255, 0.07)',
+  mark: 'rgba(255, 255, 255, 0.3)',
+} as const;
+
+/**
+ * `BandTexture`'s hero/header contour motif — light lavender at low alpha,
+ * legible against the dark canvas without competing with foreground content.
+ * Decorative only (`aria-hidden`, takes no part in the accessibility tree),
+ * so it has no AA obligation either; dark-only by the same design decision
+ * documented on `BandTexture` itself.
+ */
+export const contourStroke = 'rgba(196, 170, 255, 0.4)';
+
+/**
  * The animated mesh.
  *
  * Three oversized radial blobs in the band's own stops, drifting slowly past

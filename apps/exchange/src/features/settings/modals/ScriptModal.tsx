@@ -21,14 +21,14 @@ const ModalBody = styled.div`
 const Description = styled.p`
   margin: 0 0 20px 0;
   font-size: 14px;
-  color: #616161;
+  color: ${(props) => props.theme.colors.textMuted};
   line-height: 1.6;
 `;
 
 const InfoBox = styled.div`
   padding: 16px;
-  background-color: #e3f2fd;
-  border-left: 4px solid #2196f3;
+  background-color: ${({ theme }) => `${theme.colors.info ?? theme.colors.primary}10`};
+  border-left: 4px solid ${({ theme }) => theme.colors.info ?? theme.colors.primary};
   border-radius: 4px;
   margin-bottom: 20px;
 `;
@@ -36,7 +36,7 @@ const InfoBox = styled.div`
 const InfoText = styled.p`
   margin: 0;
   font-size: 13px;
-  color: #0d47a1;
+  color: ${({ theme }) => theme.colors.info ?? theme.colors.primary};
   line-height: 1.6;
 `;
 
@@ -44,7 +44,7 @@ const TextArea = styled.textarea`
   width: 100%;
   min-height: 200px;
   padding: 12px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid ${(props) => props.theme.colors.border};
   border-radius: 4px;
   font-size: 13px;
   font-family: 'Roboto Mono', monospace;
@@ -56,7 +56,7 @@ const TextArea = styled.textarea`
 
   &:focus {
     outline: none;
-    border-color: #2196f3;
+    border-color: ${(props) => props.theme.colors.primary};
   }
 `;
 
@@ -67,10 +67,10 @@ const ButtonGroup = styled.div`
   margin-top: 20px;
 `;
 const FormError = styled.div`
-  background-color: #ffebee;
-  border: 1px solid #ef9a9a;
+  background-color: ${(props) => `${props.theme.colors.error}10`};
+  border: 1px solid ${(props) => props.theme.colors.error};
   border-radius: 4px;
-  color: #c62828;
+  color: ${(props) => props.theme.colors.error};
   font-size: 13px;
   line-height: 1.5;
   margin-top: 8px;

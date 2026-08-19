@@ -168,8 +168,8 @@ const Warning = styled.div`
   display: flex;
   gap: ${(p) => p.theme.spacing.sm};
   padding: ${(p) => p.theme.spacing.md};
-  background: ${(p) => p.theme.colors.warning || '#fff3cd'};
-  border: 1px solid ${(p) => (p.theme.colors as { warningBorder?: string; [key: string]: string | undefined }).warningBorder || '#ffc107'};
+  background: ${(p) => p.theme.colors.warning};
+  border: 1px solid ${(p) => p.theme.colors.warning};
   border-radius: ${(p) => p.theme.radii.md};
 `;
 
@@ -209,7 +209,7 @@ const AddressContainer = styled.div`
 
   &:hover {
     border-color: ${(p) => p.theme.colors.primary};
-    background: ${(p) => p.theme.colors.hover || '#f5f5f5'};
+    background: ${(p) => p.theme.colors.hover};
   }
 `;
 

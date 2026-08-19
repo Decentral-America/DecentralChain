@@ -41,10 +41,10 @@ const Row = styled.div<{ $border?: boolean }>`
   flex-direction: column;
   gap: 8px;
   padding: 12px 0;
-  ${({ $border }) =>
+  ${({ $border, theme }) =>
     $border &&
     `
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid ${theme.colors.border};
   `}
 `;
 
@@ -53,16 +53,16 @@ const FlexRow = styled.div<{ $border?: boolean }>`
   justify-content: space-between;
   align-items: center;
   padding: 12px 0;
-  ${({ $border }) =>
+  ${({ $border, theme }) =>
     $border &&
     `
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid ${theme.colors.border};
   `}
 `;
 
 const Label = styled.div`
   font-size: 12px;
-  color: #757575;
+  color: ${(props) => props.theme.colors.textMuted};
   display: flex;
   align-items: center;
   gap: 8px;
@@ -70,7 +70,7 @@ const Label = styled.div`
 
 const Value = styled.div`
   font-size: 12px;
-  color: #212121;
+  color: ${(props) => props.theme.colors.text};
   word-break: break-all;
 `;
 
@@ -83,32 +83,32 @@ const DataField = styled.div`
 const Pre = styled.pre`
   font-size: 12px;
   font-family: 'Courier New', monospace;
-  color: #212121;
+  color: ${(props) => props.theme.colors.text};
   word-break: break-all;
   white-space: pre-wrap;
   margin: 0;
   padding: 8px;
-  background-color: #f5f5f5;
+  background-color: ${(props) => props.theme.colors.hover};
   border-radius: 4px;
 `;
 
 const Button = styled.button`
   padding: 6px 16px;
   font-size: 12px;
-  color: #2196f3;
+  color: ${(props) => props.theme.colors.primary};
   background: white;
-  border: 1px solid #2196f3;
+  border: 1px solid ${(props) => props.theme.colors.primary};
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
   align-self: flex-start;
 
   &:hover {
-    background-color: #e3f2fd;
+    background-color: ${(props) => props.theme.colors.hover};
   }
 
   &:active {
-    background-color: #bbdefb;
+    background-color: ${(props) => `${props.theme.colors.primary}30`};
   }
 
   /* Own press state above, so the grey tap flash is redundant. */
@@ -118,7 +118,7 @@ const Button = styled.button`
 const LinkButton = styled.button`
   background: none;
   border: none;
-  color: #2196f3;
+  color: ${(props) => props.theme.colors.primary};
   font-size: 12px;
   cursor: pointer;
   padding: 0;
@@ -126,23 +126,23 @@ const LinkButton = styled.button`
   transition: color 0.2s;
 
   &:hover {
-    color: #1976d2;
+    color: ${(props) => props.theme.colors.primary};
     text-decoration: underline;
   }
 `;
 
 const DangerLink = styled(LinkButton)`
-  color: #f44336;
+  color: ${(props) => props.theme.colors.error};
 
   &:hover {
-    color: #d32f2f;
+    color: ${(props) => props.theme.colors.error};
   }
 `;
 
 const CopyLink = styled.button`
   background: none;
   border: none;
-  color: #2196f3;
+  color: ${(props) => props.theme.colors.primary};
   font-size: 11px;
   cursor: pointer;
   padding: 0;
@@ -155,16 +155,16 @@ const CopyLink = styled.button`
 `;
 
 const ScriptButton = styled(Button)`
-  background-color: #4caf50;
+  background-color: ${(props) => props.theme.colors.success};
   color: white;
   border: none;
 
   &:hover {
-    background-color: #45a049;
+    background-color: ${(props) => props.theme.colors.success};
   }
 
   &:active {
-    background-color: #3d8b40;
+    background-color: ${(props) => props.theme.colors.success};
   }
 
   /* Own press state above, so the grey tap flash is redundant. */

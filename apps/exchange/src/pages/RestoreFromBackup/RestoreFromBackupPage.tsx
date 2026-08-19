@@ -32,13 +32,14 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { alpha, styled } from '@mui/material/styles';
 import type React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Button } from '@/components/atoms/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
+import { tokens } from '@/theme/tokens/semantic';
 
 // Animations
 const gradientShift = keyframes`
@@ -57,21 +58,21 @@ const pulse = keyframes`
 `;
 
 // Styled Components
-const PageContainer = styled(Box)(({ theme }) => ({
-  alignItems: 'center',
-  animation: `${gradientShift} 15s ease infinite`,
-  background:
-    theme.palette.mode === 'dark'
-      ? 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1729 100%)'
-      : 'linear-gradient(135deg, #e8f0fe 0%, #f5f7fa 50%, #e3f2fd 100%)',
-  backgroundSize: '200% 200%',
-  display: 'flex',
-  justifyContent: 'center',
-  minHeight: '100svh',
-  overflow: 'hidden',
-  padding: theme.spacing(3),
-  position: 'relative',
-}));
+const PageContainer = styled(Box)(({ theme }) => {
+  const t = tokens(theme.palette.mode);
+  return {
+    alignItems: 'center',
+    animation: `${gradientShift} 15s ease infinite`,
+    background: `linear-gradient(135deg, ${t.surface.base} 0%, ${t.surface.hover} 50%, ${t.surface.sunken} 100%)`,
+    backgroundSize: '200% 200%',
+    display: 'flex',
+    justifyContent: 'center',
+    minHeight: '100svh',
+    overflow: 'hidden',
+    padding: theme.spacing(3),
+    position: 'relative',
+  };
+});
 
 const FloatingShape = styled(Box, {
   shouldForwardProp: (prop) => !['delay', 'size', 'top', 'left'].includes(prop as string),
@@ -80,8 +81,7 @@ const FloatingShape = styled(Box, {
     animation: `${float} ${6 + delay}s ease-in-out infinite`,
     animationDelay: `${delay}s`,
     backdropFilter: 'blur(10px)',
-    background:
-      theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.08)' : 'rgba(31, 90, 246, 0.04)',
+    background: alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.08 : 0.04),
     borderRadius: '30%',
     height: size,
     left,
@@ -109,15 +109,10 @@ const GlowOrb = styled(Box, {
 
 const ContentWrapper = styled(Container)(({ theme }) => ({
   backdropFilter: 'blur(24px)',
-  background: theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-  border: `1px solid ${
-    theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'
-  }`,
+  background: alpha(theme.palette.background.paper, 0.9),
+  border: `1px solid ${theme.palette.divider}`,
   borderRadius: theme.spacing(3),
-  boxShadow:
-    theme.palette.mode === 'dark'
-      ? '0 12px 40px rgba(0, 0, 0, 0.5)'
-      : '0 12px 40px rgba(0, 0, 0, 0.1)',
+  boxShadow: `0 12px 40px ${alpha(theme.palette.common.black, theme.palette.mode === 'dark' ? 0.5 : 0.1)}`,
   maxWidth: '700px !important',
   padding: theme.spacing(5),
   position: 'relative',
@@ -128,14 +123,11 @@ const DropZone = styled(Paper, {
   shouldForwardProp: (prop) => prop !== 'isDragActive',
 })<{ isDragActive?: boolean }>(({ theme, isDragActive }) => ({
   '&:hover': {
-    background:
-      theme.palette.mode === 'dark' ? 'rgba(31, 90, 246, 0.08)' : 'rgba(31, 90, 246, 0.03)',
+    background: alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.08 : 0.03),
     borderColor: theme.palette.primary.main,
   },
   background: isDragActive
-    ? theme.palette.mode === 'dark'
-      ? 'rgba(31, 90, 246, 0.1)'
-      : 'rgba(31, 90, 246, 0.05)'
+    ? alpha(theme.palette.primary.main, theme.palette.mode === 'dark' ? 0.1 : 0.05)
     : 'transparent',
   border: `2px dashed ${isDragActive ? theme.palette.primary.main : theme.palette.divider}`,
   borderRadius: theme.spacing(2),
@@ -466,8 +458,8 @@ export const RestoreFromBackupPage: React.FC = () => {
               sx={{
                 background:
                   theme.palette.mode === 'dark'
-                    ? 'rgba(255, 255, 255, 0.05)'
-                    : 'rgba(0, 0, 0, 0.02)',
+                    ? alpha(theme.palette.common.white, 0.05)
+                    : alpha(theme.palette.common.black, 0.02),
                 border: `1px solid ${theme.palette.divider}`,
                 mb: 3,
                 p: 2.5,
@@ -563,8 +555,8 @@ export const RestoreFromBackupPage: React.FC = () => {
               sx={{
                 background:
                   theme.palette.mode === 'dark'
-                    ? 'rgba(255, 255, 255, 0.05)'
-                    : 'rgba(0, 0, 0, 0.02)',
+                    ? alpha(theme.palette.common.white, 0.05)
+                    : alpha(theme.palette.common.black, 0.02),
                 mb: 3,
                 p: 2,
                 textAlign: 'left',
@@ -638,13 +630,17 @@ export const RestoreFromBackupPage: React.FC = () => {
       <FloatingShape delay={1.5} size={150} top="65%" left="80%" />
       <FloatingShape delay={2.5} size={180} top="75%" left="10%" />
       <GlowOrb
-        color={theme.palette.mode === 'dark' ? '#1f5af6' : '#5a81ff'}
+        color={
+          theme.palette.mode === 'dark' ? theme.palette.primary.main : theme.palette.primary.dark
+        }
         top="20%"
         left="15%"
         size={350}
       />
       <GlowOrb
-        color={theme.palette.mode === 'dark' ? '#5a81ff' : '#1f5af6'}
+        color={
+          theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.primary.main
+        }
         top="65%"
         left="70%"
         size={400}
@@ -656,7 +652,7 @@ export const RestoreFromBackupPage: React.FC = () => {
               <Typography
                 variant="h4"
                 sx={{
-                  background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
+                  background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
                   fontWeight: 800,
                   mb: 1,
                   WebkitBackgroundClip: 'text',

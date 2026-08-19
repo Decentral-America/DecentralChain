@@ -8,11 +8,7 @@ export * from './EmptyState';
 export { ErrorBoundary } from './ErrorBoundary';
 export * from './forms';
 // Accessibility components
-export {
-  GlobalKeyboardShortcuts,
-  KeyboardShortcutBadge,
-  useKeyboardShortcutsInfo,
-} from './GlobalKeyboardShortcuts';
+export { GlobalKeyboardShortcuts, useKeyboardShortcutsInfo } from './GlobalKeyboardShortcuts';
 export type { LazyImageProps, ProgressiveImageProps } from './LazyImage';
 export { LazyImage, ProgressiveImage, useImagePreload } from './LazyImage';
 export * from './layout';

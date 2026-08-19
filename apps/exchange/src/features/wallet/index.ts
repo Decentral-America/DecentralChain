@@ -3,9 +3,6 @@
  * Exports all wallet-related components
  */
 
-export type { Asset } from './AssetCard';
-export { AssetCard } from './AssetCard';
-export { AssetList } from './AssetList';
 export { Leasing } from './Leasing';
 export { Portfolio } from './Portfolio';
 export type { ReceiveAssetModalProps } from './ReceiveAssetModal';

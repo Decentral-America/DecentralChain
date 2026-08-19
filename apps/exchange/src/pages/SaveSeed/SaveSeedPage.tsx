@@ -18,7 +18,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { alpha, styled } from '@mui/material/styles';
 import * as ds from 'data-service';
 import type React from 'react';
 import { useCallback, useEffect, useState } from 'react';
@@ -29,6 +29,7 @@ import { NetworkConfig } from '@/config';
 import { useAuth } from '@/contexts/AuthContext';
 import { SeedBackup } from '@/features/auth/SeedBackup';
 import { logger } from '@/lib/logger';
+import { tokens } from '@/theme/tokens/semantic';
 
 // Animations
 const gradientShift = keyframes`
@@ -47,24 +48,24 @@ const pulse = keyframes`
 `;
 
 // Styled Components
-const PageContainer = styled(Box)(({ theme }) => ({
-  alignItems: 'center',
-  animation: `${gradientShift} 15s ease infinite`,
-  background:
-    theme.palette.mode === 'dark'
-      ? 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1729 100%)'
-      : 'linear-gradient(135deg, #e8f0fe 0%, #f5f7fa 50%, #e3f2fd 100%)',
-  backgroundSize: '200% 200%',
-  display: 'flex',
-  justifyContent: 'center',
-  minHeight: '100svh',
-  overflow: 'hidden',
-  padding: theme.spacing(3),
-  position: 'relative',
-  [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(2),
-  },
-}));
+const PageContainer = styled(Box)(({ theme }) => {
+  const t = tokens(theme.palette.mode);
+  return {
+    alignItems: 'center',
+    animation: `${gradientShift} 15s ease infinite`,
+    background: `linear-gradient(135deg, ${t.surface.base} 0%, ${t.surface.hover} 50%, ${t.surface.sunken} 100%)`,
+    backgroundSize: '200% 200%',
+    display: 'flex',
+    justifyContent: 'center',
+    minHeight: '100svh',
+    overflow: 'hidden',
+    padding: theme.spacing(3),
+    position: 'relative',
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(2),
+    },
+  };
+});
 
 const FloatingShape = styled(Box, {
   shouldForwardProp: (prop) => !['delay', 'size', 'top', 'left'].includes(prop as string),
@@ -73,12 +74,14 @@ const FloatingShape = styled(Box, {
     animation: `${float} ${6 + delay}s ease-in-out infinite`,
     animationDelay: `${delay}s`,
     backdropFilter: 'blur(10px)',
-    background:
-      theme.palette.mode === 'dark'
-        ? 'linear-gradient(135deg, rgba(31, 90, 246, 0.1), rgba(90, 129, 255, 0.1))'
-        : 'linear-gradient(135deg, rgba(31, 90, 246, 0.05), rgba(90, 129, 255, 0.05))',
+    background: `linear-gradient(135deg, ${alpha(
+      theme.palette.primary.main,
+      theme.palette.mode === 'dark' ? 0.1 : 0.05,
+    )}, ${alpha(theme.palette.primary.dark, theme.palette.mode === 'dark' ? 0.1 : 0.05)})`,
     border: `1px solid ${
-      theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(31, 90, 246, 0.1)'
+      theme.palette.mode === 'dark'
+        ? alpha(theme.palette.common.white, 0.05)
+        : alpha(theme.palette.primary.main, 0.1)
     }`,
     borderRadius: '30%',
     height: size,
@@ -107,16 +110,13 @@ const GlowOrb = styled(Box, {
 
 const ContentWrapper = styled(Container)(({ theme }) => ({
   backdropFilter: 'blur(20px)',
-  background:
-    theme.palette.mode === 'dark' ? 'rgba(26, 31, 58, 0.85)' : 'rgba(255, 255, 255, 0.85)',
-  border: `1px solid ${
-    theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'
-  }`,
+  background: alpha(theme.palette.background.paper, 0.85),
+  border: `1px solid ${theme.palette.divider}`,
   borderRadius: theme.spacing(3),
   boxShadow:
     theme.palette.mode === 'dark'
-      ? '0 8px 32px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(31, 90, 246, 0.2)'
-      : '0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(31, 90, 246, 0.1)',
+      ? `0 8px 32px ${alpha(theme.palette.common.black, 0.4)}, 0 2px 8px ${alpha(theme.palette.primary.main, 0.2)}`
+      : `0 8px 32px ${alpha(theme.palette.common.black, 0.08)}, 0 2px 8px ${alpha(theme.palette.primary.main, 0.1)}`,
   maxWidth: '800px !important',
   padding: theme.spacing(4),
   position: 'relative',
@@ -129,7 +129,10 @@ const ContentWrapper = styled(Container)(({ theme }) => ({
 
 const AccountCard = styled(Box)(({ theme }) => ({
   alignItems: 'center',
-  background: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.02)',
+  background:
+    theme.palette.mode === 'dark'
+      ? alpha(theme.palette.common.white, 0.05)
+      : alpha(theme.palette.common.black, 0.02),
   border: `1px solid ${theme.palette.divider}`,
   borderRadius: theme.spacing(2),
   display: 'flex',
@@ -138,11 +141,11 @@ const AccountCard = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2.5),
 }));
 
-const AccountAvatar = styled(Box)(({ theme: _theme }) => ({
+const AccountAvatar = styled(Box)(({ theme }) => ({
   alignItems: 'center',
-  background: 'linear-gradient(135deg, #1f5af6 0%, #5a81ff 100%)',
+  background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
   borderRadius: '50%',
-  color: '#fff',
+  color: theme.palette.primary.contrastText,
   display: 'flex',
   flexShrink: 0,
   fontSize: '1.25rem',
@@ -290,13 +293,17 @@ export const SaveSeedPage: React.FC = () => {
         <FloatingShape delay={1.5} size={150} top="60%" left="80%" />
         <FloatingShape delay={3} size={180} top="75%" left="10%" />
         <GlowOrb
-          color={theme.palette.mode === 'dark' ? '#1f5af6' : '#5a81ff'}
+          color={
+            theme.palette.mode === 'dark' ? theme.palette.primary.main : theme.palette.primary.dark
+          }
           top="20%"
           left="15%"
           size={300}
         />
         <GlowOrb
-          color={theme.palette.mode === 'dark' ? '#5a81ff' : '#1f5af6'}
+          color={
+            theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.primary.main
+          }
           top="70%"
           left="75%"
           size={350}
@@ -337,7 +344,9 @@ export const SaveSeedPage: React.FC = () => {
         <FloatingShape delay={1.5} size={150} top="60%" left="80%" />
 
         <GlowOrb
-          color={theme.palette.mode === 'dark' ? '#1f5af6' : '#5a81ff'}
+          color={
+            theme.palette.mode === 'dark' ? theme.palette.primary.main : theme.palette.primary.dark
+          }
           top="20%"
           left="15%"
           size={300}
@@ -365,13 +374,17 @@ export const SaveSeedPage: React.FC = () => {
       <FloatingShape delay={1.5} size={150} top="60%" left="80%" />
       <FloatingShape delay={3} size={180} top="75%" left="10%" />
       <GlowOrb
-        color={theme.palette.mode === 'dark' ? '#1f5af6' : '#5a81ff'}
+        color={
+          theme.palette.mode === 'dark' ? theme.palette.primary.main : theme.palette.primary.dark
+        }
         top="20%"
         left="15%"
         size={300}
       />
       <GlowOrb
-        color={theme.palette.mode === 'dark' ? '#5a81ff' : '#1f5af6'}
+        color={
+          theme.palette.mode === 'dark' ? theme.palette.primary.dark : theme.palette.primary.main
+        }
         top="70%"
         left="75%"
         size={350}
@@ -425,9 +438,9 @@ export const SaveSeedPage: React.FC = () => {
                         <Box
                           sx={{
                             alignItems: 'center',
-                            background: 'linear-gradient(135deg, #1f5af6, #5a81ff)',
+                            background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.primary.dark})`,
                             borderRadius: '50%',
-                            color: '#fff',
+                            color: theme.palette.primary.contrastText,
                             display: 'flex',
                             fontWeight: 700,
                             height: 32,

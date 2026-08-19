@@ -60,6 +60,19 @@ describe('contrastRatio', () => {
   it('is order-independent', () => {
     expect(contrastRatio('#123456', '#abcdef')).toBeCloseTo(contrastRatio('#abcdef', '#123456'), 5);
   });
+
+  // Documented hex-only. Before this guard, a non-hex string fell through to
+  // `Number.parseInt` on the wrong slice and returned `NaN` — which happens
+  // to fail every `toBeGreaterThanOrEqual` comparison, so no test was ever
+  // fooled, but silently and only by accident. See task-8-report.md, Finding 4.
+  it('fails loudly on a translucent colour instead of returning NaN', () => {
+    expect(() => contrastRatio('rgba(0, 0, 0, 0.5)', '#ffffff')).toThrow(/hex/i);
+    expect(() => contrastRatio('#ffffff', 'rgb(0, 0, 0)')).toThrow(/hex/i);
+  });
+
+  it('fails loudly on any other non-hex input', () => {
+    expect(() => contrastRatio('white', '#000000')).toThrow(/hex/i);
+  });
 });
 
 describe('WCAG AA on every surface', () => {

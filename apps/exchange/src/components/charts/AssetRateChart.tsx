@@ -1,5 +1,7 @@
+import { alpha } from '@mui/material';
 import React, { useMemo } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
+import { palette } from '@/styles/tokens';
 
 /**
  * Container for the chart
@@ -25,7 +27,7 @@ const ChartSvg = styled.svg`
  */
 const ChartPath = styled.path<{ $color?: string }>`
   fill: none;
-  stroke: ${(props) => props.$color || '#1f77b4'};
+  stroke: ${(props) => props.$color || props.theme.colors.primary};
   stroke-width: 2;
   transition: d 0.3s ease;
 `;
@@ -34,7 +36,7 @@ const ChartPath = styled.path<{ $color?: string }>`
  * Area fill under the chart
  */
 const ChartArea = styled.path<{ $color?: string }>`
-  fill: ${(props) => props.$color || 'rgba(31, 119, 180, 0.1)'};
+  fill: ${(props) => props.$color || alpha(props.theme.colors.primary, 0.1)};
   transition: d 0.3s ease;
 `;
 
@@ -42,7 +44,7 @@ const ChartArea = styled.path<{ $color?: string }>`
  * Grid line styling
  */
 const GridLine = styled.line`
-  stroke: #e0e0e0;
+  stroke: ${({ theme }) => theme.colors.border};
   stroke-width: 1;
   stroke-dasharray: 4 4;
 `;
@@ -52,7 +54,7 @@ const GridLine = styled.line`
  */
 const AxisLabel = styled.text`
   font-size: 12px;
-  fill: #666;
+  fill: ${({ theme }) => theme.colors.textMuted};
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 `;
 
@@ -61,7 +63,7 @@ const AxisLabel = styled.text`
  */
 const DataPoint = styled.circle`
   fill: white;
-  stroke: ${(props) => props.color || '#1f77b4'};
+  stroke: ${(props) => props.color || props.theme.colors.primary};
   stroke-width: 2;
   cursor: pointer;
   transition: r 0.2s ease;
@@ -78,7 +80,7 @@ const Tooltip = styled.div<{ $x: number; $y: number; $visible: boolean }>`
   position: absolute;
   left: ${(props) => props.$x}px;
   top: ${(props) => props.$y}px;
-  background: rgba(0, 0, 0, 0.8);
+  background: ${alpha(palette.midnightInk, 0.8)};
   color: white;
   padding: 8px 12px;
   border-radius: 4px;
@@ -100,7 +102,7 @@ const Tooltip = styled.div<{ $x: number; $y: number; $visible: boolean }>`
     height: 0;
     border-left: 4px solid transparent;
     border-right: 4px solid transparent;
-    border-top: 4px solid rgba(0, 0, 0, 0.8);
+    border-top: 4px solid ${alpha(palette.midnightInk, 0.8)};
   }
 `;
 
@@ -246,8 +248,8 @@ export interface AssetRateChartProps {
  */
 export const AssetRateChart: React.FC<AssetRateChartProps> = ({
   data,
-  lineColor = '#1f77b4',
-  areaColor = 'rgba(31, 119, 180, 0.1)',
+  lineColor,
+  areaColor,
   height = 300,
   width = '100%',
   showGrid = true,
@@ -262,6 +264,13 @@ export const AssetRateChart: React.FC<AssetRateChartProps> = ({
   showPoints = false,
   className,
 }) => {
+  const theme = useTheme();
+  // Resolved once here (rather than left for `ChartPath`/`ChartArea`'s own
+  // `props.$color || ...` fallback) so a `string | undefined` prop never
+  // reaches those components' `$color?: string` — `exactOptionalPropertyTypes`
+  // rejects passing `undefined` for an optional-but-not-nullable prop.
+  const resolvedLineColor = lineColor ?? theme.colors.primary;
+  const resolvedAreaColor = areaColor ?? alpha(theme.colors.primary, 0.1);
   const [hoveredPoint, setHoveredPoint] = React.useState<number | null>(null);
   const [tooltipPos, setTooltipPos] = React.useState({ x: 0, y: 0 });
 
@@ -366,7 +375,7 @@ export const AssetRateChart: React.FC<AssetRateChartProps> = ({
   if (!scales) {
     return (
       <ChartContainer className={className}>
-        <div style={{ color: '#999', paddingTop: '80px', textAlign: 'center' }}>
+        <div style={{ color: theme.colors.textMuted, paddingTop: '80px', textAlign: 'center' }}>
           No data available
         </div>
       </ChartContainer>
@@ -418,10 +427,10 @@ export const AssetRateChart: React.FC<AssetRateChartProps> = ({
           })}
 
         {/* Area fill */}
-        <ChartArea d={areaPath} $color={areaColor} />
+        <ChartArea d={areaPath} $color={resolvedAreaColor} />
 
         {/* Line path */}
-        <ChartPath d={path} $color={lineColor} />
+        <ChartPath d={path} $color={resolvedLineColor} />
 
         {/* Data points */}
         {(showPoints || showTooltip) &&
@@ -431,7 +440,7 @@ export const AssetRateChart: React.FC<AssetRateChartProps> = ({
               cx={points[i]?.x}
               cy={points[i]?.y}
               r={showPoints ? 4 : 0}
-              color={lineColor}
+              color={resolvedLineColor}
               onMouseEnter={(e) => handlePointHover(i, e)}
               onMouseLeave={() => setHoveredPoint(null)}
               style={{ opacity: showPoints ? 1 : 0 }}

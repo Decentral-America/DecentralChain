@@ -18,7 +18,7 @@ const ModalBody = styled.div`
 const Description = styled.p`
   margin: 0 0 20px 0;
   font-size: 14px;
-  color: #616161;
+  color: ${(props) => props.theme.colors.textMuted};
   line-height: 1.6;
 `;
 
@@ -28,7 +28,7 @@ const UserList = styled.div`
   overflow-y: auto;
   /* Keeps a scroll gesture inside the overlay instead of chaining to the page behind it. */
   overscroll-behavior: contain;
-  border: 1px solid #e0e0e0;
+  border: 1px solid ${(props) => props.theme.colors.border};
   border-radius: 4px;
 `;
 
@@ -36,7 +36,7 @@ const UserItem = styled.div`
   display: flex;
   align-items: center;
   padding: 12px 16px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid ${(props) => props.theme.colors.border};
   cursor: pointer;
 
   &:last-child {
@@ -44,7 +44,7 @@ const UserItem = styled.div`
   }
 
   &:hover {
-    background-color: #f5f5f5;
+    background-color: ${(props) => props.theme.colors.hover};
   }
 `;
 
@@ -59,7 +59,7 @@ const UserInfo = styled.div`
 
 const UserAddress = styled.div`
   font-size: 13px;
-  color: #212121;
+  color: ${(props) => props.theme.colors.text};
   font-family: 'Roboto Mono', monospace;
 `;
 
@@ -76,7 +76,7 @@ const SelectionHeader = styled.div`
 `;
 
 const SelectionLabel = styled.span`
-  color: #757575;
+  color: ${(props) => props.theme.colors.textMuted};
   font-size: 13px;
   font-weight: 500;
 `;
@@ -89,7 +89,7 @@ const SelectionActions = styled.div`
 const TextButton = styled.button`
   background: none;
   border: none;
-  color: #2196f3;
+  color: ${(props) => props.theme.colors.primary};
   cursor: pointer;
   font: inherit;
   font-size: 13px;

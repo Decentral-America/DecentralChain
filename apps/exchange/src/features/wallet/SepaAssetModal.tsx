@@ -90,8 +90,8 @@ const Warning = styled.div`
   display: flex;
   gap: ${(p) => p.theme.spacing.sm};
   padding: ${(p) => p.theme.spacing.md};
-  background: ${(p) => p.theme.colors.warning || '#fff3cd'};
-  border: 1px solid #ffc107;
+  background: ${(p) => p.theme.colors.warning};
+  border: 1px solid ${(p) => p.theme.colors.warning};
   border-radius: ${(p) => p.theme.radii.md};
 `;
 

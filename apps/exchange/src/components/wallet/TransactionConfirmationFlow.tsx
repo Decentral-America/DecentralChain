@@ -482,13 +482,13 @@ const ReviewTitle = styled.h3`
 `;
 
 const StatusHint = styled.p`
-  color: #666;
+  color: ${({ theme }) => theme.colors.textMuted};
   font-size: 14px;
   margin: 0;
 `;
 
 const TxIdHint = styled.p`
-  color: #999;
+  color: ${({ theme }) => theme.colors.textMuted};
   font-family: monospace;
   font-size: 12px;
   margin: 8px 0 0;
@@ -496,9 +496,9 @@ const TxIdHint = styled.p`
 
 const ErrorIcon = styled.div`
   align-items: center;
-  background-color: rgba(239, 68, 68, 0.2);
+  background-color: ${({ theme }) => theme.colors.error}20;
   border-radius: 4px;
-  color: #b3261e;
+  color: ${({ theme }) => theme.colors.error};
   display: flex;
   font-size: 32px;
   height: 64px;

@@ -1,4 +1,6 @@
 import { Box } from '@mui/material';
+import { palette } from '@/styles/tokens';
+import { contourStroke } from '@/theme/landingTheme';
 
 /**
  * The contour motif carried by every indigo band — the hero, the closing panel,
@@ -35,7 +37,9 @@ function BandTexture({
       sx={{
         bottom: 0,
         // Fades westward so the contours never compete with the headline.
-        maskImage: 'linear-gradient(to left, #000 5%, transparent 70%)',
+        // `maskImage` reads the gradient's luminance, not its hue — any
+        // opaque colour masks identically to `#000` here.
+        maskImage: `linear-gradient(to left, ${palette.midnightInk} 5%, transparent 70%)`,
         opacity,
         overflow: 'hidden',
         pointerEvents: 'none',
@@ -49,7 +53,7 @@ function BandTexture({
       <svg viewBox="0 0 200 200" preserveAspectRatio="xMaxYMid slice">
         <title>Decorative contours</title>
         {CONTOURS.map((d) => (
-          <path key={d} d={d} fill="none" stroke="rgba(196, 170, 255, 0.4)" strokeWidth="0.6" />
+          <path key={d} d={d} fill="none" stroke={contourStroke} strokeWidth="0.6" />
         ))}
       </svg>
     </Box>
