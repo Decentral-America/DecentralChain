@@ -28,6 +28,7 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { APP_TILE_HUES } from '@/theme/tokens/semantic';
 
 const SRC = path.resolve(import.meta.dirname, '../..');
 
@@ -253,6 +254,37 @@ const NAMED_COLOUR = new RegExp(
   'i',
 );
 
+/**
+ * Fix round 1: `hue: 'indigo'` (and every other `AppTileHue` assignment in
+ * `layouts/shell/navigation.tsx`) is a role reference, not a colour position,
+ * but `NAMED_COLOUR` above couldn't tell the difference — its colon-based
+ * branch matches *any* `key: 'word'`, and five of `AppTileHue`'s eight members
+ * (`indigo`, `violet`, `teal`, `green`, `blue`) happen to also spell CSS
+ * named colours. Every launcher-tile hue assignment false-positived as a raw
+ * literal.
+ *
+ * This is not a hole the same way widening `ALLOWED` would be: `hue` is typed
+ * `AppTileHue`, a closed eight-name union (`theme/tokens/semantic.ts`), so the
+ * type checker — not this lint — is what stops that field from ever becoming
+ * an arbitrary colour. A role drawn from a closed union is the same class of
+ * thing as `bgcolor: 'primary.main'`, which this lint already lets through:
+ * neither names a colour, both name a token/role the theme resolves later.
+ *
+ * Scoped tight on purpose, to avoid becoming "any property called `hue` is
+ * exempt": the property name must be the literal, unquoted `hue`, its value
+ * must be exactly one of the eight current `APP_TILE_HUES` members (read from
+ * the source of truth, not re-typed here, so this can't drift from it), and
+ * only that matched span is blanked out of the line before the colour checks
+ * run — `color: 'indigo'`, `background: 'teal'`, or a bare `'green'` sitting
+ * anywhere else on the same line is still caught.
+ */
+const HUE_ROLE_VALUE = new RegExp(`\\bhue\\s*:\\s*(['"\`])(?:${APP_TILE_HUES.join('|')})\\1`, 'g');
+
+/** Blanks out `hue:`-role spans (see `HUE_ROLE_VALUE`) before a line is checked for raw colours. */
+function withoutHueRoles(line: string): string {
+  return line.replace(HUE_ROLE_VALUE, (match) => ' '.repeat(match.length));
+}
+
 const IGNORED_DIRS = new Set(['__tests__', 'node_modules']);
 
 /**
@@ -314,7 +346,8 @@ function findOffenders(rel: string, src: string): string[] {
       if (!trimmed.includes('*/')) inBlockComment = true;
       return;
     }
-    if (HEX.test(line) || COLOUR_FN.test(line) || NAMED_COLOUR.test(line)) {
+    const checked = withoutHueRoles(line);
+    if (HEX.test(checked) || COLOUR_FN.test(checked) || NAMED_COLOUR.test(checked)) {
       offenders.push(`${rel}:${i + 1}  ${line.trim()}`);
     }
   });
