@@ -263,22 +263,48 @@ const NAMED_COLOUR = new RegExp(
  * named colours. Every launcher-tile hue assignment false-positived as a raw
  * literal.
  *
- * This is not a hole the same way widening `ALLOWED` would be: `hue` is typed
- * `AppTileHue`, a closed eight-name union (`theme/tokens/semantic.ts`), so the
- * type checker — not this lint — is what stops that field from ever becoming
- * an arbitrary colour. A role drawn from a closed union is the same class of
- * thing as `bgcolor: 'primary.main'`, which this lint already lets through:
- * neither names a colour, both name a token/role the theme resolves later.
+ * This is not a hole the same way widening `ALLOWED` would be: the concrete
+ * field this exempts, `Destination.hue` in `layouts/shell/navigation.tsx`, is
+ * typed `AppTileHue`, a closed eight-name union (`theme/tokens/semantic.ts`),
+ * so the type checker — not this lint — is what stops *that* field from ever
+ * becoming an arbitrary colour. A role drawn from a closed union is the same
+ * class of thing as `bgcolor: 'primary.main'`, which this lint already lets
+ * through: neither names a colour, both name a token/role the theme resolves
+ * later.
  *
  * Scoped tight on purpose, to avoid becoming "any property called `hue` is
- * exempt": the property name must be the literal, unquoted `hue`, its value
- * must be exactly one of the eight current `APP_TILE_HUES` members (read from
- * the source of truth, not re-typed here, so this can't drift from it), and
- * only that matched span is blanked out of the line before the colour checks
- * run — `color: 'indigo'`, `background: 'teal'`, or a bare `'green'` sitting
- * anywhere else on the same line is still caught.
+ * exempt": the value must be exactly one of the eight current
+ * `APP_TILE_HUES` members (read from the source of truth, not re-typed here,
+ * so this can't drift from it), and only that matched span is blanked out of
+ * the line before the colour checks run — `color: 'indigo'`,
+ * `background: 'teal'`, or a bare `'green'` in a value position elsewhere on
+ * the same line is still caught (see the boundary table in the `describe`
+ * block below, which pins this both ways).
+ *
+ * Fix round 2: the property-name guard is a negative lookbehind excluding a
+ * word character, a hyphen, or any of the three quote characters, not a bare
+ * `\b`. A plain word boundary treats both `-` and a quote character as
+ * "outside a word", so `\bhue` would also have matched inside
+ * `tile-hue: 'green'` and, worse, a *quoted* key like `'hue': 'green'` —
+ * exactly the shape a real colour declaration can take, so that gap would
+ * have exempted a genuine offender rather than only the plain-identifier case
+ * this is meant for. The lookbehind requires the character immediately
+ * before `hue` to be none of those, so only the bare, unquoted `hue` key is
+ * ever exempted.
+ *
+ * That guard is still purely textual, on the property *name* — it cannot (a
+ * line-based regex has no type information to do this with) confirm that any
+ * given match is actually `Destination.hue` rather than some unrelated
+ * object elsewhere in `src/` that also happens to use the identifier `hue`
+ * for something else. That residual reach is accepted rather than closed
+ * further: nothing in this codebase reads a property literally named `hue`
+ * as a CSS colour, so exempting the token everywhere is not the same class of
+ * risk as exempting a style position would be.
  */
-const HUE_ROLE_VALUE = new RegExp(`\\bhue\\s*:\\s*(['"\`])(?:${APP_TILE_HUES.join('|')})\\1`, 'g');
+const HUE_ROLE_VALUE = new RegExp(
+  `(?<![\\w'"\`-])hue\\s*:\\s*(['"\`])(?:${APP_TILE_HUES.join('|')})\\1`,
+  'g',
+);
 
 /** Blanks out `hue:`-role spans (see `HUE_ROLE_VALUE`) before a line is checked for raw colours. */
 function withoutHueRoles(line: string): string {
@@ -367,5 +393,39 @@ describe('no raw colour literals in components', () => {
     );
 
     expect(offenders, `Use a semantic token instead:\n${offenders.join('\n')}`).toEqual([]);
+  });
+});
+
+/**
+ * Fix round 2: the sweep above proves the `HUE_ROLE_VALUE` boundary holds
+ * against this run's snapshot of `src/`, but a later edit that drops the `\1`
+ * backreference or loosens the lookbehind could keep that test green — a
+ * genuine offender just has to avoid coincidentally sitting on a `hue:` line
+ * for the regression to go unnoticed. `findOffenders` is exercised directly,
+ * against one-line fixtures, so both directions of the boundary are pinned
+ * independently of whatever happens to be in the tree.
+ */
+describe('the hue-role exemption catches everything it should', () => {
+  it.each([
+    ['a plain colour property', "color: 'indigo'"],
+    ['a background property', "background: 'teal'"],
+    ['a bgcolor property', "bgcolor: 'blue'"],
+    ['a hex value', "borderColor: '#ff0000'"],
+    ['an rgb() value', "bgcolor: 'rgb(1, 2, 3)'"],
+    ['a colour-named JSX attribute', 'fill="teal"'],
+    ['a hue value outside the eight-member union', "hue: 'blueviolet'"],
+    ['a quoted `hue` key — the same shape a real declaration can take', "'hue': 'green'"],
+    ['a hue role next to an unrelated colour property', "{ hue: 'indigo', color: 'teal' }"],
+    ['a hue role next to an unrelated hex value', "{ hue: 'indigo', bg: '#abcdef' }"],
+  ])('still flags %s', (_label, line) => {
+    expect(findOffenders('fixture.tsx', line)).toHaveLength(1);
+  });
+
+  it.each([
+    ['single quotes', "hue: 'indigo'"],
+    ['double quotes', 'hue: "indigo"'],
+    ['backticks', 'hue: `indigo`'],
+  ])('exempts a real hue role value in %s', (_label, line) => {
+    expect(findOffenders('fixture.tsx', line)).toEqual([]);
   });
 });
