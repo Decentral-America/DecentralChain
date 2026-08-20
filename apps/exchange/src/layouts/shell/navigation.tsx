@@ -185,16 +185,6 @@ export const LAUNCHER_TILES: Destination[] = [
   SETTINGS,
 ];
 
-/** The launcher's shelves. Superseded by `LAUNCHER_TILES`; removed in Task 4. */
-export const LAUNCHER_GROUPS: { title: string; items: Destination[] }[] = [
-  {
-    items: [DASHBOARD, PORTFOLIO, TRANSACTIONS, LEASING, ALIASES, ACCOUNT_MANAGER],
-    title: 'Wallet',
-  },
-  { items: [TRADE, SWAP, BRIDGE, MARKETS, ORDER_BOOK], title: 'Markets' },
-  { items: [CREATE_TOKEN, ANALYTICS, MESSAGES, SETTINGS], title: 'Tools' },
-];
-
 /**
  * The top tabs. Four destinations and then the launcher: the places worth a
  * click from anywhere, with everything else one press away.
