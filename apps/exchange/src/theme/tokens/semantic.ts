@@ -12,6 +12,30 @@
 
 export type ThemeMode = 'light' | 'dark';
 
+/**
+ * The tile hues the launcher identifies features by.
+ *
+ * A fixed set of roles, not a per-feature lookup: a sixteenth destination
+ * reuses a hue rather than inventing one. Eight is the number that stays
+ * mutually distinguishable *and* clears AA in both modes — fifteen distinct
+ * hues cannot do both, some pairs always collapse into each other.
+ *
+ * Declared as a `const` array so the runtime list and the union type come from
+ * one place; a test walks it to assert the floors per hue.
+ */
+export const APP_TILE_HUES = [
+  'amber',
+  'blue',
+  'green',
+  'indigo',
+  'rose',
+  'slate',
+  'teal',
+  'violet',
+] as const;
+
+export type AppTileHue = (typeof APP_TILE_HUES)[number];
+
 export interface SemanticTokens {
   surface: { base: string; hover: string; overlay: string; raised: string; sunken: string };
   border: { subtle: string; strong: string };
@@ -31,6 +55,16 @@ export interface SemanticTokens {
    * shade stays inside the band where the ink still clears AA.
    */
   accent: { primary: string; muted: string; onPrimary: string; primaryHover: string };
+  /**
+   * Feature-identifying tile fills, each with the ink that survives on it.
+   *
+   * Same contract as `intent`: the fill inverts between modes — a deep shade
+   * in light, a light tint in dark — so the ink inverts with it, white on
+   * light-mode fills and near-black on dark-mode ones. All sixteen pairs clear
+   * 4.5:1, stricter than the 3:1 WCAG 1.4.11 asks of a graphic, because that
+   * is the floor the rest of this file holds.
+   */
+  appTile: Record<AppTileHue, { fill: string; on: string }>;
   /**
    * `on*` is the ink that goes *on* the matching intent fill — the same
    * per-mode role as `accent.onPrimary`. Every intent fill is a light tint in
@@ -60,6 +94,19 @@ export const SEMANTIC_TOKENS: Record<ThemeMode, SemanticTokens> = {
       primary: '#8b7dff',
       primaryHover: '#7d70eb',
     },
+    appTile: {
+      amber: { fill: '#fcd34d', on: '#14122b' },
+      blue: { fill: '#7dd3fc', on: '#14122b' },
+      green: { fill: '#4ade80', on: '#14122b' },
+      // Same value as `accent.primary`: the house colour staying on Dashboard
+      // is what keeps the launcher looking like this product. If the brand
+      // accent moves, this moves with it — deliberately, but consciously.
+      indigo: { fill: '#8b7dff', on: '#14122b' },
+      rose: { fill: '#fda4af', on: '#14122b' },
+      slate: { fill: '#a8b3c4', on: '#14122b' },
+      teal: { fill: '#5eead4', on: '#14122b' },
+      violet: { fill: '#c4b5fd', on: '#14122b' },
+    },
     border: { strong: '#3a3358', subtle: '#241d42' },
     intent: {
       danger: '#ff6b6b',
@@ -87,6 +134,17 @@ export const SEMANTIC_TOKENS: Record<ThemeMode, SemanticTokens> = {
       onPrimary: '#ffffff',
       primary: '#5b4bdb',
       primaryHover: '#4a3bb8',
+    },
+    appTile: {
+      amber: { fill: '#b45309', on: '#ffffff' },
+      blue: { fill: '#1d4ed8', on: '#ffffff' },
+      green: { fill: '#15803d', on: '#ffffff' },
+      // See the dark-mode note: same value as `accent.primary`, on purpose.
+      indigo: { fill: '#5b4bdb', on: '#ffffff' },
+      rose: { fill: '#be123c', on: '#ffffff' },
+      slate: { fill: '#475569', on: '#ffffff' },
+      teal: { fill: '#0f766e', on: '#ffffff' },
+      violet: { fill: '#7c3aed', on: '#ffffff' },
     },
     border: { strong: '#c7c3e0', subtle: '#e9e7f2' },
     intent: {
