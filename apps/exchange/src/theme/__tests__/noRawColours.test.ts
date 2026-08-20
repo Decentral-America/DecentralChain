@@ -283,14 +283,20 @@ const NAMED_COLOUR = new RegExp(
  *
  * Fix round 2: the property-name guard is a negative lookbehind excluding a
  * word character, a hyphen, or any of the three quote characters, not a bare
- * `\b`. A plain word boundary treats both `-` and a quote character as
- * "outside a word", so `\bhue` would also have matched inside
- * `tile-hue: 'green'` and, worse, a *quoted* key like `'hue': 'green'` —
- * exactly the shape a real colour declaration can take, so that gap would
- * have exempted a genuine offender rather than only the plain-identifier case
- * this is meant for. The lookbehind requires the character immediately
- * before `hue` to be none of those, so only the bare, unquoted `hue` key is
- * ever exempted.
+ * `\b`. The gap that actually mattered is the hyphen: a plain word boundary
+ * treats `-` as "outside a word", so `\bhue` would also have matched inside
+ * an unquoted, hyphenated key like `tile-hue: 'green'` or `data-hue: 'teal'`
+ * — a real property that is not `Destination.hue`, silently exempted. (A
+ * *quoted* key such as `'hue': 'green'` was never actually reachable either
+ * way: whatever quote character closes the key sits directly before the
+ * `:`, which breaks the `\s*:` adjacency this pattern requires regardless of
+ * the boundary check — the quote exclusion in the lookbehind is
+ * belt-and-braces, not the fix. The cases marked `REGRESSION PIN` in the
+ * `describe` block below are the hyphenated ones, verified to diverge
+ * against the old, unlookbehinded pattern; those are what this fix round
+ * actually turns on.) The lookbehind requires the
+ * character immediately before `hue` to be none of those, so only the bare,
+ * unquoted `hue` key is ever exempted.
  *
  * That guard is still purely textual, on the property *name* — it cannot (a
  * line-based regex has no type information to do this with) confirm that any
@@ -404,6 +410,15 @@ describe('no raw colour literals in components', () => {
  * for the regression to go unnoticed. `findOffenders` is exercised directly,
  * against one-line fixtures, so both directions of the boundary are pinned
  * independently of whatever happens to be in the tree.
+ *
+ * Fix round 3: most of the table below is a catalogue, not a pin — every one
+ * of those lines produces the *same* verdict whether `HUE_ROLE_VALUE` uses
+ * the current lookbehind or the old bare `\b` (verified by running both
+ * patterns over the whole table; see task-3-report.md's "Fix round 3" for
+ * the comparison), so a revert to `\b` would leave this suite green. Only
+ * the two entries marked `REGRESSION PIN` actually diverge between the two
+ * patterns — do not remove or "simplify" them as duplicates of their
+ * neighbours; they are the only cases here that would catch that revert.
  */
 describe('the hue-role exemption catches everything it should', () => {
   it.each([
@@ -414,9 +429,18 @@ describe('the hue-role exemption catches everything it should', () => {
     ['an rgb() value', "bgcolor: 'rgb(1, 2, 3)'"],
     ['a colour-named JSX attribute', 'fill="teal"'],
     ['a hue value outside the eight-member union', "hue: 'blueviolet'"],
-    ['a quoted `hue` key — the same shape a real declaration can take', "'hue': 'green'"],
+    // Same verdict under the old `\b` guard too — a quoted key's closing
+    // quote always breaks the `\s*:` adjacency this pattern requires,
+    // regardless of what precedes `hue`. Kept as documentation of that
+    // (separate, pre-existing) protection, not as a boundary pin.
+    ['a quoted `hue` key', "'hue': 'green'"],
     ['a hue role next to an unrelated colour property', "{ hue: 'indigo', color: 'teal' }"],
     ['a hue role next to an unrelated hex value', "{ hue: 'indigo', bg: '#abcdef' }"],
+    // REGRESSION PIN — diverges from the old `\b`-based guard, which read
+    // `-` as "outside a word" and would have exempted this too. Confirmed by
+    // running both patterns: old = exempt (0 offenders), new = caught (1).
+    ['REGRESSION PIN: a hyphenated key ending in `-hue`', "tile-hue: 'green'"],
+    ['REGRESSION PIN: another hyphenated key ending in `-hue`', "data-hue: 'teal'"],
   ])('still flags %s', (_label, line) => {
     expect(findOffenders('fixture.tsx', line)).toHaveLength(1);
   });
