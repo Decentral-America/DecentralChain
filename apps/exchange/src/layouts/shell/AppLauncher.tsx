@@ -1,7 +1,7 @@
 import { Box, Dialog, Typography, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router';
 import { AppTile } from '@/layouts/shell/AppTile';
-import { isCurrent, LAUNCHER_TILES } from '@/layouts/shell/navigation';
+import { isCurrent, LAUNCHER_COLUMNS, LAUNCHER_TILES } from '@/layouts/shell/navigation';
 import { radii } from '@/styles/tokens';
 import { tokens } from '@/theme/tokens/semantic';
 
@@ -21,9 +21,10 @@ import { tokens } from '@/theme/tokens/semantic';
  *
  * Tile hues are arranged so no two of one hue touch — but adjacency is a
  * function of the column count, and `auto-fill` would pick whatever fits,
- * including the counts where the arrangement breaks. Three fixed counts are
- * verified in `navigation.test.ts`; this grid may only use those. Changing a
- * value here without changing that list is a test failure, deliberately.
+ * including the counts where the arrangement breaks. `LAUNCHER_COLUMNS`
+ * (`navigation.tsx`) is the only source for those counts — this grid reads
+ * it rather than repeating the numbers, and `navigation.test.ts`'s adjacency
+ * check derives from the same constant, so the two cannot drift apart.
  *
  * ## Surfaces are roles, not `palette.*` constants
  *
@@ -105,9 +106,9 @@ export function AppLauncher({
             display: 'grid',
             gap: 2.5,
             gridTemplateColumns: {
-              md: 'repeat(7, 1fr)',
-              sm: 'repeat(4, 1fr)',
-              xs: 'repeat(3, 1fr)',
+              md: `repeat(${LAUNCHER_COLUMNS.md}, 1fr)`,
+              sm: `repeat(${LAUNCHER_COLUMNS.sm}, 1fr)`,
+              xs: `repeat(${LAUNCHER_COLUMNS.xs}, 1fr)`,
             },
           }}
         >

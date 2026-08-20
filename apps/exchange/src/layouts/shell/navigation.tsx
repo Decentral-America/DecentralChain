@@ -186,6 +186,17 @@ export const LAUNCHER_TILES: Destination[] = [
 ];
 
 /**
+ * The only column counts `LAUNCHER_TILES`' hue arrangement is collision-free
+ * at, keyed by breakpoint.
+ *
+ * This is the single source both `AppLauncher`'s `gridTemplateColumns` and
+ * `navigation.test.ts`'s adjacency check build from — so changing a count
+ * here is the only way to change it anywhere, and the two can no longer
+ * silently drift apart the way two independently hardcoded copies could.
+ */
+export const LAUNCHER_COLUMNS = { md: 7, sm: 4, xs: 3 } as const;
+
+/**
  * The top tabs. Four destinations and then the launcher: the places worth a
  * click from anywhere, with everything else one press away.
  */

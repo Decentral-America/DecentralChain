@@ -16,7 +16,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { AppLauncher } from '@/layouts/shell/AppLauncher';
-import { LAUNCHER_TILES } from '@/layouts/shell/navigation';
+import { LAUNCHER_COLUMNS, LAUNCHER_TILES } from '@/layouts/shell/navigation';
 import { rgbToHex } from '@/test-utils/rgbToHex';
 import { createAppTheme } from '@/theme/mui-theme';
 import { contrastRatio, type ThemeMode, tokens } from '@/theme/tokens/semantic';
@@ -121,9 +121,12 @@ describe('AppLauncher grid', () => {
   it('pins its columns rather than letting auto-fill choose them', () => {
     renderLauncher('light');
     const grid = document.querySelector('[data-testid="launcher-grid"]') as HTMLElement;
-    // The hue arrangement is only verified at 3, 4 and 7 columns
-    // (navigation.test.ts). `auto-fill` would also produce 5, 6 and 8 at
-    // intermediate widths, each of which puts a repeated hue beside its twin.
+    // The hue arrangement is only collision-free at the counts in
+    // `LAUNCHER_COLUMNS` (navigation.test.ts's adjacency check derives from
+    // the same constant). `auto-fill` would also produce intermediate counts
+    // at intermediate widths, each of which puts a repeated hue beside its
+    // twin — so this asserts the exact declared string per breakpoint, not
+    // merely that it contains `repeat(`.
     //
     // Read from the stylesheet rather than `getComputedStyle`: jsdom's media
     // evaluator only recognises the plain "screen"/"all" media types (see
@@ -133,11 +136,7 @@ describe('AppLauncher grid', () => {
     // is the only place all three declarations are visible in this
     // environment.
     const columns = mediaDeclarations(grid, 'grid-template-columns');
-    expect(columns).toHaveLength(3);
-    for (const value of columns) {
-      expect(value).toContain('repeat(');
-      expect(value).not.toContain('auto-fill');
-      expect(value).not.toContain('auto-fit');
-    }
+    const expected = Object.values(LAUNCHER_COLUMNS).map((count) => `repeat(${count}, 1fr)`);
+    expect(columns.slice().sort()).toEqual(expected.slice().sort());
   });
 });

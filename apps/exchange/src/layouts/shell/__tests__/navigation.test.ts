@@ -6,16 +6,21 @@
  * defines, and that no two tiles of one hue end up touching.
  *
  * Adjacency depends on the column count, which is why the grid pins its
- * columns instead of auto-filling. This test and
- * `AppLauncher`'s `gridTemplateColumns` have to agree — change one without the
- * other and this fails, which is the point.
+ * columns instead of auto-filling. This test derives its counts from
+ * `LAUNCHER_COLUMNS`, the same constant `AppLauncher` builds its
+ * `gridTemplateColumns` from — change one and this fails, which is the point.
  */
 import { describe, expect, it } from 'vitest';
-import { LAUNCHER_TILES, TOP_TABS } from '@/layouts/shell/navigation';
+import { LAUNCHER_COLUMNS, LAUNCHER_TILES, TOP_TABS } from '@/layouts/shell/navigation';
 import { APP_TILE_HUES } from '@/theme/tokens/semantic';
 
-/** The three counts `AppLauncher` pins its grid to, at xs / sm / md+. */
-const COLUMN_COUNTS = [3, 4, 7];
+/**
+ * The counts `AppLauncher` pins its grid to, at xs / sm / md+ — read from the
+ * same constant the component builds its `gridTemplateColumns` from, rather
+ * than a second hardcoded copy, so a changed column count is exercised here
+ * automatically instead of silently going unchecked.
+ */
+const COLUMN_COUNTS = Object.values(LAUNCHER_COLUMNS);
 
 describe('LAUNCHER_TILES', () => {
   it('lists fifteen destinations, each path once', () => {
