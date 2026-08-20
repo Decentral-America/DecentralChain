@@ -42,7 +42,24 @@ export default defineConfig({
     environment: 'jsdom',
     exclude: ['node_modules', 'dist', 'electron'],
     globals: true,
+    /**
+     * Vitest's stock 5s was sized for a much smaller suite. The design-system
+     * work took this from 418 tests to 911, most of the new ones full jsdom
+     * renders that mount a themed page twice (once per mode) and read computed
+     * styles back. Run in parallel across every core, those saturate the box
+     * and push unrelated tests past 5s — `crypto.test.ts`, which touches no
+     * DOM at all, was timing out purely from contention.
+     *
+     * The symptom was worse than the cause: the same commit reported 911
+     * passed, then 4 failed, then 12 failed, then 7, purely on scheduling. A
+     * suite that green-lights by luck silently devalues every "verified"
+     * claim made against it. Raising the ceiling makes the result a function
+     * of the code again. It does not mask a slow test — the median test is
+     * milliseconds; this is headroom for the tail under load.
+     */
+    hookTimeout: 30_000,
     include: ['src/**/*.{test,spec}.{ts,tsx}', 'test/**/*.{test,spec}.{ts,tsx}'],
     setupFiles: ['./test/setup.ts'],
+    testTimeout: 30_000,
   },
 });

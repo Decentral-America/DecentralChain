@@ -32,6 +32,18 @@ import { createAppTheme } from '@/theme/mui-theme';
 import { contrastRatio, type ThemeMode, tokens } from '@/theme/tokens/semantic';
 import { CreateToken } from '../CreateToken';
 
+/**
+ * Every `userEvent.setup` here passes `{ delay: null }`. These twelve tests
+ * each type ~13 characters and click through three steps of a heavy MUI form,
+ * and user-event's default inter-keystroke wait dominated their runtime —
+ * enough that this file was the first to time out under full-suite parallel
+ * load. Dropping the delay does not weaken anything: the assertions read
+ * computed styles after the interaction, not during it.
+ *
+ * The timeout ceiling itself is set globally in `vitest.config.ts`; see the
+ * note there for why 5s stopped being enough at 911 tests.
+ */
+
 vi.mock('@/contexts/AuthContext', () => ({
   useAuth: () => ({ user: { address: '3P123', name: 'Trader' } }),
 }));
@@ -128,7 +140,7 @@ describe.each(['light', 'dark'] as const)('CreateToken — step 0 (%s mode)', (m
   });
 
   it('the "Next" button ink clears AA against its fixed brand fill, once enabled', async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     renderIn(mode);
     // The button is disabled (exempt from AA) until the step is valid — a
     // real user only ever sees it as the ink/fill pair asserted below.
@@ -146,7 +158,7 @@ describe.each([
   'dark',
 ] as const)('CreateToken — step 2, no-script box (%s mode)', (mode) => {
   it('the "No Script Required" panel copy clears AA against its own panel', async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     renderIn(mode);
     await user.type(screen.getByPlaceholderText('Enter token name'), 'TESTTOKEN');
     await user.click(screen.getByRole('button', { name: /next/i }));
@@ -166,7 +178,7 @@ describe.each([
 
 describe.each(['light', 'dark'] as const)('CreateToken — step 3, review (%s mode)', (mode) => {
   it('the Token Preview panel name and quantity clear AA against their panel', async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     renderIn(mode);
     await goToReviewStep(user);
 
@@ -182,7 +194,7 @@ describe.each(['light', 'dark'] as const)('CreateToken — step 3, review (%s mo
   });
 
   it('the Details Summary rows clear AA against their panel', async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     renderIn(mode);
     await goToReviewStep(user);
 
@@ -197,7 +209,7 @@ describe.each(['light', 'dark'] as const)('CreateToken — step 3, review (%s mo
   });
 
   it('the "Important Notice" warning banner clears AA against its own background', async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     renderIn(mode);
     await goToReviewStep(user);
 
@@ -208,7 +220,7 @@ describe.each(['light', 'dark'] as const)('CreateToken — step 3, review (%s mo
   });
 
   it('the Transaction Fees panel heading and total clear AA against their panel', async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     renderIn(mode);
     await goToReviewStep(user);
 
@@ -220,7 +232,7 @@ describe.each(['light', 'dark'] as const)('CreateToken — step 3, review (%s mo
   });
 
   it('the Insufficient Balance error banner clears AA against its own background', async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     renderIn(mode);
     await goToReviewStep(user);
 
@@ -231,7 +243,7 @@ describe.each(['light', 'dark'] as const)('CreateToken — step 3, review (%s mo
   });
 
   it('the "customize" icon button ink clears AA against its own fixed white badge', async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     renderIn(mode);
     await goToReviewStep(user);
 
@@ -242,7 +254,7 @@ describe.each(['light', 'dark'] as const)('CreateToken — step 3, review (%s mo
   });
 
   it('the "Create Token" button ink clears AA against its fixed brand fill, once enabled', async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     renderIn(mode);
     await goToReviewStep(user);
     // Disabled until the terms checkbox is agreed — exempt from AA until
