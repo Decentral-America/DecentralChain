@@ -67,7 +67,17 @@ export function AppTile({
         sx={{
           '@media (prefers-reduced-motion: reduce)': {
             '& .app-tile__plate': { transition: 'none' },
-            '&:active .app-tile__plate, &:hover .app-tile__plate': { transform: 'none' },
+            /**
+             * Doubled `&&` rather than a single `&`: stylis emits this rule and
+             * the `&:active`/`&:hover` rules below at equal specificity
+             * (0,3,0) and equal source order does not save it here — unlike a
+             * root-level declaration, which stylis hoists ahead of nested
+             * selector rules, these are peers, so whichever is emitted later
+             * wins. Doubling the ampersand raises this rule to (0,4,0), which
+             * beats both without touching Biome's required key order (`@media`
+             * before `&:...`, alphabetical).
+             */
+            '&&:active .app-tile__plate, &&:hover .app-tile__plate': { transform: 'none' },
           },
           '&:active .app-tile__plate': { transform: 'scale(0.97)' },
           '&:focus-visible .app-tile__plate': { boxShadow: ring },

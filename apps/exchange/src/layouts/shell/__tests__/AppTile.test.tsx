@@ -56,6 +56,17 @@ describe.each(['light', 'dark'] as const)('AppTile (%s mode)', (mode) => {
     expect(button.querySelector('.app-tile__plate')?.contains(label)).toBe(false);
   });
 
+  it('its label still clears AA against the ground when current, in the accent ink', () => {
+    // The inactive case above only ever measures `text.primary`. Active swaps
+    // the label to `accent.primary` (see "marks the current destination"
+    // below) — a different ink against the same ground, so it needs its own
+    // floor rather than inheriting the inactive case's pass.
+    renderTile(mode, true);
+    const label = screen.getByText(SWAP.label);
+    const ink = toHex(getComputedStyle(label).color);
+    expect(contrastRatio(ink, tokens(mode).surface.base)).toBeGreaterThanOrEqual(4.5);
+  });
+
   it('marks the current destination without relying on the fill', () => {
     const { button, plate } = renderTile(mode, true);
     expect(button).toHaveAttribute('aria-current', 'page');
@@ -75,7 +86,7 @@ describe.each(['light', 'dark'] as const)('AppTile (%s mode)', (mode) => {
 });
 
 describe('AppTile behaviour', () => {
-  it('navigates to its destination on click', async () => {
+  it('navigates to its destination on click', () => {
     const { button, onNavigate } = renderTile('light');
     button.click();
     expect(onNavigate).toHaveBeenCalledWith(SWAP.path);
