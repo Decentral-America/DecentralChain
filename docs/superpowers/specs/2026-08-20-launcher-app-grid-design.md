@@ -148,8 +148,18 @@ is retained as the non-visual signal.
 |---|---|
 | hover | tile `scale(1.04)`, tooltip reveals the description |
 | press | tile `scale(0.97)` |
-| `:focus-visible` | the same ring as current-route |
+| `:focus-visible` | a wider, `accent.primaryHover` ring (6px band, vs. the current-route ring's 5px `accent.primary`) |
 | click | navigate, then close the dialog (existing behaviour) |
+
+Focus and current-route were originally meant to share one ring; implementation
+review overrode that. MUI's `FocusTrap` focuses the dialog container the moment
+it opens, so the first Tab always lands on the Dashboard tile — and on
+`/desktop/wallet`, this app's default route, that tile is also the current one.
+A shared ring made that first Tab produce a pixel-identical `box-shadow`, i.e.
+no visible focus indicator at all (WCAG 2.4.7). Giving focus its own ring means
+the two states compose instead of collapsing into one: a focused non-current
+tile gains an obvious new ring, and a focused current tile visibly thickens and
+recolours rather than staying identical to its unfocused self.
 
 Transitions are 160ms, matching the existing card, and are removed entirely under
 `prefers-reduced-motion: reduce`.
@@ -245,8 +255,22 @@ New and changed tests, all in `layouts/shell/__tests__/`:
 4. **All fifteen render**, and the count matches `LAUNCHER_TILES`.
 5. **Current route** carries `aria-current="page"` and the ring treatment.
 6. **Description reachable** via `aria-describedby` without a hover event.
-7. `noRawColours` needs no change and must keep passing — that it does is the
-   evidence the hues went through the token layer.
+7. `noRawColours` needed a targeted change, not none: five of the eight hue
+   names this spec chose (`indigo`, `violet`, `teal`, `green`, `blue`) are
+   themselves CSS named colours, so `hue: 'indigo'` in `navigation.tsx`
+   false-positived under the lint's colon-based value matcher — it cannot tell
+   a role reference from a literal by text alone. The fix is a narrow,
+   textual exemption (`HUE_ROLE_VALUE` in `noRawColours.test.ts`) that blanks
+   only a `hue:` key holding one of the eight `AppTileHue` union members,
+   scoped to `layouts/shell/navigation.tsx` — the one file that assigns
+   `Destination.hue` — before the raw-colour checks run on the rest of the
+   line. The type checker, not this lint, is what keeps that field inside the
+   closed eight-name union. The evidence of correctness is no longer "the test
+   still passes unmodified"; it is the fixture table in `noRawColours.test.ts`
+   (`describe('the hue-role exemption catches everything it should')`), which
+   pins the exemption in both directions — a `hue:` role value is exempted
+   only inside `navigation.tsx`, and the identical text on any other file, or
+   any other colour-bearing property on the same line, is still flagged.
 
 The existing `AppLauncher.contrast.test.tsx` is rewritten rather than extended:
 it asserts against card/plate roles that stop existing.
