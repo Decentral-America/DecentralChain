@@ -16,7 +16,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { AppLauncher } from '@/layouts/shell/AppLauncher';
-import { LAUNCHER_COLUMNS, LAUNCHER_TILES } from '@/layouts/shell/navigation';
+import { LAUNCHER_TILES } from '@/layouts/shell/navigation';
 import { rgbToHex } from '@/test-utils/rgbToHex';
 import { createAppTheme } from '@/theme/mui-theme';
 import { contrastRatio, type ThemeMode, tokens } from '@/theme/tokens/semantic';
@@ -43,24 +43,31 @@ function paperOf(el: HTMLElement): HTMLElement {
 }
 
 /**
- * Every value a property is given for `el`'s own emotion class across the
- * stylesheet's `@media` blocks — jsdom does not apply them, so this reads the
- * rule text instead of trusting `getComputedStyle`. See the call site.
+ * Every `[conditionText, value]` pair a property is given for `el`'s own
+ * emotion class across the stylesheet's `@media` blocks — jsdom does not
+ * apply them, so this reads the rule text instead of trusting
+ * `getComputedStyle`. See the call site.
+ *
+ * Returning the condition alongside the value (rather than just the values,
+ * as a bare list) is what lets a caller check the *association* between a
+ * breakpoint and what it declares, not merely that the right values exist
+ * somewhere in the set — see "pins its columns" below for why that
+ * distinction matters.
  */
-function mediaDeclarations(el: HTMLElement, property: string): string[] {
+function mediaDeclarations(el: HTMLElement, property: string): Array<[string, string]> {
   const ownClass = Array.from(el.classList).find((c) => c.startsWith('css-'));
-  const values: string[] = [];
+  const pairs: Array<[string, string]> = [];
   for (const sheet of Array.from(document.styleSheets)) {
     for (const rule of Array.from(sheet.cssRules)) {
       if (!(rule instanceof CSSMediaRule)) continue;
       for (const inner of Array.from(rule.cssRules) as CSSStyleRule[]) {
         if (inner.selectorText !== `.${ownClass}`) continue;
         const value = inner.style.getPropertyValue(property);
-        if (value) values.push(value);
+        if (value) pairs.push([rule.conditionText, value]);
       }
     }
   }
-  return values;
+  return pairs;
 }
 
 describe.each(['light', 'dark'] as const)('AppLauncher (%s mode)', (mode) => {
@@ -118,15 +125,20 @@ describe('AppLauncher grid', () => {
     expect(current[0]).toHaveAccessibleName(LAUNCHER_TILES[0]!.label);
   });
 
-  it('pins its columns rather than letting auto-fill choose them', () => {
+  it('pins each breakpoint to its own column count, not just the right counts somewhere in the set', () => {
     renderLauncher('light');
     const grid = document.querySelector('[data-testid="launcher-grid"]') as HTMLElement;
     // The hue arrangement is only collision-free at the counts in
     // `LAUNCHER_COLUMNS` (navigation.test.ts's adjacency check derives from
     // the same constant). `auto-fill` would also produce intermediate counts
     // at intermediate widths, each of which puts a repeated hue beside its
-    // twin — so this asserts the exact declared string per breakpoint, not
-    // merely that it contains `repeat(`.
+    // twin — so this has to pin which breakpoint gets which count, not merely
+    // that the three expected strings exist somewhere in the declared set.
+    // A multiset comparison (sorting both sides before `toEqual`) previously
+    // passed even with `md` and `xs` transposed — 7 columns on phones, 3 on
+    // desktop, wrong at every width — because the same three strings were
+    // still present, just paired with the wrong breakpoints. Asserting the
+    // per-breakpoint association below is what catches that.
     //
     // Read from the stylesheet rather than `getComputedStyle`: jsdom's media
     // evaluator only recognises the plain "screen"/"all" media types (see
@@ -135,8 +147,22 @@ describe('AppLauncher grid', () => {
     // `@media (min-width:0px)` — is invisible to the computed style. Rule text
     // is the only place all three declarations are visible in this
     // environment.
-    const columns = mediaDeclarations(grid, 'grid-template-columns');
-    const expected = Object.values(LAUNCHER_COLUMNS).map((count) => `repeat(${count}, 1fr)`);
-    expect(columns.slice().sort()).toEqual(expected.slice().sort());
+    const declared = Object.fromEntries(mediaDeclarations(grid, 'grid-template-columns'));
+
+    // The app's own breakpoints (`mui-theme.ts`), not MUI's defaults — this
+    // workspace overrides `sm`/`md` to 768/1024 rather than the stock 600/900.
+    const { values: breakpoints } = createAppTheme('light').breakpoints;
+
+    // Deliberately hardcoded counts rather than `LAUNCHER_COLUMNS.xs`/`.sm`/
+    // `.md` echoed back: the grid's own `gridTemplateColumns` is built from
+    // that exact object (`AppLauncher.tsx`), so re-deriving the expectation
+    // from it would be tautological — a transposed `LAUNCHER_COLUMNS.md`/
+    // `.xs` reads the same (wrong) value on both sides and "passes" anyway.
+    // 3/4/7 is the per-breakpoint mapping the design spec pins
+    // (`docs/superpowers/specs/2026-08-20-launcher-app-grid-design.md`,
+    // "The grid"), independent of whatever the constant currently holds.
+    expect(declared[`(min-width:${breakpoints.xs}px)`]).toBe('repeat(3, 1fr)');
+    expect(declared[`(min-width:${breakpoints.sm}px)`]).toBe('repeat(4, 1fr)');
+    expect(declared[`(min-width:${breakpoints.md}px)`]).toBe('repeat(7, 1fr)');
   });
 });
