@@ -54,8 +54,27 @@ export function AppTile({
   const hue = t.appTile[destination.hue];
   const descriptionId = useId();
 
-  /** Gap ring in the ground colour, then the accent — so it reads as detached. */
-  const ring = `0 0 0 3px ${t.surface.base}, 0 0 0 5px ${t.accent.primary}`;
+  /** Gap ring in the ground colour, then the accent — so it reads as detached. Marks the current route. */
+  const currentRing = `0 0 0 3px ${t.surface.base}, 0 0 0 5px ${t.accent.primary}`;
+
+  /**
+   * Focus gets its own ring rather than reusing `currentRing`. MUI's
+   * `FocusTrap` focuses the dialog container the moment it opens, so the
+   * first Tab always lands on the Dashboard tile — and on `/desktop/wallet`,
+   * this app's default route, that tile is also the current one. Reusing
+   * `currentRing` for focus would make that first Tab produce a
+   * pixel-identical `box-shadow`, i.e. no visible change at all (WCAG
+   * 2.4.7). Widening the outer band to 6px and swapping `accent.primary` for
+   * `accent.primaryHover` means the two states compose instead of
+   * collapsing: a focused non-current tile gains an obvious new ring, and a
+   * focused current tile visibly thickens and recolours rather than staying
+   * identical to its unfocused self.
+   *
+   * `accent.primaryHover` clears the ≥3:1 a non-text focus indicator needs
+   * against the ground it sits on, `surface.base`, in both modes: 7.53:1
+   * light, 5.04:1 dark (see AppTile.test.tsx's contrast assertions).
+   */
+  const focusRing = `0 0 0 3px ${t.surface.base}, 0 0 0 6px ${t.accent.primaryHover}`;
 
   return (
     <Tooltip title={destination.description} placement="bottom">
@@ -80,7 +99,7 @@ export function AppTile({
             '&&:active .app-tile__plate, &&:hover .app-tile__plate': { transform: 'none' },
           },
           '&:active .app-tile__plate': { transform: 'scale(0.97)' },
-          '&:focus-visible .app-tile__plate': { boxShadow: ring },
+          '&:focus-visible .app-tile__plate': { boxShadow: focusRing },
           '&:hover .app-tile__plate': { transform: 'scale(1.04)' },
           alignItems: 'center',
           borderRadius: radii.cards,
@@ -99,7 +118,7 @@ export function AppTile({
             alignItems: 'center',
             bgcolor: hue.fill,
             borderRadius: radii.cards,
-            boxShadow: active ? ring : 'none',
+            boxShadow: active ? currentRing : 'none',
             color: hue.on,
             display: 'flex',
             height: 64,
@@ -114,10 +133,16 @@ export function AppTile({
         <Typography
           sx={{
             color: active ? t.accent.primary : t.text.primary,
+            display: '-webkit-box',
             fontSize: 13,
             fontWeight: active ? 600 : 400,
             lineHeight: 1.3,
+            overflow: 'hidden',
             textAlign: 'center',
+            WebkitBoxOrient: 'vertical',
+            // Wraps to at most two lines: a longer future label pushes an
+            // ellipsis rather than a taller grid row than its neighbours.
+            WebkitLineClamp: 2,
           }}
         >
           {destination.label}
