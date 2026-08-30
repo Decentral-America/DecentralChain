@@ -11,12 +11,21 @@ packages:
 catalog:
   '@arethetypeswrong/cli': 0.18.4
   '@babel/core': 7.29.7
+  '@coral-xyz/anchor': 0.32.1
   '@rolldown/plugin-babel': 0.2.3
   '@size-limit/preset-small-lib': 12.1.0
+  '@solana/spl-token': 0.4.15
+  '@solana/wallet-adapter-base': 0.9.27
+  '@solana/wallet-adapter-phantom': 0.9.29
+  '@solana/wallet-adapter-react': 0.15.39
+  '@solana/wallet-adapter-solflare': 0.6.33
+  '@solana/web3.js': 1.98.4
   '@types/babel__core': 7.20.5
   '@types/node': 26.1.0
   '@vitest/coverage-v8': 4.1.9
   babel-plugin-react-compiler: ^1.0.0
+  bs58: ^6.0.0
+  buffer: ^6.0.3
   ioredis: 6.0.0
   js-yaml: 5.2.2
   jsdom: 29.1.1
@@ -41,6 +50,11 @@ allowBuilds:
   '@parcel/watcher': true
   '@sentry/cli': true
   '@swc/core': true
+  # Optional native accelerators pulled in by the Solana libraries. Each has a
+  # pure-JS fallback, and none of them reach the browser bundle — building them
+  # would put a C++ toolchain on the critical path of every CI run for no gain.
+  bigint-buffer: false
+  bufferutil: false
   core-js-pure: true
   edgedriver: true
   esbuild: false
@@ -49,6 +63,7 @@ allowBuilds:
   libpq: true
   nx: false
   sharp: true
+  utf-8-validate: false
   workerd: false
 
 overrides:

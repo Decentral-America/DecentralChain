@@ -5,7 +5,7 @@ import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
 import pkg from './package.json' with { type: 'json' };
 
-const { NODE_ENV, VITE_API_URL, VITE_NODE_URL } = process.env;
+const { NODE_ENV, VITE_API_URL, VITE_NODE_URL, VITE_SOLANA_RPC_URL } = process.env;
 
 /**
  * Injects VITE_APP_VERSION into i18n preload hints in index.html at build time.
@@ -31,6 +31,44 @@ const i18nPreloadVersionPlugin: Plugin = {
 };
 
 // https://vite.dev/config/
+/**
+ * Fails any production build that is missing a required bridge value.
+ *
+ * This is a plugin rather than a script in the `build` npm script because CI
+ * does not run that script — `.github/workflows/deploy-exchange.yml` invokes
+ * `vite build --mode <mode>` directly. A guard that only runs via `pnpm build`
+ * is a guard that never runs on the builds that reach users, which is the
+ * whole failure it was written to prevent.
+ *
+ * The failure it prevents: Vite inlines `import.meta.env` at build time, so a
+ * missing value silently becomes whatever default the source carries, and that
+ * default ships. On the reference bridge implementation the fallback was
+ * `http://127.0.0.1:8899`, compiled into the public bundle, and every deposit
+ * failed for months because nothing anywhere reported a problem.
+ */
+const bridgeEnvGuard = (): Plugin => ({
+  apply: 'build',
+  configResolved(config) {
+    const required = [
+      {
+        name: 'VITE_SOLANA_RPC_URL',
+        why: 'Solana RPC endpoint. Domain-restrict the key in the Helius dashboard — the browser bundle publishes whatever is set here.',
+      },
+    ];
+
+    const missing = required.filter(({ name }) => !config.env[name]);
+    if (missing.length === 0) return;
+
+    const detail = missing.map(({ name, why }) => `  ✗ ${name}\n    ${why}`).join('\n');
+    throw new Error(
+      `\n\nBridge configuration is incomplete for mode "${config.mode}".\n\n${detail}\n\n` +
+        '  Set these in the environment or the matching .env file, then rebuild.\n' +
+        '  Do not add a fallback value — a fallback is what ships when this is wrong.\n',
+    );
+  },
+  name: 'bridge-env-guard',
+});
+
 export default defineConfig({
   build: {
     chunkSizeWarningLimit: 1000,
@@ -137,6 +175,15 @@ export default defineConfig({
     __RRWEB_EXCLUDE_SHADOW_DOM__: true,
     __SENTRY_DEBUG__: false,
     __SENTRY_EXCLUDE_REPLAY_WORKER__: true,
+    /**
+     * `@solana/web3.js` and `@coral-xyz/anchor` reach for Node globals in the
+     * browser. `global` is the one that breaks at import time; `Buffer` breaks
+     * later and quietly — `findProgramAddressSync` reports "Unable to find a
+     * viable program address nonce", which reads like a bad seed rather than a
+     * missing global. `resolve.alias` below maps `buffer` to the polyfill so
+     * the import in `main.tsx` resolves.
+     */
+    global: 'globalThis',
     'import.meta.env.VITE_APP_VERSION': JSON.stringify(pkg.version),
   },
   optimizeDeps: {
@@ -151,6 +198,7 @@ export default defineConfig({
     ],
   },
   plugins: [
+    bridgeEnvGuard(),
     react(),
     // React Compiler auto-memoizes components and hook results at build time.
     // This app has 263 useCallback and 78 useMemo calls but no React.memo, so
@@ -178,6 +226,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(import.meta.dirname, './src'),
+      // Solana's libraries assume Node's Buffer. See `define.global` above.
+      buffer: 'buffer',
       'data-service': path.resolve(import.meta.dirname, './src/lib/data-service'),
     },
     preserveSymlinks: false,
@@ -190,7 +240,7 @@ export default defineConfig({
         "worker-src 'self' blob:",
         "style-src 'self' 'unsafe-inline' https://s3.tradingview.com https://*.tradingview.com",
         "img-src 'self' data: https:",
-        "connect-src 'self' http://localhost:* https://mainnet-node.decentralchain.io https://testnet-node.decentralchain.io https://stagenet-node.decentralchain.io https://mainnet-matcher.decentralchain.io https://testnet-matcher.decentralchain.io https://stagenet-matcher.decentralchain.io https://matcher.decentralchain.io https://data-service.decentralchain.io https://testnet-data-service.decentralchain.io https://stagenet-data-service.decentralchain.io https://s3.tradingview.com https://*.tradingview.com wss://mainnet-node.decentralchain.io wss://testnet-node.decentralchain.io wss://stagenet-node.decentralchain.io wss://mainnet-ws.decentralchain.io wss://testnet-ws.decentralchain.io wss://stagenet-ws.decentralchain.io ws://localhost:* wss://localhost:*",
+        "connect-src 'self' http://localhost:* https://mainnet-node.decentralchain.io https://testnet-node.decentralchain.io https://stagenet-node.decentralchain.io https://mainnet-matcher.decentralchain.io https://testnet-matcher.decentralchain.io https://stagenet-matcher.decentralchain.io https://matcher.decentralchain.io https://data-service.decentralchain.io https://testnet-data-service.decentralchain.io https://stagenet-data-service.decentralchain.io https://api-production-c9a68.up.railway.app https://api.mainnet-beta.solana.com https://*.helius-rpc.com https://s3.tradingview.com https://*.tradingview.com wss://mainnet-node.decentralchain.io wss://testnet-node.decentralchain.io wss://stagenet-node.decentralchain.io wss://mainnet-ws.decentralchain.io wss://testnet-ws.decentralchain.io wss://stagenet-ws.decentralchain.io wss://api.mainnet-beta.solana.com wss://*.helius-rpc.com ws://localhost:* wss://localhost:*",
         "font-src 'self' data:",
         "object-src 'none'",
         "base-uri 'self'",
@@ -206,6 +256,11 @@ export default defineConfig({
         rewrite: (reqPath) => reqPath.replace(/^\/api/, ''),
         target: VITE_API_URL || 'https://mainnet-node.decentralchain.io',
       },
+      '/bridge-api': {
+        changeOrigin: true,
+        rewrite: (reqPath) => reqPath.replace(/^\/bridge-api/, ''),
+        target: 'https://api-production-c9a68.up.railway.app',
+      },
       '/matcher': {
         changeOrigin: true,
         target: 'https://mainnet-matcher.decentralchain.io',
@@ -220,6 +275,40 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (reqPath) => reqPath.replace(/^\/node-proxy/, ''),
         target: VITE_NODE_URL || 'https://mainnet-node.decentralchain.io',
+      },
+      // The bridge API allowlists its three deployed front ends, so a browser
+      // on localhost has its response withheld by CORS (confirmed via curl:
+      // the API omits Access-Control-Allow-Origin for unlisted origins).
+      // Same reasoning as /node-proxy below. Production calls the API
+      // directly — see API_CLIENT_BASE — so working local dev is NOT evidence
+      // that ALLOWED_ORIGINS is correct.
+      // Solana's public RPC answers server requests but returns 403 "Access
+      // forbidden" to anything with a browser origin — deliberate, to keep
+      // dapps off the shared endpoint. Confirmed via curl: the same
+      // getAccountInfo call succeeds from a terminal and fails from a page.
+      // Forwarding through the dev server makes it a server request again.
+      //
+      // Production does not use this: a domain-restricted Helius key serves
+      // browsers directly. This exists so local development does not require
+      // everyone to hold a key.
+      '/solana-rpc': {
+        changeOrigin: true,
+        /**
+         * `changeOrigin` only rewrites Host. The browser's `Origin` and
+         * `Referer` headers are forwarded untouched, and those are exactly
+         * what the endpoint inspects — so without stripping them the proxied
+         * request is still identified as coming from a page and still 403s.
+         * Verified: proxying alone was not enough; removing these two headers
+         * is what makes it work.
+         */
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq) => {
+            proxyReq.removeHeader('origin');
+            proxyReq.removeHeader('referer');
+          });
+        },
+        rewrite: (reqPath) => reqPath.replace(/^\/solana-rpc/, ''),
+        target: VITE_SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com',
       },
       '/trading-view': {
         changeOrigin: true,

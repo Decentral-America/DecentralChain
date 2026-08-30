@@ -29,6 +29,7 @@ import { useMemo, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { BridgeAssetSelector } from '@/features/bridge/BridgeAssetSelector';
 import { DepositAsset } from '@/features/bridge/DepositAsset';
+import { SolanaBridgePanel } from '@/features/bridge/SolanaBridgePanel';
 import { WithdrawAsset } from '@/features/bridge/WithdrawAsset';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
 import { useGatewayTransaction } from '@/hooks/useGatewayTransaction';
@@ -65,9 +66,11 @@ const SUPPORTED_NETWORKS: SupportedNetwork[] = [
     ticker: 'BTC',
   },
   {
-    available: false,
+    // Live: the Solana bridge contracts and validators are deployed on
+    // mainnet. Unlike the BTC gateway below, this path talks to the bridge
+    // API and the Solana program directly — see features/bridge/SolanaBridge.
+    available: true,
     color: networkBrandColor.sol,
-    comingSoon: true,
     icon: solIcon,
     id: 'SOL',
     name: 'Solana',
@@ -109,6 +112,26 @@ export const Bridge: React.FC = () => {
     enabled: !!user?.address,
     interval: 5000,
   });
+
+  /**
+   * The bridge works in raw integer units — BigInt, not BigNumber — because
+   * every amount it handles is base units and float error is unacceptable at
+   * a balance. The gateway path below keeps its BigNumber view.
+   */
+  const solanaBalancesRaw = useMemo((): Record<string, bigint> => {
+    if (!rawBalances?.assets) return {};
+    return Object.fromEntries(
+      Object.entries(rawBalances.assets).map(([assetId, amount]) => [
+        assetId,
+        BigInt(Math.trunc(Number(amount))),
+      ]),
+    );
+  }, [rawBalances]);
+
+  const dccBalanceRaw = useMemo(
+    (): bigint => BigInt(Math.trunc(Number(rawBalances?.balance ?? 0))),
+    [rawBalances],
+  );
 
   // Convert number → BigNumber for BridgeAssetSelector
   const balances = useMemo((): Record<string, BigNumber> => {
@@ -380,12 +403,26 @@ export const Bridge: React.FC = () => {
           )}
         </Alert>
 
-        {/* Asset Selector Grid */}
-        <BridgeAssetSelector
-          balances={balances}
-          onDeposit={handleDeposit}
-          onWithdraw={handleWithdraw}
-        />
+        {/*
+          Solana and the BTC gateway are different systems that happen to share
+          this page. The gateway path reads its assets from network config;
+          Solana reads them from the bridge API, which is the only source that
+          knows what is currently safe to offer.
+        */}
+        {selectedNetwork === 'SOL' ? (
+          <SolanaBridgePanel
+            assetBalancesRaw={solanaBalancesRaw}
+            dccAddress={user.address}
+            dccBalanceRaw={dccBalanceRaw}
+            mode={mode}
+          />
+        ) : (
+          <BridgeAssetSelector
+            balances={balances}
+            onDeposit={handleDeposit}
+            onWithdraw={handleWithdraw}
+          />
+        )}
 
         {/* Deposit Modal */}
         {selectedAsset && (

@@ -1,1 +1,1 @@
-export { Bridge } from './Bridge';
+export { Bridge } from './BridgeRoute';

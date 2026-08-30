@@ -23,6 +23,7 @@ interface ImportMetaEnv {
   readonly VITE_GA_MEASUREMENT_ID?: string;
   readonly VITE_AMPLITUDE_KEY?: string;
   readonly VITE_APP_VERSION?: string;
+  readonly VITE_SOLANA_RPC_URL: string;
 }
 
 interface ImportMeta {

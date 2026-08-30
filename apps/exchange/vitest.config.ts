@@ -39,6 +39,14 @@ export default defineConfig({
         statements: 5,
       },
     },
+    /**
+     * `config/bridge.ts` throws at module load when this is absent — that guard
+     * is the point of it, so tests supply a value rather than weakening it.
+     * The throw itself is covered in config/__tests__/bridge.test.ts.
+     */
+    env: {
+      VITE_SOLANA_RPC_URL: 'https://rpc.test.invalid',
+    },
     environment: 'jsdom',
     exclude: ['node_modules', 'dist', 'electron'],
     globals: true,
