@@ -1,5 +1,10 @@
 {
   "app": {
+    "accountManager": {
+      "currentAccount": "Current Account",
+      "manageAccounts": "Manage Accounts",
+      "switchAccount": "Switch Account"
+    },
     "back": "Back to main page",
     "button": {
       "cancel": "Cancel",
@@ -355,6 +360,8 @@
           "tooltipText": "Sell {{amountAsset}} for {{price}} {{priceAsset}}"
         }
       },
+      "orderHistory": "Order History",
+      "sortOrder": "Sort Order",
       "tabs": {
         "title": {
           "all": "All",
@@ -931,6 +938,7 @@
     },
     "Suspicious": "Suspicious",
     "saveSeed": {
+      "authenticationFailed": "Authentication Failed",
       "continue": "Continue",
       "copy": "Copy",
       "copySeed": "Copy Seed phrase",
@@ -941,6 +949,7 @@
       "password": {
         "error": "Wrong Password!"
       },
+      "securityWarning": "Security Warning",
       "userList": {
         "address": "Address / Account name",
         "buttons": {

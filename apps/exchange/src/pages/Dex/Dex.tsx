@@ -296,7 +296,7 @@ export const Dex = () => {
                           maximumFractionDigits: 8,
                           minimumFractionDigits: 2,
                         })
-                      : '--'}
+                      : '—'}
                   </Typography>
                 </Box>
               </Grid>
@@ -319,7 +319,7 @@ export const Dex = () => {
                           maximumFractionDigits: 8,
                           minimumFractionDigits: 2,
                         })
-                      : '--'}
+                      : '—'}
                   </Typography>
                 </Box>
               </Grid>
@@ -342,7 +342,7 @@ export const Dex = () => {
                           maximumFractionDigits: 2,
                           minimumFractionDigits: 2,
                         })
-                      : '--'}
+                      : '—'}
                   </Typography>
                 </Box>
               </Grid>
@@ -387,7 +387,7 @@ export const Dex = () => {
           {/* Large Chart Section */}
           <TradingPanel
             elevation={0}
-            sx={{ flex: 2.2, minHeight: { md: 200, xs: 'clamp(190px, 30dvh, 280px)' } }}
+            sx={{ flex: 1.9, minHeight: { md: 200, xs: 'clamp(190px, 30dvh, 280px)' } }}
           >
             <PanelHeader>
               <Box sx={{ alignItems: 'center', display: 'flex', gap: 1 }}>
@@ -412,7 +412,7 @@ export const Dex = () => {
           {/* Order Book - Now in main area */}
           <TradingPanel
             elevation={0}
-            sx={{ flex: 1.4, minHeight: { md: 150, xs: 'clamp(170px, 26dvh, 250px)' } }}
+            sx={{ flex: 1.8, minHeight: { md: 210, xs: 'clamp(170px, 26dvh, 250px)' } }}
           >
             <PanelHeader>
               <Box sx={{ alignItems: 'center', display: 'flex', gap: 1 }}>
