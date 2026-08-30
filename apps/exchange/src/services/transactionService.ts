@@ -107,12 +107,29 @@ export const transactionService = {
     } catch (error: unknown) {
       logger.error('Failed to broadcast transaction:', error);
 
-      // Extract user-friendly error message
+      // Extract user-friendly error message.
+      //
+      // The node rejects with a plain JSON object — `{error: 307, message:
+      // "..."}` — which is neither an Error nor a string, so the previous
+      // two branches fell through to "Unknown error" and discarded the only
+      // useful part of the response. A broadcast that fails for a nameable
+      // reason (insufficient fee, script rejection, wrong asset) was
+      // indistinguishable from one that failed for an unknown one.
       let errorMessage = 'Unknown error';
       if (error instanceof Error) {
         errorMessage = error.message;
       } else if (typeof error === 'string') {
         errorMessage = error;
+      } else if (typeof error === 'object' && error !== null) {
+        const node = error as { error?: number; message?: string; text?: string };
+        const detail = node.message ?? node.text;
+        if (detail) {
+          // The numeric code distinguishes causes the text alone blurs
+          // together — 112 insufficient fee, 306/307 script failures.
+          errorMessage = node.error ? `${detail} (node error ${node.error})` : detail;
+        } else {
+          errorMessage = JSON.stringify(error).slice(0, 300);
+        }
       }
 
       // Check for alias-specific errors
