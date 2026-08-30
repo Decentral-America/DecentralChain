@@ -9,7 +9,7 @@
  * not on it fails with no useful message in the console, which reads like a
  * network fault rather than a configuration one — see `assertOriginAllowed`.
  */
-import { apiGet, FetchClient } from '@/api/client';
+import { apiGet, FetchClient, HttpError } from '@/api/client';
 import { API_CLIENT_BASE, BLOCKED_TOKEN_NAMES } from '@/config/bridge';
 import { logger } from '@/lib/logger';
 import {
@@ -47,6 +47,37 @@ export const assertOriginAllowed = (): void => {
       'error with nothing useful in the console. Add this origin to ALLOWED_ORIGINS ' +
       'on the API service.',
   );
+};
+
+/**
+ * A sentence the user can act on, from whatever the network layer threw.
+ *
+ * `fetch` rejects with a bare `TypeError: Failed to fetch` for every
+ * connection-level failure alike — API down, DNS, CORS, offline — and that
+ * string shown in the UI reads as a bug in this app rather than an unreachable
+ * API. Worse, it is what the caller gets in development for the most ordinary
+ * cause of all: `API_CLIENT_BASE` is a same-origin path there, forwarded by the
+ * Vite dev server, so a dev server that is restarting refuses the connection
+ * and every bridge query fails at once.
+ */
+export const describeBridgeError = (error: unknown): string => {
+  if (error instanceof HttpError) {
+    if (error.status === 429) {
+      return 'The bridge API is rate-limiting this browser. It will retry on its own shortly.';
+    }
+    if (error.status >= 500) {
+      return `The bridge API returned ${error.status}. That is on the API's side, not yours.`;
+    }
+    return `The bridge API refused the request (${error.status} ${error.statusText}).`;
+  }
+
+  if (error instanceof DOMException && error.name === 'TimeoutError') {
+    return 'The bridge API did not answer in time.';
+  }
+
+  return import.meta.env.DEV
+    ? 'Could not reach the bridge API. In development these requests go through the Vite dev-server proxy, so this usually means the dev server is not running.'
+    : 'Could not reach the bridge API. Check your connection — the bridge itself is unaffected, and any transfer already submitted settles regardless.';
 };
 
 /**

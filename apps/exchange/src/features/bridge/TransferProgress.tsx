@@ -9,6 +9,7 @@
  */
 import { Alert, Box, Chip, LinearProgress, Stack, Typography } from '@mui/material';
 import { useTransferStatus } from '@/hooks/useTransferStatus';
+import { describeBridgeError } from '@/services/bridge/api';
 
 interface TransferProgressProps {
   onDismiss?: () => void;
@@ -26,12 +27,42 @@ const STAGE_LABEL: Record<string, string> = {
 export const TransferProgress: React.FC<TransferProgressProps> = ({ onDismiss, transferId }) => {
   const { error, isLoading, isSettled, isStranded, transfer } = useTransferStatus(transferId);
 
-  if (isLoading || !transfer) {
-    return <LinearProgress />;
+  /*
+   * The error branch has to come first. While the query is failing `transfer`
+   * is undefined, so a `!transfer` guard ahead of it swallows every error into
+   * a bare indeterminate bar — which is exactly what a restarting dev server
+   * produced: a progress bar over a transfer nobody could read, with no
+   * explanation and no way to clear it.
+   *
+   * Polling continues underneath (`refetchInterval` is not disabled on error),
+   * so this state clears itself the moment the API answers again.
+   */
+  if (error) {
+    return (
+      <Alert severity="error" onClose={onDismiss}>
+        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+          Could not read the status of this transfer.
+        </Typography>
+        <Typography variant="body2">
+          {describeBridgeError(error)} Still retrying. The transfer itself is unaffected — it
+          settles on chain whether or not this page can see it.
+        </Typography>
+        <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+          Transfer id: <code>{transferId}</code>
+        </Typography>
+      </Alert>
+    );
   }
 
-  if (error) {
-    return <Alert severity="error">Could not read transfer status: {error.message}</Alert>;
+  if (isLoading || !transfer) {
+    return (
+      <Stack spacing={0.75}>
+        <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+          Reading transfer status…
+        </Typography>
+        <LinearProgress sx={{ borderRadius: 1, height: 6 }} />
+      </Stack>
+    );
   }
 
   if (isStranded) {

@@ -14,6 +14,7 @@
   ],
   "dependencies": {
     "@coral-xyz/anchor": "catalog:",
+    "@dcc-amm/sdk": "workspace:*",
     "@decentralchain/assets-pairs-order": "workspace:*",
     "@decentralchain/bignumber": "workspace:*",
     "@decentralchain/browser-bus": "workspace:*",

@@ -17,48 +17,7 @@ import {
   useDexStore,
 } from '@/stores/dexStore';
 import { noTouchZoom } from '@/styles/mixins';
-
-/**
- * Cache for asset names to avoid repeated API calls
- * Maps assetId -> asset ticker/name
- */
-const assetNameCache = new Map<string, string>();
-
-/**
- * Get asset display name from asset ID
- * First checks config, then cache, returns placeholder if not available
- */
-const getAssetDisplayName = (assetId: string): string => {
-  // Try to get ticker from NetworkConfig
-  const ticker = NetworkConfig.getAssetTicker(assetId);
-  if (ticker) return ticker;
-
-  // If it's already a ticker (like 'DCC'), return as-is
-  if (assetId === 'DCC' || assetId.length <= 5) return assetId;
-
-  // Check cache
-  if (assetNameCache.has(assetId)) {
-    return assetNameCache.get(assetId) ?? `${assetId.substring(0, 6)}...`;
-  }
-
-  // Return shortened ID as placeholder while loading
-  return `${assetId.substring(0, 6)}...`;
-};
-
-/**
- * Load trading pairs from mainnet.json config
- * Uses display names from cache or config
- */
-const loadTradingPairs = (): TradingPair[] => {
-  const rawPairs = NetworkConfig.getTradingPairs();
-
-  return rawPairs.map(([amountAsset, priceAsset]) => ({
-    amountAsset,
-    amountAssetName: getAssetDisplayName(amountAsset),
-    priceAsset,
-    priceAssetName: getAssetDisplayName(priceAsset),
-  }));
-};
+import { AVAILABLE_PAIRS, cacheAssetName, DEFAULT_PAIR, loadTradingPairs } from './tradingPairs';
 
 /**
  * Hook to fetch asset details and update cache
@@ -91,7 +50,7 @@ const useAssetNameFetcher = (assetIds: string[]) => {
       if (query.data && unknownAssetIds[index]) {
         const assetId = unknownAssetIds[index];
         const assetName = query.data.ticker || query.data.name || assetId.substring(0, 6);
-        assetNameCache.set(assetId, assetName);
+        cacheAssetName(assetId, assetName);
       }
     });
   }, [queries, unknownAssetIds]);
@@ -100,29 +59,6 @@ const useAssetNameFetcher = (assetIds: string[]) => {
   const isLoading = queries.some((q) => q.isLoading);
   return { isLoading };
 };
-
-/**
- * Available trading pairs from mainnet.json
- */
-const AVAILABLE_PAIRS: TradingPair[] = loadTradingPairs();
-
-/**
- * Default trading pair
- * Uses the first pair from config, or can be configured via environment
- */
-const getDefaultPair = (): TradingPair | null => {
-  // Try to find DCC/CRC pair as preferred default
-  const dccCrcPair = AVAILABLE_PAIRS.find(
-    (pair) => pair.amountAssetName === 'DCC' && pair.priceAssetName === 'CRC',
-  );
-
-  // Fall back to first available pair, or null if no pairs are configured.
-  // Returning null lets the UI show "No pairs available" rather than
-  // a broken pair with empty asset IDs that causes API errors.
-  return dccCrcPair ?? AVAILABLE_PAIRS[0] ?? null;
-};
-
-const DEFAULT_PAIR = getDefaultPair();
 
 /**
  * Container for the pair selector

@@ -76,14 +76,17 @@ describe.each(['light', 'dark'] as const)('Bridge — signed-in branch (%s mode)
     expect(rgbToHex(canvas)).toBe(tokens(mode).surface.base);
   });
 
-  it('the header, subtitle and network ticker caption clear AA against the canvas', () => {
+  it('the header, subtitle and network names clear AA against the canvas', () => {
+    // The ticker caption under each network name is gone: the picker is now a
+    // row of compact chips, and "Bitcoin" over "BTC" was saying the same thing
+    // twice at a size where the second line cost more than it told anyone.
     mockUser = { address: '3P123', name: 'Trader' };
     renderIn(mode);
     for (const text of [
       screen.getByText('Cross-Chain Bridge'),
       screen.getByText(/Transfer assets between DecentralChain/),
       screen.getByText('Bitcoin'),
-      screen.getByText('BTC'),
+      screen.getByText('Solana'),
     ]) {
       const ink = rgbToHex(getComputedStyle(text).color);
       const bg = rgbToHex(nearestBackground(text));

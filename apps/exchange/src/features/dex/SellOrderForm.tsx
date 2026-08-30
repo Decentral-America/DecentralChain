@@ -35,8 +35,8 @@ const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: ${(p) => p.theme.spacing.md};
-  background: ${(p) => p.theme.colors.background};
+  padding: 0;
+  background: transparent;
 `;
 
 /**

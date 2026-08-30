@@ -1,268 +1,136 @@
 /**
- * Swap Page
+ * Swap — the DCC AMM.
  *
- * One column, one card, one screen.
+ * Six views over one protocol. Trading and liquidity read the contracts
+ * directly through `@dcc-amm/sdk`; Pools and Explore also read the indexer,
+ * because volume, fees and swap counts are history and a chain cannot be
+ * asked for history.
  *
- * The page used to spend a third of its width on three marketing cards — Best
- * Rates, Instant Swaps, Secure Trading — pitched at someone who had already
- * signed in, created a wallet and navigated here. That column was 663px of
- * persuasion aimed at the converted, and it was the reason a form that fits the
- * viewport made the page scroll.
- *
- * What is left is the tool, centred, at a width a form should be. And because
- * swapping is not live yet, the notice comes before the form rather than
- * underneath it: the surface is a preview, held inert, not something to fill in
- * and then be refused.
+ * The tab row is the page's only navigation and carries an icon per
+ * destination — a name plus a glyph is faster to re-find than either alone,
+ * and these six get switched between constantly.
  */
-
-import { History, KeyboardArrowDown, Settings, SwapVert } from '@mui/icons-material';
 import {
-  Avatar,
-  Box,
-  Button,
-  IconButton,
-  Paper,
-  Stack,
-  TextField,
-  Typography,
-  useTheme,
-} from '@mui/material';
-import { common } from '@mui/material/colors';
-import type React from 'react';
-import { ComingSoon } from '@/components/feedback/ComingSoon';
+  AccountCircleOutlined,
+  AddOutlined,
+  DashboardOutlined,
+  PlayCircleOutlined,
+  SwapHorizOutlined,
+  WalletOutlined,
+} from '@mui/icons-material';
+import { Box, Stack, Tab, Tabs } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { ExplorePanel } from '@/features/swap/ExplorePanel';
+import { LiquidityPanel } from '@/features/swap/LiquidityPanel';
+import { MyPoolsPanel } from '@/features/swap/MyPoolsPanel';
+import { PoolsPanel } from '@/features/swap/PoolsPanel';
+import { SwapPanel } from '@/features/swap/SwapPanel';
 import { PageFrame } from '@/layouts/PageFrame';
-import { swapMarkColor } from '@/styles/brandMarks';
-import { radii } from '@/styles/tokens';
-import { contrastRatio, tokens } from '@/theme/tokens/semantic';
 
-/**
- * The ink for a brand-mark avatar, picked from the mark's own luminance.
- *
- * `theme.palette.getContrastText` was tried first and fell short: it picked
- * white for `#8A63D2`, measuring 4.38:1 — under MUI's own coarser threshold
- * heuristic, not WCAG's. This compares both candidates against the actual
- * WCAG ratio instead, so the pick is correct for whatever brand colour a
- * caller passes rather than only the two in use today.
- *
- * `common.white`/`common.black` (MUI's own always-present `{black, white}`
- * palette, unmodified by `createAppTheme`) rather than literal hex — the two
- * WCAG comparison anchors themselves aren't a theme decision, but naming
- * them via an existing library export instead of a string keeps this file
- * free of raw colour literals too.
- */
-function inkForMark(markColor: string): string {
-  const white = contrastRatio(common.white, markColor);
-  const black = contrastRatio(common.black, markColor);
-  return white >= black ? common.white : common.black;
-}
+type SwapTab = 'explore' | 'liquidity' | 'my-pools' | 'pools' | 'portfolio' | 'swap';
 
-/** One side of the trade: the asset picker, the amount, and what it is worth. */
-function TokenField({
-  label,
-  symbol,
-  markColor,
-  balance,
-}: {
-  label: string;
-  symbol: string;
-  /** The asset's own brand colour — the one place native hues are kept. */
-  markColor: string;
-  balance: string;
-}) {
-  const { palette } = useTheme();
-  const t = tokens(palette.mode);
-
-  return (
-    <Box>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 0.75 }}>
-        {label}
-      </Typography>
-      <Paper
-        elevation={0}
-        sx={{
-          // Was the fixed light literal `palette.mist` — under the old
-          // `landingTheme` wrapper the `text.secondary`/default ink this
-          // panel holds was always the same fixed light value, so the pair
-          // never broke. Once a page stops forcing that wrapper, dark mode's
-          // ink lands on this still-fixed-light panel: measured ~1.9:1 (see
-          // task-6-report.md). `surface.sunken` tracks the same mode.
-          bgcolor: t.surface.sunken,
-          border: '1px solid',
-          borderColor: 'divider',
-          borderRadius: radii.cards,
-          p: 2,
-        }}
-      >
-        <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-          <Button
-            variant="outlined"
-            endIcon={<KeyboardArrowDown />}
-            sx={{ borderColor: 'divider', justifyContent: 'space-between', minWidth: 132 }}
-          >
-            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-              <Avatar
-                sx={{
-                  bgcolor: markColor,
-                  // MUI's own Avatar default ink (`background.default`) was
-                  // never designed to pair with an arbitrary brand-mark
-                  // fill — measured as low as 2.15:1 against this exact
-                  // orange mark, in light mode, mode-independently (see
-                  // task-6-report.md).
-                  color: inkForMark(markColor),
-                  height: 22,
-                  width: 22,
-                }}
-              >
-                {symbol.charAt(0)}
-              </Avatar>
-              <Typography sx={{ fontWeight: 400 }}>{symbol}</Typography>
-            </Stack>
-          </Button>
-          <TextField
-            fullWidth
-            placeholder="0.00"
-            variant="standard"
-            slotProps={{
-              input: {
-                disableUnderline: true,
-              },
-            }}
-            sx={{
-              '& .MuiInputBase-input': { fontSize: '1.75rem', fontWeight: 300, textAlign: 'right' },
-            }}
-          />
-        </Stack>
-        <Stack direction="row" sx={{ justifyContent: 'space-between', mt: 0.5 }}>
-          <Typography variant="caption" color="text.secondary">
-            ≈ $0.00
-          </Typography>
-          <Typography variant="caption" color="text.secondary">
-            Balance: {balance}
-          </Typography>
-        </Stack>
-      </Paper>
-    </Box>
-  );
-}
-
-/** A line of the rate summary. */
-function DetailRow({ label, value }: { label: string; value: string }) {
-  return (
-    <Stack direction="row" sx={{ justifyContent: 'space-between' }}>
-      <Typography variant="body2" color="text.secondary">
-        {label}
-      </Typography>
-      <Typography variant="body2" sx={{ fontWeight: 400 }}>
-        {value}
-      </Typography>
-    </Stack>
-  );
-}
+const TABS: { icon: React.ReactElement; label: string; value: SwapTab }[] = [
+  { icon: <SwapHorizOutlined />, label: 'Swap', value: 'swap' },
+  { icon: <AddOutlined />, label: 'Liquidity', value: 'liquidity' },
+  { icon: <DashboardOutlined />, label: 'Pools', value: 'pools' },
+  { icon: <AccountCircleOutlined />, label: 'My Pools', value: 'my-pools' },
+  { icon: <PlayCircleOutlined />, label: 'Explore', value: 'explore' },
+  { icon: <WalletOutlined />, label: 'Portfolio', value: 'portfolio' },
+];
 
 export const Swap: React.FC = () => {
-  const { palette } = useTheme();
-  const t = tokens(palette.mode);
+  const [tab, setTab] = useState<SwapTab>('swap');
+  const navigate = useNavigate();
+
+  /*
+   * Portfolio is a page in its own right, not a panel. Listing it here keeps
+   * the destination visible where people look for it; selecting it hands over
+   * rather than rebuilding the page inside a tab.
+   */
+  useEffect(() => {
+    if (tab === 'portfolio') {
+      void navigate('/desktop/wallet/portfolio');
+    }
+  }, [navigate, tab]);
 
   return (
-    <PageFrame
-      fit
-      title="Swap"
-      subtitle="Exchange one asset for another at the best available rate."
-    >
-      <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', gap: 3, minHeight: 0 }}>
-        <ComingSoon
-          title="Swapping is not live yet"
-          description="The form below is a preview of the routing interface and cannot be submitted. Orders can be placed against the live order book on Trade in the meantime."
+    <PageFrame title="Swap" subtitle="Trade against the on-chain automated market maker.">
+      <Stack spacing={3}>
+        <Tabs
+          value={tab}
+          onChange={(_e, value: SwapTab) => setTab(value)}
+          variant="scrollable"
+          scrollButtons={false}
+          sx={{
+            '@media (prefers-reduced-motion: reduce)': {
+              '& .MuiTab-root': { transition: 'none' },
+            },
+            '& .Mui-selected': {
+              bgcolor: 'action.selected',
+              color: 'text.primary !important',
+              fontWeight: 600,
+            },
+            '& .MuiTab-root': {
+              '& .MuiSvgIcon-root': { fontSize: 17 },
+              borderRadius: 1.5,
+              color: 'text.secondary',
+              fontSize: '0.75rem',
+              fontWeight: 500,
+              gap: 0.5,
+              letterSpacing: '-0.005em',
+              minHeight: 30,
+              px: 1.25,
+              textTransform: 'none',
+              transition: 'background-color 120ms, color 120ms',
+            },
+            '& .MuiTabs-indicator': { display: 'none' },
+            /*
+             * Centred, and a quarter smaller: this is navigation between six
+             * peers, not the page's headline. It should sit quietly above the
+             * panel that holds the work.
+             *
+             * The scroller needs the centering too — `variant="scrollable"`
+             * wraps the flex container in one, and centering only the inner
+             * element leaves the row pinned left. Scrollable is kept so the
+             * six still reach on a narrow window.
+             */
+            /*
+             * The scroller needs vertical room, not just centering. A scroll
+             * container clips its cross axis — `overflow-x: auto` forces
+             * `overflow-y` to clip with it — so the selected tab's focus ring,
+             * drawn outside the tab's own box, was sliced along the top and
+             * bottom. Padding inside the list puts the ring within the
+             * scrollable area rather than across its edge.
+             *
+             * The selector is `.MuiTabs-list` — MUI renamed it from
+             * `.MuiTabs-flexContainer`, and the old name silently matches
+             * nothing rather than erroring.
+             */
+            '& .MuiTabs-list': { alignItems: 'center', justifyContent: 'center', py: 1 },
+            '& .MuiTabs-scroller': { display: 'flex', justifyContent: 'center' },
+            minHeight: 46,
+          }}
         >
-          <Paper
-            elevation={0}
-            sx={{
-              border: '1px solid',
-              borderColor: 'divider',
-              borderRadius: radii.cards,
-              // A form is a column of controls; past ~560px the fields grow
-              // wider than they are useful and the card stops reading as one.
-              maxWidth: 560,
-              mx: 'auto',
-              p: 3,
-            }}
-          >
-            <Stack
-              direction="row"
-              sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 2 }}
-            >
-              <Typography variant="h6" sx={{ fontWeight: 300 }}>
-                Swap tokens
-              </Typography>
-              <Stack direction="row" spacing={1}>
-                <IconButton size="small" aria-label="Swap history">
-                  <History />
-                </IconButton>
-                <IconButton size="small" aria-label="Swap settings">
-                  <Settings />
-                </IconButton>
-              </Stack>
-            </Stack>
-
-            <TokenField label="From" symbol="DCC" markColor={t.accent.primary} balance="0.00 DCC" />
-
-            {/* Overlaps both fields, so the pair reads as one control. */}
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                my: -1.25,
-                position: 'relative',
-                zIndex: 1,
-              }}
-            >
-              <IconButton
-                aria-label="Reverse direction"
-                sx={{
-                  bgcolor: 'background.paper',
-                  border: '1px solid',
-                  borderColor: 'divider',
-                }}
-              >
-                <SwapVert />
-              </IconButton>
-            </Box>
-
-            <TokenField
-              label="To"
-              symbol="USDT"
-              markColor={swapMarkColor.usdt}
-              balance="0.00 USDT"
+          {TABS.map((entry) => (
+            <Tab
+              key={entry.value}
+              value={entry.value}
+              label={entry.label}
+              icon={entry.icon}
+              iconPosition="start"
             />
+          ))}
+        </Tabs>
 
-            <Paper
-              elevation={0}
-              sx={{
-                // Was the fixed light literal `palette.periwinkleWash`;
-                // same "fixed panel, mode-relative ink" mismatch as the
-                // `TokenField` panel above once the wrapper stops forcing
-                // light. `accent.muted` is the semantic surface this exact
-                // hue already maps to (`#e8e6ff` in light — visually the
-                // same wash) and it tracks dark mode correctly.
-                bgcolor: t.accent.muted,
-                borderRadius: radii.cards,
-                mt: 2,
-                p: 2,
-              }}
-            >
-              <Stack spacing={0.75}>
-                <DetailRow label="Exchange rate" value="1 DCC = 0.00 USDT" />
-                <DetailRow label="Price impact" value="< 0.01%" />
-                <DetailRow label="Network fee" value="~0.005 DCC" />
-              </Stack>
-            </Paper>
-
-            <Button variant="contained" size="large" fullWidth disabled sx={{ mt: 2, py: 1.5 }}>
-              Swap unavailable
-            </Button>
-          </Paper>
-        </ComingSoon>
-      </Box>
+        <Box>
+          {tab === 'swap' && <SwapPanel />}
+          {tab === 'liquidity' && <LiquidityPanel />}
+          {tab === 'pools' && <PoolsPanel />}
+          {tab === 'my-pools' && <MyPoolsPanel />}
+          {tab === 'explore' && <ExplorePanel />}
+        </Box>
+      </Stack>
     </PageFrame>
   );
 };

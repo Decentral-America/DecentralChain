@@ -1,0 +1,49 @@
+{
+  "name": "@dcc-amm/sdk",
+  "description": "Quoting, transaction building, and pool state reads for the DCC AMM swap protocol.",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "license": "MIT",
+  "engines": {
+    "node": ">=24"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsdown",
+    "bulletproof": "pnpm run lint:fix && pnpm run typecheck && pnpm run test",
+    "bulletproof:check": "pnpm run lint:check && pnpm run typecheck && pnpm run test",
+    "lint": "biome check .",
+    "lint:check": "biome check .",
+    "lint:fix": "biome check --write .",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "tsdown": "catalog:",
+    "vitest": "catalog:"
+  },
+  "nx": {
+    "tags": [
+      "scope:sdk",
+      "layer:2"
+    ]
+  }
+}

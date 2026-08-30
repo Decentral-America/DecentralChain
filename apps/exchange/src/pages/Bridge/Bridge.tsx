@@ -265,29 +265,16 @@ export const Bridge: React.FC = () => {
       <Container maxWidth="xl">
         {/* Network Selector */}
         <Box sx={{ mb: 4 }}>
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 600,
-              mb: 2,
-              textAlign: 'center',
-            }}
-          >
-            Select Network
+          <Typography variant="subtitle2" sx={{ color: 'text.secondary', mb: 1 }}>
+            Network
           </Typography>
-          <Grid
-            container
-            spacing={2}
-            sx={{
-              justifyContent: 'center',
-            }}
-          >
+          <Grid container spacing={1}>
             {SUPPORTED_NETWORKS.map((network) => (
               <Grid
                 key={network.id}
                 size={{
-                  md: 3,
-                  sm: 4,
+                  md: 'auto',
+                  sm: 3,
                   xs: 6,
                 }}
               >
@@ -296,11 +283,10 @@ export const Bridge: React.FC = () => {
                   sx={{
                     '&:hover': network.available
                       ? {
-                          boxShadow: 4,
-                          transform: 'translateY(-4px)',
+                          boxShadow: 1,
                         }
                       : {},
-                    border: 2,
+                    border: 1,
                     borderColor: selectedNetwork === network.id ? network.color : 'transparent',
                     cursor: network.available ? 'pointer' : 'not-allowed',
                     opacity: network.available ? 1 : 0.6,
@@ -308,41 +294,32 @@ export const Bridge: React.FC = () => {
                     transition: 'all 0.2s',
                   }}
                 >
-                  <CardContent sx={{ py: 2, textAlign: 'center' }}>
+                  <CardContent
+                    sx={{
+                      '&:last-child': { pb: 1 },
+                      alignItems: 'center',
+                      display: 'flex',
+                      gap: 1,
+                      px: 1.5,
+                      py: 1,
+                    }}
+                  >
                     <Box
                       component="img"
                       src={network.icon}
-                      alt={`${network.name} logo`}
-                      sx={{
-                        display: 'block',
-                        height: 48,
-                        mb: 1,
-                        mx: 'auto',
-                        width: 48,
-                      }}
+                      alt=""
+                      aria-hidden
+                      sx={{ display: 'block', flexShrink: 0, height: 20, width: 20 }}
                     />
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        fontWeight: 600,
-                      }}
-                    >
+                    <Typography variant="body2" sx={{ fontWeight: 600, whiteSpace: 'nowrap' }}>
                       {network.name}
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        color: 'text.secondary',
-                      }}
-                    >
-                      {network.ticker}
                     </Typography>
                     {selectedNetwork === network.id && network.available && (
                       <CheckCircle
                         sx={{
                           color: network.color,
-                          fontSize: 24,
-                          position: 'absolute',
+                          fontSize: 16,
+                          position: 'static',
                           right: 8,
                           top: 8,
                         }}
@@ -358,50 +335,54 @@ export const Bridge: React.FC = () => {
           </Grid>
         </Box>
 
-        {/* Mode Toggle */}
-        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
-          <ToggleButtonGroup
-            value={mode}
-            exclusive
-            onChange={handleModeChange}
-            aria-label="Bridge mode"
-            sx={{
-              '& .MuiToggleButton-root': {
-                fontSize: '1rem',
-                fontWeight: 500,
-                px: 4,
-                py: 1.5,
-                textTransform: 'none',
-              },
-            }}
-          >
-            <ToggleButton value="deposit" aria-label="Deposit mode">
-              Deposit to DecentralChain
-            </ToggleButton>
-            <ToggleButton value="withdraw" aria-label="Withdraw mode">
-              Withdraw to External
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </Box>
+        {/* Mode Toggle — gateway networks only; Solana owns its own. */}
+        {selectedNetwork !== 'SOL' && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+            <ToggleButtonGroup
+              value={mode}
+              exclusive
+              onChange={handleModeChange}
+              aria-label="Bridge mode"
+              sx={{
+                '& .MuiToggleButton-root': {
+                  fontSize: '1rem',
+                  fontWeight: 500,
+                  px: 4,
+                  py: 1.5,
+                  textTransform: 'none',
+                },
+              }}
+            >
+              <ToggleButton value="deposit" aria-label="Deposit mode">
+                Deposit to DecentralChain
+              </ToggleButton>
+              <ToggleButton value="withdraw" aria-label="Withdraw mode">
+                Withdraw to External
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+        )}
 
-        {/* Info Alert */}
-        <Alert severity="info" icon={<InfoOutlined />} sx={{ maxWidth: 800, mb: 4, mx: 'auto' }}>
-          {mode === 'deposit' ? (
-            <>
-              <strong>Deposit Mode:</strong> Send{' '}
-              {SUPPORTED_NETWORKS.find((n) => n.id === selectedNetwork)?.name} assets to the gateway
-              address. You&apos;ll receive wrapped tokens on DecentralChain after network
-              confirmations.
-            </>
-          ) : (
-            <>
-              <strong>Withdraw Mode:</strong> Send wrapped tokens from DecentralChain to the
-              gateway. You&apos;ll receive native{' '}
-              {SUPPORTED_NETWORKS.find((n) => n.id === selectedNetwork)?.name} assets after
-              processing.
-            </>
-          )}
-        </Alert>
+        {/* Info Alert — same reason as the toggle above. */}
+        {selectedNetwork !== 'SOL' && (
+          <Alert severity="info" icon={<InfoOutlined />} sx={{ maxWidth: 800, mb: 4, mx: 'auto' }}>
+            {mode === 'deposit' ? (
+              <>
+                <strong>Deposit Mode:</strong> Send{' '}
+                {SUPPORTED_NETWORKS.find((n) => n.id === selectedNetwork)?.name} assets to the
+                gateway address. You&apos;ll receive wrapped tokens on DecentralChain after network
+                confirmations.
+              </>
+            ) : (
+              <>
+                <strong>Withdraw Mode:</strong> Send wrapped tokens from DecentralChain to the
+                gateway. You&apos;ll receive native{' '}
+                {SUPPORTED_NETWORKS.find((n) => n.id === selectedNetwork)?.name} assets after
+                processing.
+              </>
+            )}
+          </Alert>
+        )}
 
         {/*
           Solana and the BTC gateway are different systems that happen to share
@@ -410,11 +391,15 @@ export const Bridge: React.FC = () => {
           knows what is currently safe to offer.
         */}
         {selectedNetwork === 'SOL' ? (
+          /*
+            The Solana panel carries its own direction toggle — the page's
+            deposit/withdraw switch belongs to the BTC gateway, which has a
+            different flow on each side.
+          */
           <SolanaBridgePanel
             assetBalancesRaw={solanaBalancesRaw}
             dccAddress={user.address}
             dccBalanceRaw={dccBalanceRaw}
-            mode={mode}
           />
         ) : (
           <BridgeAssetSelector

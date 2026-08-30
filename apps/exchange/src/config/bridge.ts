@@ -56,6 +56,20 @@ export const WITHDRAW_TX_FEE = 900_000;
 export const WITHDRAW_FEE_RATE = 0.0025;
 
 /**
+ * Deposit fee, taken from the amount before minting.
+ *
+ * Two independent observations agree on 0.1%: the reference bridge front end
+ * states "Bridge fee (0.10%)" and computes −0.001000 SOL on a 1 SOL deposit,
+ * and a real 0.01 SOL deposit through this app minted 0.00999 — a shortfall of
+ * 0.00001, which is 0.1% of the input.
+ *
+ * `GET /deposit/limits` does not report a deposit fee rate, so this cannot be
+ * read from the API. It is inferred, and the evidence is recorded here rather
+ * than left as a bare constant.
+ */
+export const DEPOSIT_FEE_RATE = 0.001;
+
+/**
  * A DecentralChain address is version(1) · chainId(1) · hash(20) · checksum(4),
  * right-padded with zeros into the contract's 32-byte field.
  */

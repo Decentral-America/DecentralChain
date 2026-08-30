@@ -6,6 +6,9 @@
 
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import BadgeIcon from '@mui/icons-material/Badge';
+import CandlestickChartIcon from '@mui/icons-material/CandlestickChart';
+import HistoryIcon from '@mui/icons-material/History';
+import HubIcon from '@mui/icons-material/Hub';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import PersonIcon from '@mui/icons-material/Person';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
@@ -33,7 +36,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { formatDistanceToNow } from 'date-fns';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useAddressTransactions } from '@/api/services/addressService';
@@ -42,66 +44,49 @@ import { StatCard } from '@/components/atoms/StatCard';
 import { AssetNameDisplay } from '@/components/common/AssetNameDisplay';
 import { CreateAliasModal } from '@/components/modals/CreateAliasModal';
 import { useAuth } from '@/contexts/AuthContext';
+import { AssetDetailsDialog, type AssetDialogAsset } from '@/features/wallet/AssetDetailsDialog';
 import { SendAssetModalModern } from '@/features/wallet/SendAssetModalModern';
+import { mapTxToActivity, type TxActivity } from '@/features/wallet/txActivity';
 import { useAliases } from '@/hooks/useAliases';
+import { useAssetDetails } from '@/hooks/useAssetDetails';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
 import { PageFrame, pageRhythm } from '@/layouts/PageFrame';
 import { radii } from '@/styles/tokens';
 import { formatAmount } from '@/utils/formatters';
 
-interface DashboardTx {
-  type?: number;
-  recipient?: string;
-  amount?: number;
-  assetId?: string | null;
-  timestamp?: number;
-  id?: string;
-  [key: string]: unknown;
-}
+/**
+ * One line of the activity feed: "Sent 100 DCC", "Received 1,000 CR Coin".
+ *
+ * The amount is scaled by the asset's own decimals, looked up per asset. The
+ * previous version divided everything by 10^8 — right for DCC and wrong by a
+ * factor of a hundred for any six-decimal token, which is a wrong number shown
+ * to someone about their own money.
+ */
+const ActivityLine: React.FC<{ activity: TxActivity }> = ({ activity }) => {
+  const { data: asset } = useAssetDetails(activity.assetId, {
+    enabled: activity.assetId !== null,
+  });
 
-const TX_DISPLAY: Record<
-  number,
-  { type: string; getAmount: (tx: DashboardTx, received: boolean) => string }
-> = {
-  4: {
-    getAmount: (tx, received) =>
-      `${received ? '+' : '-'}${formatAmount(tx.amount ? tx.amount / 10 ** 8 : 0)}`,
-    type: 'transfer',
-  },
-  7: { getAmount: () => 'Token Exchange', type: 'Swap' },
-  8: {
-    getAmount: (tx) => `${formatAmount(tx.amount ? tx.amount / 10 ** 8 : 0)} DCC`,
-    type: 'Leased',
-  },
-  9: { getAmount: () => 'Lease Return', type: 'Lease Cancelled' },
+  if (activity.amountRaw === null) {
+    return (
+      <Typography noWrap sx={{ fontSize: '0.8125rem', fontWeight: 600, letterSpacing: '0.005em' }}>
+        {activity.verb}
+      </Typography>
+    );
+  }
+
+  const decimals = activity.assetId === null ? 8 : (asset?.decimals ?? 8);
+  const amount = formatAmount(activity.amountRaw / 10 ** decimals);
+
+  return (
+    <Typography
+      noWrap
+      sx={{ fontSize: '0.8125rem', fontWeight: 600, letterSpacing: '0.005em', minWidth: 0 }}
+    >
+      {activity.verb} {amount} <AssetNameDisplay assetId={activity.assetId} />
+    </Typography>
+  );
 };
-
-function mapTxToActivity(tx: DashboardTx, userAddress: string) {
-  const isReceived = tx.recipient === userAddress;
-  const display = TX_DISPLAY[tx.type ?? 0];
-  const type = display
-    ? tx.type === 4
-      ? isReceived
-        ? 'Received'
-        : 'Sent'
-      : display.type
-    : 'Transaction';
-  const amount = display?.getAmount(tx, isReceived) ?? '';
-  const time = tx.timestamp
-    ? formatDistanceToNow(new Date(tx.timestamp), { addSuffix: true })
-    : 'Unknown time';
-
-  return {
-    amount,
-    // biome-ignore lint/nursery/useNullishCoalescing: assetId='' means native DCC asset — semantic || fallback to null is intentional
-    assetId: tx.assetId || null,
-    isReceived,
-    status: 'completed',
-    time,
-    txId: tx.id as string,
-    type,
-  };
-}
 
 export const Dashboard = () => {
   const { user } = useAuth();
@@ -112,6 +97,7 @@ export const Dashboard = () => {
   const [displayCurrency, setDisplayCurrency] = useState<string>('DCC'); // Currency to display values in
   const [tokenFilter, setTokenFilter] = useState<'all' | 'verified' | 'my'>('all'); // Token filter
   const [sendModalOpen, setSendModalOpen] = useState(false);
+  const [infoAsset, setInfoAsset] = useState<AssetDialogAsset | null>(null);
   const [selectedAsset, setSelectedAsset] = useState<{
     assetId: string;
     assetName: string;
@@ -219,6 +205,32 @@ export const Dashboard = () => {
     });
   }, [allAssets, tokenFilter]);
 
+  /**
+   * What the node has locked for the base asset.
+   *
+   * The gap between the regular and available balance — funds committed to open
+   * orders or leases. Known for DCC only; a per-asset figure needs the
+   * matcher's reserved-balance endpoint, so the other rows report zero rather
+   * than guessing. Computed the same way the portfolio table does it, so the
+   * dialog reads identically from either page.
+   */
+  const reservedBase = Math.max(
+    ((balances?.regular ?? 0) - (balances?.available ?? 0)) / 10 ** 8,
+    0,
+  );
+
+  // Handler to open the asset info dialog for a holding
+  const handleShowAssetInfo = (asset: (typeof allAssets)[0]) => {
+    setInfoAsset({
+      amount: asset.amount / 10 ** asset.decimals,
+      assetId: asset.assetId,
+      decimals: asset.decimals,
+      isBaseAsset: asset.isBaseAsset,
+      name: asset.name,
+      reserved: asset.isBaseAsset ? reservedBase : 0,
+    });
+  };
+
   // Handler to open send modal with selected asset
   const handleSendAsset = (asset: (typeof allAssets)[0]) => {
     const amount = asset.amount / 10 ** asset.decimals;
@@ -236,18 +248,8 @@ export const Dashboard = () => {
     if (!transactionsData || !user?.address) return [];
     return transactionsData
       .flat()
-      .slice(0, 3)
-      .map(
-        (tx: {
-          type?: number;
-          recipient?: string;
-          amount?: number;
-          assetId?: string | null;
-          timestamp?: number;
-          id?: string;
-          [key: string]: unknown;
-        }) => mapTxToActivity(tx, user.address),
-      );
+      .slice(0, 8)
+      .map((tx) => mapTxToActivity(tx, user.address));
   }, [transactionsData, user?.address]);
 
   // Quick action cards
@@ -259,10 +261,28 @@ export const Dashboard = () => {
       title: 'Send',
     },
     {
-      action: () => navigate('/desktop/dex'),
+      action: () => navigate('/desktop/swap'),
       description: 'Exchange tokens',
       icon: <SwapHorizIcon sx={{ fontSize: 32 }} />,
       title: 'Swap',
+    },
+    {
+      action: () => navigate('/desktop/bridge'),
+      description: 'Move across chains',
+      icon: <HubIcon sx={{ fontSize: 32 }} />,
+      title: 'Bridge',
+    },
+    {
+      action: () => navigate('/desktop/dex'),
+      description: 'Trading terminal',
+      icon: <CandlestickChartIcon sx={{ fontSize: 32 }} />,
+      title: 'DEX',
+    },
+    {
+      action: () => navigate('/desktop/wallet/transactions'),
+      description: 'Past transactions',
+      icon: <HistoryIcon sx={{ fontSize: 32 }} />,
+      title: 'History',
     },
     {
       action: () => setCreateAliasOpen(true),
@@ -299,7 +319,12 @@ export const Dashboard = () => {
               icon={<AccountBalanceWalletIcon />}
               label="Total portfolio value"
               value={isLoading ? '—' : formatAmount(portfolioValueInDCC, 8)}
-              caption={displayCurrency}
+              /*
+               * Not the currency code: the selector directly above already
+               * says it, and a caption that repeats its own adornment spends
+               * a line without adding anything.
+               */
+              caption="Across every asset held"
               adornment={
                 <Select
                   value={displayCurrency}
@@ -318,13 +343,21 @@ export const Dashboard = () => {
                   ))}
                 </Select>
               }
+              /*
+               * A link, like the other two. This was a chip reading "N assets"
+               * — the exact figure the next card along states as its own
+               * headline. Three cards in a row should share an anatomy, or the
+               * eye has to re-learn each one instead of scanning them.
+               */
               action={
-                <Chip
-                  icon={<TrendingUpIcon />}
-                  label={`${totalAssets} ${totalAssets === 1 ? 'asset' : 'assets'}`}
+                <Button
+                  variant="text"
                   size="small"
-                  sx={{ bgcolor: 'action.selected', color: 'primary.main' }}
-                />
+                  onClick={() => navigate('/desktop/wallet/portfolio')}
+                  sx={{ color: 'primary.main', px: 0 }}
+                >
+                  View portfolio →
+                </Button>
               }
             />
           </Grid>
@@ -410,13 +443,15 @@ export const Dashboard = () => {
                   gap: 2,
                   /*
                    * Column count follows the width available rather than a
-                   * fixed twelve-column split, so five tiles fill the row
-                   * instead of leaving one stranded underneath. 128px is the
-                   * widest minimum that still fits five across the 754px this
-                   * column gets at 1512, measured rather than guessed; below
-                   * that width it falls to four and wraps, which is correct.
+                   * fixed twelve-column split. With eight tiles the target is
+                   * two even rows of four: 160px is the widest minimum that
+                   * still fits four across the 754px this column gets at 1512,
+                   * measured rather than guessed. A 128px minimum would pack
+                   * five into the first row and strand three underneath.
+                   * Below that width it falls to three and wraps, which is
+                   * correct.
                    */
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(min(128px, 100%), 1fr))',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(min(160px, 100%), 1fr))',
                 }}
               >
                 {quickActions.map((action) => (
@@ -521,6 +556,18 @@ export const Dashboard = () => {
                   return (
                     <Box
                       key={asset.assetId}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Asset info for ${asset.name}`}
+                      onClick={() => handleShowAssetInfo(asset)}
+                      onKeyDown={(event) => {
+                        // A div carrying a button role has to answer to the
+                        // keys a real button answers to.
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          handleShowAssetInfo(asset);
+                        }
+                      }}
                       sx={{
                         '&:hover': {
                           bgcolor: 'action.hover',
@@ -529,6 +576,7 @@ export const Dashboard = () => {
                         alignItems: 'center',
                         bgcolor: 'background.default',
                         borderRadius: 2,
+                        cursor: 'pointer',
                         display: 'flex',
                         justifyContent: 'space-between',
                         p: 2,
@@ -571,7 +619,10 @@ export const Dashboard = () => {
                           <IconButton
                             size="small"
                             color="primary"
-                            onClick={() => handleSendAsset(asset)}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              handleSendAsset(asset);
+                            }}
                             sx={{
                               '&:hover': {
                                 bgcolor: 'primary.dark',
@@ -626,55 +677,58 @@ export const Dashboard = () => {
                     Nothing yet. Transfers, orders and leases will appear here as they confirm.
                   </Typography>
                 ) : null}
-                {recentActivity.map((activity) => (
-                  <Box
-                    key={activity.txId}
-                    sx={{
-                      bgcolor: 'action.hover',
-                      borderColor: activity.type === 'Received' ? 'success.main' : 'primary.main',
-                      borderLeft: '3px solid',
-                      borderRadius: '4px',
-                      p: 2,
-                    }}
-                  >
-                    <Stack
-                      direction="row"
-                      sx={{ alignItems: 'flex-start', justifyContent: 'space-between' }}
+                {/*
+                  One row per transaction, not a card.
+                  Each entry was four stacked blocks inside 16px of padding:
+                  134px measured, for three short strings. The same facts read
+                  fine on two tight lines with the direction as a glyph — 52px,
+                  so a panel that held three now holds seven. Density is the
+                  point of an activity feed; its value is seeing the recent
+                  shape of things at once.
+                */}
+                {recentActivity.map((activity) => {
+                  const received = activity.isReceived;
+
+                  return (
+                    <Box
+                      key={activity.txId}
+                      sx={{
+                        alignItems: 'center',
+                        bgcolor: 'action.hover',
+                        borderColor: received ? 'success.main' : 'primary.main',
+                        borderLeft: '2px solid',
+                        borderRadius: '4px',
+                        display: 'flex',
+                        gap: 1.25,
+                        px: 1.25,
+                        py: 1,
+                      }}
                     >
-                      <Box>
-                        <Typography variant="subtitle2" color="text.primary">
-                          {activity.type}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                          {activity.amount}{' '}
-                          {activity.type === 'Received' || activity.type === 'Sent' ? (
-                            <AssetNameDisplay assetId={activity.assetId} />
-                          ) : null}
+                      {received ? (
+                        <TrendingUpIcon color="success" sx={{ flexShrink: 0, fontSize: 16 }} />
+                      ) : (
+                        <TrendingDownIcon color="error" sx={{ flexShrink: 0, fontSize: 16 }} />
+                      )}
+
+                      <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <ActivityLine activity={activity} />
+                        <Typography
+                          noWrap
+                          sx={{ color: 'text.secondary', fontSize: '0.71875rem', lineHeight: 1.4 }}
+                        >
+                          {activity.time}
                         </Typography>
                       </Box>
-                      <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center' }}>
-                        {activity.type === 'Received' ? (
-                          <TrendingUpIcon color="success" fontSize="small" />
-                        ) : (
-                          <TrendingDownIcon color="error" fontSize="small" />
-                        )}
-                      </Stack>
-                    </Stack>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      sx={{ display: 'block', mt: 1 }}
-                    >
-                      {activity.time}
-                    </Typography>
-                    <Chip
-                      label={activity.status}
-                      size="small"
-                      color="success"
-                      sx={{ fontSize: 10, height: 20, mt: 1 }}
-                    />
-                  </Box>
-                ))}
+
+                      <Chip
+                        label={activity.status}
+                        size="small"
+                        color="success"
+                        sx={{ flexShrink: 0, fontSize: 10, height: 18 }}
+                      />
+                    </Box>
+                  );
+                })}
               </Stack>
 
               <Button
@@ -814,6 +868,8 @@ export const Dashboard = () => {
           availableBalance={selectedAsset.availableBalance}
         />
       )}
+      {/* Asset Info Dialog */}
+      {infoAsset && <AssetDetailsDialog asset={infoAsset} onClose={() => setInfoAsset(null)} />}
     </>
   );
 };

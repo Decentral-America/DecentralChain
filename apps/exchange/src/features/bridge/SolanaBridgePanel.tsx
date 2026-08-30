@@ -1,59 +1,56 @@
 /**
  * The Solana side of the bridge.
  *
- * Solana and the BTC gateway are different systems that share this page. The
- * gateway reads its assets from network config; Solana reads them from the
- * bridge API, which is the only source that knows what is currently safe to
- * offer. Keeping this in its own component means neither path has to know
- * about the other.
+ * One asset at a time, one direction at a time: lock on Solana to mint the
+ * wrapped form, or burn the wrapped form to release the original. Everything
+ * below the form — the token list, the manual route, the vault figures — is
+ * there because a bridge is a thing people check before they trust it.
  */
-import { Alert, Divider, Stack, Typography } from '@mui/material';
+import { Alert, Button, Paper, Skeleton, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useSolanaWallet } from '@/contexts/SolanaWalletContext';
+import { useBridgeTokens } from '@/hooks/useBridgeTokens';
 import { usePendingTransfers } from '@/hooks/usePendingTransfers';
+import { describeBridgeError } from '@/services/bridge/api';
 import { rawToHuman } from '@/services/bridge/decimals';
 import { type BridgeToken } from '@/services/bridge/types';
+import { type BridgeDirection, BridgeDirectionToggle } from './BridgeDirectionToggle';
+import { BridgeStatusBar } from './BridgeStatusBar';
 import { DepositLimitsPanel } from './DepositLimitsPanel';
-import { SolanaAssetList } from './SolanaAssetList';
+import { ManualDepositCard } from './ManualDepositCard';
 import { SolanaDepositForm } from './SolanaDepositForm';
 import { SolanaWalletButton } from './SolanaWalletButton';
 import { SolanaWithdrawForm } from './SolanaWithdrawForm';
+import { SupportedTokensCard } from './SupportedTokensCard';
 import { TransferProgress } from './TransferProgress';
 import { WithdrawalReceipt } from './WithdrawalReceipt';
 
 interface SolanaBridgePanelProps {
-  /** Wrapped-asset balances by DecentralChain assetId, in raw units. */
   assetBalancesRaw: Record<string, bigint>;
-  /** The signed-in DecentralChain address — the deposit's mint destination. */
   dccAddress: string;
-  /** DCC balance in wavelets, for the withdrawal fee pre-flight. */
   dccBalanceRaw: bigint;
-  mode: 'deposit' | 'withdraw';
 }
 
 export const SolanaBridgePanel: React.FC<SolanaBridgePanelProps> = ({
   assetBalancesRaw,
   dccAddress,
   dccBalanceRaw,
-  mode,
 }) => {
+  const { data: tokens, error: tokensError, isPending: tokensPending, refetch } = useBridgeTokens();
   const [token, setToken] = useState<BridgeToken | null>(null);
+  const [direction, setDirection] = useState<BridgeDirection>('deposit');
+  const [amount, setAmount] = useState('');
   const { name: walletName, ready } = useSolanaWallet();
   const { add, remove, transfers } = usePendingTransfers();
 
-  const balanceRaw = token ? (assetBalancesRaw[token.assetId] ?? 0n) : 0n;
+  // Default to SOL, which is the pair everything else is priced against here.
+  const active = token ?? tokens?.find((t) => t.name === 'SOL') ?? tokens?.[0] ?? null;
+  const balanceRaw = active ? (assetBalancesRaw[active.assetId] ?? 0n) : 0n;
 
   return (
-    <Stack spacing={3}>
+    <Stack spacing={2} sx={{ maxWidth: 640, mx: 'auto' }}>
       {transfers.length > 0 && (
         <Stack spacing={2}>
-          <Typography variant="subtitle2">In flight</Typography>
-          {/*
-            Only a deposit's id is a bridge transfer id. A withdrawal's is a
-            DecentralChain burn txid, which /transfer/:id does not recognise —
-            polling it reports "not reached the bridge" forever, including for
-            withdrawals that completed.
-          */}
           {transfers.map((transfer) =>
             transfer.direction === 'deposit' ? (
               <TransferProgress
@@ -71,66 +68,142 @@ export const SolanaBridgePanel: React.FC<SolanaBridgePanelProps> = ({
               />
             ),
           )}
-          <Divider />
         </Stack>
       )}
 
-      {mode === 'deposit' && (
-        <Stack direction="row" sx={{ justifyContent: 'flex-end' }}>
-          <SolanaWalletButton />
-        </Stack>
-      )}
+      <BridgeDirectionToggle
+        onChange={setDirection}
+        tokenName={active?.name ?? 'SOL'}
+        value={direction}
+      />
 
-      <SolanaAssetList onSelect={setToken} selectedMint={token?.splMint ?? null} />
-
-      {token && mode === 'deposit' && (
-        <Stack spacing={2}>
-          <DepositLimitsPanel splMint={token.splMint} tokenName={token.name} />
-          {ready ? (
-            <SolanaDepositForm
-              dccRecipient={dccAddress}
-              onSubmitted={(transferId, amount) =>
-                add({
-                  amount,
-                  direction: 'deposit',
-                  id: transferId,
-                  startedAt: Date.now(),
-                  tokenName: token.name,
-                })
-              }
-              token={token}
-            />
-          ) : (
-            <Alert severity="info">
-              Connect a Solana wallet to deposit {token.name}
-              {walletName ? ` with ${walletName}` : ''}.
-            </Alert>
-          )}
-        </Stack>
-      )}
-
-      {token && mode === 'withdraw' && (
-        <Stack spacing={2}>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Burns wrapped {token.name} on DecentralChain and releases the original on Solana. Your
-            balance: {rawToHuman(balanceRaw, token.dccDecimals)} {token.name}.
-          </Typography>
-          <SolanaWithdrawForm
-            balanceRaw={balanceRaw}
-            dccBalanceRaw={dccBalanceRaw}
-            onSubmitted={(txId, amount) =>
-              add({
-                amount,
-                direction: 'withdraw',
-                id: txId,
-                startedAt: Date.now(),
-                tokenName: token.name,
-              })
+      {/*
+        Every card below this point is gated on `active`, which is derived from
+        `GET /tokens`. Without an explicit state for the three ways that query
+        can leave `active` null, a failed token fetch renders the page as a
+        direction toggle floating over nothing — no form, no token list, no
+        limits, no error. Whatever went wrong, say which one it was.
+      */}
+      {!active &&
+        (tokensPending ? (
+          <Paper variant="outlined" sx={{ p: 2 }}>
+            <Skeleton variant="text" width={180} />
+            <Skeleton variant="rounded" height={120} sx={{ mt: 1.5 }} />
+          </Paper>
+        ) : (
+          <Alert
+            severity={tokensError ? 'error' : 'warning'}
+            action={
+              <Button color="inherit" onClick={() => void refetch()} size="small">
+                Retry
+              </Button>
             }
-            token={token}
-          />
-        </Stack>
+          >
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              {tokensError
+                ? 'Could not load the list of bridgeable assets.'
+                : 'The bridge is not offering any asset right now.'}
+            </Typography>
+            <Typography variant="body2">
+              {tokensError
+                ? `${describeBridgeError(tokensError)} Nothing can be deposited or redeemed until this list loads.`
+                : 'Every registered asset is currently disabled on chain. Nothing can be deposited or redeemed until one is re-enabled.'}
+            </Typography>
+          </Alert>
+        ))}
+
+      {active && (
+        <Paper variant="outlined" sx={{ p: 2 }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+            {direction === 'deposit' ? `Deposit ${active.name}` : `Redeem ${active.name}.DCC`}
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
+            {direction === 'deposit'
+              ? 'Lock on Solana to mint the wrapped asset on DecentralChain.'
+              : `Burn ${active.name}.DCC on DecentralChain to unlock ${active.name} on Solana.`}
+          </Typography>
+
+          {direction === 'deposit' && (
+            <Stack spacing={3}>
+              <Stack direction="row" sx={{ justifyContent: 'flex-end' }}>
+                <SolanaWalletButton />
+              </Stack>
+
+              {ready ? (
+                <SolanaDepositForm
+                  dccRecipient={dccAddress}
+                  onSubmitted={(transferId, submitted) =>
+                    add({
+                      amount: submitted,
+                      direction: 'deposit',
+                      id: transferId,
+                      startedAt: Date.now(),
+                      tokenName: active.name,
+                    })
+                  }
+                  token={active}
+                />
+              ) : (
+                <Alert severity="info">
+                  Connect a Solana wallet to deposit {active.name} directly
+                  {walletName ? ` with ${walletName}` : ''} — or use the manual route below, which
+                  needs no wallet here at all.
+                </Alert>
+              )}
+            </Stack>
+          )}
+
+          {direction === 'redeem' && (
+            <Stack spacing={2}>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                Your balance: {rawToHuman(balanceRaw, active.dccDecimals)} {active.name}.DCC
+              </Typography>
+              <SolanaWithdrawForm
+                balanceRaw={balanceRaw}
+                dccBalanceRaw={dccBalanceRaw}
+                onSubmitted={(txId, submitted) =>
+                  add({
+                    amount: submitted,
+                    direction: 'withdraw',
+                    id: txId,
+                    startedAt: Date.now(),
+                    tokenName: active.name,
+                  })
+                }
+                token={active}
+              />
+            </Stack>
+          )}
+        </Paper>
       )}
+
+      {active && direction === 'deposit' && (
+        <ManualDepositCard
+          amount={amount}
+          decimals={active.solDecimals}
+          hasRecipient={Boolean(dccAddress)}
+          tokenName={active.name}
+        />
+      )}
+
+      <SupportedTokensCard
+        onSelect={(selected) => {
+          setToken(selected);
+          setAmount('');
+        }}
+        selectedMint={active?.splMint ?? null}
+      />
+
+      {active && direction === 'deposit' && (
+        <Paper variant="outlined" sx={{ p: 2 }}>
+          <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+            Limits for {active.name}
+          </Typography>
+          <DepositLimitsPanel splMint={active.splMint} tokenName={active.name} />
+        </Paper>
+      )}
+
+      <BridgeStatusBar />
     </Stack>
   );
 };

@@ -31,7 +31,11 @@ vi.mock('@/features/dex/TradeHistory', () => ({ TradeHistory: () => <div>trade-h
 vi.mock('@/features/dex/TradingViewChart', () => ({
   TradingViewChart: () => <div>chart</div>,
 }));
-vi.mock('@/features/dex/UserOrders', () => ({ UserOrders: () => <div>user-orders</div> }));
+// The rail's table reaches for auth and the matcher; this suite is about page
+// chrome, so it is stubbed the same way every other region is.
+vi.mock('@/features/dex/TerminalOrdersTable', () => ({
+  TerminalOrdersTable: () => <div>orders-table</div>,
+}));
 vi.mock('@/api/services/matcherService', () => ({
   useMarketStats24h: () => ({ data: undefined }),
   useOrderBook: () => ({ data: undefined }),
@@ -58,22 +62,24 @@ const renderIn = (mode: ThemeMode) =>
     </ThemeProvider>,
   );
 
-describe.each(['light', 'dark'] as const)('Dex — page chrome (%s mode)', (mode) => {
-  it('the panel actually follows the ambient theme mode, not a forced light literal', () => {
+describe.each(['light', 'dark'] as const)('Dex — terminal chrome (%s mode)', (mode) => {
+  it('the panels follow the ambient theme mode, not a forced light literal', () => {
     renderIn(mode);
-    const heading = screen.getByText('Price Chart');
+    const heading = screen.getByText('Order Book');
     const bg = nearestBackground(heading);
     expect(rgbToHex(bg)).toBe(tokens(mode).surface.raised);
   });
 
-  it('the stat labels and price display clear AA against the panel', () => {
+  it('every panel title clears AA against its own panel', () => {
+    // The terminal replaced the stat bar and the card headers with four
+    // titled regions; this asserts the same property against the chrome that
+    // now exists rather than the chrome that used to.
     renderIn(mode);
     for (const text of [
-      screen.getByText('Last Price'),
-      screen.getByText('24h Change'),
-      screen.getByText('24h Volume'),
-      screen.getByText('Price Chart'),
       screen.getByText('Order Book'),
+      screen.getByText('Market Depth'),
+      screen.getByText('My Open Orders'),
+      screen.getByText('Trade History'),
     ]) {
       const ink = rgbToHex(getComputedStyle(text).color);
       const bg = rgbToHex(nearestBackground(text));
@@ -83,7 +89,17 @@ describe.each(['light', 'dark'] as const)('Dex — page chrome (%s mode)', (mode
 
   it('the Buy/Sell tab labels clear AA in their unselected state', () => {
     renderIn(mode);
-    for (const text of [screen.getByText('Limit'), screen.getByText('Market')]) {
+    // SELL is the unselected side on mount, and an unselected MUI tab is the
+    // lowest-contrast text in the panel.
+    const label = screen.getByText('SELL');
+    const ink = rgbToHex(getComputedStyle(label).color);
+    const bg = rgbToHex(nearestBackground(label));
+    expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('the markets rail column headers clear AA', () => {
+    renderIn(mode);
+    for (const text of [screen.getByText('Pair'), screen.getByText('Volume')]) {
       const ink = rgbToHex(getComputedStyle(text).color);
       const bg = rgbToHex(nearestBackground(text));
       expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);

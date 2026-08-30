@@ -21,6 +21,7 @@ import { type SignedOrderResult, useTransactionSigning } from '@/hooks/useTransa
 import {
   selectAddUserOrder,
   selectMarketData,
+  selectOrderBook,
   selectSelectedPair,
   useDexStore,
 } from '@/stores/dexStore';
@@ -35,8 +36,13 @@ const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: ${(p) => p.theme.spacing.md};
-  background: ${(p) => p.theme.colors.background};
+  /*
+   * No padding or fill of its own. The terminal rail already provides both,
+   * and a second inset made the form read as a card dropped onto the surface
+   * rather than part of it.
+   */
+  padding: 0;
+  background: transparent;
 `;
 
 /**
@@ -69,6 +75,41 @@ const FormFields = styled.div`
 /**
  * Info row
  */
+/**
+ * Ask / Bid / Last quick-fill.
+ *
+ * Typing a limit price by hand on a book with a wide spread is how an order
+ * ends up nowhere near the market. These paste the three prices a trader
+ * actually reaches for.
+ */
+const PriceHintRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${(p) => p.theme.spacing.sm};
+`;
+
+const PriceHints = styled.div`
+  display: flex;
+  gap: ${(p) => p.theme.spacing.xs};
+`;
+
+const PriceHint = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 6px;
+  font-size: ${(p) => p.theme.fontSizes.xs};
+  color: ${(p) => p.theme.colors.textMuted};
+  &:hover:not(:disabled) {
+    color: ${(p) => p.theme.colors.primary};
+  }
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+`;
+
 const InfoRow = styled.div`
   display: flex;
   justify-content: space-between;
@@ -213,6 +254,7 @@ export const BuyOrderForm: React.FC = () => {
   const pairDecimals = usePairDecimals(selectedPair);
   const { priceDecimals } = pairDecimals;
   const marketData = useDexStore(selectMarketData);
+  const orderBook = useDexStore(selectOrderBook);
   const addUserOrder = useDexStore(selectAddUserOrder);
 
   const [price, setPrice] = useState<string>('');
@@ -486,7 +528,34 @@ export const BuyOrderForm: React.FC = () => {
           </BalanceValue>
         </BalanceRow>
 
-        {/* Price Input */}
+        {/* Limit price, with the three prices worth one click */}
+        <PriceHintRow>
+          <InfoLabel>Limit price</InfoLabel>
+          <PriceHints>
+            {(
+              [
+                ['Ask', orderBook.asks[0]?.price],
+                ['Bid', orderBook.bids[0]?.price],
+                ['Last', marketData.currentPrice ? String(marketData.currentPrice) : undefined],
+              ] as const
+            ).map(([label, value]) => (
+              <PriceHint
+                key={label}
+                type="button"
+                disabled={!value || buyMutation.isPending}
+                onClick={() => {
+                  if (value) {
+                    setPrice(String(value));
+                    setError('');
+                  }
+                }}
+              >
+                {label}
+              </PriceHint>
+            ))}
+          </PriceHints>
+        </PriceHintRow>
+
         <Input
           label={`Price (${priceAssetName})`}
           type="number"
@@ -560,6 +629,16 @@ export const BuyOrderForm: React.FC = () => {
           <InfoValue>
             {formatAmount(total)} {priceAssetName}
           </InfoValue>
+        </InfoRow>
+
+        <InfoRow>
+          <InfoLabel>Fee</InfoLabel>
+          <InfoValue>0.003 DCC</InfoValue>
+        </InfoRow>
+
+        <InfoRow>
+          <InfoLabel>Expiration</InfoLabel>
+          <InfoValue>29 days</InfoValue>
         </InfoRow>
 
         {/* Error Message */}

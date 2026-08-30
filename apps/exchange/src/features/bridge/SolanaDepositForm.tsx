@@ -10,12 +10,14 @@
  *   - the precision, since SOL and JitoSOL hold one fewer decimal wrapped than
  *     on Solana, and the difference is truncated on chain and never refunded
  */
-import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Divider, Paper, Stack, TextField, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
+import { DEPOSIT_FEE_RATE } from '@/config/bridge';
 import { useDepositLimits } from '@/hooks/useDepositLimits';
 import { useSolanaDeposit } from '@/hooks/useSolanaDeposit';
-import { humanToRaw, rawToHuman, solanaToDcc } from '@/services/bridge/decimals';
+import { hasDecimalGap, humanToRaw, rawToHuman, solanaToDcc } from '@/services/bridge/decimals';
 import { type BridgeToken } from '@/services/bridge/types';
+import { SummaryRow } from './SummaryRow';
 
 interface SolanaDepositFormProps {
   /** The user's DecentralChain address — where the wrapped asset is minted. */
@@ -44,6 +46,18 @@ export const SolanaDepositForm: React.FC<SolanaDepositFormProps> = ({
   }, [amount, token.solDecimals]);
 
   const conversion = parsed.raw !== null ? solanaToDcc(parsed.raw, token) : null;
+
+  /**
+   * The bridge's cut, as basis points on the raw amount.
+   *
+   * Integer arithmetic throughout — scaling a fee in floating point is the same
+   * class of mistake as parsing an amount with `Math.round`, and this figure is
+   * shown to a user as money.
+   */
+  const depositFeeRaw =
+    parsed.raw === null
+      ? 0n
+      : (parsed.raw * BigInt(Math.round(DEPOSIT_FEE_RATE * 10_000))) / 10_000n;
 
   /**
    * `sources` marks which bound actually binds. Reporting that one — rather
@@ -90,32 +104,108 @@ export const SolanaDepositForm: React.FC<SolanaDepositFormProps> = ({
 
   return (
     <Stack spacing={2}>
-      <TextField
-        label={`Amount (${token.name})`}
-        value={amount}
-        onChange={(event) => setAmount(event.target.value)}
-        error={Boolean(parsed.error) || Boolean(violated)}
-        helperText={parsed.error ?? violated ?? `Minted to ${dccRecipient}`}
-        disabled={isSubmitting}
-        fullWidth
-      />
+      <Box>
+        <Typography variant="body2" sx={{ fontWeight: 500, mb: 1 }}>
+          Token &amp; amount
+        </Typography>
+        <TextField
+          value={amount}
+          onChange={(event) => setAmount(event.target.value)}
+          error={Boolean(parsed.error) || Boolean(violated)}
+          disabled={isSubmitting}
+          fullWidth
+          placeholder="0.00"
+          slotProps={{
+            input: {
+              endAdornment: (
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  {token.name}
+                </Typography>
+              ),
+            },
+          }}
+        />
 
-      {conversion && conversion.dustRaw > 0n && (
-        <Alert severity="warning">
-          {token.name} holds {token.solDecimals} decimals on Solana and {token.dccDecimals} wrapped.
-          You would receive {rawToHuman(conversion.dccRaw, token.dccDecimals)} {token.name}, and{' '}
-          {rawToHuman(conversion.dustRaw, token.solDecimals)} would be truncated on chain and not
-          refunded. Reduce the precision to avoid it.
-        </Alert>
-      )}
-
-      {conversion && conversion.dustRaw === 0n && (
-        <Box sx={{ bgcolor: 'action.hover', borderRadius: 1, p: 2 }}>
-          <Typography variant="body2">
-            You receive {rawToHuman(conversion.dccRaw, token.dccDecimals)} wrapped {token.name}
-            {limits ? ` in about ${limits.estimatedMintTime.replace('~', '')}` : ''}.
+        <Stack
+          direction="row"
+          sx={{ alignItems: 'baseline', justifyContent: 'space-between', mt: 0.75 }}
+        >
+          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            {limits
+              ? `Limits: ${limits.limits.min.human} – ${limits.limits.max.human} ${token.name}`
+              : ' '}
           </Typography>
-        </Box>
+          {limits && (
+            <Typography
+              variant="caption"
+              onClick={() => setAmount(limits.limits.max.human)}
+              sx={{ color: 'primary.main', cursor: 'pointer' }}
+            >
+              Use max
+            </Typography>
+          )}
+        </Stack>
+
+        {limits && (
+          <Typography variant="caption" sx={{ color: 'text.secondary', display: 'block' }}>
+            Daily capacity left: {limits.limits.daily.remaining.human} of{' '}
+            {limits.limits.daily.max.human} — shared across every asset
+          </Typography>
+        )}
+
+        {(parsed.error || violated) && (
+          <Typography variant="caption" sx={{ color: 'error.main', display: 'block', mt: 0.5 }}>
+            {parsed.error ?? violated}
+          </Typography>
+        )}
+      </Box>
+
+      <Box>
+        <Typography variant="body2" sx={{ fontWeight: 500, mb: 1 }}>
+          DecentralChain recipient
+        </Typography>
+        <TextField fullWidth size="small" value={dccRecipient} disabled />
+      </Box>
+
+      {conversion && (
+        <Paper variant="outlined" sx={{ p: 2 }}>
+          <SummaryRow label="You deposit" value={`${amount} ${token.name}`} />
+          <SummaryRow
+            label={`Bridge fee (${(DEPOSIT_FEE_RATE * 100).toFixed(2)}%)`}
+            note="Retained by the bridge"
+            tone="warn"
+            value={`−${rawToHuman(depositFeeRaw, token.solDecimals)} ${token.name}`}
+          />
+
+          <Divider sx={{ my: 1 }} />
+
+          <SummaryRow
+            emphasis
+            label="You receive"
+            value={`${rawToHuman(conversion.dccRaw, token.dccDecimals)} ${token.name}.DCC`}
+          />
+          {hasDecimalGap(token) && (
+            <SummaryRow
+              label="Decimal conversion"
+              tone="warn"
+              value={`${token.solDecimals}→${token.dccDecimals} dec`}
+              note={
+                conversion.dustRaw > 0n
+                  ? `${rawToHuman(conversion.dustRaw, token.solDecimals)} truncated on chain, not refunded`
+                  : undefined
+              }
+            />
+          )}
+          {limits && (
+            <>
+              <SummaryRow
+                label="Confirmations required"
+                value={String(limits.solanaConfirmations)}
+              />
+              <SummaryRow label="Estimated time" value={limits.estimatedMintTime} />
+            </>
+          )}
+        </Paper>
       )}
 
       {error && <Alert severity="error">{error}</Alert>}

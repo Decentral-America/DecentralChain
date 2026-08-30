@@ -50,12 +50,24 @@ const HeaderRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   padding: ${(p) => p.theme.spacing.sm} ${(p) => p.theme.spacing.md};
-  font-size: ${(p) => p.theme.fontSizes.xs};
+  font-size: ${(p) => scaled(p.theme.fontSizes.xs)};
   font-weight: ${(p) => p.theme.fontWeights.medium};
   color: ${(p) => p.theme.colors.text};
   opacity: 0.6;
-  text-transform: uppercase;
 `;
+
+/**
+ * The order book runs 15% tighter than the app's base type scale.
+ *
+ * Applied as an explicit multiplier rather than by setting a percentage on the
+ * container: the sizes below are `rem`, which ignores the parent, and
+ * converting them to `em` would compound wherever one sized element nests
+ * inside another — the last price sits inside the price divider, and would
+ * come out smaller than the rows it is meant to anchor.
+ */
+const RAIL_SCALE = 0.85;
+
+const scaled = (size: string): string => `${(Number.parseFloat(size) * RAIL_SCALE).toFixed(4)}rem`;
 
 /**
  * Header cell
@@ -144,7 +156,7 @@ const PriceInfo = styled.div`
   align-items: center;
   justify-content: space-between;
   text-align: right;
-  font-size: ${(p) => p.theme.fontSizes.xs};
+  font-size: ${(p) => scaled(p.theme.fontSizes.xs)};
   width: 100%;
   min-height: 43px;
   padding: ${(p) => p.theme.spacing.sm} ${(p) => p.theme.spacing.md};
@@ -165,10 +177,13 @@ const PriceInfoTitle = styled.div`
  * Last price display
  */
 const LastPrice = styled.div`
-  font-size: ${(p) => p.theme.fontSizes.md};
+  font-size: ${(p) => scaled(p.theme.fontSizes.md)};
   font-weight: ${(p) => p.theme.fontWeights.semibold};
-  color: ${(p) => p.theme.colors.success};
+  color: ${(p) => p.theme.colors.warning};
   margin: 0 ${(p) => p.theme.spacing.sm};
+  display: flex;
+  align-items: center;
+  gap: 4px;
 `;
 
 /**
@@ -189,7 +204,7 @@ const OrderRow = styled.div<{ $type: 'buy' | 'sell' }>`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   padding: ${(p) => p.theme.spacing.xs} ${(p) => p.theme.spacing.md};
-  font-size: ${(p) => p.theme.fontSizes.sm};
+  font-size: ${(p) => scaled(p.theme.fontSizes.sm)};
   cursor: pointer;
   transition: background 0.2s;
 
@@ -213,7 +228,7 @@ const OrderRow = styled.div<{ $type: 'buy' | 'sell' }>`
     bottom: 0;
     width: var(--depth, 0%);
     background: ${(p) =>
-      p.$type === 'buy' ? `${p.theme.colors.success}15` : `${p.theme.colors.error}15`};
+      p.$type === 'buy' ? `${p.theme.colors.info}15` : `${p.theme.colors.error}15`};
     z-index: 0;
   }
 `;
@@ -227,7 +242,7 @@ const OrderCell = styled.div<{ $type?: 'buy' | 'sell'; $align?: 'left' | 'center
   text-align: ${(p) => p.$align || 'left'};
   color: ${(p) => {
     if (!p.$type) return p.theme.colors.text;
-    return p.$type === 'buy' ? p.theme.colors.success : p.theme.colors.error;
+    return p.$type === 'buy' ? p.theme.colors.info : p.theme.colors.error;
   }};
   font-family: ${(p) => p.theme.fonts.mono};
 `;
@@ -242,7 +257,7 @@ const EmptyState = styled.div`
   padding: ${(p) => p.theme.spacing.xl};
   color: ${(p) => p.theme.colors.text};
   opacity: 0.5;
-  font-size: ${(p) => p.theme.fontSizes.sm};
+  font-size: ${(p) => scaled(p.theme.fontSizes.sm)};
 `;
 
 /**
@@ -311,6 +326,57 @@ const calculateTotal = (price: string, amount: string): string => {
   if (Number.isNaN(priceNum) || Number.isNaN(amountNum)) return '0';
   return formatWithShortMode(priceNum * amountNum, true);
 };
+
+/**
+ * A blank level, drawn so the book keeps its full height.
+ *
+ * Without these an illiquid pair renders three rows and a large void, and the
+ * spread divider floats mid-panel with nothing to divide. Holding the grid
+ * makes the shallowness legible instead of looking like a failure to load.
+ */
+const EmptyRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: ${(p) => p.theme.spacing.sm};
+  padding: 2px ${(p) => p.theme.spacing.md};
+  color: ${(p) => p.theme.colors.disabled};
+  font-size: ${(p) => scaled(p.theme.fontSizes.xs)};
+  > span:first-child {
+    text-align: left;
+  }
+  > span:not(:first-child) {
+    text-align: right;
+  }
+`;
+
+/**
+ * Levels each side is drawn to, real or blank.
+ *
+ * Sized for the terminal's full-height rail. Twelve left a gap above the asks
+ * once the trading region grew to the viewport — the asks stack upward from
+ * the spread divider, so the shortfall shows at the top of the panel rather
+ * than the bottom. Each side scrolls independently, so an over-estimate costs
+ * nothing on a shorter screen.
+ */
+const FILLED_ROWS = 22;
+
+const Filler: React.FC<{ count: number; tone: 'buy' | 'sell' }> = ({ count, tone }) => (
+  <>
+    {/*
+      The index is the key because these rows are blank spacers: position is
+      the only thing that distinguishes them, and the run only ever grows or
+      shrinks from the end, so no reorder can mismatch one.
+    */}
+    {Array.from({ length: Math.max(0, count) }, (_, i) => (
+      // biome-ignore lint/suspicious/noArrayIndexKey: blank spacers, see above
+      <EmptyRow key={`${tone}-empty-${i}`}>
+        <span>—</span>
+        <span>—</span>
+        <span>—</span>
+      </EmptyRow>
+    ))}
+  </>
+);
 
 /** Maximum order-book rows drawn per side. */
 const MAX_ROWS = 80;
@@ -408,9 +474,9 @@ export const OrderBook: React.FC = () => {
         {/* Table Header - OUTSIDE scroll box */}
         <TableHead>
           <HeaderRow>
-            <HeaderCell $align="left">Amount ({amountLabel})</HeaderCell>
-            <HeaderCell $align="right">Price ({priceLabel})</HeaderCell>
-            <HeaderCell $align="right">Sum ({priceLabel})</HeaderCell>
+            <HeaderCell $align="left">Amount {amountLabel}</HeaderCell>
+            <HeaderCell $align="right">Price {priceLabel}</HeaderCell>
+            <HeaderCell $align="right">Sum {priceLabel}</HeaderCell>
           </HeaderRow>
         </TableHead>
 
@@ -434,6 +500,7 @@ export const OrderBook: React.FC = () => {
                       <OrderCell $align="right">{calculateTotal(ask.price, ask.amount)}</OrderCell>
                     </OrderRow>
                   ))}
+                <Filler count={FILLED_ROWS - visibleAsks.length} tone="sell" />
               </AsksSection>
 
               {/* Price Info - FIXED in middle (not scrollable) */}
@@ -462,6 +529,7 @@ export const OrderBook: React.FC = () => {
                       <OrderCell $align="right">{calculateTotal(bid.price, bid.amount)}</OrderCell>
                     </OrderRow>
                   ))}
+                <Filler count={FILLED_ROWS - visibleBids.length} tone="buy" />
               </BidsSection>
             </>
           ) : (

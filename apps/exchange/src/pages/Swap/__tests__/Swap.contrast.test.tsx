@@ -1,36 +1,56 @@
 /**
- * Swap — both-mode contrast
+ * Swap — both-mode contrast.
  *
- * `Swap.tsx` never imported `brandInk`/`onCanvas`/`brandCanvas` — but it does
- * import `palette.mist`/`palette.periwinkleWash` from `@/styles/tokens`,
- * fixed light-only literals used as the `TokenField`/`DetailRow` panel
- * backgrounds. Those panels hold `text.secondary`/default-ink `Typography`,
- * which the `landingTheme` wrapper always resolved to the same fixed light
- * ink the panel was designed for. Once the wrapper is gone, dark mode reaches
- * that ink for the first time and it sits on the still-fixed-light panel:
- * measured (pre-fix) 1.9:1 / 1.0:1 — see task-6-report.md.
+ * The page was a `ComingSoon` preview with hardcoded figures; it now renders
+ * three live panels against the AMM. The assertions below therefore target
+ * the chrome that exists — the tab strip and the panel it sits on — rather
+ * than the notice and the mock rate rows that used to be here.
  *
- * The `TokenField` asset-mark `Avatar` has a second, independent defect: its
- * ink was left to MUI's default (`background.default`), which was never
- * designed to pair with an arbitrary brand-mark fill — measured 2.15:1
- * against the USDT/orange mark even in light mode, i.e. pre-existing and
- * mode-independent, found only by inspecting the page's actual render tree.
- *
- * `ComingSoon` (`src/components/feedback/ComingSoon.tsx`) is not one of this
- * task's six files, but `Swap` renders it directly — following the render
- * tree, not the filename, is what the plan's own history says a "complete"
- * sweep keeps missing. Its notice box paints `text.primary`/`text.secondary`
- * on a fixed `status.warningSurface`: measured (pre-fix) 1.01:1 in dark mode,
- * the same "near-white-on-near-white" defect class the whole plan tracks.
+ * The original defect this file was written for still applies: panels that
+ * paint `text.secondary` on a fixed light literal read at ~1.9:1 once dark
+ * mode reaches them. Keeping a both-mode check on the panel is the point.
  */
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { rgbToHex } from '@/test-utils/rgbToHex';
 import { createAppTheme } from '@/theme/mui-theme';
 import { contrastRatio, type ThemeMode, tokens } from '@/theme/tokens/semantic';
 import { Swap } from '../Swap';
+
+// The panels read the chain. This suite is about colour, so the AMM is stubbed
+// rather than reached — a contrast test that needs mainnet is not a test.
+vi.mock('@/hooks/useAmm', () => ({
+  useAmmAssetMeta: () => ({ isLoading: false, metaById: new Map() }),
+  useAmmBalance: () => ({ data: undefined }),
+  useAmmPaused: () => ({ data: false }),
+  useAmmPools: () => ({ data: [], isLoading: false }),
+  useLpPosition: () => ({ data: undefined }),
+  useSwapQuote: () => ({ data: undefined, error: null, isFetching: false }),
+}));
+
+vi.mock('@/hooks/useAmmTransaction', () => ({
+  useAmmTransaction: () => ({
+    addLiquidity: vi.fn(),
+    error: null,
+    isConfirming: false,
+    isSubmitting: false,
+    removeLiquidity: vi.fn(),
+    reset: vi.fn(),
+    swap: vi.fn(),
+  }),
+}));
+
+vi.mock('@/contexts/AuthContext', () => ({ useAuth: () => ({ user: null }) }));
+
+// The Portfolio tab hands off to that page rather than rebuilding it here, so
+// the panel needs a navigator. Spreading the real module keeps Link and the
+// rest intact — the same shape the other page tests use.
+vi.mock('react-router', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('react-router')>()),
+  useNavigate: () => vi.fn(),
+}));
 
 function nearestBackground(el: HTMLElement): string {
   let node: HTMLElement | null = el;
@@ -51,58 +71,37 @@ const renderIn = (mode: ThemeMode) =>
   );
 
 describe.each(['light', 'dark'] as const)('Swap — page chrome (%s mode)', (mode) => {
-  it('the canvas actually follows the ambient theme mode, not a forced light literal', () => {
+  it('the panel actually follows the ambient theme mode, not a forced light literal', () => {
+    // The tab strip now sits on the page canvas; the raised surface is the
+    // card each panel renders into.
     renderIn(mode);
-    const heading = screen.getByText('Swap tokens');
-    const bg = nearestBackground(heading);
+    // The panel title sits directly on the card; the amount wells have their
+    // own tinted ground, so measuring from one of those reads the well.
+    const title = screen.getAllByText('Swap').at(-1) as HTMLElement;
+    const bg = nearestBackground(title);
+
     expect(rgbToHex(bg)).toBe(tokens(mode).surface.raised);
   });
 
-  it('the "Coming soon" notice clears AA against its own panel', () => {
+  it('the tab labels clear AA against their panel', () => {
     renderIn(mode);
-    for (const text of [
-      screen.getByText('Swapping is not live yet'),
-      screen.getByText(/The form below is a preview/),
-    ]) {
-      const ink = rgbToHex(getComputedStyle(text).color);
-      const bg = rgbToHex(nearestBackground(text));
+    for (const name of ['Liquidity', 'Pools', 'Explore']) {
+      const tab = screen.getByRole('tab', { name });
+      const ink = rgbToHex(getComputedStyle(tab).color);
+      const bg = rgbToHex(nearestBackground(tab));
+
       expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
     }
   });
 
-  it('the TokenField label and balance caption clear AA against the field panel', () => {
+  it('the amount-well labels clear AA against the well', () => {
     renderIn(mode);
-    for (const text of [screen.getAllByText('From')[0]!, screen.getByText('Balance: 0.00 DCC')]) {
+    for (const label of ['You pay', 'You receive']) {
+      const text = screen.getByText(label);
       const ink = rgbToHex(getComputedStyle(text).color);
       const bg = rgbToHex(nearestBackground(text));
-      expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
-    }
-  });
 
-  it('the rate summary (exchange rate, price impact, network fee) clears AA against its panel', () => {
-    renderIn(mode);
-    for (const text of [screen.getByText('Exchange rate'), screen.getByText('1 DCC = 0.00 USDT')]) {
-      const ink = rgbToHex(getComputedStyle(text).color);
-      const bg = rgbToHex(nearestBackground(text));
       expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
-    }
-  });
-
-  it('the asset-mark avatar initials clear AA against their own fill', () => {
-    renderIn(mode);
-    const dcc = screen.getByText('D');
-    const usdt = screen.getByText('U');
-    // DCC is this app's own asset, so its mark is `accent.primary` — mode-
-    // aware, like every other DCC-branded surface (fix round 1: it used to
-    // be a second, fixed, hand-typed near-duplicate of that token). USDT's
-    // mark is a fixed per-asset tint (`swapMarkColor.usdt`, not a token),
-    // same in both modes.
-    for (const [glyph, markColor] of [
-      [dcc, tokens(mode).accent.primary],
-      [usdt, '#F7931A'],
-    ] as const) {
-      const ink = rgbToHex(getComputedStyle(glyph).color);
-      expect(contrastRatio(ink, markColor)).toBeGreaterThanOrEqual(4.5);
     }
   });
 });
