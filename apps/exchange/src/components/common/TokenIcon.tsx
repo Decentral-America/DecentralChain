@@ -6,9 +6,14 @@
  * Those fall back to a hued monogram rather than a generic placeholder, so
  * every row still has something to recognise it by.
  *
- * The icons are imported statically and bundled. Pulling logos from a CDN
- * would mean an asset list that renders blank when that host is slow, and the
- * page's own `img-src` would have to widen to allow it.
+ * Bundled icons cover the bridge assets, which are keyed by the name the API
+ * returns and have no DecentralChain asset id. Issued tokens are keyed by
+ * asset id and resolve through the logo manifest. Two lookups, one component.
+ *
+ * The monogram paints first in every case, so a logo arriving late upgrades a
+ * row rather than filling a hole. That is what makes lazily fetching the tail
+ * acceptable here. (`img-src` already allows both the CDN and data URIs:
+ * `'self' data: https:`.)
  */
 import { Box, useTheme } from '@mui/material';
 import btcIcon from 'cryptocurrency-icons/svg/color/btc.svg';
@@ -17,6 +22,8 @@ import rayIcon from 'cryptocurrency-icons/svg/color/ray.svg';
 import solIcon from 'cryptocurrency-icons/svg/color/sol.svg';
 import usdcIcon from 'cryptocurrency-icons/svg/color/usdc.svg';
 import usdtIcon from 'cryptocurrency-icons/svg/color/usdt.svg';
+import { useState } from 'react';
+import { useTokenLogo } from '@/hooks/data/useTokenLogo';
 import { APP_TILE_HUES, tokens } from '@/theme/tokens/semantic';
 
 /**
@@ -53,15 +60,21 @@ const hueFor = (seed: string): (typeof APP_TILE_HUES)[number] => {
 
 interface TokenIconProps {
   name: string;
+  /** DecentralChain asset id. Absent for bridge assets, which key on `name`. */
+  assetId?: string;
   /** Hashed for the fallback colour — the mint, so it is stable per asset. */
   seed?: string;
   size?: number;
 }
 
-export const TokenIcon: React.FC<TokenIconProps> = ({ name, seed, size = 20 }) => {
+export const TokenIcon: React.FC<TokenIconProps> = ({ name, assetId, seed, size = 20 }) => {
   const mode = useTheme().palette.mode;
   const t = tokens(mode);
-  const icon = name === 'DCC' ? DCC_MARK[mode] : ICON_BY_NAME[name];
+  const [remoteFailed, setRemoteFailed] = useState(false);
+  const remote = useTokenLogo(assetId);
+
+  const bundled = name === 'DCC' ? DCC_MARK[mode] : ICON_BY_NAME[name];
+  const icon = bundled ?? (remoteFailed ? undefined : (remote ?? undefined));
 
   if (icon) {
     return (
@@ -70,6 +83,7 @@ export const TokenIcon: React.FC<TokenIconProps> = ({ name, seed, size = 20 }) =
         src={icon}
         alt=""
         aria-hidden
+        onError={() => setRemoteFailed(true)}
         sx={{ borderRadius: '50%', display: 'block', height: size, width: size }}
       />
     );
