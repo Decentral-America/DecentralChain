@@ -18,6 +18,7 @@ interface ImportMetaEnv {
   readonly VITE_DEBUG: string;
   readonly VITE_ENABLE_MOCKS: string;
   readonly VITE_LEDGER_ENABLED: string;
+  readonly VITE_LOGO_REPO: string;
   readonly VITE_SENTRY_ENABLED: string;
   readonly VITE_SENTRY_DSN?: string;
   readonly VITE_GA_MEASUREMENT_ID?: string;
