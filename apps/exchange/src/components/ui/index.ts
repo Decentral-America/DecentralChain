@@ -1,14 +1,6 @@
 // Export all UI components from this directory
 
 export { Accordion, MultipleAccordion, SingleAccordion } from './Accordion';
-export type { AssetLogoProps } from './AssetLogo';
-export {
-  AssetLogo,
-  AssetLogoLarge,
-  AssetLogoMedium,
-  AssetLogoSmall,
-  AssetLogoXLarge,
-} from './AssetLogo';
 export type { CarouselProps } from './Carousel';
 export {
   Carousel,
