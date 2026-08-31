@@ -14,7 +14,12 @@
 
 - Node **24.18.0** (`.node-version`). The pre-commit hook runs `pnpm`, and the repo requires `^22.13.0 || ^24.3.0 || >= 26.0.0`; on system Node 25 the hook **fails silently** — the commit aborts, the file stays staged, `HEAD` does not move. Always `nvm use 24.18.0` in the same shell as `git commit`.
 - Verification: `./node_modules/.bin/tsc -b --noEmit`, `./node_modules/.bin/vitest run`, `pnpm exec biome check .`, `rm -rf dist && ./node_modules/.bin/vite build`.
-- **1048 tests currently pass. That number must not go down.**
+- **1118 tests currently pass. That number must not go down.**
+- `packages/sdk/amm` must be built or 3 test files fail to import `@dcc-amm/sdk`:
+  `pnpm --filter @dcc-amm/sdk build`. Its `dist/` is build output, not committed.
+  A run reporting "N passed" while `Test Files` shows failures is a **collection
+  error, not a pass** — files that fail to import contribute zero tests, so a green
+  test count can hide them. Always read the `Test Files` line.
 - Biome: 14 pre-existing warnings are expected; **0 errors** required.
 - The token lint (`src/theme/__tests__/noRawColours.test.ts`) fails the build on raw hex, `rgba()`, `hsl()` and **named CSS colours** outside a 7-entry allowlist. Every colour must come from a token. **Do not add allowlist entries.**
 - `contrastRatio(fg, bg)` in `src/theme/tokens/semantic.ts` is **hex-only** and **throws** on non-hex input.
@@ -77,7 +82,7 @@ export {
 ./node_modules/.bin/vitest run
 ```
 
-Expected: `tsc` exit 0, **1048 passed**. A `tsc` error naming `AssetLogo` means Step 1 missed a consumer.
+Expected: `tsc` exit 0, **1118 passed**. A `tsc` error naming `AssetLogo` means Step 1 missed a consumer.
 
 - [ ] **Step 5: Commit**
 
@@ -843,7 +848,7 @@ Expected: PASS, 5 tests.
 ./node_modules/.bin/vitest run
 ```
 
-Expected: **1048 + the new tests**, none failing. `assetId` is optional, so every existing call site is untouched.
+Expected: **1118 + the new tests**, none failing. `assetId` is optional, so every existing call site is untouched.
 
 - [ ] **Step 6: Commit**
 
@@ -1410,7 +1415,7 @@ pnpm exec biome check .
 rm -rf dist && ./node_modules/.bin/vite build
 ```
 
-Expected: `tsc` 0, all tests pass with no drop from 1048 plus the new ones, biome 0 errors, build clean.
+Expected: `tsc` 0, all tests pass with no drop from 1118 plus the new ones, biome 0 errors, build clean.
 
 - [ ] **Step 7: Commit**
 
