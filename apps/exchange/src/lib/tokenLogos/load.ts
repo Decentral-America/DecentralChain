@@ -17,8 +17,7 @@ export function resetManifestCache(): void {
 }
 
 export function loadManifest(repo: string): Promise<LogoManifest> {
-  // biome-ignore lint/nursery/noMisusedPromises: null-check on the cached promise itself, not a missing await
-  if (inFlight) return inFlight;
+  if (inFlight !== null) return inFlight;
 
   inFlight = (async () => {
     try {

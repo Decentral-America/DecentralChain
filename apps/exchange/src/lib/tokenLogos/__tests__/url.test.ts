@@ -20,7 +20,10 @@ describe('isValidAssetId', () => {
     ['a slash', 'abc/def'],
     ['empty', ''],
     ['too short', 'abc'],
-    ['base58-excluded characters', '0OIl0OIl0OIl0OIl0OIl0OIl0OIl0OIl'],
+    ['the digit zero', '0'.repeat(32)],
+    ['capital O', 'O'.repeat(32)],
+    ['capital I', 'I'.repeat(32)],
+    ['lowercase l', 'l'.repeat(32)],
     ['a query string', `${ID}?x=1`],
   ])('rejects %s', (_label, bad) => {
     expect(isValidAssetId(bad)).toBe(false);
