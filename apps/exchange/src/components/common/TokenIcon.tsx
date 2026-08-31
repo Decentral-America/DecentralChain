@@ -70,8 +70,18 @@ interface TokenIconProps {
 export const TokenIcon: React.FC<TokenIconProps> = ({ name, assetId, seed, size = 20 }) => {
   const mode = useTheme().palette.mode;
   const t = tokens(mode);
-  const [remoteFailed, setRemoteFailed] = useState(false);
   const remote = useTokenLogo(assetId);
+
+  // A failure is per-asset: reset while rendering when `assetId` changes, so
+  // a bad logo for one asset doesn't permanently stick this instance on the
+  // monogram once it moves on to a different one. This is React's documented
+  // pattern for adjusting state when a prop changes — no effect needed.
+  const [priorAssetId, setPriorAssetId] = useState(assetId);
+  const [remoteFailed, setRemoteFailed] = useState(false);
+  if (assetId !== priorAssetId) {
+    setPriorAssetId(assetId);
+    setRemoteFailed(false);
+  }
 
   const bundled = name === 'DCC' ? DCC_MARK[mode] : ICON_BY_NAME[name];
   const icon = bundled ?? (remoteFailed ? undefined : (remote ?? undefined));

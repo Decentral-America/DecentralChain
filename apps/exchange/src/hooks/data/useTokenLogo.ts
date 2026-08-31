@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getConfig } from '@/config';
+import { config } from '@/config';
 import { loadManifest } from '@/lib/tokenLogos/load';
 import { logoUrlFor } from '@/lib/tokenLogos/url';
 
@@ -20,7 +20,7 @@ export function useTokenLogo(assetId?: string): string | null {
     }
 
     let cancelled = false;
-    const { logoRepo } = getConfig();
+    const { logoRepo } = config;
 
     void loadManifest(logoRepo).then((manifest) => {
       if (cancelled) return;

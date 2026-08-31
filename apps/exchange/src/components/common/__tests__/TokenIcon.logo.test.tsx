@@ -1,19 +1,26 @@
 import { ThemeProvider } from '@mui/material/styles';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
+import btcIcon from 'cryptocurrency-icons/svg/color/btc.svg';
+import { type ReactElement } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { resetManifestCache } from '@/lib/tokenLogos/load';
+import { config } from '@/config';
+import { loadManifest, resetManifestCache } from '@/lib/tokenLogos/load';
 import { createAppTheme } from '@/theme/mui-theme';
 import { TokenIcon } from '../TokenIcon';
 
 const HOT = '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS';
-const MANIFEST = { hot: { [HOT]: 'data:image/webp;base64,AAAA' }, sha: 'a1b2c3d' };
+const HOT2 = 'h82pJGF9p7kpzb6eU326EFZf2cDnimbTFVeJtx1qtBmU';
+const HOT_LOGO = 'data:image/webp;base64,AAAA';
+const HOT2_LOGO = 'data:image/webp;base64,BBBB';
+const MANIFEST = { hot: { [HOT]: HOT_LOGO, [HOT2]: HOT2_LOGO }, sha: 'a1b2c3d' };
 
-const mount = (name: string, assetId?: string) =>
-  render(
-    <ThemeProvider theme={createAppTheme('dark')}>
-      <TokenIcon name={name} {...(assetId !== undefined ? { assetId } : {})} />
-    </ThemeProvider>,
-  );
+const icon = (name: string, assetId?: string): ReactElement => (
+  <ThemeProvider theme={createAppTheme('dark')}>
+    <TokenIcon name={name} {...(assetId !== undefined ? { assetId } : {})} />
+  </ThemeProvider>
+);
+
+const mount = (name: string, assetId?: string) => render(icon(name, assetId));
 
 /**
  * `getByRole('img', ...)` cannot find this element: the icon's `alt=""` (by
@@ -43,15 +50,24 @@ describe('TokenIcon logo resolution', () => {
 
   it('upgrades to the hot-set logo once the manifest lands', async () => {
     mount('Wizard Coin', HOT);
-    await waitFor(() => expect(getImg()).toHaveAttribute('src', 'data:image/webp;base64,AAAA'));
+    await waitFor(() => expect(getImg()).toHaveAttribute('src', HOT_LOGO));
   });
 
   it('keeps the bundled icon for a bridge asset even when an asset id is present', async () => {
     mount('Bitcoin', HOT);
-    await waitFor(() => {
-      const src = getImg()?.getAttribute('src');
-      expect(src).not.toBe('data:image/webp;base64,AAAA');
+
+    // The naive assertion — a bare `waitFor(() => expect(src).not.toBe(HOT_LOGO))`
+    // — is already true at the very first synchronous render, before the
+    // manifest promise ever settles, so `waitFor` returns without ever
+    // observing the post-resolution state. Waiting on the same cached
+    // `loadManifest` promise the hook awaits, wrapped in `act`, forces every
+    // pending effect (including the hook's `setSrc`) to flush before the
+    // assertion runs, so this genuinely observes the resolved state.
+    await act(async () => {
+      await loadManifest(config.logoRepo);
     });
+
+    expect(getImg()).toHaveAttribute('src', btcIcon);
   });
 
   it('falls back to the monogram when the logo url fails to load', async () => {
@@ -69,5 +85,19 @@ describe('TokenIcon logo resolution', () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('offline')));
     mount('Wizard Coin', HOT);
     await waitFor(() => expect(screen.getByText('W')).toBeInTheDocument());
+  });
+
+  it('recovers from a prior failure when the asset id changes', async () => {
+    const view = mount('Wizard Coin', HOT);
+    await waitFor(() => expect(getImg()).toHaveAttribute('src', HOT_LOGO));
+
+    const failed = getImg() as HTMLImageElement;
+    act(() => {
+      failed.dispatchEvent(new Event('error'));
+    });
+    await waitFor(() => expect(screen.getByText('W')).toBeInTheDocument());
+
+    view.rerender(icon('Wizard Coin', HOT2));
+    await waitFor(() => expect(getImg()).toHaveAttribute('src', HOT2_LOGO));
   });
 });

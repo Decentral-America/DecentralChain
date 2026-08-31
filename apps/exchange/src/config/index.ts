@@ -45,7 +45,7 @@ export interface Config {
  * All network values default to mainnet.json via NetworkConfig
  * Environment variables can override for testing/staging
  */
-export const getConfig = (): Config => {
+const getConfig = (): Config => {
   const env = import.meta.env.VITE_APP_ENV || 'development';
 
   return {
