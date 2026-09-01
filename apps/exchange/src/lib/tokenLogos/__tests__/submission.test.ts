@@ -1,6 +1,24 @@
 import { describe, expect, it } from 'vitest';
 import { logoIssueUrl } from '../submission';
 
+/** True if `value` contains a UTF-16 surrogate that isn't part of a valid pair. */
+function hasLoneSurrogate(value: string): boolean {
+  for (let i = 0; i < value.length; i++) {
+    const code = value.charCodeAt(i);
+    if (code >= 0xd800 && code <= 0xdbff) {
+      const next = value.charCodeAt(i + 1);
+      if (next >= 0xdc00 && next <= 0xdfff) {
+        i++; // valid pair, skip its low surrogate
+      } else {
+        return true; // unpaired high surrogate
+      }
+    } else if (code >= 0xdc00 && code <= 0xdfff) {
+      return true; // unpaired low surrogate
+    }
+  }
+  return false;
+}
+
 const REPO = 'Decentral-America/token-logos';
 const SUB = {
   assetId: '8LQW8f7P5d5PZM7GtZEBgaqRPGSzS3DfPuiXrURJ4AJS',
@@ -53,5 +71,15 @@ describe('logoIssueUrl', () => {
 
   it('returns null when a field the builder does not truncate keeps the url over the ceiling', () => {
     expect(logoIssueUrl(REPO, { ...SUB, issuer: 'X'.repeat(3000) })).toBeNull();
+  });
+
+  it('truncates by code point, never splitting a surrogate pair mid-emoji', () => {
+    // 15 ASCII chars + one 👍 = 17 UTF-16 code units, straddling the 16-code-unit
+    // boundary a naive .slice(0, 16) would cut through, leaving a lone high
+    // surrogate that URLSearchParams silently replaces with U+FFFD.
+    const url = logoIssueUrl(REPO, { ...SUB, name: `${'A'.repeat(15)}👍` }) as string;
+    const title = new URL(url).searchParams.get('title') ?? '';
+    expect(title).not.toContain('�');
+    expect(hasLoneSurrogate(title)).toBe(false);
   });
 });

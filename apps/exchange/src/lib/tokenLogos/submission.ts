@@ -32,8 +32,21 @@ const SYMBOL_MAX_CHARS = 20;
  */
 const URL_LENGTH_CEILING = 2000;
 
+/**
+ * Truncates by Unicode code point, not UTF-16 code unit. `.slice()` counts code
+ * units, so a cap can land inside a surrogate pair (e.g. an emoji) and leave a
+ * lone surrogate that `URLSearchParams` silently replaces with U+FFFD.
+ * `Array.from` iterates code points, so a pair is one element and is never split.
+ *
+ * This is not grapheme-aware: a family emoji or a flag is several code points
+ * and can still be cut between them. That's acceptable here — the goal is
+ * bounding URL length, not typography — and the result of cutting a ZWJ
+ * sequence mid-way is valid-but-different characters, not an invalid lone
+ * surrogate.
+ */
 function truncate(value: string, maxChars: number): string {
-  return value.length > maxChars ? value.slice(0, maxChars) : value;
+  const points = Array.from(value);
+  return points.length > maxChars ? points.slice(0, maxChars).join('') : value;
 }
 
 /**
