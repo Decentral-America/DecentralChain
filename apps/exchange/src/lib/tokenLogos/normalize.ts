@@ -1,7 +1,13 @@
 import { LOGO_SIZE, squareCrop } from './geometry';
 
-/** The logo repository's ceiling, matching Trust Wallet's convention. */
-export const MAX_LOGO_BYTES = 100 * 1024;
+/**
+ * The logo repository's ceiling, matching Trust Wallet's convention.
+ *
+ * Module-private: the Action in the logo repository is the only validator that
+ * counts, so nothing outside this file has a reason to know the number. It was
+ * exported with no consumer, which reads as an API other code may rely on.
+ */
+const MAX_LOGO_BYTES = 100 * 1024;
 
 /**
  * Centre-crops to square, scales to 256x256 and re-encodes as PNG.
@@ -34,7 +40,9 @@ export async function normalizeLogo(file: File): Promise<Blob> {
   if (!blob) throw new Error('Could not prepare the image in this browser.');
 
   if (blob.size > MAX_LOGO_BYTES) {
-    throw new Error('That image is too detailed to compress under 100 KB. Try a simpler mark.');
+    throw new Error(
+      `That image is too detailed to compress under ${MAX_LOGO_BYTES / 1024} KB. Try a simpler mark.`,
+    );
   }
 
   return blob;

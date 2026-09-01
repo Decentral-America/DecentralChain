@@ -44,4 +44,27 @@ describe('parseManifest', () => {
     });
     expect(parsed.hot).toEqual({});
   });
+
+  /**
+   * `useTokenLogo` reads `manifest.hot[assetId]` and falls through with `??`.
+   * On a plain object literal that lookup inherits: `hot['toString']` is
+   * `Function.prototype.toString`, which is not nullish, so `??` does not fall
+   * through and the hook would hand a *function* to the `<img>`'s `src`.
+   *
+   * Unreachable today — no prototype member's name is 32-44 base58 characters
+   * — but the hook delegates every id check to `logoUrlFor` and does nothing
+   * itself, so it would not catch one that was. A null-prototype `hot` makes
+   * the lookup return `undefined` for anything that was not put there.
+   */
+  it.each([
+    'toString',
+    'constructor',
+    'valueOf',
+    'hasOwnProperty',
+    '__proto__',
+  ])('returns undefined for the inherited key %s rather than a prototype member', (key) => {
+    const parsed = parseManifest({ hot: { [ID]: 'data:image/webp;base64,AAAA' }, sha: 'a1b2c3d' });
+    expect(parsed.hot[key]).toBeUndefined();
+    expect(EMPTY_MANIFEST.hot[key]).toBeUndefined();
+  });
 });

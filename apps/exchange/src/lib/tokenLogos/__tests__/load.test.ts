@@ -56,4 +56,25 @@ describe('loadManifest', () => {
     await Promise.all([loadManifest(REPO), loadManifest(REPO), loadManifest(REPO)]);
     expect(spy).toHaveBeenCalledTimes(1);
   });
+
+  /**
+   * The cache is keyed by `repo`, not global. A single session realistically
+   * only ever asks for one repository, but a cache that takes an argument and
+   * then ignores it is a trap: the second caller silently receives the first
+   * caller's manifest, and the sha it carries pins tail URLs into the *wrong*
+   * repository. Keying it costs a Map.
+   */
+  it('caches per repository rather than globally', async () => {
+    const spy = vi.fn().mockResolvedValue({ json: () => Promise.resolve(GOOD), ok: true });
+    vi.stubGlobal('fetch', spy);
+
+    await loadManifest(REPO);
+    await loadManifest('Someone-Else/other-logos');
+
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(spy.mock.calls.map((call) => call[0] as string)).toEqual([
+      'https://cdn.jsdelivr.net/gh/Decentral-America/token-logos@latest/manifest.json',
+      'https://cdn.jsdelivr.net/gh/Someone-Else/other-logos@latest/manifest.json',
+    ]);
+  });
 });
