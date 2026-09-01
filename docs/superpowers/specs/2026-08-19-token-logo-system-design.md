@@ -83,12 +83,98 @@ The exchange consumes exactly two things:
 
 | Purpose | URL | Cache |
 |---|---|---|
-| Manifest | `…/<logos>@latest/manifest.json` | `max-age=300, stale-while-revalidate=86400` |
+| Manifest | `…/<logos>@latest/manifest.json` | `public, max-age=604800, s-maxage=43200` |
 | Tail logo | `…/<logos>@<sha>/assets/<assetId>/128.webp` | commit-pinned, immutable |
 
-Five minutes keeps a merged logo appearing promptly; the day-long
-`stale-while-revalidate` window means a CDN outage serves the last good manifest
-rather than dropping every hot logo to a monogram.
+### How long a merged logo actually takes to appear
+
+An earlier draft of this spec, and the comment in `load.ts`, both claimed
+`max-age=300, stale-while-revalidate=86400` and "a merged logo appears within
+about five minutes". **That was wrong.** Measured against `cdn.jsdelivr.net` on
+2026-08-31 (`curl -D -` on a `@latest` path), the real response is:
+
+```
+cache-control: public, max-age=604800, s-maxage=43200
+```
+
+Two orders of magnitude longer, and no `stale-while-revalidate` at all. So:
+
+| Who | Waits for | Up to |
+|---|---|---|
+| A first-time visitor | the jsDelivr edge entry (`s-maxage`) | **12 hours** |
+| A returning visitor | their own browser cache (`max-age`) | **7 days** |
+| Anyone doing a hard reload | nothing | immediate |
+
+We do not set those headers and cannot change them. The delay is **accepted,
+not solved**: an asset without a resolved logo shows its monogram, which is a
+stable legible mark, so a logo arriving late upgrades a row rather than filling
+a hole. That is the same property that makes the whole layer safe to fail.
+
+If the latency ever has to shrink, the lever is an explicit short-lived ref or a
+different CDN — not a cache-busting query parameter, which would trade a real
+request on every session's first paint against a purely additive feature.
+
+One consequence for the failure table below: because there is no
+`stale-while-revalidate`, a jsDelivr outage does **not** serve a stale manifest.
+It drops every hot logo to a monogram for the duration. That is still an
+acceptable outcome, but it is a weaker guarantee than the earlier draft claimed.
+
+### `@latest` requires the logo repository to stay tagless
+
+`@latest` does not mean "the newest commit". For a GitHub repository jsDelivr
+resolves it to **the newest version tag**, and only falls back to default-branch
+HEAD when the repository has no tags at all. Both halves verified on 2026-08-31:
+
+- `data.jsdelivr.com/v1/packages/gh/jquery/jquery/resolved?specifier=latest`
+  returns `"version": "4.0.0"` — a tag, not a branch.
+- `github/gitignore` has no tags. The same endpoint returns `"version": null`,
+  yet `cdn.jsdelivr.net/gh/github/gitignore@latest/Go.gitignore` still serves
+  `200` with content identical to `@main`. So the HEAD fallback is real, and
+  it works despite the resolver reporting no version.
+
+**Therefore: the logo repository must never carry a git tag or a GitHub
+release.** The day anyone cuts `v1.0.0`, `@latest` silently pins to it and every
+subsequently merged logo stops appearing — with no error anywhere, because the
+manifest still fetches, parses and resolves perfectly. It is simply frozen.
+
+This is a genuine trap: tagging a repository is a normal, well-intentioned act,
+and nothing about the failure points back at it. The logo repository's README
+must say so, and `publish.yml` should assert that `git tag --list` is empty and
+fail loudly if it is not.
+
+If tagging is ever wanted, the alternative is to abandon `@latest` and pin the
+manifest URL to an explicit branch — `…/<logos>@main/manifest.json` — which
+resolves to that branch's HEAD regardless of tags. That is a one-line change to
+`manifestUrl` in `src/lib/tokenLogos/url.ts`.
+
+### The `sha` chicken-and-egg
+
+Tail URLs are pinned to `manifest.sha`, and the manifest lives inside the
+repository whose sha it names. A workflow that commits the derived assets and
+the regenerated manifest **together, in one commit**, can only write the sha it
+knew before that commit existed — the parent. Every newly merged tail logo would
+then 404, because it is being requested at a commit predating its own addition.
+
+The publish workflow must therefore use **two commits**:
+
+1. **Commit A — assets.** Derive `64.webp` and `128.webp` for the newly merged
+   asset(s) and commit them. Do not touch `manifest.json`. Record the resulting
+   sha.
+2. **Commit B — manifest.** Regenerate `manifest.json` with `sha` set to
+   **commit A's sha**, and commit it.
+
+`@latest` then serves commit B's manifest, whose `sha` points at commit A, where
+every derived asset already exists. The hot-set data URIs are inline so they are
+unaffected either way; this ordering exists solely for the tail.
+
+Note the reverse order does not work either. Committing the manifest first would
+name a sha at which the assets do not yet exist, which is the same 404 by a
+different route. Assets first, manifest second, manifest naming the assets'
+commit.
+
+A one-commit alternative would be to have the manifest name a *branch* rather
+than a sha, but that gives up immutable caching on the tail — the property that
+lets a tail logo be cached forever instead of revalidated on every render.
 
 **There is no index for the tail.** The URL is derived from the asset ID, so the
 manifest carries only the hot set and stays a constant size whether the registry
@@ -103,9 +189,40 @@ schedule and would churn the manifest without anyone deciding to. A flag keeps
 the decision human, auditable in the PR, and free of a data dependency the
 repository otherwise does not have.
 
-The manifest inlines the **64 px** variant as a data URI, not the 128. At
-roughly 1–2 KB each that keeps a thirty-asset hot set near 45 KB; inlining 128
-would roughly triple it for detail no icon at 20–48 px can show.
+### The two variants, and which goes where
+
+This is a **requirement on the logo repository's `publish.yml`**, not a
+preference. The exchange cannot enforce it and does not try to:
+`parseManifest` accepts any string beginning `data:image/`, so a manifest built
+with the wrong variant would load, parse and render without complaint — just
+three times heavier than it needs to be, on every page load, for detail nobody
+can see at 20 px.
+
+| Variant | Where it goes | How it is delivered |
+|---|---|---|
+| `64.webp` | the **hot set**, inside `manifest.json` | inline `data:image/webp;base64,…` |
+| `128.webp` | the **tail** | its own commit-pinned URL |
+
+The manifest inlines the **64 px** variant, never the 128. At roughly 1–2 KB
+each that keeps a thirty-asset hot set near 45 KB; inlining 128 would roughly
+triple it for detail no icon at 20–48 px can show. Since the manifest is
+fetched on first paint of every session, its size is the one number in this
+design that everyone pays for whether or not they ever see a logo.
+
+The tail takes the **128 px** variant because a tail logo is fetched only by the
+one row that needs it, so the size trade runs the other way — and because a
+commit-pinned URL is cached immutably, it is paid at most once per asset.
+
+Concretely, `publish.yml` must:
+
+- inline `64.webp` — and only `64.webp` — for every asset whose `info.json`
+  carries `"hot": true`;
+- write `128.webp` — and only `128.webp` — to `assets/<assetId>/128.webp` for
+  **every** asset, hot ones included. A hot asset must still have its tail file:
+  hot-set membership is a reviewer's flag that can be revoked, and an asset
+  dropped from the hot set must degrade to its tail URL rather than to a
+  monogram;
+- use `image/webp` as the data URI's media type, matching the file it inlines.
 
 `256×256 PNG` is the submitted format because it matches the convention
 submitters already know from Trust Wallet and gives reviewers enough detail to
@@ -241,10 +358,23 @@ control.
 - Manifest parsing, including malformed and empty input
 - `TokenIcon` resolution order across all four steps
 - Each failure path falling back to the monogram
+- **The CSP** — `connect-src` must name the CDN in every shipped policy.
+  Deployment config is read by no other part of the gate, so without this the
+  whole feature can be dead in a browser while everything else is green.
+- **A shipped call site actually resolving a logo.** Testing `TokenIcon` with an
+  `assetId` the test itself supplies proves the component works, not that
+  anything passes one. All eight call sites shipped without it once already.
 
-The suite currently stands at **1048 tests** (verified against `dev` at
-`22e513af6`). Verification runs on Node 24.18.0: `tsc -b --noEmit`,
-`vitest run`, `biome check .`, and `vite build`.
+The suite stood at **1178 tests across 102 files** before this round's fixes and
+**1195 across 104** after (measured on `dev`). The `1048` figure in an earlier
+draft was a stale measurement taken while `@dcc-amm/sdk` was unbuilt, which made
+three test files fail to import and contribute zero tests — see the ledger entry
+for Task 1. Verification runs on Node 24.18.0: `tsc -b --noEmit`, `vitest run`,
+`biome check .`, and `vite build`.
+
+`vite build` requires `VITE_SOLANA_RPC_URL` to be set. That guard is unrelated
+to this work — it arrives from the Solana bridge (`3197dbca9`) — but a bare
+`vite build` fails without it and the failure looks like this change's fault.
 
 The token lint (`theme/__tests__/noRawColours.test.ts`) is live and fails the
 build on raw colour literals outside a seven-entry allowlist. Any colour this
