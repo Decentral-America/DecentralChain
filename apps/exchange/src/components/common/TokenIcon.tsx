@@ -67,7 +67,11 @@ interface TokenIconProps {
   name: string;
   /** DecentralChain asset id. Absent for bridge assets, which key on `name`. */
   assetId?: string;
-  /** Hashed for the fallback colour — the mint, so it is stable per asset. */
+  /**
+   * Hashed for the fallback colour, when the identifier is not an `assetId` —
+   * a Solana mint, say. A DCC asset id already seeds the hue through `assetId`,
+   * so a call site holding one passes it once rather than as both props.
+   */
   seed?: string;
   size?: number;
 }
@@ -104,7 +108,11 @@ export const TokenIcon: React.FC<TokenIconProps> = ({ name, assetId, seed, size 
     );
   }
 
-  const hue = t.appTile[hueFor(seed ?? name)];
+  // `assetId` before `name`: a call site that passes an asset id gets the same
+  // hue it got when that id was spelled `seed`, so wiring `assetId` through
+  // recolours nothing. `name` is the last resort, for the bridge assets that
+  // have neither.
+  const hue = t.appTile[hueFor(seed ?? assetId ?? name)];
 
   return (
     <Box

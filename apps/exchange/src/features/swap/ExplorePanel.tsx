@@ -216,7 +216,7 @@ export const ExplorePanel: React.FC = () => {
                   {index + 1}
                 </Typography>
                 <Stack direction="row" spacing={1} sx={{ alignItems: 'center', minWidth: 0 }}>
-                  <TokenIcon name={nameOf(row.assetId)} seed={row.assetId} size={22} />
+                  <TokenIcon name={nameOf(row.assetId)} assetId={row.assetId} size={22} />
                   <Typography noWrap sx={{ fontSize: '0.875rem', fontWeight: 600 }}>
                     {nameOf(row.assetId)}
                   </Typography>

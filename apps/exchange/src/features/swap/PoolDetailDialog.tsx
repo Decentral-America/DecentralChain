@@ -75,7 +75,7 @@ export const PoolDetailDialog: React.FC<PoolDetailDialogProps> = ({
     >
       <DialogContent sx={{ p: 3 }}>
         <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center', mb: 2.5 }}>
-          <TokenIcon name={nameOf(pool.token0)} seed={pool.token0} size={32} />
+          <TokenIcon name={nameOf(pool.token0)} assetId={pool.token0} size={32} />
           <Box sx={{ flex: 1, minWidth: 0 }}>
             <Typography sx={{ fontSize: '1.125rem', fontWeight: 700, letterSpacing: '-0.02em' }}>
               {nameOf(pool.token0)} / {nameOf(pool.token1)}

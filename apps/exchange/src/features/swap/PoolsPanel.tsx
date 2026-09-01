@@ -134,9 +134,9 @@ const PoolCard: React.FC<{
 
         {/* The pair's two marks, overlapped — one object, two assets. */}
         <Box sx={{ display: 'flex', flexShrink: 0 }}>
-          <TokenIcon name={nameOf(pool.token0)} seed={pool.token0} size={26} />
+          <TokenIcon name={nameOf(pool.token0)} assetId={pool.token0} size={26} />
           <Box sx={{ ml: -1 }}>
-            <TokenIcon name={nameOf(pool.token1)} seed={pool.token1} size={26} />
+            <TokenIcon name={nameOf(pool.token1)} assetId={pool.token1} size={26} />
           </Box>
         </Box>
 

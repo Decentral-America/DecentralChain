@@ -80,6 +80,11 @@ export const SupportedTokensCard: React.FC<SupportedTokensCardProps> = ({
               {group.tokens.map((token) => (
                 <Chip
                   key={token.splMint}
+                  // `seed`, never `assetId`. A Solana mint is base58 and 32-44
+                  // characters, so it satisfies `isValidAssetId` — but it is not
+                  // a DecentralChain asset id, and passing it would derive a
+                  // logo URL for an asset the registry can never hold. These are
+                  // bridge assets: they resolve by `name` or not at all.
                   icon={<TokenIcon name={token.name} seed={token.splMint} />}
                   label={token.name}
                   onClick={onSelect ? () => onSelect(token) : undefined}

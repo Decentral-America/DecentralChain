@@ -114,7 +114,7 @@ const AssetSelect: React.FC<{
       const asset = assets.find((a) => a.assetId === id);
       return (
         <Stack direction="row" spacing={0.75} sx={{ alignItems: 'center' }}>
-          {asset && <TokenIcon name={asset.name} seed={asset.assetId} size={20} />}
+          {asset && <TokenIcon name={asset.name} assetId={asset.assetId} size={20} />}
           <Box component="span" sx={{ fontWeight: 600 }}>
             {asset?.name ?? placeholder}
           </Box>

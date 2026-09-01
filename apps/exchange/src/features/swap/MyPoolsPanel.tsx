@@ -30,7 +30,7 @@ const PositionRow: React.FC<{ nameOf: (id: string) => string; pool: AmmPool }> =
   return (
     <Paper variant="outlined" sx={{ borderRadius: 2.5, p: 2 }}>
       <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
-        <TokenIcon name={nameOf(pool.token0)} seed={pool.token0} size={26} />
+        <TokenIcon name={nameOf(pool.token0)} assetId={pool.token0} size={26} />
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Typography sx={{ fontSize: '0.9375rem', fontWeight: 600 }}>
             {nameOf(pool.token0)} / {nameOf(pool.token1)}

@@ -87,6 +87,38 @@ describe('TokenIcon logo resolution', () => {
     await waitFor(() => expect(screen.getByText('W')).toBeInTheDocument());
   });
 
+  /**
+   * The eight call sites spent the asset id on `seed` alone. Wiring `assetId`
+   * through means dropping `seed` rather than passing the same string twice, so
+   * the monogram hue now falls back `seed ?? assetId ?? name`. If it fell back
+   * to `name` instead, every wired row would silently recolour — a visual
+   * regression nothing else in the suite would catch.
+   */
+  it('hashes the monogram hue from the asset id, exactly as it did from the seed', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('offline')));
+
+    const bgOf = async (props: { assetId?: string; seed?: string }) => {
+      const view = render(
+        <ThemeProvider theme={createAppTheme('dark')}>
+          <TokenIcon name="Wizard Coin" {...props} />
+        </ThemeProvider>,
+      );
+      const mark = await waitFor(() => screen.getByText('W'));
+      const { backgroundColor } = getComputedStyle(mark);
+      view.unmount();
+      return backgroundColor;
+    };
+
+    const viaSeed = await bgOf({ seed: HOT });
+    const viaAssetId = await bgOf({ assetId: HOT });
+    const viaName = await bgOf({});
+
+    expect(viaAssetId).toBe(viaSeed);
+    // Guards the guard: if every hue were identical the assertion above would
+    // hold no matter which value seeded the hash.
+    expect(viaAssetId).not.toBe(viaName);
+  });
+
   it('recovers from a prior failure when the asset id changes', async () => {
     const view = mount('Wizard Coin', HOT);
     await waitFor(() => expect(getImg()).toHaveAttribute('src', HOT_LOGO));
