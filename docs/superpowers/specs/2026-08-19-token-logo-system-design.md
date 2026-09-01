@@ -174,10 +174,36 @@ tail is acceptable here when it would not be elsewhere — the fallback is a
 legible, stable, per-asset mark, so a logo arriving late upgrades the row from
 *fine* to *branded* rather than filling a hole.
 
-The existing CSP already permits this: `img-src 'self' data: https:` allows both
-the CDN and inline data URIs. `TokenIcon`'s current docstring claims a CDN would
-require widening `img-src`; that claim is false today and should be corrected
-when the file is touched.
+Two CSP directives are involved, and only one of them was already open.
+
+`img-src 'self' data: https:` does allow both the CDN's `<img>` and inline data
+URIs, so the rendering half needs no change. But the manifest arrives by
+`fetch()`, and `fetch()` is governed by **`connect-src`** — which in this app is
+an allowlist of named hosts, not a blanket `https:`. `https://cdn.jsdelivr.net`
+therefore has to be added to `connect-src` explicitly.
+
+It has to be added in **five** places, not one. `apps/exchange/vite.config.ts`
+carries the dev-server policy; `apps/exchange/nginx.conf` and
+`apps/exchange/docker/nginx/default.conf` each declare it twice — once on the
+server block and once again inside the nested `location ~* \.html$` block,
+because nginx's `add_header` does **not** inherit into a location that declares
+any header of its own. The `.html$` copies are the ones that actually reach
+`index.html`, and therefore the SPA; missing them would leave the fetch blocked
+in production while the server-block policy looked correct.
+
+A blocked manifest is not a partial failure. `loadManifest` catches the
+resulting `TypeError` and yields `EMPTY_MANIFEST`, whose `sha` is `''`, and
+`logoUrlFor` returns `null` for an empty sha — so one refused request takes out
+the hot set *and* the tail, and every asset falls to its monogram.
+
+`apps/exchange/src/lib/tokenLogos/__tests__/csp.test.ts` asserts the host is
+present in every shipped `connect-src`; deployment config is otherwise read by
+no part of the gate, so tsc, biome and vitest would all stay green while the
+feature was dead in a browser.
+
+`TokenIcon`'s original docstring claimed a CDN would require widening `img-src`.
+That was wrong in both directions — `img-src` needed nothing, and the directive
+that *did* need widening went unmentioned. It has been corrected.
 
 ## Validation
 
@@ -201,7 +227,12 @@ control.
   manifest hook, preserving the existing name-keyed bundled path and monogram.
 - **Add** the logo step to `CreateToken`'s success state: client-side
   normalisation, download, and the prefilled issue link.
-- **Correct** the stale `img-src` claim in `TokenIcon`'s docstring.
+- **Widen** `connect-src` by `https://cdn.jsdelivr.net` in all five shipped
+  CSPs (`vite.config.ts`, and the server + `.html$` blocks of both
+  `nginx.conf` and `docker/nginx/default.conf`). Nothing else in any policy
+  changes.
+- **Correct** the stale `img-src` claim in `TokenIcon`'s docstring, which named
+  the one directive that needed nothing and omitted the one that did.
 
 ## Testing
 

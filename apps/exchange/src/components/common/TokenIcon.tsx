@@ -12,8 +12,13 @@
  *
  * The monogram paints first in every case, so a logo arriving late upgrades a
  * row rather than filling a hole. That is what makes lazily fetching the tail
- * acceptable here. (`img-src` already allows both the CDN and data URIs:
- * `'self' data: https:`.)
+ * acceptable here.
+ *
+ * Two CSP directives are involved, not one. `img-src 'self' data: https:`
+ * already covers the <img> that renders a logo, but the manifest arrives by
+ * `fetch()`, which is governed by `connect-src` — and that is an allowlist of
+ * named hosts here, so `https://cdn.jsdelivr.net` had to be added to it
+ * explicitly in all five shipped policies. `csp.test.ts` holds that open.
  */
 import { Box, useTheme } from '@mui/material';
 import btcIcon from 'cryptocurrency-icons/svg/color/btc.svg';
