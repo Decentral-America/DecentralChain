@@ -49,6 +49,23 @@ export const API_CLIENT_BASE = import.meta.env.DEV ? '/bridge-api/api/v1' : API_
 /** Mainnet chain id character, byte 63. The bridge exists on mainnet only. */
 export const DCC_CHAIN_ID_CHAR = '?';
 
+/**
+ * Whether the Solana bridge may be offered on this build's network.
+ *
+ * Every address above is a mainnet address, and none of them derive from
+ * `VITE_NETWORK` — so a testnet or stagenet build that renders the bridge
+ * offers the user the *mainnet* contracts while the rest of the app is
+ * pointed at a test chain. The Solana read path happens to fail there (the
+ * public RPC rejects browser origins), but `burnToken` withdrawal targets
+ * `DCC_BRIDGE_CONTRACT` on `DCC_NODE_URL`, both mainnet, and that path does
+ * not fail closed.
+ *
+ * This shipped once: testnet deploy 33538817789 served a reachable bridge
+ * because nothing gated it. Gate on the network rather than on the presence
+ * of config, since the config is hardcoded and therefore always present.
+ */
+export const BRIDGE_SUPPORTED = import.meta.env.VITE_NETWORK === 'mainnet';
+
 /** DecentralChain transaction fee for `burnToken`, in wavelets (0.009 DCC). */
 export const WITHDRAW_TX_FEE = 900_000;
 

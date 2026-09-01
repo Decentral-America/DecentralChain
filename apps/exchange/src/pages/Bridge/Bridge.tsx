@@ -26,6 +26,7 @@ import btcIcon from 'cryptocurrency-icons/svg/color/btc.svg';
 import ethIcon from 'cryptocurrency-icons/svg/color/eth.svg';
 import solIcon from 'cryptocurrency-icons/svg/color/sol.svg';
 import { useMemo, useState } from 'react';
+import { BRIDGE_SUPPORTED } from '@/config/bridge';
 import { useAuth } from '@/contexts/AuthContext';
 import { BridgeAssetSelector } from '@/features/bridge/BridgeAssetSelector';
 import { DepositAsset } from '@/features/bridge/DepositAsset';
@@ -69,8 +70,15 @@ const SUPPORTED_NETWORKS: SupportedNetwork[] = [
     // Live: the Solana bridge contracts and validators are deployed on
     // mainnet. Unlike the BTC gateway below, this path talks to the bridge
     // API and the Solana program directly — see features/bridge/SolanaBridge.
-    available: true,
+    //
+    // Offered on mainnet builds only. Every address in config/bridge.ts is a
+    // mainnet address regardless of VITE_NETWORK, so on testnet or stagenet
+    // this entry would handed the user the mainnet contracts from a test-chain
+    // UI. Shown as coming soon there rather than hidden, so the surface is
+    // visibly accounted for instead of silently missing.
+    available: BRIDGE_SUPPORTED,
     color: networkBrandColor.sol,
+    ...(BRIDGE_SUPPORTED ? {} : { comingSoon: true }),
     icon: solIcon,
     id: 'SOL',
     name: 'Solana',

@@ -138,6 +138,39 @@ describe('Solana RPC endpoint', () => {
   });
 });
 
+describe('network gating', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
+  });
+
+  it.each([
+    ['testnet', false],
+    ['stagenet', false],
+    ['mainnet', true],
+  ])('on %s the bridge is offered: %s', async (network, expected) => {
+    // Every address in this module is a mainnet address and none of them
+    // derive from VITE_NETWORK, so an ungated bridge hands a test-chain user
+    // the mainnet contracts. Testnet deploy 33538817789 shipped exactly that.
+    vi.stubEnv('VITE_NETWORK', network);
+    vi.resetModules();
+
+    const { BRIDGE_SUPPORTED } = await import('@/config/bridge');
+
+    expect(BRIDGE_SUPPORTED).toBe(expected);
+  });
+
+  it('stays closed when VITE_NETWORK is unset', async () => {
+    // Absent config must not read as mainnet — the gate fails closed.
+    vi.stubEnv('VITE_NETWORK', '');
+    vi.resetModules();
+
+    const { BRIDGE_SUPPORTED } = await import('@/config/bridge');
+
+    expect(BRIDGE_SUPPORTED).toBe(false);
+  });
+});
+
 describe('required build-time values', () => {
   afterEach(() => {
     vi.unstubAllEnvs();
