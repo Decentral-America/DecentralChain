@@ -55,6 +55,7 @@ import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
 import { useTransactionSigning } from '@/hooks/useTransactionSigning';
 import { PageFrame } from '@/layouts/PageFrame';
 import { logger } from '@/lib/logger';
+import { symbolFromName } from '@/lib/tokenLogos/submission';
 import { TransactionType, transactionService } from '@/services/transactionService';
 import { mobileLayout } from '@/styles/mobileTokens';
 import { palette as brandPalette, radii } from '@/styles/tokens';
@@ -1195,7 +1196,7 @@ export const CreateToken = () => {
               <LogoSubmissionCard
                 assetId={issuedAssetId}
                 name={name}
-                symbol={name.slice(0, 4).toUpperCase()}
+                symbol={symbolFromName(name)}
                 issuer={user?.address ?? ''}
               />
             </>

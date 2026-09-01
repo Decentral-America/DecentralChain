@@ -49,6 +49,33 @@ function truncate(value: string, maxChars: number): string {
   return points.length > maxChars ? points.slice(0, maxChars).join('') : value;
 }
 
+/** How many characters of the name stand in for a ticker. */
+const DERIVED_SYMBOL_CHARS = 4;
+
+/**
+ * A DecentralChain asset carries a name and no ticker, so `CreateToken` has no
+ * symbol field to read. This derives a placeholder from the name — a guess the
+ * reviewer merging the pull request can correct by hand, not an authoritative
+ * value for `info.json`.
+ *
+ * Truncates through `truncate`, by code point, for the same reason `truncate`
+ * itself does: `.slice(4)` counts UTF-16 code units, so a name whose fourth
+ * character is an emoji (`ABC👍` — four code points, which passes
+ * `CreateToken`'s own `name.length >= 4` validator) is cut mid-surrogate-pair.
+ * The result is a lone high surrogate, which `URLSearchParams` silently
+ * replaces with U+FFFD, and the corruption lands in a public GitHub issue.
+ *
+ * Nothing downstream catches this: `logoIssueUrl`'s 16/20-character caps never
+ * fire on a four-character input.
+ *
+ * Uppercasing after truncation can lengthen the result (`ß` becomes `SS`),
+ * which is harmless — `SYMBOL_MAX_CHARS` is the binding limit and sits far
+ * above four.
+ */
+export function symbolFromName(name: string): string {
+  return truncate(name, DERIVED_SYMBOL_CHARS).toUpperCase();
+}
+
 /**
  * Opens a GitHub issue with every field the intake Action needs, pre-filled.
  *

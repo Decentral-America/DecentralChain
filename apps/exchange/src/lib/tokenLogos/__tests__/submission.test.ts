@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { logoIssueUrl } from '../submission';
+import { logoIssueUrl, symbolFromName } from '../submission';
 
 /** True if `value` contains a UTF-16 surrogate that isn't part of a valid pair. */
 function hasLoneSurrogate(value: string): boolean {
@@ -78,6 +78,43 @@ describe('logoIssueUrl', () => {
     // boundary a naive .slice(0, 16) would cut through, leaving a lone high
     // surrogate that URLSearchParams silently replaces with U+FFFD.
     const url = logoIssueUrl(REPO, { ...SUB, name: `${'A'.repeat(15)}👍` }) as string;
+    const title = new URL(url).searchParams.get('title') ?? '';
+    expect(title).not.toContain('�');
+    expect(hasLoneSurrogate(title)).toBe(false);
+  });
+});
+
+/**
+ * `CreateToken` has no ticker field — a DecentralChain asset carries only a
+ * name — so the symbol is derived from the first four characters of the name.
+ *
+ * That derivation reintroduced the surrogate-splitting defect `truncate()` was
+ * fixed for: it was written `name.slice(0, 4)`, which counts UTF-16 code units.
+ * The 16/20-character caps inside `logoIssueUrl` never fire here because 4 is
+ * below both, so nothing downstream could catch it — a four-code-point name
+ * ending in an emoji reached a public GitHub issue as `ABC` plus a lone high
+ * surrogate, which `URLSearchParams` silently substitutes with U+FFFD.
+ *
+ * `ABC👍` is not a contrived input: it is 4 code points, so it passes
+ * `CreateToken`'s own `name.length >= 4` step validator.
+ */
+describe('symbolFromName', () => {
+  it('takes the first four characters, uppercased', () => {
+    expect(symbolFromName('Wizard Coin')).toBe('WIZA');
+  });
+
+  it('leaves a short name whole', () => {
+    expect(symbolFromName('DCC')).toBe('DCC');
+  });
+
+  it('counts code points, so an emoji at the boundary is never split', () => {
+    expect(symbolFromName('ABC👍')).toBe('ABC👍');
+    expect(hasLoneSurrogate(symbolFromName('ABC👍'))).toBe(false);
+  });
+
+  it('does not corrupt the issue url for a name ending in an emoji', () => {
+    const name = 'ABC👍';
+    const url = logoIssueUrl(REPO, { ...SUB, name, symbol: symbolFromName(name) }) as string;
     const title = new URL(url).searchParams.get('title') ?? '';
     expect(title).not.toContain('�');
     expect(hasLoneSurrogate(title)).toBe(false);
