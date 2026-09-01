@@ -42,4 +42,16 @@ describe('logoIssueUrl', () => {
   it('returns null for an invalid asset id', () => {
     expect(logoIssueUrl(REPO, { ...SUB, assetId: '../../evil' })).toBeNull();
   });
+
+  it('caps an oversized multi-byte name so the url still fits inside the practical ceiling', () => {
+    // Each CJK character percent-encodes to 9 characters (3 UTF-8 bytes, %XX each), so an
+    // untruncated 500-character name alone would blow well past the 2000-character ceiling.
+    const url = logoIssueUrl(REPO, { ...SUB, name: '中'.repeat(500) });
+    expect(url).not.toBeNull();
+    expect((url as string).length).toBeLessThan(2000);
+  });
+
+  it('returns null when a field the builder does not truncate keeps the url over the ceiling', () => {
+    expect(logoIssueUrl(REPO, { ...SUB, issuer: 'X'.repeat(3000) })).toBeNull();
+  });
 });
