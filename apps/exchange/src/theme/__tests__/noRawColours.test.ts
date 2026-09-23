@@ -28,6 +28,7 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { APP_TILE_HUES } from '@/theme/tokens/semantic';
 
 const SRC = path.resolve(import.meta.dirname, '../..');
 
@@ -253,6 +254,87 @@ const NAMED_COLOUR = new RegExp(
   'i',
 );
 
+/**
+ * Fix round 1: `hue: 'indigo'` (and every other `AppTileHue` assignment in
+ * `layouts/shell/navigation.tsx`) is a role reference, not a colour position,
+ * but `NAMED_COLOUR` above couldn't tell the difference — its colon-based
+ * branch matches *any* `key: 'word'`, and five of `AppTileHue`'s eight members
+ * (`indigo`, `violet`, `teal`, `green`, `blue`) happen to also spell CSS
+ * named colours. Every launcher-tile hue assignment false-positived as a raw
+ * literal.
+ *
+ * This is not a hole the same way widening `ALLOWED` would be: the concrete
+ * field this exempts, `Destination.hue` in `layouts/shell/navigation.tsx`, is
+ * typed `AppTileHue`, a closed eight-name union (`theme/tokens/semantic.ts`),
+ * so the type checker — not this lint — is what stops *that* field from ever
+ * becoming an arbitrary colour. A role drawn from a closed union is the same
+ * class of thing as `bgcolor: 'primary.main'`, which this lint already lets
+ * through: neither names a colour, both name a token/role the theme resolves
+ * later.
+ *
+ * Scoped tight on purpose, to avoid becoming "any property called `hue` is
+ * exempt": the value must be exactly one of the eight current
+ * `APP_TILE_HUES` members (read from the source of truth, not re-typed here,
+ * so this can't drift from it), and only that matched span is blanked out of
+ * the line before the colour checks run — `color: 'indigo'`,
+ * `background: 'teal'`, or a bare `'green'` in a value position elsewhere on
+ * the same line is still caught (see the boundary table in the `describe`
+ * block below, which pins this both ways).
+ *
+ * Fix round 2: the property-name guard is a negative lookbehind excluding a
+ * word character, a hyphen, or any of the three quote characters, not a bare
+ * `\b`. The gap that actually mattered is the hyphen: a plain word boundary
+ * treats `-` as "outside a word", so `\bhue` would also have matched inside
+ * an unquoted, hyphenated key like `tile-hue: 'green'` or `data-hue: 'teal'`
+ * — a real property that is not `Destination.hue`, silently exempted. (A
+ * *quoted* key such as `'hue': 'green'` was never actually reachable either
+ * way: whatever quote character closes the key sits directly before the
+ * `:`, which breaks the `\s*:` adjacency this pattern requires regardless of
+ * the boundary check — the quote exclusion in the lookbehind is
+ * belt-and-braces, not the fix. The cases marked `REGRESSION PIN` in the
+ * `describe` block below are the hyphenated ones, verified to diverge
+ * against the old, unlookbehinded pattern; those are what this fix round
+ * actually turns on.) The lookbehind requires the
+ * character immediately before `hue` to be none of those, so only the bare,
+ * unquoted `hue` key is ever exempted.
+ *
+ * That guard is still purely textual, on the property *name* — it cannot (a
+ * line-based regex has no type information to do this with) confirm that any
+ * given match is actually `Destination.hue` rather than some unrelated
+ * object elsewhere in `src/` that also happens to use the identifier `hue`
+ * for something else.
+ *
+ * Fix round 4: that residual reach used to be accepted rather than closed —
+ * this comment argued that nothing else in `src/` reads a property literally
+ * named `hue` as a CSS colour, so exempting the token everywhere was "not the
+ * same class of risk as exempting a style position would be." That is a
+ * weaker guarantee than it needs to be: `findOffenders` already receives
+ * `rel`, the file path being checked, and only one file has any business
+ * assigning `Destination.hue` — `layouts/shell/navigation.tsx`
+ * (`HUE_ROLE_FILE` below). Gating on `rel` closes the residual reach
+ * completely instead of merely arguing it away: a `hue: 'indigo'` anywhere
+ * outside that one file is now caught like any other raw-colour literal,
+ * proven by the "gates the exemption to `navigation.tsx`" cases in the
+ * `describe` block below.
+ */
+const HUE_ROLE_VALUE = new RegExp(
+  `(?<![\\w'"\`-])hue\\s*:\\s*(['"\`])(?:${APP_TILE_HUES.join('|')})\\1`,
+  'g',
+);
+
+/**
+ * The one file the `HUE_ROLE_VALUE` exemption applies to — the only place
+ * `Destination.hue` is assigned. Scoping by file as well as by pattern means
+ * this is a decision about one component's known-safe field, not a rule that
+ * lets `hue: 'indigo'` slip through raw-colour checking anywhere in `src/`.
+ */
+const HUE_ROLE_FILE = 'layouts/shell/navigation.tsx';
+
+/** Blanks out `hue:`-role spans (see `HUE_ROLE_VALUE`) before a line is checked for raw colours. */
+function withoutHueRoles(line: string): string {
+  return line.replace(HUE_ROLE_VALUE, (match) => ' '.repeat(match.length));
+}
+
 const IGNORED_DIRS = new Set(['__tests__', 'node_modules']);
 
 /**
@@ -314,7 +396,11 @@ function findOffenders(rel: string, src: string): string[] {
       if (!trimmed.includes('*/')) inBlockComment = true;
       return;
     }
-    if (HEX.test(line) || COLOUR_FN.test(line) || NAMED_COLOUR.test(line)) {
+    // The hue-role exemption is gated on `rel`, not applied tree-wide: only
+    // `navigation.tsx` ever assigns `Destination.hue`, so that is the only
+    // file where a `hue:` span is blanked before the raw-colour checks run.
+    const checked = rel === HUE_ROLE_FILE ? withoutHueRoles(line) : line;
+    if (HEX.test(checked) || COLOUR_FN.test(checked) || NAMED_COLOUR.test(checked)) {
       offenders.push(`${rel}:${i + 1}  ${line.trim()}`);
     }
   });
@@ -334,5 +420,76 @@ describe('no raw colour literals in components', () => {
     );
 
     expect(offenders, `Use a semantic token instead:\n${offenders.join('\n')}`).toEqual([]);
+  });
+});
+
+/**
+ * Fix round 2: the sweep above proves the `HUE_ROLE_VALUE` boundary holds
+ * against this run's snapshot of `src/`, but a later edit that drops the `\1`
+ * backreference or loosens the lookbehind could keep that test green — a
+ * genuine offender just has to avoid coincidentally sitting on a `hue:` line
+ * for the regression to go unnoticed. `findOffenders` is exercised directly,
+ * against one-line fixtures, so both directions of the boundary are pinned
+ * independently of whatever happens to be in the tree.
+ *
+ * Fix round 3: most of the table below is a catalogue, not a pin — every one
+ * of those lines produces the *same* verdict whether `HUE_ROLE_VALUE` uses
+ * the current lookbehind or the old bare `\b` (verified by running both
+ * patterns over the whole table; see task-3-report.md's "Fix round 3" for
+ * the comparison), so a revert to `\b` would leave this suite green. Only
+ * the two entries marked `REGRESSION PIN` actually diverge between the two
+ * patterns — do not remove or "simplify" them as duplicates of their
+ * neighbours; they are the only cases here that would catch that revert.
+ *
+ * Fix round 4: every case below is now checked at `HUE_ROLE_FILE` rather than
+ * an arbitrary `fixture.tsx` path. That is not cosmetic — `findOffenders` only
+ * runs `withoutHueRoles` at all when `rel === HUE_ROLE_FILE` (see its call
+ * site), so checking these boundary cases at any other path would no longer
+ * exercise `HUE_ROLE_VALUE` in the first place: every line would be flagged
+ * (or not) for reasons unrelated to the regex this table exists to pin. The
+ * final case in this block is the one that pins the file gate itself.
+ */
+describe('the hue-role exemption catches everything it should', () => {
+  it.each([
+    ['a plain colour property', "color: 'indigo'"],
+    ['a background property', "background: 'teal'"],
+    ['a bgcolor property', "bgcolor: 'blue'"],
+    ['a hex value', "borderColor: '#ff0000'"],
+    ['an rgb() value', "bgcolor: 'rgb(1, 2, 3)'"],
+    ['a colour-named JSX attribute', 'fill="teal"'],
+    ['a hue value outside the eight-member union', "hue: 'blueviolet'"],
+    // Same verdict under the old `\b` guard too — a quoted key's closing
+    // quote always breaks the `\s*:` adjacency this pattern requires,
+    // regardless of what precedes `hue`. Kept as documentation of that
+    // (separate, pre-existing) protection, not as a boundary pin.
+    ['a quoted `hue` key', "'hue': 'green'"],
+    ['a hue role next to an unrelated colour property', "{ hue: 'indigo', color: 'teal' }"],
+    ['a hue role next to an unrelated hex value', "{ hue: 'indigo', bg: '#abcdef' }"],
+    // REGRESSION PIN — diverges from the old `\b`-based guard, which read
+    // `-` as "outside a word" and would have exempted this too. Confirmed by
+    // running both patterns: old = exempt (0 offenders), new = caught (1).
+    ['REGRESSION PIN: a hyphenated key ending in `-hue`', "tile-hue: 'green'"],
+    ['REGRESSION PIN: another hyphenated key ending in `-hue`', "data-hue: 'teal'"],
+  ])('still flags %s inside navigation.tsx', (_label, line) => {
+    expect(findOffenders(HUE_ROLE_FILE, line)).toHaveLength(1);
+  });
+
+  it.each([
+    ['single quotes', "hue: 'indigo'"],
+    ['double quotes', 'hue: "indigo"'],
+    ['backticks', 'hue: `indigo`'],
+  ])('exempts a real hue role value in %s inside navigation.tsx', (_label, line) => {
+    expect(findOffenders(HUE_ROLE_FILE, line)).toEqual([]);
+  });
+
+  it('gates the exemption to navigation.tsx — the identical text is still caught anywhere else', () => {
+    // Fix round 4: the exemption used to blank a `hue:` span on every file in
+    // `src/`, though only `navigation.tsx` ever assigns `Destination.hue`.
+    // Same input, three files, two different verdicts is the direct proof
+    // the gate is doing the work, not the regex alone.
+    const line = "hue: 'indigo'";
+    expect(findOffenders(HUE_ROLE_FILE, line)).toEqual([]);
+    expect(findOffenders('layouts/shell/AppTile.tsx', line)).toHaveLength(1);
+    expect(findOffenders('fixture.tsx', line)).toHaveLength(1);
   });
 });

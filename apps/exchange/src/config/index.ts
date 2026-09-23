@@ -34,6 +34,8 @@ export interface Config {
   // Feature flags
   /** Offers the Ledger hardware-wallet path. Off until Ledger support ships. */
   ledgerEnabled: boolean;
+  /** `owner/name` of the PR-curated logo repository. */
+  logoRepo: string;
   sentryEnabled: boolean;
   sentryDsn?: string | undefined;
 }
@@ -57,6 +59,7 @@ const getConfig = (): Config => {
     isProduction: import.meta.env.PROD,
     isStaging: env === 'staging',
     ledgerEnabled: import.meta.env.VITE_LEDGER_ENABLED === 'true',
+    logoRepo: import.meta.env.VITE_LOGO_REPO || 'Decentral-America/token-logos',
     matcherUrl: import.meta.env.VITE_MATCHER_URL || NetworkConfig.matcher,
 
     // Network configuration - defaults from NetworkConfig (mainnet.json)

@@ -12,7 +12,13 @@
   "extends": "//",
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!dist", "!coverage", "!**/*.d.ts"]
+    "includes": [
+      "**",
+      "!dist",
+      "!coverage",
+      "!**/*.d.ts",
+      "!src/services/bridge/sol_bridge_lock.json"
+    ]
   },
   "formatter": {
     "enabled": true,

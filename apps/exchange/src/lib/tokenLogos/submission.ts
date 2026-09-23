@@ -1,0 +1,120 @@
+import { isValidAssetId } from './url';
+
+export interface LogoSubmission {
+  assetId: string;
+  name: string;
+  symbol: string;
+  issuer: string;
+}
+
+/**
+ * The protocol's own bound on an issued asset's name (4-16 UTF-8 bytes; see
+ * `packages/sdk/transactions/src/validators/validators.ts` and the mirrored form
+ * validation in `apps/exchange/src/lib/forms.ts`). The real caller is already
+ * constrained to this, but the builder enforces it again itself — a guarantee
+ * that only holds because of a bound enforced three layers away, in a
+ * different package, stops holding the moment a second caller exists.
+ */
+const NAME_MAX_CHARS = 16;
+
+/**
+ * The protocol has no bound on a display symbol/ticker at all. Real-world
+ * ticker symbols are conventionally well under 10 characters, so this is a
+ * generous cap that still keeps the query string small regardless of what a
+ * future caller passes in.
+ */
+const SYMBOL_MAX_CHARS = 20;
+
+/**
+ * The practical safe ceiling for a URL a browser and GitHub will both accept
+ * unmangled. Fields we don't truncate (e.g. `issuer`) can still blow past
+ * this, so it's enforced again on the finished string as a last resort.
+ */
+const URL_LENGTH_CEILING = 2000;
+
+/**
+ * Truncates by Unicode code point, not UTF-16 code unit. `.slice()` counts code
+ * units, so a cap can land inside a surrogate pair (e.g. an emoji) and leave a
+ * lone surrogate that `URLSearchParams` silently replaces with U+FFFD.
+ * `Array.from` iterates code points, so a pair is one element and is never split.
+ *
+ * This is not grapheme-aware: a family emoji or a flag is several code points
+ * and can still be cut between them. That's acceptable here — the goal is
+ * bounding URL length, not typography — and the result of cutting a ZWJ
+ * sequence mid-way is valid-but-different characters, not an invalid lone
+ * surrogate.
+ */
+function truncate(value: string, maxChars: number): string {
+  const points = Array.from(value);
+  return points.length > maxChars ? points.slice(0, maxChars).join('') : value;
+}
+
+/** How many characters of the name stand in for a ticker. */
+const DERIVED_SYMBOL_CHARS = 4;
+
+/**
+ * A DecentralChain asset carries a name and no ticker, so `CreateToken` has no
+ * symbol field to read. This derives a placeholder from the name — a guess the
+ * reviewer merging the pull request can correct by hand, not an authoritative
+ * value for `info.json`.
+ *
+ * Truncates through `truncate`, by code point, for the same reason `truncate`
+ * itself does: `.slice(4)` counts UTF-16 code units, so a name whose fourth
+ * character is an emoji (`ABC👍` — four code points, which passes
+ * `CreateToken`'s own `name.length >= 4` validator) is cut mid-surrogate-pair.
+ * The result is a lone high surrogate, which `URLSearchParams` silently
+ * replaces with U+FFFD, and the corruption lands in a public GitHub issue.
+ *
+ * Nothing downstream catches this: `logoIssueUrl`'s 16/20-character caps never
+ * fire on a four-character input.
+ *
+ * Uppercasing after truncation can lengthen the result (`ß` becomes `SS`),
+ * which is harmless — `SYMBOL_MAX_CHARS` is the binding limit and sits far
+ * above four.
+ */
+export function symbolFromName(name: string): string {
+  return truncate(name, DERIVED_SYMBOL_CHARS).toUpperCase();
+}
+
+/**
+ * Opens a GitHub issue with every field the intake Action needs, pre-filled.
+ *
+ * An issue rather than a pull request because a PR URL cannot carry the image:
+ * `value` fills a text box, the safe URL ceiling is about 2,000 characters, and
+ * a 256x256 PNG is roughly 13,600 base64 characters. Issue bodies accept
+ * drag-and-drop image upload natively and host the result, so the one manual
+ * step is dropping in a file the browser has already downloaded.
+ */
+export function logoIssueUrl(repo: string, submission: LogoSubmission): string | null {
+  const { assetId, issuer } = submission;
+  if (!isValidAssetId(assetId)) return null;
+
+  const name = truncate(submission.name, NAME_MAX_CHARS);
+  const symbol = truncate(submission.symbol, SYMBOL_MAX_CHARS);
+
+  const body = [
+    `**Asset ID:** \`${assetId}\``,
+    `**Name:** ${name}`,
+    `**Symbol:** ${symbol}`,
+    `**Issuer:** \`${issuer}\``,
+    '',
+    '---',
+    '',
+    '### Attach the logo',
+    '',
+    'Drag the `logo.png` this page downloaded into the box below, then submit.',
+    '',
+    '- [ ] 256x256, square, under 100 KB',
+    '- [ ] Transparent background, no text or watermark',
+    '- [ ] I have the right to publish this image',
+  ].join('\n');
+
+  const params = new URLSearchParams({
+    body,
+    labels: 'logo-submission',
+    title: `Add logo: ${name} (${symbol})`,
+  });
+
+  const url = `https://github.com/${repo}/issues/new?${params.toString()}`;
+  return url.length < URL_LENGTH_CEILING ? url : null;
+}

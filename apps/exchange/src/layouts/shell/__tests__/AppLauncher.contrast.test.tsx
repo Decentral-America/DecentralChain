@@ -1,38 +1,22 @@
 /**
- * AppLauncher — both-mode contrast
+ * AppLauncher — the grid, in both modes.
  *
- * The launcher absorbs the tail of the navigation the top bar cannot wear, so
- * it is reachable from all fifteen authenticated routes. Like `AppTopBar` it
- * had **zero test coverage** before this file, which is how it survived 807
- * green tests while being unreadable in dark mode.
+ * The previous version of this file asserted against a card/plate anatomy that
+ * no longer exists: a `surface.raised` card fill, a rest/hover pair on that
+ * card, an icon plate whose colour flipped on an active ternary, and shelf
+ * headings. Tiles replace all of it, so this is a rewrite rather than an edit.
  *
- * Pre-existing code, but this branch made dark mode reachable on these routes,
- * so it now ships broken. Everything here is the one defect class — a
- * mode-invariant fill (`palette.*`, a flat constant table with no mode
- * dimension) under mode-aware ink:
- *
- *   - the dialog paper pinned `palette.shellCanvas` under `text.primary` —
- *     1.0475:1 in dark;
- *   - `LauncherCard`'s `&:hover` pinned `palette.mist` — 1.0424:1;
- *   - the inactive icon plate pinned `palette.periwinkleWash` under
- *     `primary.main` — 2.7073:1;
- *   - the shelf label pinned `palette.steel`.
- *
- * Two of those were **half-conversions** — one branch of a ternary, or one of
- * a rest/hover pair, had been moved to a token while its sibling was left a
- * literal (`bgcolor: active ? 'primary.main' : palette.periwinkleWash`;
- * `bgcolor: 'background.paper'` with a `&:hover` still on `palette.mist`).
- * Both sides are asserted below, so fixing one and not the other cannot pass.
- *
- * Hover is read out of the emitted stylesheet rather than simulated: jsdom
- * does not apply `:hover`, so `userEvent.hover` would measure the rest state
- * and pass on broken code.
+ * What carries forward is the reason the file exists: this dialog is reachable
+ * from all fifteen authenticated routes and had no coverage at all until a
+ * mode-invariant fill made it unreadable in dark mode. Per-tile contrast lives
+ * in `AppTile.test.tsx`; what is asserted here is the dialog's own ground and
+ * that every destination is actually reachable.
  */
 import { ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { AppLauncher } from '@/layouts/shell/AppLauncher';
-import { LAUNCHER_GROUPS } from '@/layouts/shell/navigation';
+import { LAUNCHER_TILES } from '@/layouts/shell/navigation';
 import { rgbToHex } from '@/test-utils/rgbToHex';
 import { createAppTheme } from '@/theme/mui-theme';
 import { contrastRatio, type ThemeMode, tokens } from '@/theme/tokens/semantic';
@@ -43,21 +27,8 @@ function toHex(value: string): string {
   return value.startsWith('#') ? value.toLowerCase() : rgbToHex(value);
 }
 
-function hoverDeclaration(el: HTMLElement, property: 'color' | 'background-color'): string {
-  const classes = Array.from(el.classList).map((c) => `.${c}:hover`);
-  for (const sheet of Array.from(document.styleSheets)) {
-    for (const rule of Array.from(sheet.cssRules) as CSSStyleRule[]) {
-      if (!rule.selectorText || !classes.some((c) => rule.selectorText.includes(c))) continue;
-      const value = rule.style.getPropertyValue(property);
-      if (value) return value.trim();
-    }
-  }
-  throw new Error(`no :hover ${property} rule found for ${el.className}`);
-}
-
-/** The path of the first destination, so exactly one card renders active. */
-const ACTIVE_PATH = LAUNCHER_GROUPS[0]!.items[0]!.path;
-const ACTIVE_LABEL = LAUNCHER_GROUPS[0]!.items[0]!.label;
+/** The first tile's path, so exactly one destination renders as current. */
+const ACTIVE_PATH = LAUNCHER_TILES[0]!.path;
 
 function renderLauncher(mode: ThemeMode) {
   return render(
@@ -72,30 +43,31 @@ function paperOf(el: HTMLElement): HTMLElement {
 }
 
 /**
- * The card for a destination.
+ * Every `[conditionText, value]` pair a property is given for `el`'s own
+ * emotion class across the stylesheet's `@media` blocks — jsdom does not
+ * apply them, so this reads the rule text instead of trusting
+ * `getComputedStyle`. See the call site.
  *
- * Looked up by label *within a button*, not by text alone: "Markets" is both
- * a shelf title and a card label, so `getByText` matches two nodes.
+ * Returning the condition alongside the value (rather than just the values,
+ * as a bare list) is what lets a caller check the *association* between a
+ * breakpoint and what it declares, not merely that the right values exist
+ * somewhere in the set — see "pins its columns" below for why that
+ * distinction matters.
  */
-function cardFor(label: string): HTMLElement {
-  const card = screen
-    .getAllByText(label)
-    .map((el) => el.closest('button'))
-    .find(Boolean);
-  if (!card) throw new Error(`no launcher card for ${label}`);
-  return card as HTMLElement;
-}
-
-/** The shelf heading for a group — the `h2`, never a card label. */
-function shelfLabel(title: string): HTMLElement {
-  return screen.getByRole('heading', { level: 2, name: title });
-}
-
-/** A text node inside a specific card, so duplicate labels cannot collide. */
-function withinCard(card: HTMLElement, text: string): HTMLElement {
-  const node = Array.from(card.querySelectorAll('*')).find((el) => el.textContent === text);
-  if (!node) throw new Error(`"${text}" not found inside its card`);
-  return node as HTMLElement;
+function mediaDeclarations(el: HTMLElement, property: string): Array<[string, string]> {
+  const ownClass = Array.from(el.classList).find((c) => c.startsWith('css-'));
+  const pairs: Array<[string, string]> = [];
+  for (const sheet of Array.from(document.styleSheets)) {
+    for (const rule of Array.from(sheet.cssRules)) {
+      if (!(rule instanceof CSSMediaRule)) continue;
+      for (const inner of Array.from(rule.cssRules) as CSSStyleRule[]) {
+        if (inner.selectorText !== `.${ownClass}`) continue;
+        const value = inner.style.getPropertyValue(property);
+        if (value) pairs.push([rule.conditionText, value]);
+      }
+    }
+  }
+  return pairs;
 }
 
 describe.each(['light', 'dark'] as const)('AppLauncher (%s mode)', (mode) => {
@@ -108,90 +80,89 @@ describe.each(['light', 'dark'] as const)('AppLauncher (%s mode)', (mode) => {
   it('the dialog title clears AA against the surface it sits on', () => {
     renderLauncher(mode);
     const title = screen.getByText('Everything');
-    const paper = paperOf(title);
     const ink = toHex(getComputedStyle(title).color);
-    const fill = toHex(getComputedStyle(paper).backgroundColor);
+    const fill = toHex(getComputedStyle(paperOf(title)).backgroundColor);
     expect(contrastRatio(ink, fill)).toBeGreaterThanOrEqual(4.5);
   });
 
-  it('every shelf label clears AA against the dialog surface', () => {
+  it('every tile label clears AA against the dialog surface', () => {
     renderLauncher(mode);
-    for (const group of LAUNCHER_GROUPS) {
-      const label = shelfLabel(group.title);
+    for (const destination of LAUNCHER_TILES) {
+      const label = screen.getByText(destination.label);
       const ink = toHex(getComputedStyle(label).color);
       const fill = toHex(getComputedStyle(paperOf(label)).backgroundColor);
       expect(contrastRatio(ink, fill)).toBeGreaterThanOrEqual(4.5);
     }
   });
 
-  it('every card label and description clears AA against its own card fill', () => {
+  it('every tile plate clears AA between its own glyph and fill', () => {
     renderLauncher(mode);
-    for (const group of LAUNCHER_GROUPS) {
-      for (const item of group.items) {
-        const card = cardFor(item.label);
-        const label = withinCard(card, item.label);
-        const fill = toHex(getComputedStyle(card).backgroundColor);
-        expect(contrastRatio(toHex(getComputedStyle(label).color), fill)).toBeGreaterThanOrEqual(
-          4.5,
-        );
-        const description = withinCard(card, item.description);
-        expect(
-          contrastRatio(toHex(getComputedStyle(description).color), fill),
-        ).toBeGreaterThanOrEqual(4.5);
-        expect(fill).toBe(tokens(mode).surface.raised);
-      }
+    const plates = Array.from(document.querySelectorAll('.app-tile__plate'));
+    expect(plates).toHaveLength(LAUNCHER_TILES.length);
+    for (const plate of plates) {
+      const style = getComputedStyle(plate as HTMLElement);
+      expect(
+        contrastRatio(toHex(style.color), toHex(style.backgroundColor)),
+      ).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+});
+
+describe('AppLauncher grid', () => {
+  it('renders every destination exactly once', () => {
+    renderLauncher('light');
+    for (const destination of LAUNCHER_TILES) {
+      expect(screen.getByRole('button', { name: destination.label })).toBeInTheDocument();
     }
   });
 
-  it('the card keeps both halves of its rest/hover pair mode-aware', () => {
-    renderLauncher(mode);
-    const card = cardFor(ACTIVE_LABEL);
-    const hoverFill = toHex(hoverDeclaration(card, 'background-color'));
-    // Every ink the card carries has to survive the hover fill too, not just
-    // the resting one — the half that was left behind last time. Nodes that
-    // paint their own opaque fill (the icon plate) are excluded: they are read
-    // against that fill, not against the card's, and are covered by the icon
-    // plate test below.
-    const inks = Array.from(card.querySelectorAll('p, span, div')).filter((el) => {
-      const bg = getComputedStyle(el as HTMLElement).backgroundColor;
-      return !bg || bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent';
-    });
-    expect(inks.length).toBeGreaterThan(0);
-    for (const el of inks) {
-      const ink = getComputedStyle(el as HTMLElement).color;
-      if (!ink) continue;
-      expect(contrastRatio(toHex(ink), hoverFill)).toBeGreaterThanOrEqual(4.5);
-    }
-    expect(hoverFill).toBe(tokens(mode).surface.hover);
+  it('marks exactly one tile as the current page', () => {
+    renderLauncher('light');
+    const current = screen
+      .getAllByRole('button')
+      .filter((b) => b.getAttribute('aria-current') === 'page');
+    expect(current).toHaveLength(1);
+    expect(current[0]).toHaveAccessibleName(LAUNCHER_TILES[0]!.label);
   });
 
-  it('the icon plate clears the 4.5:1 floor on BOTH branches of its active ternary', () => {
-    renderLauncher(mode);
-    const cards = LAUNCHER_GROUPS.flatMap((g) => g.items).map((item) => cardFor(item.label));
-    const active = cards.filter((c) => c.getAttribute('aria-current') === 'page');
-    const inactive = cards.filter((c) => c.getAttribute('aria-current') !== 'page');
-    // Both branches must actually be exercised, or this test proves half of
-    // what it claims.
-    expect(active.length).toBeGreaterThan(0);
-    expect(inactive.length).toBeGreaterThan(0);
+  it('pins each breakpoint to its own column count, not just the right counts somewhere in the set', () => {
+    renderLauncher('light');
+    const grid = document.querySelector('[data-testid="launcher-grid"]') as HTMLElement;
+    // The hue arrangement is only collision-free at the counts in
+    // `LAUNCHER_COLUMNS` (navigation.test.ts's adjacency check derives from
+    // the same constant). `auto-fill` would also produce intermediate counts
+    // at intermediate widths, each of which puts a repeated hue beside its
+    // twin — so this has to pin which breakpoint gets which count, not merely
+    // that the three expected strings exist somewhere in the declared set.
+    // A multiset comparison (sorting both sides before `toEqual`) previously
+    // passed even with `md` and `xs` transposed — 7 columns on phones, 3 on
+    // desktop, wrong at every width — because the same three strings were
+    // still present, just paired with the wrong breakpoints. Asserting the
+    // per-breakpoint association below is what catches that.
+    //
+    // Read from the stylesheet rather than `getComputedStyle`: jsdom's media
+    // evaluator only recognises the plain "screen"/"all" media types (see
+    // jsdom's `MediaList-impl.js`), so every breakpoint entry MUI emits here —
+    // `xs` included, since `sx` wraps even the smallest breakpoint in
+    // `@media (min-width:0px)` — is invisible to the computed style. Rule text
+    // is the only place all three declarations are visible in this
+    // environment.
+    const declared = Object.fromEntries(mediaDeclarations(grid, 'grid-template-columns'));
 
-    for (const card of [...active, ...inactive]) {
-      const plate = card.querySelector('[aria-hidden="true"]') as HTMLElement;
-      const ink = toHex(getComputedStyle(plate).color);
-      const fill = toHex(getComputedStyle(plate).backgroundColor);
-      expect(contrastRatio(ink, fill)).toBeGreaterThanOrEqual(4.5);
-    }
-  });
+    // The app's own breakpoints (`mui-theme.ts`), not MUI's defaults — this
+    // workspace overrides `sm`/`md` to 768/1024 rather than the stock 600/900.
+    const { values: breakpoints } = createAppTheme('light').breakpoints;
 
-  it('the card border is a mode-aware hairline on both branches of its ternary', () => {
-    renderLauncher(mode);
-    const cards = LAUNCHER_GROUPS.flatMap((g) => g.items).map((item) => cardFor(item.label));
-    const t = tokens(mode);
-    for (const card of cards) {
-      const border = toHex(getComputedStyle(card).borderTopColor);
-      const expected =
-        card.getAttribute('aria-current') === 'page' ? t.accent.primary : t.border.subtle;
-      expect(border).toBe(expected);
-    }
+    // Deliberately hardcoded counts rather than `LAUNCHER_COLUMNS.xs`/`.sm`/
+    // `.md` echoed back: the grid's own `gridTemplateColumns` is built from
+    // that exact object (`AppLauncher.tsx`), so re-deriving the expectation
+    // from it would be tautological — a transposed `LAUNCHER_COLUMNS.md`/
+    // `.xs` reads the same (wrong) value on both sides and "passes" anyway.
+    // 3/4/7 is the per-breakpoint mapping the design spec pins
+    // (`docs/superpowers/specs/2026-08-20-launcher-app-grid-design.md`,
+    // "The grid"), independent of whatever the constant currently holds.
+    expect(declared[`(min-width:${breakpoints.xs}px)`]).toBe('repeat(3, 1fr)');
+    expect(declared[`(min-width:${breakpoints.sm}px)`]).toBe('repeat(4, 1fr)');
+    expect(declared[`(min-width:${breakpoints.md}px)`]).toBe('repeat(7, 1fr)');
   });
 });

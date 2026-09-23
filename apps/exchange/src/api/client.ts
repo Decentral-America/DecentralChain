@@ -79,7 +79,7 @@ function validateBaseURL(url: string): string {
 /**
  * Fetch-based HTTP Client
  */
-class FetchClient {
+export class FetchClient {
   private baseURL: string;
   private timeout: number;
   private defaultHeaders: Record<string, string>;

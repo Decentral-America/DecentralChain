@@ -13,6 +13,11 @@ import { radii, status } from '@/styles/tokens';
  * There is no growth indicator here, and that is deliberate: this wallet has no
  * price oracle, so a percentage would have to be invented. A card shows what is
  * known and stays quiet about what is not.
+ *
+ * Sizes are in `rem` rather than `px` so the card grows with the reader's text
+ * setting instead of clipping. Tracking is set per size — negative on the
+ * figure, slightly positive on the label — because one value cannot be right
+ * for both.
  */
 
 /** Which tint the icon plate carries. Meaning, not decoration. */
@@ -52,36 +57,62 @@ export function StatCard({
   const plate = TONES[tone];
 
   return (
-    <Card sx={{ height: '100%' }}>
+    <Card
+      sx={{
+        '@media (prefers-reduced-motion: reduce)': {
+          '&:active': { transform: 'none' },
+          transition: 'none',
+        },
+        '&:active': { transform: 'scale(0.995)' },
+        height: '100%',
+        /*
+         * Feedback on press, not on release. A card that only responds once
+         * the click completes reads as dead under the finger.
+         */
+        transition: 'transform 100ms ease-out',
+      }}
+    >
       <CardContent
         sx={{
-          '&:last-child': { pb: 2.5 },
+          '&:last-child': { pb: 1.75 },
           display: 'flex',
           flexDirection: 'column',
           height: '100%',
-          p: 2.5,
+          p: 1.75,
         }}
       >
-        <Box sx={{ alignItems: 'center', display: 'flex', gap: 1.5, mb: 2 }}>
+        <Box sx={{ alignItems: 'center', display: 'flex', gap: 1, mb: 1.25 }}>
           <Box
             aria-hidden="true"
             sx={{
-              '& svg': { fontSize: 18 },
+              '& svg': { fontSize: 14 },
               alignItems: 'center',
               bgcolor: plate.bg,
               borderRadius: radii.md,
               color: plate.fg,
               display: 'flex',
               flexShrink: 0,
-              height: 34,
+              height: 24,
               justifyContent: 'center',
-              width: 34,
+              width: 24,
             }}
           >
             {icon}
           </Box>
 
-          <Typography sx={{ color: 'text.secondary', fontSize: 14, minWidth: 0 }}>
+          {/*
+           * Small text wants slightly positive tracking; the figure below wants
+           * negative. A single letter-spacing for both would be wrong at one
+           * end or the other.
+           */}
+          <Typography
+            sx={{
+              color: 'text.secondary',
+              fontSize: '0.8125rem',
+              letterSpacing: '0.01em',
+              minWidth: 0,
+            }}
+          >
             {label}
           </Typography>
 
@@ -89,24 +120,34 @@ export function StatCard({
           {adornment}
         </Box>
 
+        {/*
+         * Hierarchy from weight, size and leading together — not size alone.
+         * This was 32px at weight 300: large but thin, so it read as less
+         * important than its size implied. Weight gives it presence without
+         * asking for more room.
+         */}
         <Typography
           sx={{
             color: 'text.primary',
-            fontSize: 32,
+            fontSize: '1.75rem',
             fontVariantNumeric: 'tabular-nums',
-            fontWeight: 300,
-            letterSpacing: '-0.02em',
-            lineHeight: 1.1,
+            fontWeight: 600,
+            letterSpacing: '-0.022em',
+            lineHeight: 1.05,
           }}
         >
           {value}
         </Typography>
 
         {caption && (
-          <Typography sx={{ color: 'text.secondary', fontSize: 13, mt: 1 }}>{caption}</Typography>
+          <Typography
+            sx={{ color: 'text.secondary', fontSize: '0.78125rem', lineHeight: 1.4, mt: 0.5 }}
+          >
+            {caption}
+          </Typography>
         )}
 
-        {action && <Box sx={{ mt: 'auto', pt: 2 }}>{action}</Box>}
+        {action && <Box sx={{ mt: 'auto', pt: 1.25 }}>{action}</Box>}
       </CardContent>
     </Card>
   );

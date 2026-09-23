@@ -1,0 +1,5136 @@
+{
+  "address": "9yJDb6VyjDHmQC7DLADDdLFm9wxWanXRM5x9SdZ3oVkF",
+  "metadata": {
+    "name": "sol_bridge_lock",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Solana bridge lock/unlock vault program"
+  },
+  "docs": [
+    "SOL Bridge Lock Program",
+    "",
+    "Security-critical vault program that locks SOL for cross-chain bridging",
+    "to DecentralChain. Uses PDA-controlled custody with no external key authority.",
+    "",
+    "INVARIANTS:",
+    "- No SOL leaves vault without valid burn proof from DCC",
+    "- Nonces are strictly monotonic per user",
+    "- Transfer IDs are globally unique (hash of sender + nonce + slot)",
+    "- Deposits are rate-limited and size-capped",
+    "- Emergency pause halts all operations",
+    "- Reentrancy protection via Anchor's CPI guard"
+  ],
+  "instructions": [
+    {
+      "name": "accept_authority",
+      "docs": [
+        "Accept a pending authority transfer (step 2 of 2-step transfer).",
+        "Must be called by the pending authority after 24h timelock."
+      ],
+      "discriminator": [
+        107,
+        86,
+        198,
+        91,
+        33,
+        12,
+        107,
+        160
+      ],
+      "accounts": [
+        {
+          "name": "bridge_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  105,
+                  100,
+                  103,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "new_authority",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "cancel_resume_request",
+      "docs": [
+        "Cancel a pending resume request.",
+        "Authority or guardian can cancel — defense-in-depth."
+      ],
+      "discriminator": [
+        63,
+        67,
+        25,
+        241,
+        53,
+        48,
+        50,
+        242
+      ],
+      "accounts": [
+        {
+          "name": "bridge_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  105,
+                  100,
+                  103,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "close_expired_attestation",
+      "docs": [
+        "Reclaim the rent of an accumulator whose transfer expired before quorum",
+        "was reached and executed. Refunds only to the recorded rent payer."
+      ],
+      "discriminator": [
+        255,
+        28,
+        94,
+        33,
+        176,
+        46,
+        207,
+        37
+      ],
+      "accounts": [
+        {
+          "name": "attestation",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  116,
+                  116,
+                  101,
+                  115,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "transfer_id"
+              },
+              {
+                "kind": "arg",
+                "path": "payload_hash"
+              }
+            ]
+          }
+        },
+        {
+          "name": "rent_refund",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "transfer_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "payload_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "configure_mint_limits",
+      "docs": [
+        "Create or update the per-mint SPL withdrawal limits for one mint.",
+        "",
+        "Authority-gated exactly like `update_config`. Every value is in the",
+        "mint's smallest units — these limits are entirely separate from the",
+        "lamport-denominated limits on `BridgeConfig`, which govern native SOL",
+        "only. A mint with no limits account cannot be withdrawn at all."
+      ],
+      "discriminator": [
+        110,
+        82,
+        208,
+        35,
+        239,
+        237,
+        13,
+        244
+      ],
+      "accounts": [
+        {
+          "name": "bridge_config",
+          "docs": [
+            "Read-only. Deliberately NOT `mut`: this instruction reads the authority",
+            "for the permission check and nothing else, so it is structurally",
+            "incapable of altering native SOL's limits or counters."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  105,
+                  100,
+                  103,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint",
+          "docs": [
+            "The mint being configured. Typed as `Mint` so a non-mint address cannot",
+            "be given a limits account, and pinned to `params.mint` so the account",
+            "and the PDA seed can never disagree."
+          ]
+        },
+        {
+          "name": "mint_limits",
+          "docs": [
+            "Per-mint limits PDA. `init_if_needed` makes this one instruction serve",
+            "both creation and update; re-initialisation is not a concern because",
+            "the authority constraint above gates every call and Anchor verifies the",
+            "discriminator and owner when the account already exists."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  116,
+                  95,
+                  108,
+                  105,
+                  109,
+                  105,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "params.mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "ConfigureMintLimitsParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "deposit",
+      "docs": [
+        "Deposit SOL into the bridge vault.",
+        "Emits a BridgeDeposit event for validators to observe."
+      ],
+      "discriminator": [
+        242,
+        35,
+        198,
+        137,
+        82,
+        225,
+        242,
+        182
+      ],
+      "accounts": [
+        {
+          "name": "bridge_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  105,
+                  100,
+                  103,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sender"
+              }
+            ]
+          }
+        },
+        {
+          "name": "deposit_record",
+          "docs": [
+            "Deposit record PDA — created per deposit with transfer_id seed"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  112,
+                  111,
+                  115,
+                  105,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "params.transfer_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "sender",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "DepositParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "deposit_spl",
+      "docs": [
+        "Deposit SPL tokens into the bridge vault.",
+        "Transfers tokens from sender's ATA to the bridge vault ATA.",
+        "Emits a BridgeDepositSpl event with the SPL mint for DCC routing."
+      ],
+      "discriminator": [
+        224,
+        0,
+        198,
+        175,
+        198,
+        47,
+        105,
+        204
+      ],
+      "accounts": [
+        {
+          "name": "bridge_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  105,
+                  100,
+                  103,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sender"
+              }
+            ]
+          }
+        },
+        {
+          "name": "deposit_record",
+          "docs": [
+            "Deposit record PDA — created per deposit with transfer_id seed"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  112,
+                  111,
+                  115,
+                  105,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "params.transfer_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "spl_mint",
+          "docs": [
+            "The SPL token mint being deposited"
+          ]
+        },
+        {
+          "name": "mint_limits",
+          "docs": [
+            "Per-mint limits PDA (SECURITY FIX — MED-1).",
+            "",
+            "WHY DEPOSITS NEED THIS. `unlock_spl` and `execute_attested_unlock_spl`",
+            "both require this exact account and fail closed without it, so a mint",
+            "with no `MintLimits` can NEVER be withdrawn. Before this constraint the",
+            "deposit side had no such requirement, so a user could send tokens into a",
+            "vault ATA they could not get back out of — inbound and outbound",
+            "disagreed about which mints the bridge supports.",
+            "",
+            "Requiring it here makes the two agree: if the authority has not run",
+            "`configure_mint_limits` for this mint, Anchor aborts with",
+            "`AccountNotInitialized` before any tokens move, and the `enabled` flag",
+            "halts inbound and outbound flow for a token together.",
+            "",
+            "Read-only — deposits consume no withdrawal budget, and this instruction",
+            "is structurally incapable of altering one."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  116,
+                  95,
+                  108,
+                  105,
+                  109,
+                  105,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "spl_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "sender_token_account",
+          "docs": [
+            "Sender's token account (source)"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "sender"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "spl_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "vault_token_account",
+          "docs": [
+            "Bridge vault token account for this specific SPL mint.",
+            "PDA-owned ATA — tokens are custodied by the bridge config PDA."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "bridge_config"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "spl_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "sender",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "DepositSplParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "emergency_pause",
+      "docs": [
+        "Emergency pause — halts all deposits and unlocks."
+      ],
+      "discriminator": [
+        21,
+        143,
+        27,
+        142,
+        200,
+        181,
+        210,
+        255
+      ],
+      "accounts": [
+        {
+          "name": "bridge_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  105,
+                  100,
+                  103,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "emergency_resume",
+      "docs": [
+        "Step 2: Execute resume after the timelock delay has elapsed."
+      ],
+      "discriminator": [
+        0,
+        243,
+        48,
+        185,
+        6,
+        73,
+        190,
+        83
+      ],
+      "accounts": [
+        {
+          "name": "bridge_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  105,
+                  100,
+                  103,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "execute_attested_unlock",
+      "docs": [
+        "Pay out native SOL against an accumulator that has reached quorum.",
+        "Permissionless — the accumulator, not the caller, authorises the payout."
+      ],
+      "discriminator": [
+        66,
+        110,
+        212,
+        87,
+        72,
+        6,
+        229,
+        192
+      ],
+      "accounts": [
+        {
+          "name": "bridge_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  105,
+                  100,
+                  103,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "attestation",
+          "docs": [
+            "The quorum being consumed. Closed at the end of the instruction, so a",
+            "quorum can be spent at most once even before the UnlockRecord is",
+            "consulted."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  116,
+                  116,
+                  101,
+                  115,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "transfer_id"
+              },
+              {
+                "kind": "arg",
+                "path": "payload_hash"
+              }
+            ]
+          }
+        },
+        {
+          "name": "unlock_record",
+          "docs": [
+            "Replay guard — UNCHANGED from the single-transaction path. `init` fails",
+            "if this transfer_id was ever redeemed, as SOL or as SPL, by either",
+            "transport. Many accumulators may exist for one transfer_id; this makes",
+            "at most one of them payable."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  110,
+                  108,
+                  111,
+                  99,
+                  107
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "transfer_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "recipient",
+          "docs": [
+            "recipient — the executor cannot redirect the payout."
+          ],
+          "writable": true
+        },
+        {
+          "name": "rent_refund",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "transfer_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "payload_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "execute_attested_unlock_spl",
+      "docs": [
+        "Pay out SPL tokens against an accumulator that has reached quorum.",
+        "Draws only against the per-mint `MintLimits` budget — never the",
+        "lamport-denominated counters on `BridgeConfig`."
+      ],
+      "discriminator": [
+        224,
+        110,
+        18,
+        252,
+        1,
+        40,
+        85,
+        205
+      ],
+      "accounts": [
+        {
+          "name": "bridge_config",
+          "docs": [
+            "DELIBERATELY NOT `mut` — same reasoning as `unlock_spl`. Every limit and",
+            "counter on this account is lamport-denominated and belongs to the native",
+            "path. Declaring it read-only makes it structurally impossible for an SPL",
+            "withdrawal to touch `current_daily_outflow`, `total_locked` or",
+            "`total_unlocked`."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  105,
+                  100,
+                  103,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "attestation",
+          "docs": [
+            "Boxed: `AttestationAccumulator` is ~900 bytes and this context already",
+            "carries several token accounts. Heap-allocating the big ones keeps",
+            "`try_accounts` inside the BPF 4 KiB stack frame."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  116,
+                  116,
+                  101,
+                  115,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "transfer_id"
+              },
+              {
+                "kind": "arg",
+                "path": "payload_hash"
+              }
+            ]
+          }
+        },
+        {
+          "name": "unlock_record",
+          "docs": [
+            "Replay guard — SHARED namespace with native `unlock`, so one transfer_id",
+            "pays out exactly once, as SOL or as SPL, never both."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  110,
+                  108,
+                  111,
+                  99,
+                  107
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "transfer_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "spl_mint",
+          "docs": [
+            "Pinned to the mint the validators signed over."
+          ]
+        },
+        {
+          "name": "mint_limits",
+          "docs": [
+            "Per-mint withdrawal limits. The ONLY account this instruction reads",
+            "limits from and the ONLY one it writes an outflow counter to; every",
+            "field is in this mint's smallest units. Fails closed — an unconfigured",
+            "mint has no PDA here and Anchor aborts before the handler runs."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  116,
+                  95,
+                  108,
+                  105,
+                  109,
+                  105,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "spl_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "bridge_config"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "spl_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "recipient"
+        },
+        {
+          "name": "recipient_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "recipient"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "spl_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "rent_refund",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "transfer_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "payload_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "execute_scheduled_unlock",
+      "docs": [
+        "Execute a scheduled (large) unlock after its timelock delay has elapsed."
+      ],
+      "discriminator": [
+        72,
+        169,
+        33,
+        23,
+        130,
+        110,
+        87,
+        19
+      ],
+      "accounts": [
+        {
+          "name": "bridge_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  105,
+                  100,
+                  103,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "unlock_record",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  110,
+                  108,
+                  111,
+                  99,
+                  107
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "transfer_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "recipient",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "transfer_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "initialize",
+      "docs": [
+        "Initialize the bridge configuration.",
+        "Can only be called once by the deployer."
+      ],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "bridge_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  105,
+                  100,
+                  103,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "InitializeParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "register_validator",
+      "docs": [
+        "Register a validator's public key for signature verification."
+      ],
+      "discriminator": [
+        118,
+        98,
+        251,
+        58,
+        81,
+        30,
+        13,
+        240
+      ],
+      "accounts": [
+        {
+          "name": "bridge_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  105,
+                  100,
+                  103,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "validator_entry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  108,
+                  105,
+                  100,
+                  97,
+                  116,
+                  111,
+                  114
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "params.validator_pubkey"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "RegisterValidatorParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "remove_validator",
+      "docs": [
+        "Remove a validator from the active set."
+      ],
+      "discriminator": [
+        25,
+        96,
+        211,
+        155,
+        161,
+        14,
+        168,
+        188
+      ],
+      "accounts": [
+        {
+          "name": "bridge_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  105,
+                  100,
+                  103,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "validator_entry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  108,
+                  105,
+                  100,
+                  97,
+                  116,
+                  111,
+                  114
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "validator_pubkey"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "validator_pubkey",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "request_resume",
+      "docs": [
+        "Step 1: Request resume — starts a timelock countdown.",
+        "The bridge remains paused until resume() is called after the delay."
+      ],
+      "discriminator": [
+        186,
+        128,
+        207,
+        47,
+        41,
+        68,
+        211,
+        81
+      ],
+      "accounts": [
+        {
+          "name": "bridge_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  105,
+                  100,
+                  103,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "submit_attestation",
+      "docs": [
+        "── ATTESTATION ACCUMULATOR PATH ──",
+        "",
+        "Record ONE validator's attestation for one exact payout, in its own",
+        "transaction. Quorum is accumulated on-chain across several small",
+        "transactions instead of being carried inside the transaction that moves",
+        "the money, so transaction size stops scaling with `min_validators`.",
+        "",
+        "This is an ADDITIONAL transport. `unlock` and `unlock_spl` are untouched",
+        "and remain fully supported; validators sign the identical canonical",
+        "message for either path."
+      ],
+      "discriminator": [
+        238,
+        220,
+        255,
+        105,
+        183,
+        211,
+        40,
+        83
+      ],
+      "accounts": [
+        {
+          "name": "bridge_config",
+          "docs": [
+            "Read-only. Nothing here writes bridge state — this instruction moves no",
+            "money and touches no counter."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  105,
+                  100,
+                  103,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "attestation",
+          "docs": [
+            "The accumulator for this exact payload. Created by the first attestation,",
+            "joined by every later one.",
+            "",
+            "The address is bound to BOTH `transfer_id` and `payload_hash`, and the",
+            "handler proves `payload_hash == sha256(canonical_message)`. Two",
+            "attestations therefore land in the same account only if they are",
+            "signatures over byte-identical messages."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  116,
+                  116,
+                  101,
+                  115,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "params.transfer_id"
+              },
+              {
+                "kind": "arg",
+                "path": "params.payload_hash"
+              }
+            ]
+          }
+        },
+        {
+          "name": "validator_entry",
+          "docs": [
+            "The attesting validator's registry entry. Typed and PDA-constrained, so",
+            "Anchor itself proves ownership, discriminator and derivation before the",
+            "handler runs — strictly stronger than the remaining_accounts scan the",
+            "single-transaction path has to do."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  108,
+                  105,
+                  100,
+                  97,
+                  116,
+                  111,
+                  114
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "params.validator"
+              }
+            ]
+          }
+        },
+        {
+          "name": "payer",
+          "docs": [
+            "Whoever pays the accumulator's rent. Permissionless — a relayer may do",
+            "it. Rent comes back to the account recorded as `rent_payer` when the",
+            "accumulator is closed."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "instructions_sysvar",
+          "address": "Sysvar1nstructions1111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "SubmitAttestationParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "unlock",
+      "docs": [
+        "Unlock SOL from the vault after validators confirm a burn on DCC.",
+        "Requires M-of-N validator signatures."
+      ],
+      "discriminator": [
+        101,
+        155,
+        40,
+        21,
+        158,
+        189,
+        56,
+        203
+      ],
+      "accounts": [
+        {
+          "name": "bridge_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  105,
+                  100,
+                  103,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "unlock_record",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  110,
+                  108,
+                  111,
+                  99,
+                  107
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "params.transfer_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "recipient",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "ed25519_program",
+          "address": "Ed25519SigVerify111111111111111111111111111"
+        },
+        {
+          "name": "instructions_sysvar",
+          "address": "Sysvar1nstructions1111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "UnlockParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "unlock_spl",
+      "docs": [
+        "Unlock SPL tokens from the bridge vault after validators confirm a burn on DCC.",
+        "Requires M-of-N validator signatures over a mint-bound, domain-separated message.",
+        "Transfers from the bridge_config-owned vault ATA to the recipient's ATA."
+      ],
+      "discriminator": [
+        52,
+        174,
+        149,
+        148,
+        187,
+        53,
+        29,
+        90
+      ],
+      "accounts": [
+        {
+          "name": "bridge_config",
+          "docs": [
+            "Global config. Read for the pause flag, chain ID and quorum size, and",
+            "used as the vault ATA's signing authority.",
+            "",
+            "DELIBERATELY NOT `mut`. Every withdrawal limit on this account is",
+            "lamport-denominated and belongs to the native SOL path. Declaring it",
+            "read-only makes it structurally impossible for an SPL withdrawal to",
+            "touch `current_daily_outflow`, `total_locked`, `total_unlocked`, or any",
+            "other native counter: Anchor never serialises a non-`mut` account back,",
+            "and the runtime rejects writes to accounts not marked writable."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  105,
+                  100,
+                  103,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "unlock_record",
+          "docs": [
+            "Replay guard. `init` fails if this transfer_id was ever redeemed —",
+            "SHARED namespace with native `unlock`, so one transfer_id can be paid",
+            "out exactly once, as SOL or as SPL, never both."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  110,
+                  108,
+                  111,
+                  99,
+                  107
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "params.transfer_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "spl_mint",
+          "docs": [
+            "The SPL mint being released. Pinned to the mint the validators signed",
+            "over, so attestations cannot be redirected to a different token."
+          ]
+        },
+        {
+          "name": "mint_limits",
+          "docs": [
+            "Per-mint withdrawal limits (PDA: [b\"mint_limits\", spl_mint]).",
+            "",
+            "This is the ONLY account this instruction reads limits from and the ONLY",
+            "account it writes an outflow counter to. All of its fields are in this",
+            "mint's smallest units, so no unit mixing with lamports is possible.",
+            "",
+            "FAIL CLOSED: this is a required, already-initialised, typed account. A",
+            "mint the authority has not explicitly configured has no PDA here, so",
+            "Anchor aborts with `AccountNotInitialized` before the handler runs.",
+            "There is deliberately NO fallback to `bridge_config`'s native limits."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  105,
+                  110,
+                  116,
+                  95,
+                  108,
+                  105,
+                  109,
+                  105,
+                  116,
+                  115
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "params.spl_mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_token_account",
+          "docs": [
+            "Bridge vault ATA — source of the unlocked tokens. The",
+            "`associated_token::*` constraints force this to be the canonical ATA for",
+            "(spl_mint, bridge_config); no substitute token account is accepted."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "bridge_config"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "spl_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "recipient",
+          "docs": [
+            "Mirrors `unlock.rs`, which also types the recipient as a SystemAccount."
+          ]
+        },
+        {
+          "name": "recipient_token_account",
+          "docs": [
+            "Recipient's ATA. Created on demand so a withdrawal never fails (or",
+            "strands tokens) just because the recipient has no account for this mint."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "recipient"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "spl_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "ed25519_program",
+          "address": "Ed25519SigVerify111111111111111111111111111"
+        },
+        {
+          "name": "instructions_sysvar",
+          "address": "Sysvar1nstructions1111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "UnlockSplParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "update_config",
+      "docs": [
+        "Update bridge configuration (rate limits, validator set, etc.)"
+      ],
+      "discriminator": [
+        29,
+        158,
+        252,
+        191,
+        10,
+        83,
+        219,
+        99
+      ],
+      "accounts": [
+        {
+          "name": "bridge_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  114,
+                  105,
+                  100,
+                  103,
+                  101,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "UpdateConfigParams"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AttestationAccumulator",
+      "discriminator": [
+        107,
+        36,
+        184,
+        11,
+        100,
+        63,
+        253,
+        184
+      ]
+    },
+    {
+      "name": "BridgeConfig",
+      "discriminator": [
+        40,
+        206,
+        51,
+        233,
+        246,
+        40,
+        178,
+        85
+      ]
+    },
+    {
+      "name": "DepositRecord",
+      "discriminator": [
+        83,
+        232,
+        10,
+        31,
+        251,
+        49,
+        189,
+        167
+      ]
+    },
+    {
+      "name": "MintLimits",
+      "discriminator": [
+        36,
+        248,
+        182,
+        176,
+        240,
+        26,
+        139,
+        109
+      ]
+    },
+    {
+      "name": "UnlockRecord",
+      "discriminator": [
+        194,
+        106,
+        153,
+        219,
+        106,
+        157,
+        12,
+        34
+      ]
+    },
+    {
+      "name": "UserState",
+      "discriminator": [
+        72,
+        177,
+        85,
+        249,
+        76,
+        167,
+        186,
+        126
+      ]
+    },
+    {
+      "name": "ValidatorEntry",
+      "discriminator": [
+        174,
+        87,
+        76,
+        168,
+        228,
+        42,
+        70,
+        4
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "AttestationSubmitted",
+      "discriminator": [
+        177,
+        213,
+        117,
+        225,
+        166,
+        11,
+        54,
+        218
+      ]
+    },
+    {
+      "name": "BridgeDeposit",
+      "discriminator": [
+        7,
+        101,
+        132,
+        17,
+        247,
+        231,
+        134,
+        34
+      ]
+    },
+    {
+      "name": "BridgeDepositSpl",
+      "discriminator": [
+        24,
+        10,
+        47,
+        15,
+        4,
+        236,
+        17,
+        4
+      ]
+    },
+    {
+      "name": "BridgePaused",
+      "discriminator": [
+        41,
+        254,
+        108,
+        64,
+        12,
+        9,
+        240,
+        203
+      ]
+    },
+    {
+      "name": "BridgeResumed",
+      "discriminator": [
+        143,
+        38,
+        195,
+        104,
+        237,
+        161,
+        7,
+        85
+      ]
+    },
+    {
+      "name": "BridgeUnlock",
+      "discriminator": [
+        163,
+        56,
+        41,
+        220,
+        117,
+        167,
+        164,
+        52
+      ]
+    },
+    {
+      "name": "BridgeUnlockSpl",
+      "discriminator": [
+        63,
+        165,
+        245,
+        135,
+        232,
+        29,
+        92,
+        195
+      ]
+    },
+    {
+      "name": "CircuitBreakerTriggered",
+      "discriminator": [
+        58,
+        7,
+        35,
+        109,
+        165,
+        114,
+        119,
+        58
+      ]
+    },
+    {
+      "name": "MintLimitsConfigured",
+      "discriminator": [
+        124,
+        108,
+        217,
+        139,
+        81,
+        88,
+        194,
+        99
+      ]
+    },
+    {
+      "name": "ResumeCancelled",
+      "discriminator": [
+        13,
+        3,
+        80,
+        43,
+        10,
+        63,
+        171,
+        47
+      ]
+    },
+    {
+      "name": "ResumeRequested",
+      "discriminator": [
+        16,
+        174,
+        122,
+        250,
+        145,
+        4,
+        40,
+        189
+      ]
+    },
+    {
+      "name": "ValidatorRegistered",
+      "discriminator": [
+        20,
+        20,
+        190,
+        191,
+        53,
+        174,
+        95,
+        72
+      ]
+    },
+    {
+      "name": "ValidatorRemoved",
+      "discriminator": [
+        133,
+        140,
+        80,
+        83,
+        7,
+        209,
+        70,
+        130
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "BridgePaused",
+      "msg": "Bridge is paused — emergency halt active"
+    },
+    {
+      "code": 6001,
+      "name": "DepositTooSmall",
+      "msg": "Deposit amount below minimum"
+    },
+    {
+      "code": 6002,
+      "name": "DepositTooLarge",
+      "msg": "Deposit amount exceeds maximum"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidNonce",
+      "msg": "Invalid nonce — must be monotonically increasing"
+    },
+    {
+      "code": 6004,
+      "name": "DuplicateTransfer",
+      "msg": "Transfer ID already processed — replay rejected"
+    },
+    {
+      "code": 6005,
+      "name": "InsufficientSignatures",
+      "msg": "Insufficient validator signatures — need M-of-N"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidSignature",
+      "msg": "Invalid validator signature"
+    },
+    {
+      "code": 6007,
+      "name": "ValidatorNotActive",
+      "msg": "Validator not in active set"
+    },
+    {
+      "code": 6008,
+      "name": "DuplicateValidatorSignature",
+      "msg": "Duplicate validator signature detected"
+    },
+    {
+      "code": 6009,
+      "name": "DailyOutflowExceeded",
+      "msg": "Daily outflow limit exceeded — circuit breaker"
+    },
+    {
+      "code": 6010,
+      "name": "UnlockAmountExceeded",
+      "msg": "Unlock amount exceeds single-transaction maximum"
+    },
+    {
+      "code": 6011,
+      "name": "WithdrawalDelayNotElapsed",
+      "msg": "Large withdrawal time delay not elapsed"
+    },
+    {
+      "code": 6012,
+      "name": "InsufficientVaultBalance",
+      "msg": "CRITICAL: Vault balance insufficient — possible invariant violation"
+    },
+    {
+      "code": 6013,
+      "name": "ArithmeticOverflow",
+      "msg": "Arithmetic overflow — operation rejected"
+    },
+    {
+      "code": 6014,
+      "name": "Unauthorized",
+      "msg": "Unauthorized — caller lacks required authority"
+    },
+    {
+      "code": 6015,
+      "name": "InvalidDccAddress",
+      "msg": "Invalid DecentralChain recipient address"
+    },
+    {
+      "code": 6016,
+      "name": "MaxValidatorsReached",
+      "msg": "Maximum validator count reached"
+    },
+    {
+      "code": 6017,
+      "name": "ValidatorAlreadyRegistered",
+      "msg": "Validator already registered"
+    },
+    {
+      "code": 6018,
+      "name": "ValidatorRemovalBreachesMinimum",
+      "msg": "Cannot remove validator — minimum threshold would be breached"
+    },
+    {
+      "code": 6019,
+      "name": "ChainIdMismatch",
+      "msg": "Chain ID mismatch — domain separation failure"
+    },
+    {
+      "code": 6020,
+      "name": "TransferExpired",
+      "msg": "Transfer has expired"
+    },
+    {
+      "code": 6021,
+      "name": "UnlockAlreadyExecuted",
+      "msg": "Unlock already executed — replay rejected"
+    },
+    {
+      "code": 6022,
+      "name": "InvalidConfig",
+      "msg": "Invalid configuration parameter"
+    },
+    {
+      "code": 6023,
+      "name": "InvalidTransferId",
+      "msg": "Transfer ID mismatch — computed value differs from supplied"
+    },
+    {
+      "code": 6024,
+      "name": "ResumeNotRequested",
+      "msg": "Resume not requested — call request_resume first"
+    },
+    {
+      "code": 6025,
+      "name": "ResumeDelayNotElapsed",
+      "msg": "Resume delay not elapsed — wait for timelock"
+    },
+    {
+      "code": 6026,
+      "name": "ResumeAlreadyRequested",
+      "msg": "Resume request already pending"
+    },
+    {
+      "code": 6027,
+      "name": "NoAuthorityTransferPending",
+      "msg": "No authority transfer pending"
+    },
+    {
+      "code": 6028,
+      "name": "AuthorityTransferTimelockNotElapsed",
+      "msg": "Authority transfer timelock not elapsed — wait 24 hours"
+    },
+    {
+      "code": 6029,
+      "name": "MintLimitsDisabled",
+      "msg": "SPL withdrawals are disabled for this mint"
+    },
+    {
+      "code": 6030,
+      "name": "MintLimitsMismatch",
+      "msg": "Mint limits account does not match the requested mint"
+    },
+    {
+      "code": 6031,
+      "name": "AttestationAlreadyRecorded",
+      "msg": "Validator has already attested to this payload"
+    },
+    {
+      "code": 6032,
+      "name": "AttestationSetFull",
+      "msg": "Attestation accumulator is full"
+    },
+    {
+      "code": 6033,
+      "name": "AttestationPayloadMismatch",
+      "msg": "Payload hash does not commit to the supplied unlock parameters"
+    },
+    {
+      "code": 6034,
+      "name": "AttestationParamsMismatch",
+      "msg": "Attestation accumulator does not match the supplied parameters"
+    },
+    {
+      "code": 6035,
+      "name": "AssetKindMismatch",
+      "msg": "Asset kind mismatch — wrong execute instruction for this accumulator"
+    },
+    {
+      "code": 6036,
+      "name": "InvalidAmount",
+      "msg": "Amount must be greater than zero"
+    },
+    {
+      "code": 6037,
+      "name": "AttestationNotExpired",
+      "msg": "Attestation accumulator has not expired"
+    }
+  ],
+  "types": [
+    {
+      "name": "AttestationAccumulator",
+      "docs": [
+        "Accumulated validator attestations for ONE exact payout.",
+        "",
+        "PDA: seeds = [b\"attest\", transfer_id, payload_hash]",
+        "",
+        "WHY THE PAYLOAD HASH IS IN THE SEED.",
+        "`payload_hash = sha256(canonical_signed_message)`, and the canonical message",
+        "commits to every value that decides where money goes: the domain separator",
+        "(which distinguishes native from SPL), transfer_id, recipient, spl_mint,",
+        "amount, burn_tx_hash, dcc_chain_id and expiration. So:",
+        "",
+        "* Two attestations can only land in the same accumulator if they are",
+        "signatures over byte-identical messages. Attestations for different",
+        "payouts live at different addresses and can never be summed into one",
+        "quorum.",
+        "* A single compromised validator cannot squat the address for a real",
+        "transfer_id with a bogus payload and freeze the withdrawal: their junk",
+        "accumulator lives somewhere else entirely, and the honest one is",
+        "unaffected. (Keying only on transfer_id would have made one leaked key",
+        "a permanent fund-freezing DoS.)",
+        "",
+        "Uniqueness of the *payout* is still enforced where it always was — by the",
+        "`init` on the `[b\"unlock\", transfer_id]` UnlockRecord. Many accumulators may",
+        "exist for one transfer_id; at most one of them can ever be executed."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "transfer_id",
+            "docs": [
+              "Transfer ID from the DCC burn event (also a PDA seed)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "payload_hash",
+            "docs": [
+              "sha256 of the canonical message every recorded validator signed",
+              "(also a PDA seed)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "recipient",
+            "docs": [
+              "Recipient Solana address (SOL destination, or the destination ATA's owner)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "spl_mint",
+            "docs": [
+              "SPL mint being released. `Pubkey::default()` for a native SOL payout."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount to pay out — lamports for native, smallest token units for SPL"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "burn_tx_hash",
+            "docs": [
+              "DCC burn transaction hash"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "dcc_chain_id",
+            "docs": [
+              "DCC chain ID (domain separation)"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "expiration",
+            "docs": [
+              "Expiration timestamp of the attested transfer"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "asset_kind",
+            "docs": [
+              "ASSET_KIND_NATIVE or ASSET_KIND_SPL — which execute instruction may",
+              "consume this accumulator"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "rent_payer",
+            "docs": [
+              "Who paid this account's rent. Rent is refunded here when the",
+              "accumulator is closed, so gathering a quorum costs nothing net."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "created_at",
+            "docs": [
+              "Unix timestamp of the first recorded attestation"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "attestation_count",
+            "docs": [
+              "Number of populated entries in `validators`"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "validators",
+            "docs": [
+              "Distinct validators that have attested. Duplicates are rejected at",
+              "submit time, so the count IS the number of distinct signatures."
+            ],
+            "type": {
+              "array": [
+                "pubkey",
+                20
+              ]
+            }
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for this PDA"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "_reserved",
+            "docs": [
+              "Reserved space for future fields"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "AttestationSubmitted",
+      "docs": [
+        "Emitted every time one validator's attestation is recorded in an",
+        "accumulator. Monitors can watch quorum build up in real time and alarm on",
+        "an attestation whose payload does not match the DCC burn they observed."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "transfer_id",
+            "docs": [
+              "Transfer ID from the DCC burn"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "payload_hash",
+            "docs": [
+              "sha256 of the canonical message that was signed — the accumulator's",
+              "second PDA seed, so this uniquely identifies the accumulator"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "validator",
+            "docs": [
+              "The validator whose signature was recorded"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "recipient",
+            "docs": [
+              "Recipient Solana address"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "spl_mint",
+            "docs": [
+              "SPL mint, or Pubkey::default() for a native SOL payout"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount — lamports for native, smallest token units for SPL"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "asset_kind",
+            "docs": [
+              "ASSET_KIND_NATIVE (0) or ASSET_KIND_SPL (1)"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "attestation_count",
+            "docs": [
+              "Attestations recorded so far, including this one"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "required",
+            "docs": [
+              "Quorum size required to execute (bridge_config.min_validators)"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "timestamp",
+            "docs": [
+              "Unix timestamp"
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BridgeConfig",
+      "docs": [
+        "═══════════════════════════════════════════════════════════════",
+        "BRIDGE STATE — Core configuration and accounting",
+        "═══════════════════════════════════════════════════════════════",
+        "Global bridge configuration account (PDA: seeds = [b\"bridge_config\"])"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Authority that can update configuration (multisig recommended)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "guardian",
+            "docs": [
+              "Guardian authority for emergency operations (separate from authority)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "paused",
+            "docs": [
+              "Whether the bridge is currently paused"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "global_nonce",
+            "docs": [
+              "Global nonce for transfer ID generation"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_locked",
+            "docs": [
+              "Total SOL locked in the vault (lamports)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_unlocked",
+            "docs": [
+              "Total SOL unlocked from the vault (lamports)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "validator_count",
+            "docs": [
+              "Number of active validators"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "min_validators",
+            "docs": [
+              "Minimum validators required for unlock (M in M-of-N)"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "max_validators",
+            "docs": [
+              "Maximum validators allowed"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "min_deposit",
+            "docs": [
+              "Minimum deposit amount (lamports)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_deposit",
+            "docs": [
+              "Maximum deposit amount (lamports)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_daily_outflow",
+            "docs": [
+              "Maximum daily outflow (lamports) — circuit breaker"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "current_daily_outflow",
+            "docs": [
+              "Current day outflow (lamports) — resets daily"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "last_daily_reset",
+            "docs": [
+              "Timestamp of last daily reset"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "max_unlock_amount",
+            "docs": [
+              "Maximum single unlock amount (lamports)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "required_confirmations",
+            "docs": [
+              "Required Solana confirmations before mint (finality)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "large_withdrawal_delay",
+            "docs": [
+              "Time delay for large withdrawals (seconds)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "large_withdrawal_threshold",
+            "docs": [
+              "Threshold for \"large\" withdrawal (lamports)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "dcc_chain_id",
+            "docs": [
+              "DCC chain ID for domain separation"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "solana_chain_id",
+            "docs": [
+              "Solana chain ID for domain separation"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for the config PDA"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "vault_bump",
+            "docs": [
+              "Bump seed for the vault PDA"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "resume_requested_at",
+            "docs": [
+              "Timestamp when resume was requested (0 = no pending request)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "resume_delay_seconds",
+            "docs": [
+              "Required delay in seconds between request_resume and resume"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "pending_authority",
+            "docs": [
+              "SECURITY FIX (HIGH-3): Pending authority for 2-step transfer"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "authority_transfer_requested_at",
+            "docs": [
+              "Timestamp when authority transfer was proposed (0 = no pending)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "_reserved",
+            "docs": [
+              "Reserved space for future fields"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                72
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "BridgeDeposit",
+      "docs": [
+        "═══════════════════════════════════════════════════════════════",
+        "BRIDGE EVENTS — Canonical on-chain events for validator observation",
+        "═══════════════════════════════════════════════════════════════",
+        "Emitted when SOL is deposited into the bridge vault.",
+        "The ZK prover watches for this event and builds inclusion proofs."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "transfer_id",
+            "docs": [
+              "Globally unique transfer identifier (legacy, kept for index compatibility)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "message_id",
+            "docs": [
+              "ZK bridge message ID = Keccak256(domain_sep || fields)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "sender",
+            "docs": [
+              "Depositor's Solana public key"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "recipient_dcc",
+            "docs": [
+              "Recipient address on DecentralChain"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount in lamports"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "nonce",
+            "docs": [
+              "User-specific monotonic nonce"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "slot",
+            "docs": [
+              "Solana slot at deposit time"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "event_index",
+            "docs": [
+              "Event index within the checkpoint window",
+              "SECURITY FIX (LOW-1): Widened from u32 to u64."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "docs": [
+              "Unix timestamp"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "src_chain_id",
+            "docs": [
+              "Solana chain ID (domain separation)"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "dst_chain_id",
+            "docs": [
+              "DCC chain ID"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "asset_id",
+            "docs": [
+              "Asset identifier (SPL mint or native SOL sentinel)"
+            ],
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BridgeDepositSpl",
+      "docs": [
+        "Emitted when SPL tokens are deposited into the bridge vault.",
+        "Includes the SPL mint address so DCC knows which wrapped token to mint."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "transfer_id",
+            "docs": [
+              "Globally unique transfer identifier"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "message_id",
+            "docs": [
+              "ZK bridge message ID = Keccak256(domain_sep || fields)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "sender",
+            "docs": [
+              "Depositor's Solana public key"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "recipient_dcc",
+            "docs": [
+              "Recipient address on DecentralChain"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "spl_mint",
+            "docs": [
+              "SPL token mint address (used as asset_id in message_id)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount in smallest token units"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "nonce",
+            "docs": [
+              "User-specific monotonic nonce"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "slot",
+            "docs": [
+              "Solana slot at deposit time"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "event_index",
+            "docs": [
+              "Event index within the checkpoint window",
+              "SECURITY FIX (LOW-1): Widened from u32 to u64."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "docs": [
+              "Unix timestamp"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "chain_id",
+            "docs": [
+              "Solana chain ID (domain separation)"
+            ],
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BridgePaused",
+      "docs": [
+        "Emitted when the bridge is paused."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Authority that triggered the pause"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "timestamp",
+            "docs": [
+              "Timestamp of pause"
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BridgeResumed",
+      "docs": [
+        "Emitted when the bridge is resumed."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Authority that triggered the resume"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "timestamp",
+            "docs": [
+              "Timestamp of resume"
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BridgeUnlock",
+      "docs": [
+        "Emitted when SOL is unlocked from the vault after DCC burn verification."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "transfer_id",
+            "docs": [
+              "Transfer ID from the DCC burn"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "recipient",
+            "docs": [
+              "Recipient Solana address"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount unlocked in lamports"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "burn_tx_hash",
+            "docs": [
+              "DCC burn transaction hash"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "timestamp",
+            "docs": [
+              "Unix timestamp of unlock"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "signature_count",
+            "docs": [
+              "Number of validator signatures provided"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BridgeUnlockSpl",
+      "docs": [
+        "Emitted when SPL tokens are unlocked from the vault after DCC burn verification.",
+        "Carries the SPL mint so indexers can distinguish token withdrawals from native SOL."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "transfer_id",
+            "docs": [
+              "Transfer ID from the DCC burn"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "recipient",
+            "docs": [
+              "Recipient Solana address (ATA authority)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "spl_mint",
+            "docs": [
+              "SPL token mint that was released"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount unlocked in smallest token units"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "burn_tx_hash",
+            "docs": [
+              "DCC burn transaction hash"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "timestamp",
+            "docs": [
+              "Unix timestamp of unlock"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "signature_count",
+            "docs": [
+              "Number of validator signatures provided"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CircuitBreakerTriggered",
+      "docs": [
+        "Emitted when circuit breaker triggers."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "breaker_type",
+            "docs": [
+              "Type of circuit breaker"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "current_value",
+            "docs": [
+              "Current value that triggered the breaker"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "threshold",
+            "docs": [
+              "Threshold that was exceeded"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "docs": [
+              "Timestamp"
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ConfigureMintLimitsParams",
+      "docs": [
+        "Parameters for creating or updating an SPL mint's withdrawal limits.",
+        "",
+        "UNITS: every amount here is in the **smallest unit of `mint`** (i.e. scaled",
+        "by 10^decimals), NOT lamports. For USDC (6 decimals), 50,000 USDC is",
+        "50_000_000_000. These values are never compared against, added to, or",
+        "derived from any lamport-denominated field on `BridgeConfig`.",
+        "",
+        "── HOW THE THREE CAPS RELATE (read before setting them) ───────",
+        "",
+        "They are not independent, and the SPL path does NOT behave like the native",
+        "SOL path here. `unlock_spl` and `execute_attested_unlock_spl` enforce:",
+        "",
+        "amount <= max_unlock_amount            (else UnlockAmountExceeded)",
+        "amount <  large_withdrawal_threshold   (else UnlockAmountExceeded)",
+        "running daily total <= max_daily_outflow",
+        "",
+        "The native path SCHEDULES a withdrawal at or above its threshold; the SPL",
+        "path REJECTS one, deliberately, because a deferred SPL record would sit in",
+        "the shared `[b\"unlock\", transfer_id]` namespace and be payable in lamports",
+        "by `execute_scheduled_unlock` (see the deviation note in `unlock_spl`).",
+        "",
+        "So the largest SPL withdrawal that can ever succeed is",
+        "`min(max_unlock_amount, large_withdrawal_threshold - 1)` — and an operator",
+        "who mirrored the live native numbers, where `max_unlock_amount ==",
+        "large_withdrawal_threshold`, would set a cap that is unreachable by exactly",
+        "one base unit, with nothing on chain explaining the rejection (AUDIT-2).",
+        "",
+        "The handler now REFUSES that configuration:",
+        "`max_unlock_amount < large_withdrawal_threshold` is required, which makes",
+        "`max_unlock_amount` the true, reachable, per-transaction cap and",
+        "`large_withdrawal_threshold` a strictly higher hard stop. Set the threshold",
+        "deliberately above the cap — e.g. cap 10,000 USDC, threshold 10,001 USDC —",
+        "rather than copying the native config."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "docs": [
+              "The SPL mint to configure — also the PDA seed"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "max_daily_outflow",
+            "docs": [
+              "Daily outflow cap for this mint (smallest token units)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_unlock_amount",
+            "docs": [
+              "Single-withdrawal cap for this mint (smallest token units).",
+              "THIS is the reachable per-transaction cap; it must be strictly below",
+              "`large_withdrawal_threshold`."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "large_withdrawal_threshold",
+            "docs": [
+              "Withdrawals at or above this size are hard-rejected (smallest token",
+              "units). Must be strictly ABOVE `max_unlock_amount`, so it is a backstop",
+              "rather than the real limit."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "enabled",
+            "docs": [
+              "Whether withdrawals of this mint are permitted at all"
+            ],
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DepositParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "recipient_dcc",
+            "docs": [
+              "Recipient address on DecentralChain (32 bytes)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount to deposit in lamports"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "transfer_id",
+            "docs": [
+              "Pre-computed transfer ID (verified on-chain)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "DepositRecord",
+      "docs": [
+        "═══════════════════════════════════════════════════════════════",
+        "DEPOSIT RECORD — Per-deposit tracking",
+        "═══════════════════════════════════════════════════════════════",
+        "Individual deposit record (PDA: seeds = [b\"deposit\", transfer_id])"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "transfer_id",
+            "docs": [
+              "Unique transfer ID (hash of sender + nonce + slot)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "message_id",
+            "docs": [
+              "ZK bridge message ID = Keccak256(domain_sep || fields)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "sender",
+            "docs": [
+              "Depositor's Solana public key"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "recipient_dcc",
+            "docs": [
+              "Recipient address on DecentralChain"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount in lamports"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "nonce",
+            "docs": [
+              "User-specific nonce (monotonically increasing)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "slot",
+            "docs": [
+              "Solana slot at time of deposit"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "event_index",
+            "docs": [
+              "Event index within the checkpoint window",
+              "SECURITY FIX (LOW-1): Widened from u32 to u64 to avoid truncation after ~4B events."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "docs": [
+              "Unix timestamp of deposit"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "asset_id",
+            "docs": [
+              "Asset identifier (SPL mint or native SOL sentinel)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "processed",
+            "docs": [
+              "Whether this deposit has been processed (minted on DCC)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for this PDA"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DepositSplParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "recipient_dcc",
+            "docs": [
+              "Recipient address on DecentralChain (32 bytes)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount to deposit in smallest token units"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "transfer_id",
+            "docs": [
+              "Pre-computed transfer ID (verified on-chain)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitializeParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "guardian",
+            "docs": [
+              "Guardian authority for emergency operations"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "min_validators",
+            "docs": [
+              "Minimum validator signatures required (M in M-of-N)"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "max_validators",
+            "docs": [
+              "Maximum validators allowed"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "min_deposit",
+            "docs": [
+              "Minimum deposit (lamports)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_deposit",
+            "docs": [
+              "Maximum deposit (lamports)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_daily_outflow",
+            "docs": [
+              "Maximum daily outflow (lamports)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_unlock_amount",
+            "docs": [
+              "Maximum single unlock (lamports)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "required_confirmations",
+            "docs": [
+              "Required Solana confirmations"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "large_withdrawal_delay",
+            "docs": [
+              "Time delay for large withdrawals (seconds)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "large_withdrawal_threshold",
+            "docs": [
+              "Threshold for large withdrawals (lamports)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "dcc_chain_id",
+            "docs": [
+              "DCC chain ID"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "solana_chain_id",
+            "docs": [
+              "Solana chain ID"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "resume_delay_seconds",
+            "docs": [
+              "Resume timelock delay in seconds (minimum 300 = 5 minutes)"
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MintLimits",
+      "docs": [
+        "═══════════════════════════════════════════════════════════════",
+        "MINT LIMITS — Per-SPL-mint withdrawal circuit breaker",
+        "═══════════════════════════════════════════════════════════════",
+        "Per-mint withdrawal limits (PDA: seeds = [b\"mint_limits\", mint])",
+        "",
+        "WHY THIS EXISTS — UNIT SAFETY.",
+        "Every limit field on `BridgeConfig` (`max_daily_outflow`,",
+        "`current_daily_outflow`, `max_unlock_amount`, `large_withdrawal_threshold`)",
+        "is denominated in **lamports**. SPL amounts are raw base units of an",
+        "arbitrary-decimal mint, so they are not comparable to lamports and must",
+        "never be added into the same counter: 50,000 USDC is 5e10 base units, which",
+        "would consume the entire 50 SOL (5e10 lamport) native daily budget in one",
+        "withdrawal and freeze native SOL withdrawals for 24 hours.",
+        "",
+        "Every field below is denominated in **the smallest unit of `mint`**, and",
+        "this account is the ONLY place `unlock_spl` reads or writes withdrawal",
+        "limits. There is exactly one of these per mint, so one token's activity can",
+        "never consume another token's budget, and no token's activity can ever",
+        "consume native SOL's budget."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "docs": [
+              "The SPL mint these limits govern (must equal the PDA seed)."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "max_daily_outflow",
+            "docs": [
+              "Maximum daily outflow for this mint (smallest token units) — circuit breaker"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "current_daily_outflow",
+            "docs": [
+              "Current window outflow for this mint (smallest token units) — resets daily"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "last_daily_reset",
+            "docs": [
+              "Timestamp of the last aligned daily-window reset for this mint"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "max_unlock_amount",
+            "docs": [
+              "Maximum single unlock for this mint (smallest token units)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "large_withdrawal_threshold",
+            "docs": [
+              "Threshold at or above which a withdrawal of this mint is rejected",
+              "outright (smallest token units). SPL withdrawals are never scheduled —",
+              "see the deviation note in `unlock_spl::handler`."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "enabled",
+            "docs": [
+              "Whether withdrawals of this mint are permitted at all. Lets the",
+              "authority halt a single token without pausing the whole bridge."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for this PDA"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "_reserved",
+            "docs": [
+              "Reserved space for future per-mint fields"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MintLimitsConfigured",
+      "docs": [
+        "Emitted when the authority creates or updates the per-mint withdrawal",
+        "limits for an SPL mint. Monitors should alert on any occurrence — this is",
+        "the only way a token's withdrawal budget can change."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "docs": [
+              "The SPL mint whose limits changed"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "Authority that made the change"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "max_daily_outflow",
+            "docs": [
+              "New daily outflow cap (smallest token units)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_unlock_amount",
+            "docs": [
+              "New single-withdrawal cap (smallest token units)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "large_withdrawal_threshold",
+            "docs": [
+              "New hard-reject threshold (smallest token units)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "enabled",
+            "docs": [
+              "Whether withdrawals of this mint are permitted"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "initialized",
+            "docs": [
+              "True if this call created the account, false if it updated one"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "timestamp",
+            "docs": [
+              "Unix timestamp"
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RegisterValidatorParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "validator_pubkey",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ResumeCancelled",
+      "docs": [
+        "Emitted when a pending resume request is cancelled."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Authority that cancelled the resume"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "timestamp",
+            "docs": [
+              "Timestamp of cancellation"
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ResumeRequested",
+      "docs": [
+        "Emitted when a resume is requested (starts the timelock)."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Authority that requested the resume"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "requested_at",
+            "docs": [
+              "When the resume was requested"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "executable_after",
+            "docs": [
+              "Earliest time the resume can be executed"
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SubmitAttestationParams",
+      "docs": [
+        "One validator's attestation to one exact payout.",
+        "",
+        "Every field below except `validator`/`signature` is part of the signed",
+        "message, so the message — and therefore `payload_hash`, and therefore the",
+        "accumulator's address — is fully determined by the payout parameters."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "transfer_id",
+            "docs": [
+              "Transfer ID from the DCC burn event"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "payload_hash",
+            "docs": [
+              "sha256 of the canonical message — a PDA seed, verified in the handler"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "asset_kind",
+            "docs": [
+              "ASSET_KIND_NATIVE (0) or ASSET_KIND_SPL (1)"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "recipient",
+            "docs": [
+              "Recipient Solana address"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "spl_mint",
+            "docs": [
+              "SPL mint for an SPL payout; MUST be `Pubkey::default()` for native"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount — lamports for native, smallest token units for SPL"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "burn_tx_hash",
+            "docs": [
+              "DCC burn transaction hash"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "dcc_chain_id",
+            "docs": [
+              "DCC chain ID (domain separation)"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "expiration",
+            "docs": [
+              "Expiration timestamp of the attested transfer"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "validator",
+            "docs": [
+              "The attesting validator's public key"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "signature",
+            "docs": [
+              "That validator's Ed25519 signature over the canonical message"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UnlockParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "transfer_id",
+            "docs": [
+              "Transfer ID from the DCC burn event"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "recipient",
+            "docs": [
+              "Recipient Solana address"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount to unlock (lamports)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "burn_tx_hash",
+            "docs": [
+              "DCC burn transaction hash"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "dcc_chain_id",
+            "docs": [
+              "DCC chain ID (for domain separation verification)"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "expiration",
+            "docs": [
+              "Expiration timestamp (prevents stale unlocks)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "attestations",
+            "docs": [
+              "Validator attestations (M-of-N signatures)"
+            ],
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "ValidatorAttestation"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UnlockRecord",
+      "docs": [
+        "═══════════════════════════════════════════════════════════════",
+        "UNLOCK RECORD — Per-unlock tracking (replay protection)",
+        "═══════════════════════════════════════════════════════════════",
+        "Individual unlock record (PDA: seeds = [b\"unlock\", transfer_id])"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "transfer_id",
+            "docs": [
+              "Transfer ID from the DCC burn event"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "recipient",
+            "docs": [
+              "Recipient Solana address"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount unlocked (lamports)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "docs": [
+              "Timestamp of unlock execution"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "burn_tx_hash",
+            "docs": [
+              "Source DCC burn transaction hash"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "executed",
+            "docs": [
+              "Whether this unlock has been executed"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "scheduled_time",
+            "docs": [
+              "If large withdrawal: scheduled execution time"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UnlockSplParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "transfer_id",
+            "docs": [
+              "Transfer ID from the DCC burn event"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "recipient",
+            "docs": [
+              "Recipient Solana address (owner of the destination ATA)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "spl_mint",
+            "docs": [
+              "SPL mint being released — bound into the attested message"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount to unlock (smallest token units)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "burn_tx_hash",
+            "docs": [
+              "DCC burn transaction hash"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "dcc_chain_id",
+            "docs": [
+              "DCC chain ID (for domain separation verification)"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "expiration",
+            "docs": [
+              "Expiration timestamp (prevents stale unlocks)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "attestations",
+            "docs": [
+              "Validator attestations (M-of-N signatures)"
+            ],
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "ValidatorAttestation"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateConfigParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "min_deposit",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "max_deposit",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "max_daily_outflow",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "max_unlock_amount",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "required_confirmations",
+            "type": {
+              "option": "u16"
+            }
+          },
+          {
+            "name": "large_withdrawal_delay",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "large_withdrawal_threshold",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "min_validators",
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "new_authority",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "new_guardian",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "resume_delay_seconds",
+            "type": {
+              "option": "i64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UserState",
+      "docs": [
+        "═══════════════════════════════════════════════════════════════",
+        "USER STATE — Per-user nonce tracking",
+        "═══════════════════════════════════════════════════════════════",
+        "Per-user state (PDA: seeds = [b\"user_state\", user_pubkey])"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "user",
+            "docs": [
+              "User's public key"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "next_nonce",
+            "docs": [
+              "Next expected nonce (monotonically increasing)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_deposited",
+            "docs": [
+              "Total deposited by this user (lifetime)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ValidatorAttestation",
+      "docs": [
+        "Validator signature attestation for an unlock operation"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "validator",
+            "docs": [
+              "Validator's public key"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "signature",
+            "docs": [
+              "Ed25519 signature over the unlock message"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ValidatorEntry",
+      "docs": [
+        "═══════════════════════════════════════════════════════════════",
+        "VALIDATOR REGISTRY — On-chain validator tracking",
+        "═══════════════════════════════════════════════════════════════",
+        "Validator entry (PDA: seeds = [b\"validator\", validator_pubkey])"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pubkey",
+            "docs": [
+              "Validator's signing public key"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "active",
+            "docs": [
+              "Whether this validator is active"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "registered_at",
+            "docs": [
+              "Registration timestamp"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "attestation_count",
+            "docs": [
+              "Number of successful attestations"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "fault_count",
+            "docs": [
+              "Number of failed/contested attestations (for slashing)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ValidatorRegistered",
+      "docs": [
+        "Emitted when a validator is registered."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "validator",
+            "docs": [
+              "Validator's public key"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "validator_count",
+            "docs": [
+              "Current validator count"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "timestamp",
+            "docs": [
+              "Timestamp"
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ValidatorRemoved",
+      "docs": [
+        "Emitted when a validator is removed."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "validator",
+            "docs": [
+              "Validator's public key"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "validator_count",
+            "docs": [
+              "Current validator count"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "timestamp",
+            "docs": [
+              "Timestamp"
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ]
+}

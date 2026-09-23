@@ -50,10 +50,12 @@ import {
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSurface } from '@/components/atoms/SurfaceContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { LogoSubmissionCard } from '@/features/token-logos/LogoSubmissionCard';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
 import { useTransactionSigning } from '@/hooks/useTransactionSigning';
 import { PageFrame } from '@/layouts/PageFrame';
 import { logger } from '@/lib/logger';
+import { symbolFromName } from '@/lib/tokenLogos/submission';
 import { TransactionType, transactionService } from '@/services/transactionService';
 import { mobileLayout } from '@/styles/mobileTokens';
 import { palette as brandPalette, radii } from '@/styles/tokens';
@@ -1187,9 +1189,17 @@ export const CreateToken = () => {
             </Alert>
           )}
           {submitSuccess && issuedAssetId && (
-            <Alert severity="success" sx={{ mt: 2 }}>
-              Token created! Asset ID: <strong>{issuedAssetId}</strong>
-            </Alert>
+            <>
+              <Alert severity="success" sx={{ mt: 2 }}>
+                Token created! Asset ID: <strong>{issuedAssetId}</strong>
+              </Alert>
+              <LogoSubmissionCard
+                assetId={issuedAssetId}
+                name={name}
+                symbol={symbolFromName(name)}
+                issuer={user?.address ?? ''}
+              />
+            </>
           )}
         </Grid>
       </Grid>

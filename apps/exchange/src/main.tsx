@@ -7,7 +7,14 @@ import i18n from '@/i18n/i18n';
 import tokenFilterService from '@/services/tokenFilters';
 import App from './App';
 import './index.css';
+
+import { Buffer } from 'buffer';
 import { logger } from '@/lib/logger';
+
+// Solana's libraries expect a global Buffer. Installed before anything imports
+// them, because the failure mode downstream is a misleading "viable program
+// address nonce" error rather than a missing-global one.
+globalThis.Buffer ??= Buffer;
 
 /**
  * HTTPS Enforcement

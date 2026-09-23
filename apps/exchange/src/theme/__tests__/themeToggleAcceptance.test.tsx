@@ -168,9 +168,36 @@ vi.mock('@/features/dex/SellOrderForm', () => ({ SellOrderForm: () => <div>sell-
 vi.mock('@/features/dex/TradeHistory', () => ({ TradeHistory: () => <div>trade-history</div> }));
 vi.mock('@/features/dex/TradingViewChart', () => ({ TradingViewChart: () => <div>chart</div> }));
 vi.mock('@/features/dex/UserOrders', () => ({ UserOrders: () => <div>user-orders</div> }));
+// Swap's panels read the AMM through TanStack Query. This suite renders each
+// page bare to read its panel backgrounds, with no QueryClient — so the hooks
+// are stubbed rather than the whole suite gaining a provider.
+vi.mock('@/hooks/useAmm', () => ({
+  useAmmAssetMeta: () => ({ isLoading: false, metaById: new Map() }),
+  useAmmBalance: () => ({ data: undefined }),
+  useAmmPaused: () => ({ data: false }),
+  useAmmPools: () => ({ data: [], isLoading: false }),
+  useLpPosition: () => ({ data: undefined }),
+  useSwapQuote: () => ({ data: undefined, error: null, isFetching: false }),
+}));
+
+vi.mock('@/hooks/useAmmTransaction', () => ({
+  useAmmTransaction: () => ({
+    addLiquidity: vi.fn(),
+    error: null,
+    isConfirming: false,
+    isSubmitting: false,
+    removeLiquidity: vi.fn(),
+    reset: vi.fn(),
+    swap: vi.fn(),
+  }),
+}));
+
 vi.mock('@/api/services/matcherService', () => ({
   useMarketStats24h: () => ({ data: undefined }),
   useOrderBook: () => ({ data: undefined }),
+  // The dex rail's orders table polls the matcher; this suite renders the
+  // page only to read its panel backgrounds.
+  useUserOrders: () => ({ data: undefined, isLoading: false }),
 }));
 // ImportLedger.contrast.test.tsx — the actual hardware-wallet form is a
 // separate component under a different path; this page's own chrome is what
@@ -450,24 +477,30 @@ describe('Acceptance — the twelve pages render differently in each mode', () =
     expect(dark).toBe(tokens('dark').surface.base);
   });
 
-  it('Dex: the "Price Chart" panel background differs, and matches surface.raised in each mode', () => {
+  it('Dex: the "Order Book" panel background differs, and matches surface.raised in each mode', () => {
     const { unmount } = renderPage(<Dex />, 'light');
-    const light = rgbToHex(nearestBackground(screen.getByText('Price Chart')));
+    // The terminal layout has no "Price Chart" header — the chart owns its
+    // region without one. Order Book is the equivalent titled panel.
+    const light = rgbToHex(nearestBackground(screen.getByText('Order Book')));
     unmount();
     renderPage(<Dex />, 'dark');
-    const dark = rgbToHex(nearestBackground(screen.getByText('Price Chart')));
+    const dark = rgbToHex(nearestBackground(screen.getByText('Order Book')));
 
     expect(dark).not.toBe(light);
     expect(light).toBe(tokens('light').surface.raised);
     expect(dark).toBe(tokens('dark').surface.raised);
   });
 
-  it('Swap: the "Swap tokens" panel background differs, and matches surface.raised in each mode', () => {
+  it('Swap: the tab panel background differs, and matches surface.raised in each mode', () => {
     const { unmount } = renderPage(<Swap />, 'light');
-    const light = rgbToHex(nearestBackground(screen.getByText('Swap tokens')));
+    // The page no longer carries a "Swap tokens" heading — it is three live
+    // panels behind a tab strip. The tab strip's panel is the equivalent surface.
+    // The tab strip sits on the canvas now; the card each panel renders into
+    // is the raised surface.
+    const light = rgbToHex(nearestBackground(screen.getAllByText('Swap').at(-1) as HTMLElement));
     unmount();
     renderPage(<Swap />, 'dark');
-    const dark = rgbToHex(nearestBackground(screen.getByText('Swap tokens')));
+    const dark = rgbToHex(nearestBackground(screen.getAllByText('Swap').at(-1) as HTMLElement));
 
     expect(dark).not.toBe(light);
     expect(light).toBe(tokens('light').surface.raised);
