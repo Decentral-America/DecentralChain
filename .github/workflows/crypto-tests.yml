@@ -1,16 +1,16 @@
-name: Run tests
+name: Crypto Run Tests
 
 on:
   push:
     branches: [main, dev, master]
     paths:
-      - '**'
-      - '.github/workflows/tests.yml'
+      - 'packages/jvm/crypto/**'
+      - '.github/workflows/crypto-tests.yml'
   pull_request:
     branches: [main, dev, master]
     paths:
-      - '**'
-      - '.github/workflows/tests.yml'
+      - 'packages/jvm/crypto/**'
+      - '.github/workflows/crypto-tests.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -39,6 +39,7 @@ jobs:
           cache: maven
 
       - name: Build and test
+        working-directory: packages/jvm/crypto
         run: mvn -B verify -Dmaven.test.failure.ignore=true
 
       - name: Publish Surefire report
@@ -47,3 +48,4 @@ jobs:
         with:
           check_name: Test Report
           fail_if_no_tests: false
+          report_paths: packages/jvm/crypto/**/surefire-reports/TEST-*.xml

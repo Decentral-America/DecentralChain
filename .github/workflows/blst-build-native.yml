@@ -1,4 +1,4 @@
-# build-native.yml — Cross-platform native library compilation for io.decentralchain:blst
+# blst-build-native.yml — Cross-platform native library compilation for io.decentralchain:blst
 #
 # Builds libblst.so / libblst.dylib / blst.dll for all 6 bundled platforms from
 # the supranational/blst C source at the upstream tag configured below.
@@ -9,7 +9,7 @@
 #
 # Output:
 #   Compiled native libraries committed back to:
-#     src/main/resources/supranational/blst/<OS>/<arch>/<libname>
+#     packages/jvm/blst/src/main/resources/supranational/blst/<OS>/<arch>/<libname>
 #
 # Platforms:
 #   Linux   amd64    (libblst.so)
@@ -41,6 +41,7 @@ permissions: read-all
 env:
   BLST_TAG: ${{ github.event.inputs.blst_tag }}
   JAVA_VERSION: "25"
+  PKG_DIR: packages/jvm/blst
 
 jobs:
   # ── Linux (amd64 + aarch64 + x86) via Docker cross-compile ───────────────────
@@ -132,7 +133,7 @@ jobs:
           swig -c++ -java -package supranational.blst \
                -outdir /tmp/blst-swig-out/supranational/blst \
                -o /tmp/blst-swig-out/blst_wrap.cpp \
-               "$GITHUB_WORKSPACE/blst-dcc.swg"
+               "$GITHUB_WORKSPACE/${{ env.PKG_DIR }}/blst-dcc.swg"
 
       - name: Compile libblst.so
         run: |
@@ -162,13 +163,13 @@ jobs:
         run: |
           set -euo pipefail
           cp /tmp/libblst.so \
-             "src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.so"
+             "${{ env.PKG_DIR }}/src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.so"
 
       - name: Upload artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: native-linux-${{ matrix.arch }}
-          path: src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.so
+          path: ${{ env.PKG_DIR }}/src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.so
           retention-days: 1
 
   # ── macOS (aarch64 + x86_64) ─────────────────────────────────────────────────
@@ -239,7 +240,7 @@ jobs:
           swig -c++ -java -package supranational.blst \
                -outdir /tmp/blst-swig-out/supranational/blst \
                -o /tmp/blst-swig-out/blst_wrap.cpp \
-               "$GITHUB_WORKSPACE/blst-dcc.swg"
+               "$GITHUB_WORKSPACE/${{ env.PKG_DIR }}/blst-dcc.swg"
 
       - name: Compile libblst.dylib
         run: |
@@ -264,13 +265,13 @@ jobs:
         run: |
           set -euo pipefail
           cp /tmp/libblst.dylib \
-             "src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.dylib"
+             "${{ env.PKG_DIR }}/src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.dylib"
 
       - name: Upload artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: native-macos-${{ matrix.arch }}
-          path: src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.dylib
+          path: ${{ env.PKG_DIR }}/src/main/resources/supranational/blst/${{ matrix.resource_dir }}/libblst.dylib
           retention-days: 1
 
   # ── Windows amd64 (MinGW cross-compile from Linux) ────────────────────────────
@@ -342,7 +343,7 @@ jobs:
           swig -c++ -java -package supranational.blst \
                -outdir /tmp/blst-swig-out/supranational/blst \
                -o /tmp/blst-swig-out/blst_wrap.cpp \
-               "$GITHUB_WORKSPACE/blst-dcc.swg"
+               "$GITHUB_WORKSPACE/${{ env.PKG_DIR }}/blst-dcc.swg"
 
       - name: Compile blst.dll
         run: |
@@ -371,13 +372,13 @@ jobs:
         run: |
           set -euo pipefail
           cp /tmp/blst.dll \
-             "src/main/resources/supranational/blst/Windows/amd64/blst.dll"
+             "${{ env.PKG_DIR }}/src/main/resources/supranational/blst/Windows/amd64/blst.dll"
 
       - name: Upload artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: native-windows-amd64
-          path: src/main/resources/supranational/blst/Windows/amd64/blst.dll
+          path: ${{ env.PKG_DIR }}/src/main/resources/supranational/blst/Windows/amd64/blst.dll
           retention-days: 1
 
   # ── Commit all compiled libraries back to the repo ───────────────────────────
@@ -402,7 +403,7 @@ jobs:
       - name: Install native libraries
         run: |
           set -euo pipefail
-          BASE="src/main/resources/supranational/blst"
+          BASE="${{ env.PKG_DIR }}/src/main/resources/supranational/blst"
 
           cp /tmp/native-artifacts/native-linux-amd64/libblst.so    "$BASE/Linux/amd64/libblst.so"
           cp /tmp/native-artifacts/native-linux-aarch64/libblst.so  "$BASE/Linux/aarch64/libblst.so"
@@ -415,7 +416,7 @@ jobs:
         run: |
           set -euo pipefail
           echo "=== Native library inventory ==="
-          find src/main/resources/supranational/blst -type f | sort | while read f; do
+          find "${{ env.PKG_DIR }}/src/main/resources/supranational/blst" -type f | sort | while read f; do
             echo "$f: $(file "$f")"
           done
 
@@ -424,7 +425,7 @@ jobs:
           set -euo pipefail
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add src/main/resources/supranational/blst/
+          git add "${{ env.PKG_DIR }}/src/main/resources/supranational/blst/"
           git diff --staged --stat
           git commit -m "chore(DCC-265): compile native blst $BLST_TAG for 6 platforms [$(date -u +%Y-%m-%dT%H:%M:%SZ)]"
           git push
