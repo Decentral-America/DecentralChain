@@ -1,10 +1,18 @@
 name: Publish Groth16
 
+# Fires when a draft release tagged 'groth16/vX.Y.Z' (see
+# prepare-groth16-release.yml) is published in the GitHub UI. Manual
+# workflow_dispatch kept as an escape hatch only — normal path is tag-triggered
+# via the release object, matching node-scala's own release(published) gate so
+# an irreversible Maven Central publish always has an explicit human
+# confirmation step, not a bare tag push.
 on:
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version (e.g. 0.2.1.0)'
+        description: 'Release version (e.g. 0.2.1.0) — manual escape hatch only'
         required: true
         default: '0.2.1.0'
 
@@ -19,10 +27,30 @@ env:
   NATIVE_DIR: packages/jvm/groth16/groth16_jni/javalib/src/main/resources/META-INF/native
 
 jobs:
+  resolve-version:
+    if: ${{ github.event_name == 'workflow_dispatch' || startsWith(github.event.release.tag_name, 'groth16/v') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.resolve.outputs.version }}
+    steps:
+      - id: resolve
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+          DISPATCH_VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          if [ -n "$DISPATCH_VERSION" ]; then
+            echo "version=$DISPATCH_VERSION" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=${TAG#groth16/v}" >> "$GITHUB_OUTPUT"
+          fi
+
   # ── Step 1: Build all native libraries ──────────────────────────────────────
   build-native:
     name: Native lib · ${{ matrix.platform }}/${{ matrix.arch }}
     runs-on: ${{ matrix.os }}
+    needs: resolve-version
     timeout-minutes: 30
     env:
       RUST_BACKTRACE: 1
@@ -136,7 +164,7 @@ jobs:
     name: Audit · Sign · Upload to Central Portal
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: build-native
+    needs: [resolve-version, build-native]
     environment: maven-central-release
     defaults:
       run:
@@ -169,7 +197,7 @@ jobs:
 
       - name: Set release version
         env:
-          RELEASE_VERSION: ${{ inputs.version }}
+          RELEASE_VERSION: ${{ needs.resolve-version.outputs.version }}
         run: |
           set -euo pipefail
           ./mvnw --batch-mode versions:set \
@@ -201,6 +229,6 @@ jobs:
       - name: Upload staged artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
         with:
-          name: groth16-${{ inputs.version }}
+          name: groth16-${{ needs.resolve-version.outputs.version }}
           path: packages/jvm/groth16/target/*.jar
           retention-days: 30

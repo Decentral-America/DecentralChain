@@ -1,0 +1,134 @@
+name: Publish Maven Package
+
+# Single entry point for the 6 packages that share the plain Maven publish
+# shape (versions:set + audit + deploy via _publish-maven.yml): blst, crypto,
+# curve25519, java-sdk, transactions, protobuf-schemas. Replaces 6 near-
+# identical thin-caller files. groth16 (Rust native-lib cross-compile matrix)
+# and ride (sbt + Scala.js + npm) are genuinely different pipelines, not
+# variations on this shape, and stay as their own publish-groth16.yml /
+# publish-ride.yml — forcing them into this template would trade 2 clear files
+# for one unreadable if/else pipeline, which is worse, not better.
+#
+# Fires when a draft release tagged '<package>/vX.Y.Z' (see prepare-release.yml)
+# is published in the GitHub UI. Manual workflow_dispatch kept as an escape
+# hatch only — normal path is tag-triggered via the release object, matching
+# node-scala's own release(published) gate so an irreversible Maven Central
+# publish always has an explicit human confirmation step, not a bare tag push.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Package to publish — manual escape hatch only'
+        required: true
+        type: choice
+        options:
+          - blst
+          - crypto
+          - curve25519
+          - java-sdk
+          - transactions
+          - protobuf-schemas
+      version:
+        description: 'Release version — manual escape hatch only'
+        required: true
+      run-audit-profile:
+        description: 'protobuf-schemas only: run the `-P audit` gate. Only disable for a release that adds zero new dependencies (verify with `git diff -- pom.xml`) — NVD sync can be throttled to the point of blowing the job timeout with no NVD_API_KEY secret configured.'
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  id-token: write        # reusable _publish-maven.yml requests these (SBOM + SLSA build-provenance);
+  attestations: write    # a caller must grant >= the reusable job's permissions, else GitHub startup-fails
+
+concurrency:
+  group: publish-maven-package-${{ github.event_name == 'workflow_dispatch' && inputs.package || github.event.release.tag_name }}
+  cancel-in-progress: false
+
+jobs:
+  resolve:
+    if: >-
+      ${{ github.event_name == 'workflow_dispatch' ||
+          startsWith(github.event.release.tag_name, 'blst/v') ||
+          startsWith(github.event.release.tag_name, 'crypto/v') ||
+          startsWith(github.event.release.tag_name, 'curve25519/v') ||
+          startsWith(github.event.release.tag_name, 'java-sdk/v') ||
+          startsWith(github.event.release.tag_name, 'transactions/v') ||
+          startsWith(github.event.release.tag_name, 'protobuf-schemas/v') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      package: ${{ steps.resolve.outputs.package }}
+      version: ${{ steps.resolve.outputs.version }}
+      package-path: ${{ steps.resolve.outputs.package-path }}
+      install-prereqs: ${{ steps.resolve.outputs.install-prereqs }}
+      run-audit-profile: ${{ steps.resolve.outputs.run-audit-profile }}
+    steps:
+      - id: resolve
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+          DISPATCH_PACKAGE: ${{ inputs.package }}
+          DISPATCH_VERSION: ${{ inputs.version }}
+          DISPATCH_AUDIT: ${{ inputs.run-audit-profile }}
+        run: |
+          set -euo pipefail
+
+          if [ -n "$DISPATCH_PACKAGE" ]; then
+            PACKAGE="$DISPATCH_PACKAGE"
+            VERSION="$DISPATCH_VERSION"
+          else
+            PACKAGE="${TAG%%/v*}"
+            VERSION="${TAG#*/v}"
+          fi
+
+          case "$PACKAGE" in
+            blst)              PACKAGE_PATH="packages/jvm/blst" ;;
+            crypto)             PACKAGE_PATH="packages/jvm/crypto" ;;
+            curve25519)          PACKAGE_PATH="packages/jvm/curve25519" ;;
+            java-sdk)            PACKAGE_PATH="packages/jvm/java-sdk" ;;
+            transactions)        PACKAGE_PATH="packages/jvm/transactions" ;;
+            protobuf-schemas)    PACKAGE_PATH="packages/sdk/protobuf-schemas" ;;
+            *)
+              echo "::error::Unknown package '$PACKAGE' — not one of the 6 plain-Maven packages"
+              exit 1
+              ;;
+          esac
+
+          # crypto depends on curve25519 + blst — install from source until they're on Central
+          if [ "$PACKAGE" = "crypto" ]; then
+            INSTALL_PREREQS=$'packages/jvm/curve25519\npackages/jvm/blst'
+          else
+            INSTALL_PREREQS=""
+          fi
+
+          if [ "$PACKAGE" = "protobuf-schemas" ]; then
+            RUN_AUDIT="${DISPATCH_AUDIT:-true}"
+          else
+            RUN_AUDIT="true"
+          fi
+
+          {
+            echo "package=$PACKAGE"
+            echo "version=$VERSION"
+            echo "package-path=$PACKAGE_PATH"
+            echo "run-audit-profile=$RUN_AUDIT"
+          } >> "$GITHUB_OUTPUT"
+
+          echo "install-prereqs<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$INSTALL_PREREQS" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+
+  publish:
+    needs: resolve
+    uses: ./.github/workflows/_publish-maven.yml
+    secrets: inherit
+    with:
+      package-path: ${{ needs.resolve.outputs.package-path }}
+      artifact-name: ${{ needs.resolve.outputs.package }}
+      version: ${{ needs.resolve.outputs.version }}
+      install-prereqs: ${{ needs.resolve.outputs.install-prereqs }}
+      run-audit-profile: ${{ needs.resolve.outputs.run-audit-profile == 'true' }}
