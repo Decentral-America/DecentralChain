@@ -72,6 +72,18 @@ message FinalizationVoting {
     int32 finalized_block_height = 2;
     bytes aggregated_endorsement_signature = 3; // BLS
     repeated EndorseBlock conflict_endorsements = 4;
+    // T5 (see docs/hotstuff-audit-readiness.md in node-scala): proof that a committed generator
+    // double-signed within the T2 HotStuff protocol (two votes, same voter/view/phase, different
+    // block_id). Kept as its own field rather than reusing EndorseBlock/conflict_endorsements
+    // because a HotStuffVote's signature is over a different canonical message
+    // (view, phase, block_id, block_height, committee_epoch) than an EndorseBlock's
+    // (finalized_block_id, finalized_block_height, endorsed_block_id) -- forcing one shape into the
+    // other's verification path would silently break signature checking either way. Added with
+    // proto3 default-empty semantics: an old peer simply never sets this field and decodes it as
+    // empty, matching "no equivocation evidence" -- fully backward compatible, same pattern as
+    // HotStuffVote.committee_epoch (schema 1.6.5). Gated off entirely by
+    // dcc.hotstuff.slashing-enabled (default false) on the node-scala side until externally audited.
+    repeated HotStuffEquivocationProof hotstuff_conflicts = 5;
 }
 
 // --- T2 HotStuff BFT fast-finality (see CONSENSUS.md) ---
@@ -119,6 +131,18 @@ message QuorumCertificate {
     bytes aggregated_signature = 6;      // BLS aggregate
     // See HotStuffVote.committee_epoch above — identical semantics/compat story.
     uint32 committee_epoch = 7;
+}
+
+// Verifiable proof that voter_index double-signed within one (view, phase): vote_a and vote_b are
+// the two conflicting HotStuffVotes (same voter_index/view/phase, different block_id), each
+// independently checkable against that voter's BLS key via the normal HotStuffVote signature
+// verification. See FinalizationVoting.hotstuff_conflicts above.
+message HotStuffEquivocationProof {
+    int32 voter_index = 1;
+    uint32 view = 2;
+    HotStuffPhase phase = 3;
+    HotStuffVote vote_a = 4;
+    HotStuffVote vote_b = 5;
 }
 
 // A leader's HotStuff proposal: extend `block_id` at `view`, justified by `justify` (the highQC the

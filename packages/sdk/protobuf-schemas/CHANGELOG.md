@@ -1,3 +1,9 @@
+## JVM 1.6.6 (unreleased)
+
+### 🚀 Features
+
+- Add `HotStuffEquivocationProof` message and `FinalizationVoting.hotstuff_conflicts` (field 5, repeated) to `dcc/block.proto`, closing T5 (equivocation → slashing wiring, see node-scala's `docs/hotstuff-audit-readiness.md`). A HotStuffVote's signature is over a different canonical message than an EndorseBlock's, so proof is carried as its own message rather than forced into `conflict_endorsements`. Backward compatible: proto3 additive field, old senders omit it (decodes as empty), old receivers ignore it. Gated off entirely by node-scala's `dcc.hotstuff.slashing-enabled` (default false) until externally audited.
+
 ## JVM 1.6.5 (unreleased)
 
 ### 🚀 Features

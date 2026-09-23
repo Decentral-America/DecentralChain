@@ -1,0 +1,50 @@
+name: Prepare package release draft
+
+# Single entry point for all 8 monorepo sub-packages. Replaces 8 near-identical
+# per-package prepare-<name>-release.yml files (same shape every time: create a
+# draft GitHub Release tagged '<package>/vX.Y.Z') with one dropdown-selected
+# workflow. Creating the draft is the ONLY automatic step; a human must publish
+# it in the GitHub UI before the matching publish workflow fires on
+# `release: published` — see publish-maven-package.yml, publish-groth16.yml,
+# publish-ride.yml.
+
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Package to release'
+        required: true
+        type: choice
+        options:
+          - blst
+          - crypto
+          - curve25519
+          - java-sdk
+          - transactions
+          - protobuf-schemas
+          - groth16
+          - ride
+      version:
+        description: 'Release version, e.g. 1.2.3 (no leading v)'
+        required: true
+      prerelease:
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prepare-release-${{ inputs.package }}
+  cancel-in-progress: false
+
+jobs:
+  prepare-draft:
+    uses: ./.github/workflows/_prepare-package-release-draft.yml
+    permissions:
+      contents: write
+    with:
+      package-name: ${{ inputs.package }}
+      version: ${{ inputs.version }}
+      prerelease: ${{ inputs.prerelease }}

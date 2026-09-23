@@ -1,0 +1,59 @@
+name: (reusable) Prepare package release draft
+
+# Creates a draft GitHub Release tagged '<package>/v<version>' for one monorepo
+# sub-package. Draft creation is the ONLY step that runs automatically; a human
+# must publish the draft in the GitHub UI (or `gh release edit --draft=false`)
+# before the matching publish-<package>.yml fires on `release: published`.
+# This is the same two-step gate node-scala uses for its own releases — an
+# irreversible Maven Central / npm publish should never fire on a bare tag push.
+#
+# Do not call this directly — trigger the per-package prepare-<name>-release.yml
+# workflow instead, same convention as the publish side.
+
+on:
+  workflow_call:
+    inputs:
+      package-name:
+        description: 'Tag prefix / display name, e.g. blst'
+        required: true
+        type: string
+      version:
+        description: 'Release version, e.g. 1.2.3 (no leading v)'
+        required: true
+        type: string
+      prerelease:
+        description: 'Mark the draft as a pre-release'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  prepare-draft:
+    name: Create draft release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write   # gh release create
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Create draft release (tag created as a side effect)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.package-name }}/v${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          gh release create "$TAG" \
+            --repo "${{ github.repository }}" \
+            --target "${{ github.ref_name }}" \
+            --title "${{ inputs.package-name }} v${{ inputs.version }}" \
+            --draft \
+            ${{ inputs.prerelease && '--prerelease' || '' }} \
+            --generate-notes
+          echo "::notice::Created draft release for $TAG — publish it in the GitHub UI to trigger the actual Maven/npm publish."

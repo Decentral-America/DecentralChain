@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file dcc/block.proto.
  */
 export const file_dcc_block: GenFile = /*@__PURE__*/
-  fileDesc("Cg9kY2MvYmxvY2sucHJvdG8SA2RjYyL2BQoFQmxvY2sSIQoGaGVhZGVyGAEgASgLMhEuZGNjLkJsb2NrLkhlYWRlchIRCglzaWduYXR1cmUYAiABKAwSLAoMdHJhbnNhY3Rpb25zGAMgAygLMhYuZGNjLlNpZ25lZFRyYW5zYWN0aW9uGogFCgZIZWFkZXISEAoIY2hhaW5faWQYASABKAUSEQoJcmVmZXJlbmNlGAIgASgMEhMKC2Jhc2VfdGFyZ2V0GAMgASgDEhwKFGdlbmVyYXRpb25fc2lnbmF0dXJlGAQgASgMEhUKDWZlYXR1cmVfdm90ZXMYBSADKA0SEQoJdGltZXN0YW1wGAYgASgDEg8KB3ZlcnNpb24YByABKAUSEQoJZ2VuZXJhdG9yGAggASgMEhMKC3Jld2FyZF92b3RlGAkgASgDEhkKEXRyYW5zYWN0aW9uc19yb290GAogASgMEhIKCnN0YXRlX2hhc2gYCyABKAwSPQoRY2hhbGxlbmdlZF9oZWFkZXIYDCABKAsyIi5kY2MuQmxvY2suSGVhZGVyLkNoYWxsZW5nZWRIZWFkZXISNAoTZmluYWxpemF0aW9uX3ZvdGluZxgNIAEoCzIXLmRjYy5GaW5hbGl6YXRpb25Wb3RpbmcSIQoZY29tbWl0dGVkX2dlbmVyYXRvcnNfaGFzaBgOIAEoDBr7AQoQQ2hhbGxlbmdlZEhlYWRlchITCgtiYXNlX3RhcmdldBgBIAEoAxIcChRnZW5lcmF0aW9uX3NpZ25hdHVyZRgCIAEoDBIVCg1mZWF0dXJlX3ZvdGVzGAMgAygNEhEKCXRpbWVzdGFtcBgEIAEoAxIRCglnZW5lcmF0b3IYBSABKAwSEwoLcmV3YXJkX3ZvdGUYBiABKAMSEgoKc3RhdGVfaGFzaBgHIAEoDBIYChBoZWFkZXJfc2lnbmF0dXJlGAggASgMEjQKE2ZpbmFsaXphdGlvbl92b3RpbmcYCSABKAsyFy5kY2MuRmluYWxpemF0aW9uVm90aW5nIuQBCgpNaWNyb0Jsb2NrEg8KB3ZlcnNpb24YASABKAUSEQoJcmVmZXJlbmNlGAIgASgMEh8KF3VwZGF0ZWRfYmxvY2tfc2lnbmF0dXJlGAMgASgMEhkKEXNlbmRlcl9wdWJsaWNfa2V5GAQgASgMEiwKDHRyYW5zYWN0aW9ucxgFIAMoCzIWLmRjYy5TaWduZWRUcmFuc2FjdGlvbhISCgpzdGF0ZV9oYXNoGAYgASgMEjQKE2ZpbmFsaXphdGlvbl92b3RpbmcYByABKAsyFy5kY2MuRmluYWxpemF0aW9uVm90aW5nImMKEFNpZ25lZE1pY3JvQmxvY2sSJAoLbWljcm9fYmxvY2sYASABKAsyDy5kY2MuTWljcm9CbG9jaxIRCglzaWduYXR1cmUYAiABKAwSFgoOdG90YWxfYmxvY2tfaWQYAyABKAwikAEKDEVuZG9yc2VCbG9jaxIWCg5lbmRvcnNlcl9pbmRleBgBIAEoBRIaChJmaW5hbGl6ZWRfYmxvY2tfaWQYAiABKAwSHgoWZmluYWxpemVkX2Jsb2NrX2hlaWdodBgDIAEoDRIZChFlbmRvcnNlZF9ibG9ja19pZBgEIAEoDBIRCglzaWduYXR1cmUYBSABKAwiqgEKEkZpbmFsaXphdGlvblZvdGluZxIYChBlbmRvcnNlcl9pbmRleGVzGAEgAygFEh4KFmZpbmFsaXplZF9ibG9ja19oZWlnaHQYAiABKAUSKAogYWdncmVnYXRlZF9lbmRvcnNlbWVudF9zaWduYXR1cmUYAyABKAwSMAoVY29uZmxpY3RfZW5kb3JzZW1lbnRzGAQgAygLMhEuZGNjLkVuZG9yc2VCbG9jayKoAQoMSG90U3R1ZmZWb3RlEgwKBHZpZXcYASABKA0SIQoFcGhhc2UYAiABKA4yEi5kY2MuSG90U3R1ZmZQaGFzZRIQCghibG9ja19pZBgDIAEoDBIUCgxibG9ja19oZWlnaHQYBCABKA0SEwoLdm90ZXJfaW5kZXgYBSABKAUSEQoJc2lnbmF0dXJlGAYgASgMEhcKD2NvbW1pdHRlZV9lcG9jaBgHIAEoDSK7AQoRUXVvcnVtQ2VydGlmaWNhdGUSDAoEdmlldxgBIAEoDRIhCgVwaGFzZRgCIAEoDjISLmRjYy5Ib3RTdHVmZlBoYXNlEhAKCGJsb2NrX2lkGAMgASgMEhQKDGJsb2NrX2hlaWdodBgEIAEoDRIWCg5zaWduZXJfaW5kZXhlcxgFIAMoBRIcChRhZ2dyZWdhdGVkX3NpZ25hdHVyZRgGIAEoDBIXCg9jb21taXR0ZWVfZXBvY2gYByABKA0iWwoQSG90U3R1ZmZQcm9wb3NhbBIMCgR2aWV3GAEgASgNEhAKCGJsb2NrX2lkGAIgASgMEicKB2p1c3RpZnkYAyABKAsyFi5kY2MuUXVvcnVtQ2VydGlmaWNhdGUqhQEKDUhvdFN0dWZmUGhhc2USHgoaSE9UU1RVRkZfUEhBU0VfVU5TUEVDSUZJRUQQABIaChZIT1RTVFVGRl9QSEFTRV9QUkVQQVJFEAESHQoZSE9UU1RVRkZfUEhBU0VfUFJFX0NPTU1JVBACEhkKFUhPVFNUVUZGX1BIQVNFX0NPTU1JVBADQnkKIGlvLmRlY2VudHJhbGNoYWluLnByb3RvYnVmLmJsb2NrWkRnaXRodWIuY29tL0RlY2VudHJhbC1BbWVyaWNhL3Byb3RvYnVmLXNjaGVtYXMvcGtnL2dycGMvZ2VuZXJhdGVkL2RjY6oCDkRlY2VudHJhbENoYWluYgZwcm90bzM", [file_dcc_transaction]);
+  fileDesc("Cg9kY2MvYmxvY2sucHJvdG8SA2RjYyL2BQoFQmxvY2sSIQoGaGVhZGVyGAEgASgLMhEuZGNjLkJsb2NrLkhlYWRlchIRCglzaWduYXR1cmUYAiABKAwSLAoMdHJhbnNhY3Rpb25zGAMgAygLMhYuZGNjLlNpZ25lZFRyYW5zYWN0aW9uGogFCgZIZWFkZXISEAoIY2hhaW5faWQYASABKAUSEQoJcmVmZXJlbmNlGAIgASgMEhMKC2Jhc2VfdGFyZ2V0GAMgASgDEhwKFGdlbmVyYXRpb25fc2lnbmF0dXJlGAQgASgMEhUKDWZlYXR1cmVfdm90ZXMYBSADKA0SEQoJdGltZXN0YW1wGAYgASgDEg8KB3ZlcnNpb24YByABKAUSEQoJZ2VuZXJhdG9yGAggASgMEhMKC3Jld2FyZF92b3RlGAkgASgDEhkKEXRyYW5zYWN0aW9uc19yb290GAogASgMEhIKCnN0YXRlX2hhc2gYCyABKAwSPQoRY2hhbGxlbmdlZF9oZWFkZXIYDCABKAsyIi5kY2MuQmxvY2suSGVhZGVyLkNoYWxsZW5nZWRIZWFkZXISNAoTZmluYWxpemF0aW9uX3ZvdGluZxgNIAEoCzIXLmRjYy5GaW5hbGl6YXRpb25Wb3RpbmcSIQoZY29tbWl0dGVkX2dlbmVyYXRvcnNfaGFzaBgOIAEoDBr7AQoQQ2hhbGxlbmdlZEhlYWRlchITCgtiYXNlX3RhcmdldBgBIAEoAxIcChRnZW5lcmF0aW9uX3NpZ25hdHVyZRgCIAEoDBIVCg1mZWF0dXJlX3ZvdGVzGAMgAygNEhEKCXRpbWVzdGFtcBgEIAEoAxIRCglnZW5lcmF0b3IYBSABKAwSEwoLcmV3YXJkX3ZvdGUYBiABKAMSEgoKc3RhdGVfaGFzaBgHIAEoDBIYChBoZWFkZXJfc2lnbmF0dXJlGAggASgMEjQKE2ZpbmFsaXphdGlvbl92b3RpbmcYCSABKAsyFy5kY2MuRmluYWxpemF0aW9uVm90aW5nIuQBCgpNaWNyb0Jsb2NrEg8KB3ZlcnNpb24YASABKAUSEQoJcmVmZXJlbmNlGAIgASgMEh8KF3VwZGF0ZWRfYmxvY2tfc2lnbmF0dXJlGAMgASgMEhkKEXNlbmRlcl9wdWJsaWNfa2V5GAQgASgMEiwKDHRyYW5zYWN0aW9ucxgFIAMoCzIWLmRjYy5TaWduZWRUcmFuc2FjdGlvbhISCgpzdGF0ZV9oYXNoGAYgASgMEjQKE2ZpbmFsaXphdGlvbl92b3RpbmcYByABKAsyFy5kY2MuRmluYWxpemF0aW9uVm90aW5nImMKEFNpZ25lZE1pY3JvQmxvY2sSJAoLbWljcm9fYmxvY2sYASABKAsyDy5kY2MuTWljcm9CbG9jaxIRCglzaWduYXR1cmUYAiABKAwSFgoOdG90YWxfYmxvY2tfaWQYAyABKAwikAEKDEVuZG9yc2VCbG9jaxIWCg5lbmRvcnNlcl9pbmRleBgBIAEoBRIaChJmaW5hbGl6ZWRfYmxvY2tfaWQYAiABKAwSHgoWZmluYWxpemVkX2Jsb2NrX2hlaWdodBgDIAEoDRIZChFlbmRvcnNlZF9ibG9ja19pZBgEIAEoDBIRCglzaWduYXR1cmUYBSABKAwi5gEKEkZpbmFsaXphdGlvblZvdGluZxIYChBlbmRvcnNlcl9pbmRleGVzGAEgAygFEh4KFmZpbmFsaXplZF9ibG9ja19oZWlnaHQYAiABKAUSKAogYWdncmVnYXRlZF9lbmRvcnNlbWVudF9zaWduYXR1cmUYAyABKAwSMAoVY29uZmxpY3RfZW5kb3JzZW1lbnRzGAQgAygLMhEuZGNjLkVuZG9yc2VCbG9jaxI6ChJob3RzdHVmZl9jb25mbGljdHMYBSADKAsyHi5kY2MuSG90U3R1ZmZFcXVpdm9jYXRpb25Qcm9vZiKoAQoMSG90U3R1ZmZWb3RlEgwKBHZpZXcYASABKA0SIQoFcGhhc2UYAiABKA4yEi5kY2MuSG90U3R1ZmZQaGFzZRIQCghibG9ja19pZBgDIAEoDBIUCgxibG9ja19oZWlnaHQYBCABKA0SEwoLdm90ZXJfaW5kZXgYBSABKAUSEQoJc2lnbmF0dXJlGAYgASgMEhcKD2NvbW1pdHRlZV9lcG9jaBgHIAEoDSK7AQoRUXVvcnVtQ2VydGlmaWNhdGUSDAoEdmlldxgBIAEoDRIhCgVwaGFzZRgCIAEoDjISLmRjYy5Ib3RTdHVmZlBoYXNlEhAKCGJsb2NrX2lkGAMgASgMEhQKDGJsb2NrX2hlaWdodBgEIAEoDRIWCg5zaWduZXJfaW5kZXhlcxgFIAMoBRIcChRhZ2dyZWdhdGVkX3NpZ25hdHVyZRgGIAEoDBIXCg9jb21taXR0ZWVfZXBvY2gYByABKA0ipwEKGUhvdFN0dWZmRXF1aXZvY2F0aW9uUHJvb2YSEwoLdm90ZXJfaW5kZXgYASABKAUSDAoEdmlldxgCIAEoDRIhCgVwaGFzZRgDIAEoDjISLmRjYy5Ib3RTdHVmZlBoYXNlEiEKBnZvdGVfYRgEIAEoCzIRLmRjYy5Ib3RTdHVmZlZvdGUSIQoGdm90ZV9iGAUgASgLMhEuZGNjLkhvdFN0dWZmVm90ZSJbChBIb3RTdHVmZlByb3Bvc2FsEgwKBHZpZXcYASABKA0SEAoIYmxvY2tfaWQYAiABKAwSJwoHanVzdGlmeRgDIAEoCzIWLmRjYy5RdW9ydW1DZXJ0aWZpY2F0ZSqFAQoNSG90U3R1ZmZQaGFzZRIeChpIT1RTVFVGRl9QSEFTRV9VTlNQRUNJRklFRBAAEhoKFkhPVFNUVUZGX1BIQVNFX1BSRVBBUkUQARIdChlIT1RTVFVGRl9QSEFTRV9QUkVfQ09NTUlUEAISGQoVSE9UU1RVRkZfUEhBU0VfQ09NTUlUEANCeQogaW8uZGVjZW50cmFsY2hhaW4ucHJvdG9idWYuYmxvY2taRGdpdGh1Yi5jb20vRGVjZW50cmFsLUFtZXJpY2EvcHJvdG9idWYtc2NoZW1hcy9wa2cvZ3JwYy9nZW5lcmF0ZWQvZGNjqgIORGVjZW50cmFsQ2hhaW5iBnByb3RvMw", [file_dcc_transaction]);
 
 /**
  * @generated from message dcc.Block
@@ -321,6 +321,23 @@ export type FinalizationVoting = Message<"dcc.FinalizationVoting"> & {
    * @generated from field: repeated dcc.EndorseBlock conflict_endorsements = 4;
    */
   conflictEndorsements: EndorseBlock[];
+
+  /**
+   * T5 (see docs/hotstuff-audit-readiness.md in node-scala): proof that a committed generator
+   * double-signed within the T2 HotStuff protocol (two votes, same voter/view/phase, different
+   * block_id). Kept as its own field rather than reusing EndorseBlock/conflict_endorsements
+   * because a HotStuffVote's signature is over a different canonical message
+   * (view, phase, block_id, block_height, committee_epoch) than an EndorseBlock's
+   * (finalized_block_id, finalized_block_height, endorsed_block_id) -- forcing one shape into the
+   * other's verification path would silently break signature checking either way. Added with
+   * proto3 default-empty semantics: an old peer simply never sets this field and decodes it as
+   * empty, matching "no equivocation evidence" -- fully backward compatible, same pattern as
+   * HotStuffVote.committee_epoch (schema 1.6.5). Gated off entirely by
+   * dcc.hotstuff.slashing-enabled (default false) on the node-scala side until externally audited.
+   *
+   * @generated from field: repeated dcc.HotStuffEquivocationProof hotstuff_conflicts = 5;
+   */
+  hotstuffConflicts: HotStuffEquivocationProof[];
 };
 
 /**
@@ -456,6 +473,48 @@ export const QuorumCertificateSchema: GenMessage<QuorumCertificate> = /*@__PURE_
   messageDesc(file_dcc_block, 6);
 
 /**
+ * Verifiable proof that voter_index double-signed within one (view, phase): vote_a and vote_b are
+ * the two conflicting HotStuffVotes (same voter_index/view/phase, different block_id), each
+ * independently checkable against that voter's BLS key via the normal HotStuffVote signature
+ * verification. See FinalizationVoting.hotstuff_conflicts above.
+ *
+ * @generated from message dcc.HotStuffEquivocationProof
+ */
+export type HotStuffEquivocationProof = Message<"dcc.HotStuffEquivocationProof"> & {
+  /**
+   * @generated from field: int32 voter_index = 1;
+   */
+  voterIndex: number;
+
+  /**
+   * @generated from field: uint32 view = 2;
+   */
+  view: number;
+
+  /**
+   * @generated from field: dcc.HotStuffPhase phase = 3;
+   */
+  phase: HotStuffPhase;
+
+  /**
+   * @generated from field: dcc.HotStuffVote vote_a = 4;
+   */
+  voteA?: HotStuffVote | undefined;
+
+  /**
+   * @generated from field: dcc.HotStuffVote vote_b = 5;
+   */
+  voteB?: HotStuffVote | undefined;
+};
+
+/**
+ * Describes the message dcc.HotStuffEquivocationProof.
+ * Use `create(HotStuffEquivocationProofSchema)` to create a new message.
+ */
+export const HotStuffEquivocationProofSchema: GenMessage<HotStuffEquivocationProof> = /*@__PURE__*/
+  messageDesc(file_dcc_block, 7);
+
+/**
  * A leader's HotStuff proposal: extend `block_id` at `view`, justified by `justify` (the highQC the
  * leader is extending). The `justify` linkage is what lets replicas verify the prepare→pre-commit→
  * commit chain (the 3-chain commit rule) — without it the safety rule has no justification to check.
@@ -484,7 +543,7 @@ export type HotStuffProposal = Message<"dcc.HotStuffProposal"> & {
  * Use `create(HotStuffProposalSchema)` to create a new message.
  */
 export const HotStuffProposalSchema: GenMessage<HotStuffProposal> = /*@__PURE__*/
-  messageDesc(file_dcc_block, 7);
+  messageDesc(file_dcc_block, 8);
 
 /**
  * --- T2 HotStuff BFT fast-finality (see CONSENSUS.md) ---
