@@ -12,6 +12,7 @@ import CardHeader from '@mui/material/CardHeader';
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import type React from 'react';
+import { useSurface } from './SurfaceContext';
 
 export interface CardProps extends Omit<MuiCardProps, 'elevation'> {
   elevation?: 'none' | 'sm' | 'md' | 'lg';
@@ -22,49 +23,56 @@ export interface CardProps extends Omit<MuiCardProps, 'elevation'> {
 }
 
 /**
- * Map custom elevation to MUI elevation (0-24)
+ * Depth comes from the theme's MuiCard override (a soft two-layer shadow in
+ * light mode, a hairline in dark, never both), so every card renders at MUI
+ * elevation 0 and the prop only survives for existing call sites.
  */
-const getElevation = (elevation?: string): number => {
-  switch (elevation) {
-    case 'none':
-      return 0;
-    case 'sm':
-      return 1;
-    case 'md':
-      return 4;
-    case 'lg':
-      return 8;
-    default:
-      return 4;
-  }
-};
+const getElevation = (): number => 0;
 
+/*
+ * The single card treatment is the theme's: 16px corners and the lifted
+ * surface. Nothing here re-draws a border or removes the shadow, because that
+ * is how a card used to end up with both, or with neither.
+ *
+ * `hoverable` deepens the lift one step; `bordered` is accepted and ignored,
+ * since the surface already separates itself in both modes.
+ *
+ * Padding is applied here only when no CardContent child supplies it; passing
+ * an explicit `padding` overrides both.
+ */
 const StyledCard = styled(MuiCard, {
-  shouldForwardProp: (prop) => !['hoverable', 'bordered', 'padding'].includes(prop as string),
-})<{ hoverable?: boolean; bordered?: boolean; padding?: string }>(
-  ({ theme, hoverable, bordered, padding }) => ({
-    border: bordered ? `1px solid ${theme.palette.divider}` : undefined,
-    boxShadow: bordered ? 'none' : undefined,
-    padding: padding || theme.spacing(3),
-    transition: theme.transitions.create(['transform', 'box-shadow'], {
-      duration: theme.transitions.duration.short,
-    }),
-    [theme.breakpoints.down('sm')]: {
-      padding: padding || theme.spacing(1.5),
-    },
+  shouldForwardProp: (prop) =>
+    !['hoverable', 'bordered', 'padding', 'chromeless'].includes(prop as string),
+})<{ hoverable?: boolean; bordered?: boolean; padding?: string; chromeless?: boolean }>(
+  ({ theme, hoverable, padding, chromeless }) => ({
+    '&:has(> .MuiCardContent-root)': { padding: padding ?? 0 },
+    // The same inset MuiCardContent uses, so a card without one still reads
+    // the page rhythm.
+    padding: padding ?? 'clamp(16px, 4vw, 24px)',
     ...(hoverable && {
-      '&:active': {
-        boxShadow: theme.shadows[4],
-        transform: 'translateY(0)',
-      },
-      '&:hover': {
-        boxShadow: theme.shadows[8],
-        transform: 'translateY(-2px)',
-      },
+      '&:active': { transform: 'scale(0.99)' },
+      '&:hover':
+        theme.palette.mode === 'dark'
+          ? { backgroundColor: theme.palette.action.hover }
+          : { boxShadow: theme.shadows[8] },
       cursor: 'pointer',
       // The :active state above is the press feedback, so the grey tap flash
       // mobile WebKit paints over the tile is redundant.
       WebkitTapHighlightColor: 'transparent',
+    }),
+    /*
+     * Inside a region that already owns its surface, the card contributes
+     * nothing but its layout: no panel, no shadow, no inset. The content
+     * padding is zeroed here because CardContent is MUI's own component and
+     * has no knowledge of this context.
+     */
+    ...(chromeless && {
+      '& > .MuiCardContent-root': { padding: 0 },
+      '& > .MuiCardContent-root:last-child': { paddingBottom: 0 },
+      backgroundColor: 'transparent',
+      border: 0,
+      boxShadow: 'none',
+      padding: 0,
     }),
   }),
 );
@@ -76,23 +84,31 @@ export { CardActions as CardFooter, CardContent as CardBody, CardHeader };
 
 export const CardTitle = styled(Typography)(({ theme }) => ({
   color: theme.palette.text.primary,
-  fontSize: theme.typography.h6.fontSize,
-  fontWeight: theme.typography.fontWeightMedium,
+  fontSize: 17,
+  fontWeight: 600,
+  letterSpacing: '-0.3px',
   margin: 0,
 }));
 
 export const CardDescription = styled(Typography)(({ theme }) => ({
   color: theme.palette.text.secondary,
-  fontSize: theme.typography.body2.fontSize,
-  lineHeight: 1.5,
+  fontSize: 13,
+  lineHeight: 1.45,
   margin: `${theme.spacing(0.5)} 0 0 0`,
 }));
 
 export function Card({
   ref,
-  elevation = 'md',
+  elevation: _elevation,
   ...props
 }: CardProps & { ref?: React.Ref<HTMLDivElement> }) {
-  const muiElevation = getElevation(elevation);
-  return <StyledCard ref={ref} elevation={muiElevation} {...(props as Record<string, unknown>)} />;
+  const { chromeless } = useSurface();
+  return (
+    <StyledCard
+      ref={ref}
+      elevation={getElevation()}
+      chromeless={chromeless}
+      {...(props as Record<string, unknown>)}
+    />
+  );
 }

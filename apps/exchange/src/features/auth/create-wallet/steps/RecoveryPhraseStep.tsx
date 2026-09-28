@@ -21,7 +21,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import ShieldIcon from '@mui/icons-material/Shield';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Alert, Box, Button, Stack, Typography, useTheme } from '@mui/material';
-import { tokens } from '@/theme/tokens/semantic';
+import { tokens } from '@/styles/legacy/semantic';
 
 export function RecoveryPhraseStep({
   isCopied,

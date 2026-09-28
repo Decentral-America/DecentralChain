@@ -2,13 +2,14 @@
  * DepositAddress Component
  * Displays gateway deposit address with QR code and copy-to-clipboard functionality
  * Used for showing external blockchain addresses where users send assets to bridge to DecentralChain
+ *
+ * The QR sits on a white plate that stays white in dark mode so it scans from
+ * any screen; the address sits in a grey well with the copy action beside it.
  */
 
-import { CheckCircle, ContentCopy } from '@mui/icons-material';
-import { Alert, Box, IconButton, Tooltip, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { QRCodeCanvas } from '@/components/display/QRCode';
-import { logger } from '@/lib/logger';
+import { Box, Typography } from '@mui/material';
+import { ClipboardButton } from '@/components/premium/ClipboardButton';
+import { QRCodeCard } from '@/components/premium/QRCodeCard';
 
 interface DepositAddressProps {
   /** External blockchain address (e.g., BTC address) */
@@ -24,104 +25,53 @@ interface DepositAddressProps {
  * Features QR code generation, copy-to-clipboard, and responsive design
  */
 export const DepositAddress: React.FC<DepositAddressProps> = ({ address, assetName, onCopy }) => {
-  const [copied, setCopied] = useState(false);
-  const [qrError, setQrError] = useState(false);
-
-  // Reset copied state when address changes
-  useEffect(() => {
-    setCopied(false);
-    setQrError(false);
-  }, []);
-
-  /**
-   * Handle copy address to clipboard
-   */
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(address);
-      setCopied(true);
-      onCopy?.();
-
-      // Reset copied state after 2 seconds
-      setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
-      logger.error('Failed to copy address:', error);
-    }
-  };
-
-  /**
-   * Handle QR code generation errors
-   */
-  const handleQrError = () => {
-    setQrError(true);
-  };
-
   return (
     <Box
       sx={{
-        maxWidth: 400,
+        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
         mx: 'auto',
-        p: { sm: 3, xs: 2 },
         textAlign: 'center',
         width: '100%',
       }}
     >
-      <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
+      <Typography variant="h6" sx={{ fontSize: 17, fontWeight: 600 }}>
         Send {assetName} to this address
       </Typography>
-      {/* QR Code */}
-      {!qrError && address && (
-        <Box
-          sx={{
-            bgcolor: 'background.paper',
-            border: 1,
-            borderColor: 'divider',
-            borderRadius: 1,
-            display: 'inline-block',
-            mb: 2,
-            p: 2,
-          }}
-        >
-          <QRCodeCanvas
-            value={address}
-            size={256}
-            level="M"
-            includeMargin={false}
-            style={{
-              height: 'auto',
-              maxWidth: '100%',
-            }}
-            onError={handleQrError}
-          />
-        </Box>
-      )}
-      {/* QR Code Error */}
-      {qrError && (
-        <Alert severity="warning" sx={{ mb: 2 }}>
-          QR code generation failed. You can still copy the address below.
-        </Alert>
-      )}
-      {/* Address Display with Copy Button */}
+
+      {address ? (
+        <QRCodeCard
+          value={address}
+          size={184}
+          label={`QR code for the ${assetName} deposit address`}
+        />
+      ) : null}
+
+      {/* Address with copy action */}
       <Box
         sx={{
           alignItems: 'center',
-          bgcolor: 'background.default',
-          border: 1,
-          borderColor: 'divider',
-          borderRadius: 1,
+          bgcolor: 'action.hover',
+          borderRadius: '12px',
           display: 'flex',
-          flexWrap: 'wrap',
           gap: 1,
-          justifyContent: 'center',
-          p: 1.5,
+          maxWidth: 440,
+          pl: 1.75,
+          pr: 1,
+          py: 1,
+          width: '100%',
         }}
       >
         <Typography
           component="code"
           sx={{
+            color: 'text.primary',
             flex: 1,
-            fontFamily: 'monospace',
-            fontSize: { sm: '0.85rem', xs: '0.75rem' },
+            fontFamily: 'var(--font-mono)',
+            fontSize: 13,
+            lineHeight: 1.5,
             minWidth: 0,
             textAlign: 'left',
             wordBreak: 'break-all',
@@ -129,27 +79,15 @@ export const DepositAddress: React.FC<DepositAddressProps> = ({ address, assetNa
         >
           {address}
         </Typography>
-
-        <Tooltip title={copied ? 'Copied!' : 'Copy address'} arrow>
-          <IconButton
-            onClick={handleCopy}
-            size="small"
-            color={copied ? 'success' : 'primary'}
-            sx={{ flexShrink: 0 }}
-          >
-            {copied ? <CheckCircle /> : <ContentCopy />}
-          </IconButton>
-        </Tooltip>
+        <ClipboardButton
+          value={address}
+          label="Copy address"
+          copiedLabel="Copied"
+          {...(onCopy ? { onCopied: onCopy } : {})}
+        />
       </Box>
-      {/* Additional Information */}
-      <Typography
-        variant="caption"
-        sx={{
-          color: 'text.secondary',
-          display: 'block',
-          mt: 2,
-        }}
-      >
+
+      <Typography variant="caption" sx={{ color: 'text.secondary' }}>
         Scan the QR code or copy the address above
       </Typography>
     </Box>

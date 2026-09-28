@@ -10,53 +10,53 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
 import { Modal } from '@/components/organisms/Modal';
+import { fieldFocus, fieldSurface } from '@/components/premium/fieldStyles';
 import { useTransactionSigning } from '@/hooks/useTransactionSigning';
 import { logger } from '@/lib/logger';
 import { noTouchZoom } from '@/styles/mixins';
 
 const ModalBody = styled.div`
-  padding: 24px;
+  padding: 0;
 `;
 
 const Description = styled.p`
   margin: 0 0 20px 0;
-  font-size: 14px;
-  color: ${(props) => props.theme.colors.textMuted};
-  line-height: 1.6;
+  font-size: 15px;
+  letter-spacing: -0.15px;
+  color: ${(p) => p.theme.colors.textSecondary};
+  line-height: 1.47;
 `;
 
 const InfoBox = styled.div`
-  padding: 16px;
-  background-color: ${({ theme }) => `${theme.colors.info ?? theme.colors.primary}10`};
-  border-left: 4px solid ${({ theme }) => theme.colors.info ?? theme.colors.primary};
-  border-radius: 4px;
+  padding: 14px 16px;
+  border-radius: 12px;
   margin-bottom: 20px;
+  background-color: ${(p) => p.theme.colors.primarySurface};
 `;
 
 const InfoText = styled.p`
   margin: 0;
   font-size: 13px;
-  color: ${({ theme }) => theme.colors.info ?? theme.colors.primary};
-  line-height: 1.6;
+  color: ${(p) => p.theme.colors.text};
+  line-height: 1.5;
 `;
 
-const TextArea = styled.textarea`
+const TextArea = styled.textarea<{ $invalid?: boolean }>`
+  ${fieldSurface}
   width: 100%;
   min-height: 200px;
-  padding: 12px;
-  border: 1px solid ${(props) => props.theme.colors.border};
-  border-radius: 4px;
+  padding: 12px 14px;
   font-size: 13px;
-  font-family: 'Roboto Mono', monospace;
+  font-family: ${(p) => p.theme.fonts.mono};
+  line-height: 1.5;
+
+  resize: vertical;
 
   /* iOS Safari zooms the page on focus below 16px; touch only. */
   ${noTouchZoom}
-  resize: vertical;
-  box-sizing: border-box;
 
   &:focus {
-    outline: none;
-    border-color: ${(props) => props.theme.colors.primary};
+    ${fieldFocus}
   }
 `;
 

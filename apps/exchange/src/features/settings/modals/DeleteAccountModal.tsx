@@ -14,58 +14,53 @@ import { logger } from '@/lib/logger';
 import { multiAccount } from '@/services/multiAccount';
 
 const ModalBody = styled.div`
-  padding: 24px;
+  padding: 0;
 `;
 
 const WarningBox = styled.div`
-  padding: 16px;
-  background-color: ${(props) => `${props.theme.colors.warning}10`};
-  border-left: 4px solid ${(props) => props.theme.colors.warning};
-  border-radius: 4px;
+  padding: 14px 16px;
+  border-radius: 12px;
   margin-bottom: 20px;
+  background-color: ${(p) => p.theme.colors.warningSurface};
 `;
 
 const WarningTitle = styled.div`
   font-size: 15px;
   font-weight: 600;
-  color: ${(props) => props.theme.colors.warning};
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  &::before {
-    content: '⚠️';
-    font-size: 20px;
-  }
+  color: ${(p) => p.theme.colors.warning};
+  margin-bottom: 4px;
 `;
 
 const WarningText = styled.p`
   margin: 0;
   font-size: 13px;
-  color: ${(props) => props.theme.colors.warning};
-  line-height: 1.6;
+  color: ${(p) => p.theme.colors.text};
+  line-height: 1.5;
 `;
 
 const CheckboxContainer = styled.label`
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 0;
   margin: 20px 0;
   cursor: pointer;
   user-select: none;
 `;
 
 const Checkbox = styled.input`
-  margin-top: 2px;
-  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  margin: 1px 12px 0 0;
   flex-shrink: 0;
+  cursor: pointer;
+  accent-color: ${(p) => p.theme.colors.primary};
 `;
 
 const CheckboxLabel = styled.span`
-  font-size: 14px;
-  color: ${(props) => props.theme.colors.text};
-  line-height: 1.5;
+  font-size: 15px;
+  letter-spacing: -0.15px;
+  color: ${(p) => p.theme.colors.text};
+  line-height: 1.47;
 `;
 
 const ButtonGroup = styled.div`
@@ -76,19 +71,6 @@ const ButtonGroup = styled.div`
 `;
 
 const DangerButton = styled(Button as React.ComponentType<Record<string, unknown>>)`
-  background-color: ${(props) => props.theme.colors.error} !important;
-
-  /*
-   * No darker "error" shade exists in the token set (unlike
-   * accent.primaryHover for the primary fill), so hover/active dips
-   * opacity instead of restating the same fill colour - the same
-   * no-second-token affordance BurnButton/MaxButton already use
-   * elsewhere for this exact reason.
-   */
-  &:hover:not(:disabled) {
-    opacity: 0.9;
-  }
-
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;

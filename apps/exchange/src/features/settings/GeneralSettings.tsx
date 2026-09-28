@@ -14,90 +14,23 @@
  * `commonSettings.theme` field — see fix round 1 of task-9-report.md.
  */
 
+import { Skeleton, Switch } from '@mui/material';
 import * as ds from 'data-service';
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import { Select } from '@/components/atoms/Select';
+import { AnimatedNumber } from '@/components/premium/AnimatedNumber';
+import { SettingsGroup, SettingsRow } from '@/components/premium/SettingsList';
 import { useSettings } from '@/contexts/SettingsContext';
 import { logger } from '@/lib/logger';
-import { noTouchZoom } from '@/styles/mixins';
+import { Pane } from './Pane';
 
-// ========== Styled Components ==========
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${(p) => p.theme.spacing.lg};
-`;
-
-const SettingRow = styled.div<{ $border?: boolean }>`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: ${(p) => p.theme.spacing.md} 0;
-  border-bottom: ${(p) => (p.$border ? `1px solid ${p.theme.colors.border}` : 'none')};
-  gap: ${(p) => p.theme.spacing.md};
-
-  &:last-child {
-    border-bottom: none;
-  }
-`;
-
-const SettingLabel = styled.div`
-  font-size: ${(p) => p.theme.fontSizes.sm};
-  color: ${(p) => p.theme.colors.text};
-  opacity: 0.7;
-  flex-shrink: 0;
-`;
-
-const SettingValue = styled.div`
-  font-size: ${(p) => p.theme.fontSizes.md};
-  color: ${(p) => p.theme.colors.text};
-  font-weight: ${(p) => p.theme.fontWeights.semibold};
-`;
-
-const CheckboxRow = styled.label`
-  display: flex;
-  align-items: center;
-  gap: ${(p) => p.theme.spacing.sm};
-  cursor: pointer;
-  padding: ${(p) => p.theme.spacing.md} 0;
-`;
-
-const CheckboxInput = styled.input`
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  accent-color: ${(p) => p.theme.colors.primary};
-`;
-
-const CheckboxLabel = styled.span`
-  font-size: ${(p) => p.theme.fontSizes.sm};
-  color: ${(p) => p.theme.colors.text};
-`;
-
-const Select = styled.select`
-  padding: ${(p) => p.theme.spacing.sm} ${(p) => p.theme.spacing.md};
-  border: 1px solid ${(p) => p.theme.colors.border};
-  border-radius: ${(p) => p.theme.radii.sm};
-  background: ${(p) => p.theme.colors.background};
-  color: ${(p) => p.theme.colors.text};
-  font-size: ${(p) => p.theme.fontSizes.sm};
-  cursor: pointer;
-  min-width: 150px;
-
-  /* iOS Safari zooms the page on focus below 16px; touch only. */
-  ${noTouchZoom}
-
-  &:hover {
-    border-color: ${(p) => p.theme.colors.primary};
-  }
-
-  &:focus {
-    outline: none;
-    border-color: ${(p) => p.theme.colors.primary};
-    box-shadow: 0 0 0 2px ${(p) => p.theme.colors.primary}20;
-  }
-`;
+const TIMEOUTS = [
+  { label: '5 minutes', value: '5' },
+  { label: '10 minutes', value: '10' },
+  { label: '20 minutes', value: '20' },
+  { label: '40 minutes', value: '40' },
+  { label: '1 hour', value: '60' },
+];
 
 // ========== Language Configuration ==========
 
@@ -151,57 +84,72 @@ export const GeneralSettings = () => {
   }, []);
 
   return (
-    <Container>
-      {/* Advanced Mode Toggle */}
-      <CheckboxRow>
-        <CheckboxInput
-          type="checkbox"
-          id="advancedMode"
-          checked={commonSettings.advancedMode}
-          onChange={(e) => setCommonSetting('advancedMode', e.target.checked)}
+    <Pane>
+      <SettingsGroup
+        title="Preferences"
+        footer="Advanced features add data transactions, mass transfers and account scripts to the wallet."
+      >
+        <SettingsRow
+          label="Advanced features"
+          htmlFor="advancedMode"
+          control={
+            <Switch
+              id="advancedMode"
+              checked={commonSettings.advancedMode}
+              onChange={(e) => setCommonSetting('advancedMode', e.target.checked)}
+            />
+          }
         />
-        <CheckboxLabel>Enable advanced features</CheckboxLabel>
-      </CheckboxRow>
+        <SettingsRow
+          label="Language"
+          htmlFor="settings-language"
+          control={
+            <Select
+              id="settings-language"
+              selectSize="small"
+              value={commonSettings.lng}
+              options={LANGUAGES.map((lang) => ({ label: lang.name, value: lang.code }))}
+              onChange={(e) => {
+                setCommonSetting('lng', e.target.value);
+                // Note: i18n integration would go here
+                logger.debug('[GeneralSettings] Language changed to:', e.target.value);
+              }}
+            />
+          }
+        />
+        <SettingsRow
+          label="Session timeout"
+          htmlFor="settings-timeout"
+          control={
+            <Select
+              id="settings-timeout"
+              selectSize="small"
+              value={String(commonSettings.logoutAfterMin)}
+              options={TIMEOUTS}
+              onChange={(e) => setCommonSetting('logoutAfterMin', Number(e.target.value))}
+            />
+          }
+        />
+      </SettingsGroup>
 
-      {/* Language Selector */}
-      <SettingRow>
-        <SettingLabel>Language</SettingLabel>
-        <Select
-          value={commonSettings.lng}
-          onChange={(e) => {
-            setCommonSetting('lng', e.target.value);
-            // Note: i18n integration would go here
-            logger.debug('[GeneralSettings] Language changed to:', e.target.value);
-          }}
-        >
-          {LANGUAGES.map((lang) => (
-            <option key={lang.code} value={lang.code}>
-              {lang.name}
-            </option>
-          ))}
-        </Select>
-      </SettingRow>
-
-      {/* Session Timeout */}
-      <SettingRow>
-        <SettingLabel>Session Timeout</SettingLabel>
-        <Select
-          value={commonSettings.logoutAfterMin}
-          onChange={(e) => setCommonSetting('logoutAfterMin', Number(e.target.value))}
-        >
-          <option value={5}>5 minutes</option>
-          <option value={10}>10 minutes</option>
-          <option value={20}>20 minutes</option>
-          <option value={40}>40 minutes</option>
-          <option value={60}>1 hour</option>
-        </Select>
-      </SettingRow>
-
-      {/* Current Block Height (read-only) */}
-      <SettingRow $border>
-        <SettingLabel>Current Block Height</SettingLabel>
-        <SettingValue>{blockHeight > 0 ? blockHeight.toLocaleString() : 'Loading...'}</SettingValue>
-      </SettingRow>
-    </Container>
+      <SettingsGroup title="Network">
+        <SettingsRow
+          label="Current block height"
+          description="Read from the node every five seconds."
+          control={
+            blockHeight > 0 ? (
+              <AnimatedNumber value={blockHeight} decimals={0} />
+            ) : (
+              <Skeleton
+                variant="rounded"
+                width={88}
+                height={16}
+                aria-label="Loading block height"
+              />
+            )
+          }
+        />
+      </SettingsGroup>
+    </Pane>
   );
 };

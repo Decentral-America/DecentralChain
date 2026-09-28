@@ -44,7 +44,7 @@ export interface SemanticTokens {
    * `onPrimary` is the ink that goes *on* `accent.primary` — a role of its own,
    * defined per mode like every other token here. `accent.primary` sits at a
    * medium luminance in both modes, so no single ink clears AA against both
-   * (white: 6.04 light / 3.24 dark; black: 3.47 light / 6.48 dark). It does not
+   * (white: 6.19 light / 3.71 dark; black: 3.39 light / 5.66 dark). It does not
    * need to: a mode's ink only ever meets that mode's accent.
    */
   /**
@@ -84,15 +84,21 @@ export interface SemanticTokens {
   };
 }
 
+/**
+ * Values are the "precision instrument" system (see DESIGN.md): an Apple-neutral
+ * ground with white cards in light mode, true black with graphite cards in dark,
+ * and the logo's indigo as the one accent. Raw hexes live here and in
+ * `src/styles/tokens.ts` (`palette`, `darkPalette`), and nowhere else.
+ */
 export const SEMANTIC_TOKENS: Record<ThemeMode, SemanticTokens> = {
   dark: {
-    // Dark `accent.primary` is a *light* violet, so its ink is near-black:
-    // 5.63:1, where white would be 3.24:1.
+    // Dark `accent.primary` is a *light* indigo, so its ink is black: 5.66:1,
+    // where white would be 3.71:1.
     accent: {
-      muted: '#3d2f8f',
-      onPrimary: '#14122b',
-      primary: '#8b7dff',
-      primaryHover: '#7d70eb',
+      muted: '#1f1b3d',
+      onPrimary: '#000000',
+      primary: '#7f70ff',
+      primaryHover: '#9d91ff',
     },
     appTile: {
       amber: { fill: '#fcd34d', on: '#14122b' },
@@ -101,70 +107,78 @@ export const SEMANTIC_TOKENS: Record<ThemeMode, SemanticTokens> = {
       // Same value as `accent.primary`: the house colour staying on Dashboard
       // is what keeps the launcher looking like this product. If the brand
       // accent moves, this moves with it — deliberately, but consciously.
-      indigo: { fill: '#8b7dff', on: '#14122b' },
+      indigo: { fill: '#7f70ff', on: '#14122b' },
       rose: { fill: '#fda4af', on: '#14122b' },
       slate: { fill: '#a8b3c4', on: '#14122b' },
       teal: { fill: '#5eead4', on: '#14122b' },
       violet: { fill: '#c4b5fd', on: '#14122b' },
     },
-    border: { strong: '#3a3358', subtle: '#241d42' },
+    border: { strong: '#3a3a3c', subtle: '#2c2c2e' },
     intent: {
-      danger: '#ff6b6b',
-      info: '#6aa8ff',
-      onDanger: '#14122b',
-      onInfo: '#14122b',
-      onSuccess: '#14122b',
-      onWarning: '#14122b',
-      success: '#3ddc97',
-      warning: '#ffb84d',
+      danger: '#ff453a',
+      info: '#7f70ff',
+      onDanger: '#000000',
+      onInfo: '#000000',
+      onSuccess: '#000000',
+      onWarning: '#000000',
+      success: '#30d158',
+      warning: '#ff9f0a',
     },
+    // A black ground with graphite cards. Wells sit back down at the ground
+    // rather than going darker than black; floating layers lift to #2c2c2e.
     surface: {
-      base: '#0b0724',
-      hover: '#201b3b',
-      overlay: '#151033',
-      raised: '#141029',
-      sunken: '#080519',
+      base: '#000000',
+      hover: '#2c2c2e',
+      overlay: '#1c1c1e',
+      raised: '#1c1c1e',
+      sunken: '#000000',
     },
-    text: { primary: '#f5f4ff', secondary: '#b8b3d9', tertiary: '#8a85ab' },
+    text: { primary: '#f5f5f7', secondary: '#aeaeb2', tertiary: '#98989d' },
   },
   light: {
-    // Light `accent.primary` is a deep violet, so its ink is white: 6.04:1.
+    // Light `accent.primary` is a deep indigo, so its ink is white: 6.19:1.
     accent: {
-      muted: '#e8e6ff',
+      muted: '#efedff',
       onPrimary: '#ffffff',
-      primary: '#5b4bdb',
-      primaryHover: '#4a3bb8',
+      primary: '#533afd',
+      primaryHover: '#4a34f0',
     },
     appTile: {
       amber: { fill: '#b45309', on: '#ffffff' },
       blue: { fill: '#1d4ed8', on: '#ffffff' },
       green: { fill: '#15803d', on: '#ffffff' },
       // See the dark-mode note: same value as `accent.primary`, on purpose.
-      indigo: { fill: '#5b4bdb', on: '#ffffff' },
+      indigo: { fill: '#533afd', on: '#ffffff' },
       rose: { fill: '#be123c', on: '#ffffff' },
       slate: { fill: '#475569', on: '#ffffff' },
       teal: { fill: '#0f766e', on: '#ffffff' },
       violet: { fill: '#7c3aed', on: '#ffffff' },
     },
-    border: { strong: '#c7c3e0', subtle: '#e9e7f2' },
+    border: { strong: '#d2d2d7', subtle: '#e8e8ed' },
     intent: {
-      danger: '#c62828',
-      info: '#1565c0',
+      danger: '#d70015',
+      info: '#533afd',
       onDanger: '#ffffff',
       onInfo: '#ffffff',
       onSuccess: '#ffffff',
       onWarning: '#ffffff',
-      success: '#1b7a4b',
-      warning: '#a15c00',
+      success: '#1d7f39',
+      warning: '#a35200',
     },
+    // White cards on the #f5f5f7 ground; wells sit back down at the ground.
     surface: {
-      base: '#f7f7fb',
-      hover: '#e6e5f2',
+      base: '#f5f5f7',
+      hover: '#e8e8ed',
       overlay: '#ffffff',
       raised: '#ffffff',
-      sunken: '#eeedf5',
+      sunken: '#f5f5f7',
     },
-    text: { primary: '#14122b', secondary: '#4a4668', tertiary: '#6b6788' },
+    // Secondary is Apple's slate taken one step darker: #6e6e73 is 4.15:1 on
+    // `surface.hover`, #66666b clears 4.5:1 on every surface (4.68:1 on hover)
+    // and on the translucent segmented track. Apple's tertiary label (#86868b)
+    // fails on the ground, and tertiary text here is body-sized, so it shares
+    // secondary's value.
+    text: { primary: '#1d1d1f', secondary: '#66666b', tertiary: '#66666b' },
   },
 };
 

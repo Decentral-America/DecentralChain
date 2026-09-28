@@ -3,103 +3,126 @@
  * Configures network endpoints matching Angular Network tab
  */
 
+import { Switch } from '@mui/material';
 import * as ds from 'data-service';
+import { ChevronRight } from 'lucide-react';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { SettingsGroup, SettingsRow } from '@/components/premium/SettingsList';
 import { NetworkConfig as networkConfig } from '@/config/networkConfig';
 import { useSettings } from '@/contexts/SettingsContext';
 import { useClipboard } from '@/hooks/useClipboard';
 import { noTouchZoom } from '@/styles/mixins';
+import { Pane } from './Pane';
+import { CopyButton, FieldInput } from './SettingsControls';
 
-const NetworkSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 16px 0;
-`;
+const EASE = 'cubic-bezier(0.32, 0.72, 0, 1)';
 
-const SettingRow = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 12px 0;
-`;
-
-const Label = styled.div`
-  font-size: 12px;
-  color: ${(props) => props.theme.colors.textMuted};
+const FieldLine = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+  width: 100%;
 `;
 
-const Input = styled.input<{ error?: boolean }>`
-  flex: 1;
-  padding: 8px 12px;
-  font-size: 13px;
-  border: 1px solid
-    ${(props) => (props.error ? props.theme.colors.error : props.theme.colors.border)};
+/*
+ * The kit's field material on an opaque fill: the group surface in light mode
+ * and the hover shade in dark, which is what the kit's translucent grey
+ * composites to over the group. Opaque so the ink can be held to AA against
+ * the field's own background (see NetworkSettings.contrast.test.tsx).
+ */
+const EndpointInput = styled(FieldInput)`
+  background: ${({ theme }) =>
+    theme.mode === 'dark' ? theme.colors.surfaceHover : theme.colors.surface};
 
   /* iOS Safari zooms the page on focus below 16px; touch only. */
   ${noTouchZoom}
-  border-radius: 4px;
-  background: ${(props) => props.theme.colors.background};
-  color: ${(props) => props.theme.colors.text};
-  font-family: 'Courier New', monospace;
-
-  &:focus {
-    outline: none;
-    border-color: ${(props) => (props.error ? props.theme.colors.error : props.theme.colors.primary)};
-  }
 `;
 
-const CopyLink = styled.button`
-  background: none;
-  border: none;
-  color: ${(props) => props.theme.colors.primary};
-  font-size: 11px;
-  cursor: pointer;
-  padding: 0;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-const CheckboxRow = styled.div`
+/*
+ * A whole-row action in the accent, drawn like the kit's button rows but on the
+ * group's own opaque surface instead of a transparent fill, so the ink can be
+ * held to AA against the button's own background (see
+ * NetworkSettings.contrast.test.tsx).
+ */
+const ActionRow = styled.button`
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 0;
-`;
-
-const Checkbox = styled.input.attrs({ type: 'checkbox' })`
-  width: 18px;
-  height: 18px;
+  gap: 16px;
+  width: 100%;
+  min-height: 52px;
+  padding: 10px 16px;
+  box-sizing: border-box;
+  border: 0;
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.33;
+  letter-spacing: -0.15px;
+  text-align: left;
+  color: ${({ theme }) => theme.colors.primary};
+  background: ${({ theme }) => theme.colors.surface};
   cursor: pointer;
-`;
-
-const CheckboxLabel = styled.label`
-  font-size: 13px;
-  color: ${(props) => props.theme.colors.text};
-  cursor: pointer;
-`;
-
-const Button = styled.button`
-  padding: 10px 24px;
-  font-size: 13px;
-  color: ${(props) => props.theme.colors.primary};
-  background: ${(props) => props.theme.colors.background};
-  border: 1px solid ${(props) => props.theme.colors.primary};
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 16px;
+  transition: background-color 160ms ${EASE};
 
   &:hover {
-    background-color: ${(props) => props.theme.colors.hover};
+    background: ${({ theme }) => theme.colors.hover};
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px ${({ theme }) => theme.colors.primary};
+  }
+
+  span {
+    flex: 1;
+  }
+
+  svg {
+    flex-shrink: 0;
+    color: ${({ theme }) => theme.colors.textSubtle};
   }
 `;
+
+/** An endpoint row: the field takes the row's width with its copy button beside it. */
+function EndpointRow({
+  id,
+  label,
+  value,
+  onChange,
+  onCommit,
+  copied,
+  onCopy,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  onCommit: () => void;
+  copied: boolean;
+  onCopy: () => void;
+}) {
+  return (
+    <SettingsRow
+      label={label}
+      htmlFor={id}
+      stack
+      control={
+        <FieldLine>
+          <EndpointInput
+            id={id}
+            value={value}
+            spellCheck={false}
+            autoComplete="off"
+            onChange={(e) => onChange(e.target.value)}
+            onBlur={onCommit}
+          />
+          <CopyButton copied={copied} onCopy={onCopy} what={label} />
+        </FieldLine>
+      }
+    />
+  );
+}
 
 export const NetworkSettings: React.FC = () => {
   const { commonSettings, setCommonSetting } = useSettings();
@@ -141,59 +164,61 @@ export const NetworkSettings: React.FC = () => {
   };
 
   return (
-    <NetworkSection>
-      <SettingRow>
-        <Label>
-          Node Address
-          <CopyLink onClick={() => handleCopy(node, 'node')}>
-            {copiedField === 'node' ? 'Copied!' : 'Copy'}
-          </CopyLink>
-        </Label>
-        <Input
+    <Pane>
+      <SettingsGroup
+        title="Endpoints"
+        footer="Saved when you leave a field. Only point these at servers you trust."
+      >
+        <EndpointRow
+          id="settings-node"
+          label="Node address"
           value={node}
-          onChange={(e) => setNode(e.target.value)}
-          onBlur={() => setCommonSetting('network', { ...commonSettings.network, server: node })}
+          onChange={setNode}
+          onCommit={() => setCommonSetting('network', { ...commonSettings.network, server: node })}
+          copied={copiedField === 'node'}
+          onCopy={() => handleCopy(node, 'node')}
         />
-      </SettingRow>
-
-      <SettingRow>
-        <Label>
-          Matcher Address
-          <CopyLink onClick={() => handleCopy(matcher, 'matcher')}>
-            {copiedField === 'matcher' ? 'Copied!' : 'Copy'}
-          </CopyLink>
-        </Label>
-        <Input
+        <EndpointRow
+          id="settings-matcher"
+          label="Matcher address"
           value={matcher}
-          onChange={(e) => setMatcher(e.target.value)}
-          onBlur={() => setCommonSetting('network', { ...commonSettings.network, matcher })}
+          onChange={setMatcher}
+          onCommit={() => setCommonSetting('network', { ...commonSettings.network, matcher })}
+          copied={copiedField === 'matcher'}
+          onCopy={() => handleCopy(matcher, 'matcher')}
         />
-      </SettingRow>
-
-      <SettingRow>
-        <Label>
-          API Address
-          <CopyLink onClick={() => handleCopy(api, 'api')}>
-            {copiedField === 'api' ? 'Copied!' : 'Copy'}
-          </CopyLink>
-        </Label>
-        <Input
+        <EndpointRow
+          id="settings-api"
+          label="API address"
           value={api}
-          onChange={(e) => setApi(e.target.value)}
-          onBlur={() => setCommonSetting('network', { ...commonSettings.network, api })}
+          onChange={setApi}
+          onCommit={() => setCommonSetting('network', { ...commonSettings.network, api })}
+          copied={copiedField === 'api'}
+          onCopy={() => handleCopy(api, 'api')}
         />
-      </SettingRow>
+      </SettingsGroup>
 
-      <CheckboxRow>
-        <Checkbox
-          id="dontShowSpam"
-          checked={commonSettings.dontShowSpam}
-          onChange={(e) => setCommonSetting('dontShowSpam', e.target.checked)}
+      <SettingsGroup title="Wallet">
+        <SettingsRow
+          label="Hide suspicious assets"
+          description="Assets flagged as suspicious stay out of your wallet."
+          htmlFor="dontShowSpam"
+          control={
+            <Switch
+              id="dontShowSpam"
+              checked={commonSettings.dontShowSpam}
+              onChange={(e) => setCommonSetting('dontShowSpam', e.target.checked)}
+            />
+          }
         />
-        <CheckboxLabel htmlFor="dontShowSpam">Hide suspicious assets from the wallet</CheckboxLabel>
-      </CheckboxRow>
+      </SettingsGroup>
 
-      <Button onClick={resetToDefaults}>Reset to Default Settings</Button>
-    </NetworkSection>
+      <SettingsGroup>
+        <ActionRow type="button" onClick={resetToDefaults}>
+          <span>Reset to default settings</span>
+          <ChevronRight size={16} strokeWidth={2} aria-hidden />
+        </ActionRow>
+      </SettingsGroup>
+    </Pane>
   );
 };

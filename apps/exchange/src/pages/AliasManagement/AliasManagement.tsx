@@ -1,57 +1,107 @@
 /**
  * Alias Management Page
- * View and manage all aliases for the user's address
+ *
+ * The address first, on its own card with a copy button, then the aliases that
+ * point at it as a grouped list with one copy action per row. An account with
+ * none gets an empty state that explains what an alias is for and starts one.
  */
 
-import AddIcon from '@mui/icons-material/Add';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  CircularProgress,
-  Container,
-  IconButton,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Alert, Button, Card } from '@mui/material';
+import { AtSign, Plus, Tag, UserRound } from 'lucide-react';
 import { useState } from 'react';
+import styled from 'styled-components';
 import { CreateAliasModal } from '@/components/modals/CreateAliasModal';
+import { ClipboardButton } from '@/components/premium/ClipboardButton';
+import { EmptyState } from '@/components/premium/EmptyState';
+import {
+  InsetGroup,
+  InsetGroupHeader,
+  InsetRow,
+  InsetRowSkeleton,
+  TokenAvatar,
+} from '@/components/premium/InsetList';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
 import { useAliases } from '@/hooks/useAliases';
-import { PageFrame } from '@/layouts/PageFrame';
-import { logger } from '@/lib/logger';
+import { PageFrame, pageRhythm } from '@/layouts/PageFrame';
+
+const Layout = styled.div`
+  display: grid;
+  gap: ${pageRhythm * 8}px;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+
+  @media (min-width: 1200px) {
+    grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  }
+`;
+
+const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${pageRhythm * 8}px;
+  min-width: 0;
+`;
+
+const AddressLabel = styled.div`
+  font-size: 13px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.textSecondary};
+`;
+
+const AddressRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+`;
+
+const Address = styled.code`
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  color: ${({ theme }) => theme.colors.text};
+  overflow-wrap: anywhere;
+`;
+
+const Facts = styled.ul`
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    padding: 12px 0;
+    font-size: 14px;
+    line-height: 1.45;
+    color: ${({ theme }) => theme.colors.textSecondary};
+  }
+
+  li + li {
+    box-shadow: inset 0 1px 0 ${({ theme }) => theme.colors.border};
+  }
+
+  strong {
+    display: block;
+    font-weight: 500;
+    color: ${({ theme }) => theme.colors.text};
+  }
+`;
+
+const FactsTitle = styled.h2`
+  margin: 0 0 4px;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  color: ${({ theme }) => theme.colors.text};
+`;
 
 export const AliasManagement = () => {
   const { user } = useAuth();
   const { networkCode } = useConfig(); // Network code character ('?', '!', 'S') from current network config
   const { aliases, isLoading, error, fetchAliases, addAlias } = useAliases();
   const [createModalOpen, setCreateModalOpen] = useState(false);
-  const [copiedAlias, setCopiedAlias] = useState<string | null>(null);
-
-  const handleCopyAlias = async (alias: string) => {
-    try {
-      // Use networkCode from current config (?, !, S) instead of hardcoded fallback
-      await navigator.clipboard.writeText(`alias:${networkCode}:${alias}`);
-      setCopiedAlias(alias);
-      setTimeout(() => setCopiedAlias(null), 2000);
-    } catch (err) {
-      logger.error('Failed to copy alias:', err);
-    }
-  };
-
-  const handleCopyAddress = async () => {
-    if (!user?.address) return;
-    try {
-      await navigator.clipboard.writeText(user.address);
-    } catch (err) {
-      logger.error('Failed to copy address:', err);
-    }
-  };
 
   const handleAliasCreated = (newAlias: string) => {
     // Add alias to local list immediately (Angular approach)
@@ -60,227 +110,114 @@ export const AliasManagement = () => {
   };
 
   return (
-    <PageFrame
-      title="Alias Management"
-      subtitle="Create and manage aliases for your address"
-      actions={
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => setCreateModalOpen(true)}
-        >
-          Create Alias
-        </Button>
-      }
-    >
-      <Container maxWidth="md">
-        <Stack spacing={4}>
-          {/* Address Info */}
-          <Card>
-            <CardContent>
-              <Typography
-                variant="subtitle2"
-                gutterBottom
-                sx={{
-                  color: 'text.secondary',
-                }}
-              >
-                Your Address
-              </Typography>
-              <Stack
-                direction="row"
-                spacing={1}
-                sx={{
-                  alignItems: 'center',
-                }}
-              >
-                <Typography
-                  variant="body1"
-                  sx={{
-                    flex: 1,
-                    fontFamily: 'monospace',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {user?.address}
-                </Typography>
-                <IconButton size="small" onClick={handleCopyAddress}>
-                  <ContentCopyIcon fontSize="small" />
-                </IconButton>
-              </Stack>
-            </CardContent>
+    <PageFrame title="Aliases" subtitle="Human-readable names that point at your address.">
+      <Layout>
+        <Column>
+          <Card sx={{ p: 3 }}>
+            <AddressLabel id="alias-address">Your address</AddressLabel>
+            <AddressRow>
+              <Address aria-labelledby="alias-address">{user?.address}</Address>
+              <ClipboardButton
+                value={user?.address ?? ''}
+                label="Copy address"
+                copiedLabel="Copied"
+              />
+            </AddressRow>
           </Card>
 
-          {/* Error Alert */}
           {error && (
             <Alert severity="error" onClose={() => fetchAliases()}>
               {error}
             </Alert>
           )}
 
-          {/* Aliases List */}
-          <Box>
-            <Typography
-              variant="h6"
-              gutterBottom
-              sx={{
-                fontWeight: 600,
-              }}
-            >
-              Your Aliases ({aliases.length})
-            </Typography>
-
-            {isLoading ? (
-              <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
-                <CircularProgress />
-              </Box>
-            ) : aliases.length === 0 ? (
-              <Card>
-                <CardContent sx={{ py: 8, textAlign: 'center' }}>
-                  <Typography
-                    variant="body1"
-                    gutterBottom
-                    sx={{
-                      color: 'text.secondary',
-                    }}
-                  >
-                    You don&apos;t have any aliases yet
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      color: 'text.secondary',
-                      mb: 3,
-                    }}
-                  >
-                    Create an alias to make your address easier to share and remember
-                  </Typography>
+          {/*
+            The create action lives beside the list it adds to, so it is
+            present on both platforms — as a frame action it would have
+            disappeared inside the mobile shell, which draws its own header.
+          */}
+          <section aria-labelledby="alias-list">
+            <InsetGroupHeader
+              id="alias-list"
+              title="Your aliases"
+              count={isLoading ? undefined : aliases.length}
+              trailing={
+                aliases.length > 0 ? (
                   <Button
                     variant="contained"
-                    startIcon={<AddIcon />}
+                    size="small"
+                    startIcon={<Plus size={16} />}
                     onClick={() => setCreateModalOpen(true)}
                   >
-                    Create Your First Alias
+                    Create alias
                   </Button>
-                </CardContent>
-              </Card>
-            ) : (
-              <Stack spacing={2}>
-                {aliases.map((alias) => (
-                  <Card key={alias}>
-                    <CardContent>
-                      <Stack
-                        direction="row"
-                        spacing={2}
-                        sx={{
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                        }}
-                      >
-                        <Stack
-                          direction="row"
-                          spacing={2}
-                          sx={{
-                            alignItems: 'center',
-                            flex: 1,
-                          }}
-                        >
-                          <Typography
-                            variant="h6"
-                            sx={{
-                              fontFamily: 'monospace',
-                            }}
-                          >
-                            {alias}
-                          </Typography>
-                          {copiedAlias === alias && (
-                            <Chip label="Copied!" size="small" color="success" />
-                          )}
-                        </Stack>
-                        <IconButton
-                          size="small"
-                          onClick={() => handleCopyAlias(alias)}
-                          color="primary"
-                        >
-                          <ContentCopyIcon fontSize="small" />
-                        </IconButton>
-                      </Stack>
-                      <Typography
-                        variant="caption"
-                        sx={{
-                          color: 'text.secondary',
-                          display: 'block',
-                          fontFamily: 'monospace',
-                          mt: 1,
-                        }}
-                      >
-                        alias:{networkCode}:{alias}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                ))}
-              </Stack>
-            )}
-          </Box>
+                ) : null
+              }
+            />
+            <InsetGroup>
+              {isLoading ? (
+                <InsetRowSkeleton rows={2} />
+              ) : aliases.length === 0 ? (
+                <EmptyState
+                  icons={[UserRound, AtSign, Tag]}
+                  title="No aliases yet"
+                  description="An alias is a short name anyone can send to instead of your full address."
+                  action={
+                    <Button
+                      variant="contained"
+                      startIcon={<Plus size={16} />}
+                      onClick={() => setCreateModalOpen(true)}
+                    >
+                      Create your first alias
+                    </Button>
+                  }
+                />
+              ) : (
+                aliases.map((alias) => (
+                  <InsetRow
+                    key={alias}
+                    leading={<TokenAvatar icon={<AtSign />} />}
+                    title={alias}
+                    subtitle={`alias:${networkCode}:${alias}`}
+                    accessory={
+                      <ClipboardButton
+                        variant="icon"
+                        // Use networkCode from current config (?, !, S) instead of a hardcoded fallback
+                        value={`alias:${networkCode}:${alias}`}
+                        label={`Copy alias ${alias}`}
+                      />
+                    }
+                  />
+                ))
+              )}
+            </InsetGroup>
+          </section>
+        </Column>
 
-          {/* Info Section */}
-          <Card sx={{ bgcolor: 'action.hover' }}>
-            <CardContent>
-              <Typography
-                variant="subtitle2"
-                gutterBottom
-                sx={{
-                  fontWeight: 600,
-                }}
-              >
-                About Aliases
-              </Typography>
-              <Stack spacing={1}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: 'text.secondary',
-                  }}
-                >
-                  • Aliases are permanent and cannot be changed or deleted
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: 'text.secondary',
-                  }}
-                >
-                  • Each alias costs 0.001 DCC to create
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: 'text.secondary',
-                  }}
-                >
-                  • Aliases must be 4-30 characters long
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: 'text.secondary',
-                  }}
-                >
-                  • Only lowercase letters, numbers, and the symbols -@_. are allowed
-                </Typography>
-              </Stack>
-            </CardContent>
-          </Card>
-        </Stack>
+        <Card sx={{ p: 3 }}>
+          <FactsTitle>About aliases</FactsTitle>
+          <Facts>
+            <li>
+              <strong>Permanent</strong>
+              An alias cannot be changed or deleted once created.
+            </li>
+            <li>
+              <strong>0.001 DCC</strong>
+              The network fee to create one.
+            </li>
+            <li>
+              <strong>4 to 30 characters</strong>
+              Lowercase letters, numbers and the symbols - @ _ . only.
+            </li>
+          </Facts>
+        </Card>
+      </Layout>
 
-        {/* Create Alias Modal */}
-        <CreateAliasModal
-          open={createModalOpen}
-          onClose={() => setCreateModalOpen(false)}
-          onSuccess={handleAliasCreated}
-        />
-      </Container>
+      <CreateAliasModal
+        open={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        onSuccess={handleAliasCreated}
+      />
     </PageFrame>
   );
 };

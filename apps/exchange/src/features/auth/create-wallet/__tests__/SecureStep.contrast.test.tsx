@@ -19,9 +19,9 @@
 import { ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { createAppTheme } from '@/styles/legacy/muiTheme';
+import { contrastRatio, tokens } from '@/styles/legacy/semantic';
 import { rgbToHex } from '@/test-utils/rgbToHex';
-import { createAppTheme } from '@/theme/mui-theme';
-import { contrastRatio, tokens } from '@/theme/tokens/semantic';
 import { SecureStep } from '../steps/SecureStep';
 
 /** `getComputedStyle` reports `rgb(r, g, b)`; `contrastRatio` takes hex only. */

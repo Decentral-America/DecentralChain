@@ -82,29 +82,37 @@ export interface ConfirmDialogProps {
   testId?: string;
 }
 
+/*
+ * Apple alert proportions: a semibold title, a secondary-colour message, and
+ * the actions on their own row, with the confirming action last.
+ */
 const DialogContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${(p) => p.theme.spacing.lg};
+  gap: 20px;
 `;
 
 const DialogTitle = styled.h3`
-  margin: 0;
-  font-size: ${(p) => p.theme.fontSizes.xl};
-  font-weight: ${(p) => p.theme.fontWeights.semibold};
+  margin: 0 40px 0 0;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.3px;
   color: ${(p) => p.theme.colors.text};
 `;
 
 const DialogMessage = styled.p`
-  margin: 0;
-  font-size: ${(p) => p.theme.fontSizes.md};
-  color: ${(p) => p.theme.colors.disabled};
-  line-height: 1.5;
+  margin: 6px 0 0;
+  font-size: 15px;
+  line-height: 1.47;
+  letter-spacing: -0.15px;
+  color: ${(p) => p.theme.colors.textSecondary};
 `;
 
 const DialogActions = styled(HStack as React.ComponentType)`
   justify-content: flex-end;
-  margin-top: ${(p) => p.theme.spacing.md};
+  gap: 8px;
+  flex-wrap: wrap;
 `;
 
 export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
@@ -157,6 +165,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             onClick={handleConfirm}
             variant={destructive ? 'danger' : 'primary'}
             disabled={loading || disableConfirm}
+            isLoading={loading}
             data-testid={`${testId}-confirm`}
           >
             {loading ? 'Processing...' : confirmText}

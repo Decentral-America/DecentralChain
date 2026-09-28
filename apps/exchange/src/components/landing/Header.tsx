@@ -16,8 +16,8 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import Logo from '@/components/atoms/Logo';
+import { tokens } from '@/styles/legacy/semantic';
 import { brandInk, onCanvas } from '@/theme/landingTheme';
-import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * Landing page header.

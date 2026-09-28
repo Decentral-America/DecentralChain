@@ -1,6 +1,6 @@
 import { Box, type BoxProps } from '@mui/material';
 import { type ReactNode } from 'react';
-import { palette } from '@/styles/tokens';
+import { palette } from '@/styles/legacy/tokens';
 import { blueprintOnDark, onCanvas } from '@/theme/landingTheme';
 
 /**

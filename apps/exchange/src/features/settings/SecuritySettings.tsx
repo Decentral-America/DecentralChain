@@ -17,160 +17,160 @@
 
 import { base58Decode, stringToBytes } from '@decentralchain/ts-lib-crypto';
 import * as ds from 'data-service';
+import { ChevronRight } from 'lucide-react';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { SettingsGroup, SettingsRow } from '@/components/premium/SettingsList';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSettings } from '@/contexts/SettingsContext';
 import { useClipboard } from '@/hooks/useClipboard';
 import { logger } from '@/lib/logger';
 import { noTapHighlight } from '@/styles/mixins';
 import { ChangePasswordModal, DeleteAccountModal, ExportAccountModal, ScriptModal } from './modals';
+import { Pane } from './Pane';
+import { CopyButton, MonoValue, MonoWell, RowButton } from './SettingsControls';
 
-// ==================== Styled Components ====================
+const EASE = 'cubic-bezier(0.32, 0.72, 0, 1)';
 
-const SecuritySection = styled.div`
+const Stack = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 8px;
+  width: 100%;
+`;
+
+const End = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+/*
+ * A whole-row action drawn like the kit's button rows (label and description
+ * on the left, the current value and a chevron on the right) but on the
+ * group's own opaque surface rather than a transparent fill, so the ink can be
+ * held to AA against the button's own background (see
+ * SecuritySettings.contrast.test.tsx). It always follows another row in its
+ * group, so it always draws the inset hairline above itself.
+ */
+const RowAction = styled.button`
+  position: relative;
+  display: flex;
+  align-items: center;
   gap: 16px;
-  padding: 16px 0;
-`;
-
-const Row = styled.div<{ $border?: boolean }>`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 12px 0;
-  ${({ $border, theme }) =>
-    $border &&
-    `
-    border-bottom: 1px solid ${theme.colors.border};
-  `}
-`;
-
-const FlexRow = styled.div<{ $border?: boolean }>`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 0;
-  ${({ $border, theme }) =>
-    $border &&
-    `
-    border-bottom: 1px solid ${theme.colors.border};
-  `}
-`;
-
-const Label = styled.div`
-  font-size: 12px;
-  color: ${(props) => props.theme.colors.textMuted};
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
-const Value = styled.div`
-  font-size: 12px;
-  color: ${(props) => props.theme.colors.text};
-  word-break: break-all;
-`;
-
-const DataField = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`;
-
-const Pre = styled.pre`
-  font-size: 12px;
-  font-family: 'Courier New', monospace;
-  color: ${(props) => props.theme.colors.text};
-  word-break: break-all;
-  white-space: pre-wrap;
-  margin: 0;
-  padding: 8px;
-  background-color: ${(props) => props.theme.colors.hover};
-  border-radius: 4px;
-`;
-
-const Button = styled.button`
-  padding: 6px 16px;
-  font-size: 12px;
-  color: ${(props) => props.theme.colors.primary};
-  background: ${(props) => props.theme.colors.background};
-  border: 1px solid ${(props) => props.theme.colors.primary};
-  border-radius: 4px;
+  width: 100%;
+  min-height: 52px;
+  padding: 10px 16px;
+  box-sizing: border-box;
+  border: 0;
+  font: inherit;
+  text-align: left;
+  color: ${({ theme }) => theme.colors.text};
+  background: ${({ theme }) => theme.colors.surface};
   cursor: pointer;
-  transition: all 0.2s;
-  align-self: flex-start;
+  transition: background-color 160ms ${EASE};
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 16px;
+    right: 0;
+    height: 1px;
+    background: ${({ theme }) => theme.colors.border};
+  }
 
   &:hover {
-    background-color: ${(props) => props.theme.colors.hover};
+    background: ${({ theme }) => theme.colors.hover};
   }
 
   &:active {
-    background-color: ${(props) => `${props.theme.colors.primary}30`};
+    background: ${({ theme }) => theme.colors.surfaceHover};
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px ${({ theme }) => theme.colors.primary};
   }
 
   /* Own press state above, so the grey tap flash is redundant. */
   ${noTapHighlight}
 `;
 
-const LinkButton = styled.button`
-  background: none;
-  border: none;
-  color: ${(props) => props.theme.colors.primary};
-  font-size: 12px;
-  cursor: pointer;
-  padding: 0;
-  text-decoration: none;
-  transition: color 0.2s;
-
-  /* The underline is the hover affordance; colour is unchanged by design. */
-  &:hover {
-    text-decoration: underline;
-  }
+const RowText = styled.span`
+  display: flex;
+  flex: 1 1 200px;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 `;
 
-const DangerLink = styled(LinkButton)`
-  color: ${(props) => props.theme.colors.error};
+const RowLabel = styled.span`
+  font-size: 15px;
+  line-height: 1.33;
+  letter-spacing: -0.15px;
 `;
 
-const CopyLink = styled.button`
-  background: none;
-  border: none;
-  color: ${(props) => props.theme.colors.primary};
-  font-size: 11px;
-  cursor: pointer;
-  padding: 0;
-  text-decoration: none;
-  transition: color 0.2s;
-
-  &:hover {
-    text-decoration: underline;
-  }
+const RowDescription = styled.span`
+  font-size: 13px;
+  line-height: 1.4;
+  color: ${({ theme }) => theme.colors.textSecondary};
 `;
 
-const ScriptButton = styled(Button)`
-  background-color: ${(props) => props.theme.colors.success};
-  color: ${(props) => props.theme.colors.onSuccess};
-  border: none;
-
-  /*
-   * No darker "success" shade exists in the token set, so hover/active dip
-   * opacity instead of restating the same fill colour - same pattern
-   * DeleteAccountModal's DangerButton uses for the identical reason.
-   */
-  &:hover {
-    opacity: 0.9;
-  }
-
-  &:active {
-    opacity: 0.8;
-  }
-
-  /* Own press state above, so the grey tap flash is redundant. */
-  ${noTapHighlight}
+const RowValue = styled.span`
+  flex-shrink: 0;
+  font-size: 15px;
+  color: ${({ theme }) => theme.colors.textSecondary};
 `;
+
+const RowChevron = styled(ChevronRight)`
+  flex-shrink: 0;
+  color: ${({ theme }) => theme.colors.textSubtle};
+`;
+
+/**
+ * A secret row: hidden until asked, copyable either way. Revealing expands the
+ * row with the value in a monospace well beneath its label.
+ */
+function SecretRow({
+  label,
+  value,
+  shown,
+  onShow,
+  copied,
+  onCopy,
+}: {
+  label: string;
+  value: string;
+  shown: boolean;
+  onShow: () => void;
+  copied: boolean;
+  onCopy: () => void;
+}) {
+  return (
+    <SettingsRow
+      label={label}
+      stack={shown}
+      control={
+        shown ? (
+          <Stack>
+            <MonoWell>{value}</MonoWell>
+            <End>
+              <CopyButton copied={copied} onCopy={onCopy} what={label} />
+            </End>
+          </Stack>
+        ) : (
+          <>
+            <CopyButton copied={copied} onCopy={onCopy} what={label} />
+            <RowButton onClick={onShow} aria-label={`Show ${label}`}>
+              Show
+            </RowButton>
+          </>
+        )
+      }
+    />
+  );
+}
 
 // ==================== Component ====================
 
@@ -267,95 +267,82 @@ export const SecuritySettings: React.FC = () => {
   const showDeleteAccountModal = () => setIsDeleteModalOpen(true);
   const showScriptModal = () => setIsScriptModalOpen(true);
 
+  const hasSecrets = Boolean(phrase || encodedSeed || privateKey);
+
   return (
-    <SecuritySection>
-      {/* Backup Phrase */}
-      {phrase && (
-        <Row>
-          <Label>
-            Backup Phrase
-            <CopyLink onClick={() => handleCopy(phrase, 'phrase')}>
-              {copiedField === 'phrase' ? 'Copied!' : 'Copy'}
-            </CopyLink>
-          </Label>
-          <DataField>
-            {!shownSeed && <Button onClick={() => setShownSeed(true)}>Show</Button>}
-            {shownSeed && <Pre>{phrase}</Pre>}
-          </DataField>
-        </Row>
-      )}
+    <Pane>
+      {hasSecrets ? (
+        <SettingsGroup
+          title="Recovery"
+          footer="Anyone who has these can move your funds. Reveal them only where no one can see your screen."
+        >
+          {phrase && (
+            <SecretRow
+              label="Backup phrase"
+              value={phrase}
+              shown={shownSeed}
+              onShow={() => setShownSeed(true)}
+              copied={copiedField === 'phrase'}
+              onCopy={() => handleCopy(phrase, 'phrase')}
+            />
+          )}
+          {encodedSeed && (
+            <SecretRow
+              label="Base58 seed"
+              value={encodedSeed}
+              shown={shownEncodedSeed}
+              onShow={() => setShownEncodedSeed(true)}
+              copied={copiedField === 'encodedSeed'}
+              onCopy={() => handleCopy(encodedSeed, 'encodedSeed')}
+            />
+          )}
+          {privateKey && (
+            <SecretRow
+              label="Private key"
+              value={privateKey}
+              shown={shownKey}
+              onShow={() => setShownKey(true)}
+              copied={copiedField === 'privateKey'}
+              onCopy={() => handleCopy(privateKey, 'privateKey')}
+            />
+          )}
+        </SettingsGroup>
+      ) : null}
 
-      {/* Base58 Encoded Seed */}
-      {encodedSeed && (
-        <Row>
-          <Label>
-            Base58 Seed
-            <CopyLink onClick={() => handleCopy(encodedSeed, 'encodedSeed')}>
-              {copiedField === 'encodedSeed' ? 'Copied!' : 'Copy'}
-            </CopyLink>
-          </Label>
-          <DataField>
-            {!shownEncodedSeed && <Button onClick={() => setShownEncodedSeed(true)}>Show</Button>}
-            {shownEncodedSeed && <Pre>{encodedSeed}</Pre>}
-          </DataField>
-        </Row>
-      )}
+      <SettingsGroup title="Identity">
+        <SettingsRow
+          label="Public key"
+          stack
+          control={<MonoValue>{publicKey || 'N/A'}</MonoValue>}
+        />
+        <SettingsRow label="Address" stack control={<MonoValue>{address || 'N/A'}</MonoValue>} />
+      </SettingsGroup>
 
-      {/* Private Key */}
-      {privateKey && (
-        <Row>
-          <Label>
-            Private Key
-            <CopyLink onClick={() => handleCopy(privateKey, 'privateKey')}>
-              {copiedField === 'privateKey' ? 'Copied!' : 'Copy'}
-            </CopyLink>
-          </Label>
-          <DataField>
-            {!shownKey && <Button onClick={() => setShownKey(true)}>Show</Button>}
-            {shownKey && <Value>{privateKey}</Value>}
-          </DataField>
-        </Row>
-      )}
+      <SettingsGroup title="Account">
+        <SettingsRow
+          label="Export account"
+          description="Save this account as an encrypted JSON file."
+          onClick={showExportAccountModal}
+        />
+        <SettingsRow label="Change password" onClick={showPasswordModal} />
+        {/* Script Management (Advanced Mode only) */}
+        {commonSettings.advancedMode && (
+          <RowAction type="button" onClick={showScriptModal}>
+            <RowText>
+              <RowLabel>Smart contract</RowLabel>
+              <RowDescription>
+                Attach a script that validates this account's transactions.
+              </RowDescription>
+            </RowText>
+            <RowValue>{hasScript ? 'Update script' : 'Set script'}</RowValue>
+            <RowChevron size={16} strokeWidth={2} aria-hidden />
+          </RowAction>
+        )}
+      </SettingsGroup>
 
-      {/* Public Key */}
-      <FlexRow>
-        <Label>Public Key</Label>
-        <Value>{publicKey || 'N/A'}</Value>
-      </FlexRow>
-
-      {/* Address */}
-      <FlexRow>
-        <Label>Address</Label>
-        <Value>{address || 'N/A'}</Value>
-      </FlexRow>
-
-      {/* Export Account */}
-      <FlexRow>
-        <Label>Export Account</Label>
-        <LinkButton onClick={showExportAccountModal}>Save Account as JSON</LinkButton>
-      </FlexRow>
-
-      {/* Change Password */}
-      <FlexRow>
-        <Label>Password</Label>
-        <LinkButton onClick={showPasswordModal}>Change Password</LinkButton>
-      </FlexRow>
-
-      {/* Delete Account */}
-      <FlexRow $border>
-        <Label>Account</Label>
-        <DangerLink onClick={showDeleteAccountModal}>Delete Account</DangerLink>
-      </FlexRow>
-
-      {/* Script Management (Advanced Mode only) */}
-      {commonSettings.advancedMode && (
-        <FlexRow $border>
-          <Label>Smart Contract</Label>
-          <ScriptButton onClick={showScriptModal}>
-            {hasScript ? 'Update Script' : 'Set Script'}
-          </ScriptButton>
-        </FlexRow>
-      )}
+      <SettingsGroup footer="Removes this account from this device. Without its backup phrase it cannot be restored.">
+        <SettingsRow label="Delete account" tone="danger" onClick={showDeleteAccountModal} />
+      </SettingsGroup>
 
       {/* Modals */}
       <ExportAccountModal isOpen={isExportModalOpen} onClose={() => setIsExportModalOpen(false)} />
@@ -365,6 +352,6 @@ export const SecuritySettings: React.FC = () => {
       />
       <DeleteAccountModal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} />
       <ScriptModal isOpen={isScriptModalOpen} onClose={() => setIsScriptModalOpen(false)} />
-    </SecuritySection>
+    </Pane>
   );
 };

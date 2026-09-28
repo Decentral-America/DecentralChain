@@ -15,6 +15,7 @@ import {
   selectSelectedPair,
   useDexStore,
 } from '@/stores/dexStore';
+import { PanelEmpty } from './PanelEmpty';
 
 /**
  * Order book wrapper - matches Angular's dex-order-book__wrapper
@@ -248,19 +249,6 @@ const OrderCell = styled.div<{ $type?: 'buy' | 'sell'; $align?: 'left' | 'center
   }};
   font-family: var(--mono, ${(p) => p.theme.fonts.mono});
   font-variant-numeric: tabular-nums;
-`;
-
-/**
- * Empty state
- */
-const EmptyState = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: ${(p) => p.theme.spacing.xl};
-  color: ${(p) => p.theme.colors.text};
-  opacity: 0.5;
-  font-size: ${(p) => scaled(p.theme.fontSizes.sm)};
 `;
 
 /**
@@ -549,7 +537,10 @@ export const OrderBook: React.FC = () => {
               </BidsSection>
             </>
           ) : (
-            <EmptyState>No orders available</EmptyState>
+            <PanelEmpty
+              title="The book is empty"
+              description="No resting orders for this pair yet. A limit order placed now becomes the first level."
+            />
           )}
         </TableBody>
       </Table>

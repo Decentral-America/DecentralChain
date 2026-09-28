@@ -1,100 +1,46 @@
 /**
  * Markets Page
- * Shows cryptocurrency market overview and price charts
+ * Shows cryptocurrency market overview as a watchlist.
+ *
+ * The market feed is not wired up, so the rows are the page's existing
+ * placeholders, labelled as such, and no row draws a trend line: there is no
+ * price history to draw one from.
  */
 
-import { TrendingDown, TrendingUp } from '@mui/icons-material';
-import { alpha, Grid, Paper, Stack, Typography, useTheme } from '@mui/material';
+import { Box } from '@mui/material';
+import { ComingSoon } from '@/components/feedback/ComingSoon';
+import { MarketWatchlist } from '@/components/premium/MarketWatchlist';
 import { PageFrame } from '@/layouts/PageFrame';
 
 export const Markets = () => {
-  const { palette } = useTheme();
   const marketData = [
-    { change: '+2.19%', pair: 'DCC/USDT', positive: true, price: '135.22', volume: '1.2M' },
-    { change: '+1.85%', pair: 'BTC/USDT', positive: true, price: '42,567.10', volume: '15.3M' },
-    { change: '-0.45%', pair: 'ETH/USDT', positive: false, price: '2,895.40', volume: '8.7M' },
-    { change: '+0.34%', pair: 'DCC/BTC', positive: true, price: '0.00317', volume: '450K' },
+    { change: 2.19, pair: 'DCC/USDT', price: '135.22', volume: '1.2M' },
+    { change: 1.85, pair: 'BTC/USDT', price: '42,567.10', volume: '15.3M' },
+    { change: -0.45, pair: 'ETH/USDT', price: '2,895.40', volume: '8.7M' },
+    { change: 0.34, pair: 'DCC/BTC', price: '0.00317', volume: '450K' },
   ];
 
   return (
     <PageFrame title="Markets" subtitle="Price overview across markets.">
-      <Grid container spacing={3}>
-        {marketData.map((market) => (
-          <Grid
-            key={market.pair}
-            size={{
-              md: 3,
-              sm: 6,
-              xs: 12,
-            }}
-          >
-            <Paper
-              sx={{
-                '&:hover': {
-                  borderColor: 'primary.main',
-                  boxShadow: `0 4px 12px ${alpha(palette.primary.main, 0.15)}`,
-                },
-                border: '1px solid',
-                borderColor: 'divider',
-                borderRadius: 2,
-                cursor: 'pointer',
-                p: 2.5,
-                transition: 'all 0.2s',
-              }}
-            >
-              <Stack spacing={1.5}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: 'text.secondary',
-                    fontWeight: 600,
-                  }}
-                >
-                  {market.pair}
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{
-                    fontWeight: 700,
-                  }}
-                >
-                  ${market.price}
-                </Typography>
-                <Stack
-                  direction="row"
-                  spacing={0.5}
-                  sx={{
-                    alignItems: 'center',
-                  }}
-                >
-                  {market.positive ? (
-                    <TrendingUp sx={{ color: 'success.main', fontSize: 16 }} />
-                  ) : (
-                    <TrendingDown sx={{ color: 'error.main', fontSize: 16 }} />
-                  )}
-                  <Typography
-                    variant="body2"
-                    color={market.positive ? 'success.main' : 'error.main'}
-                    sx={{
-                      fontWeight: 600,
-                    }}
-                  >
-                    {market.change}
-                  </Typography>
-                </Stack>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    color: 'text.secondary',
-                  }}
-                >
-                  Vol: {market.volume}
-                </Typography>
-              </Stack>
-            </Paper>
-          </Grid>
-        ))}
-      </Grid>
+      <ComingSoon
+        title="Market data is not connected yet"
+        description="The figures below are placeholders, not live prices. Trade shows the real order book for a pair; this page will follow once the market feed is wired up."
+      >
+        <Box sx={{ maxWidth: 720 }}>
+          <MarketWatchlist
+            title="Watchlist"
+            caption="Placeholder figures"
+            rows={marketData.map((market) => ({
+              change: market.change,
+              changeLabel: `${market.change > 0 ? '+' : ''}${market.change.toFixed(2)}%`,
+              id: market.pair,
+              name: `Vol ${market.volume}`,
+              price: `$${market.price}`,
+              symbol: market.pair,
+            }))}
+          />
+        </Box>
+      </ComingSoon>
     </PageFrame>
   );
 };

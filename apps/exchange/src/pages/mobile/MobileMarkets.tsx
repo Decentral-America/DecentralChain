@@ -1,17 +1,14 @@
-import { Box, ButtonBase, InputBase, Typography } from '@mui/material';
+import { Box } from '@mui/material';
+import { ChartCandlestick, SearchX } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Icon } from '@/components/atoms/Icon';
 import { MobileAppBar } from '@/components/mobile/MobileAppBar';
-import { AssetMark, MobileCard, MobileSection } from '@/components/mobile/primitives';
+import { AssetMark, MobileSection } from '@/components/mobile/primitives';
+import { EmptyState } from '@/components/premium/EmptyState';
+import { GroupedList, ListRow } from '@/components/premium/GroupedList';
+import { SearchField } from '@/components/premium/SearchField';
 import { NetworkConfig } from '@/config/networkConfig';
-import {
-  mobileAccent,
-  mobileLayout,
-  mobileRadius,
-  mobileSurface,
-  mobileText,
-} from '@/styles/mobileTokens';
+import { mobileLayout } from '@/styles/mobileTokens';
 
 /**
  * Mobile markets browser.
@@ -20,6 +17,9 @@ import {
  * `NetworkConfig.getTradingPairs()` — the same source the DEX pair selector
  * uses. Selecting a pair opens it in the DEX rather than a separate mobile
  * detail screen, so there is one trading surface and one source of truth.
+ *
+ * No price or change column: this screen has no market-data feed of its own,
+ * and a row of dashes would read as broken rather than honest.
  */
 
 /**
@@ -54,88 +54,49 @@ export function MobileMarkets() {
   }, [pairs, query]);
 
   return (
-    <Box sx={{ bgcolor: mobileSurface.canvas, minHeight: '100%' }}>
+    <Box sx={{ bgcolor: 'var(--surface-ground)', minHeight: '100%' }}>
       <MobileAppBar title="Markets" subtitle="Every pair this network can trade." />
 
       <MobileSection sx={{ pb: `${mobileLayout.scrollPaddingBottom}px` }}>
-        <Box
-          sx={{
-            alignItems: 'center',
-            bgcolor: mobileSurface.card,
-            border: `1px solid ${mobileSurface.border}`,
-            borderRadius: mobileRadius.md,
-            display: 'flex',
-            gap: 1,
-            px: 1.75,
-          }}
-        >
-          <Box sx={{ color: mobileText.muted, lineHeight: 0 }}>
-            <Icon name="search" size={18} strokeWidth={1.8} />
-          </Box>
-          <InputBase
+        <Box sx={{ mb: 2.5 }}>
+          <SearchField
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={setQuery}
             placeholder="Search pairs"
-            inputProps={{ 'aria-label': 'Search trading pairs' }}
-            // 16px keeps iOS from zooming the viewport when the field is focused.
-            sx={{ flex: 1, fontSize: 16, minHeight: 44 }}
+            label="Search trading pairs"
           />
         </Box>
 
-        <MobileCard padded={false} sx={{ mt: 2, px: 1, py: 0.5 }}>
-          {visible.map((pair, index) => (
-            <ButtonBase
+        <GroupedList>
+          {visible.map((pair) => (
+            <ListRow
               key={`${pair.amountAsset}-${pair.priceAsset}`}
+              leading={
+                <AssetMark tone="accent">{pair.amountName.slice(0, 2).toUpperCase()}</AssetMark>
+              }
+              title={`${pair.amountName} / ${pair.priceName}`}
+              subtitle="Trade on the DEX"
               onClick={() => navigate(`/desktop/dex/pair/${pair.amountAsset}/${pair.priceAsset}`)}
-              sx={{
-                borderBottom:
-                  index === visible.length - 1 ? 'none' : `1px solid ${mobileSurface.border}`,
-                display: 'flex',
-                gap: 1.5,
-                justifyContent: 'flex-start',
-                minHeight: 64,
-                px: 0.5,
-                py: 1,
-                textAlign: 'left',
-                width: '100%',
-              }}
-            >
-              <AssetMark bg={mobileAccent.wash}>
-                <Box sx={{ color: mobileAccent.base, fontSize: 13 }}>
-                  {pair.amountName.slice(0, 2).toUpperCase()}
-                </Box>
-              </AssetMark>
-
-              <Box sx={{ flex: 1, minWidth: 0 }}>
-                <Typography sx={{ fontSize: 15, fontWeight: 600 }}>
-                  {pair.amountName} / {pair.priceName}
-                </Typography>
-                <Typography sx={{ color: mobileText.muted, fontSize: 12 }}>
-                  Trade on the DEX
-                </Typography>
-              </Box>
-
-              <Box sx={{ color: mobileText.muted, flexShrink: 0, lineHeight: 0 }}>
-                <Icon name="chevronRight" size={18} />
-              </Box>
-            </ButtonBase>
+            />
           ))}
 
-          {visible.length === 0 && (
-            <Box sx={{ px: 2, py: 5, textAlign: 'center' }}>
-              <Typography
-                sx={{ color: mobileText.primary, fontSize: 15, fontWeight: 600, mb: 0.5 }}
-              >
-                {pairs.length === 0 ? 'No pairs configured' : 'No matches'}
-              </Typography>
-              <Typography sx={{ color: mobileText.muted, fontSize: 13 }}>
-                {pairs.length === 0
-                  ? 'This network has no trading pairs configured.'
-                  : `No pair matches “${query}”.`}
-              </Typography>
-            </Box>
-          )}
-        </MobileCard>
+          {visible.length === 0 &&
+            (pairs.length === 0 ? (
+              <EmptyState
+                compact
+                icons={[ChartCandlestick]}
+                title="No pairs configured"
+                description="This network has no trading pairs configured."
+              />
+            ) : (
+              <EmptyState
+                compact
+                icons={[SearchX]}
+                title="No matches"
+                description={`No pair matches “${query}”.`}
+              />
+            ))}
+        </GroupedList>
       </MobileSection>
     </Box>
   );

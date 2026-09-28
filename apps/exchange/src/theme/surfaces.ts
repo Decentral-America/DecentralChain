@@ -7,7 +7,7 @@
  * than as depth. Callers ask for the surface and do not know which they got.
  */
 import { type SxProps, type Theme } from '@mui/material';
-import { type ThemeMode, tokens } from './tokens/semantic';
+import { type ThemeMode, tokens } from '@/styles/legacy/semantic';
 
 /** Shared so a card is the same shape in both modes. */
 const RADIUS = '20px';

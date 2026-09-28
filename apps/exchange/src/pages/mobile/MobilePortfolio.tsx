@@ -1,14 +1,20 @@
-import { Alert, Box, InputBase, Skeleton, Typography } from '@mui/material';
+import { Alert, Box, Skeleton, Typography } from '@mui/material';
+import { Coins, Download, SearchX, Wallet } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Icon } from '@/components/atoms/Icon';
 import { MobileAppBar } from '@/components/mobile/MobileAppBar';
 import {
   AssetMark,
+  initialsFor,
   MobileAssetRow,
-  MobileCard,
+  MobileHero,
   MobileSection,
+  MobileStat,
 } from '@/components/mobile/primitives';
+import { AnimatedNumber } from '@/components/premium/AnimatedNumber';
+import { EmptyState } from '@/components/premium/EmptyState';
+import { GroupedList, ListRowSkeleton } from '@/components/premium/GroupedList';
+import { SearchField } from '@/components/premium/SearchField';
 import { useMobileWallet } from '@/pages/mobile/useMobileWallet';
 import {
   mobileAccent,
@@ -22,29 +28,25 @@ import { formatAmount } from '@/utils/formatters';
 /**
  * Mobile portfolio.
  *
- * The real holdings of the connected wallet: a balance summary, a holdings
- * split, and a searchable asset list. The desktop portfolio is a wide
+ * The real holdings of the connected wallet: a hero balance, a holdings
+ * split, and a searchable grouped list. The desktop portfolio is a wide
  * multi-column table which does not survive a narrow viewport, so the same
  * data is presented as stacked rows here.
  */
 
-/** Tints used for the holdings split, in descending share order. */
+/** Tints used for the holdings split, in descending share order: one hue, stepping lighter. */
 const SPLIT_COLORS = [
   mobileAccent.base,
   mobileAccent.bright,
-  mobileAccent.hover,
-  mobileAccent.wash,
+  'var(--color-lavender-border)',
+  'var(--text-subtle)',
 ];
-
-function initialsFor(name: string): string {
-  return name.slice(0, 2).toUpperCase();
-}
 
 export function MobilePortfolio() {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
 
-  const { allocations, assets, availableBalance, baseBalance, error, isLoading, leased } =
+  const { allocations, assets, availableBalance, error, isLoading, leased, totalBalance } =
     useMobileWallet();
 
   const visible = useMemo(() => {
@@ -63,7 +65,7 @@ export function MobilePortfolio() {
     <Box
       sx={{
         bgcolor: mobileSurface.canvas,
-        // Fixed fill, fixed ink — see the note on MobileHome's canvas.
+        // The canvas states its own ink — see the note on MobileHome's canvas.
         color: mobileText.primary,
         minHeight: '100%',
       }}
@@ -77,163 +79,110 @@ export function MobilePortfolio() {
           </Alert>
         ) : null}
 
-        <MobileCard sx={{ p: 2.5 }}>
-          <Typography sx={{ color: mobileText.secondary, fontSize: 14, mb: 0.5 }}>
-            Available balance
-          </Typography>
-
+        <MobileHero
+          label="Available balance"
+          unit={isLoading || error ? undefined : 'DCC'}
+          footer={
+            !isLoading && (leased > 0 || totalBalance !== availableBalance) ? (
+              <Box sx={{ display: 'flex', gap: 4, mt: 1.5 }}>
+                <MobileStat
+                  label="Total"
+                  value={<AnimatedNumber value={totalBalance} decimals={8} />}
+                />
+                {leased > 0 ? (
+                  <MobileStat
+                    label="Leased out"
+                    value={<AnimatedNumber value={leased} decimals={8} />}
+                  />
+                ) : null}
+              </Box>
+            ) : null
+          }
+        >
           {isLoading ? (
-            <Skeleton variant="text" width={200} height={40} />
+            <Skeleton variant="text" width={200} height={52} />
+          ) : error ? (
+            // The balance is unknown, which is not the same as zero.
+            <Box component="span" sx={{ color: mobileText.tertiary }}>
+              —
+            </Box>
           ) : (
-            <Typography
+            <AnimatedNumber value={availableBalance} decimals={8} />
+          )}
+        </MobileHero>
+
+        {/*
+         * Holdings split by token amount. It is deliberately not called an
+         * allocation by value: there is no price oracle for arbitrary issued
+         * assets, so a value-weighted split would be invented.
+         */}
+        {!isLoading && splitBands.length > 1 ? (
+          <Box sx={{ mt: 3 }}>
+            <Typography sx={{ color: mobileText.secondary, fontSize: 13, mb: 1 }}>
+              Holdings split by amount
+            </Typography>
+            <Box
               sx={{
-                fontSize: 26,
-                fontVariantNumeric: 'tabular-nums',
-                fontWeight: 700,
-                letterSpacing: '-0.5px',
+                borderRadius: mobileRadius.pill,
+                display: 'flex',
+                gap: '2px',
+                height: 8,
+                overflow: 'hidden',
               }}
             >
-              {formatAmount(availableBalance, 8)} DCC
-            </Typography>
-          )}
-
-          {!isLoading && (leased > 0 || baseBalance !== availableBalance) ? (
-            <Box sx={{ display: 'flex', gap: 3, mt: 1.5 }}>
-              <Box>
-                <Typography sx={{ color: mobileText.muted, fontSize: 12 }}>Total</Typography>
-                <Typography
-                  sx={{ fontSize: 14, fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}
-                >
-                  {formatAmount(baseBalance, 8)}
-                </Typography>
-              </Box>
-              {leased > 0 ? (
-                <Box>
-                  <Typography sx={{ color: mobileText.muted, fontSize: 12 }}>Leased out</Typography>
+              {splitBands.map((band, i) => (
+                <Box
+                  key={band.assetId}
+                  sx={{ bgcolor: SPLIT_COLORS[i % SPLIT_COLORS.length], flex: band.percent }}
+                />
+              ))}
+            </Box>
+            <Box sx={{ columnGap: 2, display: 'flex', flexWrap: 'wrap', mt: 1.25, rowGap: 0.75 }}>
+              {splitBands.map((band, i) => (
+                <Box key={band.assetId} sx={{ alignItems: 'center', display: 'flex', gap: 0.75 }}>
+                  <Box
+                    sx={{
+                      bgcolor: SPLIT_COLORS[i % SPLIT_COLORS.length],
+                      borderRadius: '50%',
+                      height: 8,
+                      width: 8,
+                    }}
+                  />
                   <Typography
-                    sx={{ fontSize: 14, fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}
+                    sx={{
+                      color: mobileText.secondary,
+                      fontSize: 13,
+                      fontVariantNumeric: 'tabular-nums',
+                    }}
                   >
-                    {formatAmount(leased, 8)}
+                    {band.name} {band.percent.toFixed(0)}%
                   </Typography>
                 </Box>
-              ) : null}
+              ))}
             </Box>
-          ) : null}
-
-          {/*
-           * Holdings split by token amount. It is deliberately not called an
-           * allocation by value: there is no price oracle for arbitrary issued
-           * assets, so a value-weighted split would be invented.
-           */}
-          {!isLoading && splitBands.length > 1 ? (
-            <Box sx={{ mt: 2.5 }}>
-              <Typography sx={{ color: mobileText.muted, fontSize: 12, mb: 1 }}>
-                Holdings split
-              </Typography>
-              <Box
-                sx={{
-                  borderRadius: mobileRadius.pill,
-                  display: 'flex',
-                  gap: '2px',
-                  height: 8,
-                  overflow: 'hidden',
-                }}
-              >
-                {splitBands.map((band, i) => (
-                  <Box
-                    key={band.assetId}
-                    sx={{ bgcolor: SPLIT_COLORS[i % SPLIT_COLORS.length], flex: band.percent }}
-                  />
-                ))}
-              </Box>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5, mt: 1.5 }}>
-                {splitBands.map((band, i) => (
-                  <Box key={band.assetId} sx={{ alignItems: 'center', display: 'flex', gap: 0.75 }}>
-                    <Box
-                      sx={{
-                        bgcolor: SPLIT_COLORS[i % SPLIT_COLORS.length],
-                        borderRadius: '2px',
-                        height: 8,
-                        width: 8,
-                      }}
-                    />
-                    <Typography sx={{ color: mobileText.secondary, fontSize: 12 }}>
-                      {band.name} {band.percent.toFixed(0)}%
-                    </Typography>
-                  </Box>
-                ))}
-              </Box>
-            </Box>
-          ) : null}
-        </MobileCard>
-
-        {/* Search */}
-        <Box
-          sx={{
-            alignItems: 'center',
-            bgcolor: mobileSurface.card,
-            border: `1px solid ${mobileSurface.border}`,
-            borderRadius: mobileRadius.md,
-            display: 'flex',
-            gap: 1,
-            mt: 2.5,
-            px: 1.75,
-          }}
-        >
-          <Box sx={{ color: mobileText.muted, lineHeight: 0 }}>
-            <Icon name="search" size={18} strokeWidth={1.8} />
           </Box>
-          <InputBase
+        ) : null}
+
+        <Box sx={{ mb: 2, mt: 4 }}>
+          <SearchField
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={setQuery}
             placeholder="Search your assets"
-            inputProps={{ 'aria-label': 'Search your assets' }}
-            sx={{
-              /*
-               * `InputBase` sets `color: text.primary` on its own root — an
-               * explicit, mode-aware ink, not an inherited one, so pinning the
-               * surrounding `Box` would not have reached it. The field sits on
-               * the fixed `mobileSurface.card`, so what the user typed was
-               * `#f5f4ff` on `#ffffff` — 1.09:1 — in dark mode.
-               */
-              color: mobileText.primary,
-              flex: 1,
-              // 16px keeps iOS from zooming the viewport when the field is focused.
-              fontSize: 16,
-              minHeight: 44,
-            }}
+            label="Search your assets"
           />
         </Box>
 
-        <MobileCard padded={false} sx={{ mt: 2, px: 1, py: 0.5 }}>
-          {isLoading &&
-            [0, 1, 2, 3].map((row) => (
-              <Box key={row} sx={{ alignItems: 'center', display: 'flex', gap: 1.5, p: 1.5 }}>
-                <Skeleton variant="circular" width={40} height={40} />
-                <Box sx={{ flex: 1 }}>
-                  <Skeleton variant="text" width="50%" />
-                  <Skeleton variant="text" width="30%" />
-                </Box>
-              </Box>
-            ))}
+        {error && assets.length === 0 ? null : (
+          <GroupedList title="Assets">
+            {isLoading && [0, 1, 2, 3].map((row) => <ListRowSkeleton key={row} />)}
 
-          {!isLoading &&
-            visible.map((asset, index) => (
-              <Box
-                key={asset.assetId}
-                sx={{
-                  borderBottom:
-                    index === visible.length - 1 ? 'none' : `1px solid ${mobileSurface.border}`,
-                }}
-              >
+            {!isLoading &&
+              visible.map((asset) => (
                 <MobileAssetRow
+                  key={asset.assetId}
                   logo={
-                    <AssetMark bg={asset.isBaseAsset ? mobileAccent.wash : mobileSurface.chip}>
-                      <Box
-                        sx={{ color: asset.isBaseAsset ? mobileAccent.base : mobileText.primary }}
-                      >
-                        {initialsFor(asset.name)}
-                      </Box>
+                    <AssetMark tone={asset.isBaseAsset ? 'accent' : 'neutral'}>
+                      {initialsFor(asset.name)}
                     </AssetMark>
                   }
                   name={asset.name}
@@ -243,24 +192,27 @@ export function MobilePortfolio() {
                   positive
                   onClick={() => navigate('/desktop/wallet/transactions')}
                 />
-              </Box>
-            ))}
+              ))}
 
-          {!isLoading && visible.length === 0 && (
-            <Box sx={{ px: 2, py: 5, textAlign: 'center' }}>
-              <Typography
-                sx={{ color: mobileText.primary, fontSize: 15, fontWeight: 600, mb: 0.5 }}
-              >
-                {assets.length === 0 ? 'No assets yet' : 'No matches'}
-              </Typography>
-              <Typography sx={{ color: mobileText.muted, fontSize: 13 }}>
-                {assets.length === 0
-                  ? 'Receive DCC or an issued asset to get started.'
-                  : `Nothing in your wallet matches “${query}”.`}
-              </Typography>
-            </Box>
-          )}
-        </MobileCard>
+            {!isLoading && !error && visible.length === 0 ? (
+              assets.length === 0 ? (
+                <EmptyState
+                  compact
+                  icons={[Coins, Download, Wallet]}
+                  title="No assets yet"
+                  description="Receive DCC or an issued asset to get started."
+                />
+              ) : (
+                <EmptyState
+                  compact
+                  icons={[SearchX]}
+                  title="No matches"
+                  description={`Nothing in your wallet matches “${query}”.`}
+                />
+              )
+            ) : null}
+          </GroupedList>
+        )}
       </MobileSection>
     </Box>
   );

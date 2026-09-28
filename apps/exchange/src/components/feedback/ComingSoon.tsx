@@ -1,7 +1,9 @@
-import { ScheduleOutlined } from '@mui/icons-material';
 import { Box, Typography, useTheme } from '@mui/material';
+import { alpha } from '@mui/material/styles';
+import { Clock } from 'lucide-react';
 import { type ReactNode } from 'react';
-import { radii } from '@/styles/tokens';
+import { hasContent } from '@/components/premium/hasContent';
+import { chrome, typeScale } from '@/styles/tokens';
 import { tokens } from '@/theme/tokens/semantic';
 
 /**
@@ -18,17 +20,26 @@ import { tokens } from '@/theme/tokens/semantic';
  * accessibility tree rather than merely greying it out. The screen still shows
  * what is being built — that is worth something — but it can no longer be
  * mistaken for something that works.
+ *
+ * The notice is a calm tinted panel in the Alert family: no border, no stripe,
+ * a round glyph, a semibold line and a secondary sentence.
  */
 
 export function ComingSoon({
   title,
   description,
+  action,
   children,
 }: {
   /** What is not available yet, stated plainly. */
   title: string;
   /** What will be possible, and anything the reader can do in the meantime. */
   description: string;
+  /**
+   * One way forward, such as a link to the screen that does work today.
+   * Right-aligned beside the text; drops beneath it on narrow widths.
+   */
+  action?: ReactNode;
   /** The preview of the unfinished surface. Rendered inert beneath the notice. */
   children?: ReactNode;
 }) {
@@ -40,36 +51,77 @@ export function ComingSoon({
       <Box
         role="status"
         sx={{
-          alignItems: 'flex-start',
+          alignItems: 'start',
           /*
-           * `status.warningSurface` was a fixed light literal (`#fdf6e9`).
-           * The title/description below read the real ambient `text.primary`/
-           * `text.secondary` ink, which this box never controlled — under the
-           * old `landingTheme` wrapper that ink was always the same fixed
-           * light value the panel was designed for, so the mismatch never
-           * surfaced. Once a page stops forcing that wrapper, dark mode's
-           * near-white ink lands on this still-fixed-light panel: measured
-           * 1.01:1 (title) / 1.86:1 (description) — see task-6-report.md.
-           * `surface.sunken` keeps the "recessed panel" read in both modes
-           * while actually pairing with the ink that sits on it.
+           * The warning wash for the mode in use, not a fixed light literal:
+           * the title and description read the ambient `text.primary`/
+           * `text.secondary` ink, and dark mode's near-white ink on a
+           * still-light panel measured 1.01:1 / 1.86:1 (task-6-report.md).
+           * `chrome[mode].alert.warning.bg` is the deep amber wash in dark
+           * mode, so the panel always pairs with the ink that sits on it.
            */
-          bgcolor: t.surface.sunken,
-          borderRadius: radii.cards,
-          display: 'flex',
-          gap: 2,
-          p: 2.5,
+          bgcolor: chrome[palette.mode].alert.warning.bg,
+          borderRadius: '16px',
+          columnGap: 1.5,
+          display: 'grid',
+          gridTemplateColumns: hasContent(action)
+            ? '32px minmax(0, 1fr) auto'
+            : '32px minmax(0, 1fr)',
+          px: 2.5,
+          py: 2,
+          rowGap: 1.5,
         }}
       >
-        <ScheduleOutlined
+        <Box
           aria-hidden="true"
-          sx={{ color: t.intent.warning, fontSize: 22, mt: 0.2 }}
-        />
-        <Box sx={{ minWidth: 0 }}>
-          <Typography sx={{ color: 'text.primary', fontSize: 16 }}>{title}</Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 14, lineHeight: 1.5, mt: 0.5 }}>
+          sx={{
+            alignItems: 'center',
+            bgcolor: alpha(t.intent.warning, 0.18),
+            borderRadius: '50%',
+            color: t.intent.warning,
+            display: 'flex',
+            flexShrink: 0,
+            height: 32,
+            justifyContent: 'center',
+            width: 32,
+          }}
+        >
+          <Clock size={16} strokeWidth={2} />
+        </Box>
+        <Box sx={{ minWidth: 0, pt: 0.25 }}>
+          <Typography
+            sx={{
+              color: 'text.primary',
+              fontSize: typeScale.body.size,
+              fontWeight: 600,
+              letterSpacing: typeScale.body.tracking,
+            }}
+          >
+            {title}
+          </Typography>
+          <Typography
+            sx={{
+              color: 'text.secondary',
+              fontSize: typeScale.bodySm.size,
+              lineHeight: 1.45,
+              mt: 0.25,
+            }}
+          >
             {description}
           </Typography>
         </Box>
+        {hasContent(action) ? (
+          <Box
+            sx={{
+              alignSelf: 'center',
+              gridColumn: { sm: 3, xs: 2 },
+              gridRow: { sm: 1, xs: 2 },
+              justifySelf: { sm: 'end', xs: 'start' },
+            }}
+          >
+            {action}
+          </Box>
+        ) : null}
       </Box>
 
       {children && (
@@ -79,7 +131,7 @@ export function ComingSoon({
          * anyone. It also takes whatever room is left inside a fitted page and
          * scrolls within it, rather than pushing the notice off the screen.
          */
-        <Box inert sx={{ flex: 1, minHeight: 0, opacity: 0.55, overflowY: 'auto' }}>
+        <Box inert sx={{ flex: 1, minHeight: 0, mt: 2, opacity: 0.6, overflowY: 'auto' }}>
           {children}
         </Box>
       )}

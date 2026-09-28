@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { palette } from '@/styles/tokens';
+import { palette } from '@/styles/legacy/tokens';
 import { contourStroke } from '@/theme/landingTheme';
 
 /**

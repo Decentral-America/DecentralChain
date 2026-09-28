@@ -210,7 +210,7 @@ export const BackupSettings: React.FC = () => {
 
   return (
     <Box>
-      <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
+      <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
         Export Wallet Backup
       </Typography>
       <Typography

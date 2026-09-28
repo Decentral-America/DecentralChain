@@ -8,18 +8,20 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
 import { Modal } from '@/components/organisms/Modal';
+import { fieldFocus, fieldSurface } from '@/components/premium/fieldStyles';
 import { multiAccount } from '@/services/multiAccount';
 import { noTouchZoom } from '@/styles/mixins';
 
 const ModalBody = styled.div`
-  padding: 24px;
+  padding: 0;
 `;
 
 const Description = styled.p`
   margin: 0 0 20px 0;
-  font-size: 14px;
-  color: ${(props) => props.theme.colors.textMuted};
-  line-height: 1.6;
+  font-size: 15px;
+  letter-spacing: -0.15px;
+  color: ${(p) => p.theme.colors.textSecondary};
+  line-height: 1.47;
 `;
 
 const InputGroup = styled.div`
@@ -28,51 +30,48 @@ const InputGroup = styled.div`
 
 const Label = styled.label`
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   font-size: 13px;
   font-weight: 500;
-  color: ${(props) => props.theme.colors.text};
+  color: ${(p) => p.theme.colors.text};
 `;
 
-const Input = styled.input`
+const Input = styled.input<{ $invalid?: boolean }>`
+  ${fieldSurface}
   width: 100%;
-  padding: 12px;
-  border: 1px solid ${(props) => props.theme.colors.border};
-  border-radius: 4px;
-  font-size: 14px;
-  font-family: inherit;
+  height: 44px;
+  padding: 0 14px;
+  font-size: 15px;
 
   /* iOS Safari zooms the page on focus below 16px; touch only. */
   ${noTouchZoom}
-  box-sizing: border-box;
 
   &:focus {
-    outline: none;
-    border-color: ${(props) => props.theme.colors.primary};
+    ${fieldFocus}
   }
 
   &:disabled {
-    background-color: ${(props) => props.theme.colors.hover};
     cursor: not-allowed;
+    background: ${(p) => p.theme.colors.hover};
   }
 `;
 
 const ErrorMessage = styled.div`
   margin-top: 8px;
-  padding: 8px 12px;
-  background-color: ${(props) => `${props.theme.colors.error}10`};
-  border-radius: 4px;
+  padding: 10px 12px;
+  border-radius: 10px;
   font-size: 13px;
-  color: ${(props) => props.theme.colors.error};
+  background-color: ${(p) => p.theme.colors.errorSurface};
+  color: ${(p) => p.theme.colors.error};
 `;
 
 const SuccessMessage = styled.div`
   margin-top: 8px;
-  padding: 8px 12px;
-  background-color: ${(props) => `${props.theme.colors.success}10`};
-  border-radius: 4px;
+  padding: 10px 12px;
+  border-radius: 10px;
   font-size: 13px;
-  color: ${(props) => props.theme.colors.success};
+  background-color: ${(p) => p.theme.colors.successSurface};
+  color: ${(p) => p.theme.colors.success};
 `;
 
 const ButtonGroup = styled.div`

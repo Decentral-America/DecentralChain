@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { useTradeHistory } from '@/api/services/matcherService';
 import { Spinner } from '@/components/atoms/Spinner';
 import { selectSelectedPair, useDexStore } from '@/stores/dexStore';
+import { PanelEmpty } from './PanelEmpty';
 
 /**
  * Trade history container
@@ -133,19 +134,6 @@ const TimeCell = styled.div`
 `;
 
 /**
- * Empty state
- */
-const EmptyState = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: ${(p) => p.theme.spacing.xl};
-  color: ${(p) => p.theme.colors.text};
-  opacity: 0.5;
-  font-size: ${(p) => p.theme.fontSizes.sm};
-`;
-
-/**
  * Loading state
  */
 const LoadingState = styled.div`
@@ -153,16 +141,6 @@ const LoadingState = styled.div`
   align-items: center;
   justify-content: center;
   padding: ${(p) => p.theme.spacing.xl};
-`;
-
-/**
- * Error state
- */
-const ErrorState = styled.div`
-  padding: ${(p) => p.theme.spacing.md};
-  color: ${(p) => p.theme.colors.error};
-  font-size: ${(p) => p.theme.fontSizes.sm};
-  text-align: center;
 `;
 
 /**
@@ -238,7 +216,7 @@ export const TradeHistory: React.FC<{ compact?: boolean }> = ({ compact = false 
             <Title>Trade History</Title>
           </Header>
         )}
-        <EmptyState>Please select a trading pair</EmptyState>
+        <PanelEmpty title="Please select a trading pair" />
       </TradeHistoryContainer>
     );
   }
@@ -266,7 +244,10 @@ export const TradeHistory: React.FC<{ compact?: boolean }> = ({ compact = false 
             <Title>Trade History</Title>
           </Header>
         )}
-        <ErrorState>Failed to load trade history</ErrorState>
+        <PanelEmpty
+          title="Failed to load trade history"
+          description="The matcher did not answer. This list retries on its own."
+        />
       </TradeHistoryContainer>
     );
   }
@@ -292,7 +273,10 @@ export const TradeHistory: React.FC<{ compact?: boolean }> = ({ compact = false 
       {/* Trades List */}
       <TradesList>
         {!hasTrades ? (
-          <EmptyState>No recent trades</EmptyState>
+          <PanelEmpty
+            title="No recent trades"
+            description="Fills for this pair appear here as they happen."
+          />
         ) : (
           trades.map((trade) => (
             <TradeRow key={trade.id} $type={trade.type}>

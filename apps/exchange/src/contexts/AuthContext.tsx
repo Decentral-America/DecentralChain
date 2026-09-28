@@ -108,16 +108,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   /**
    * Apply user's theme preference when user changes
    * Matches Angular: User._addUserData() line 871
+   *
+   * The account's legacy theme name lives on `data-user-theme`. `data-theme`
+   * belongs to ThemeContext (light/dark) and drives the CSS custom properties;
+   * writing 'default' there switched every CSS-variable surface back to light
+   * after sign-in.
    */
   useEffect(() => {
     const applyUserTheme = () => {
       if (user?.settings?.theme) {
         // Apply user's saved theme
-        document.documentElement.setAttribute('data-theme', user.settings.theme);
+        document.documentElement.setAttribute('data-user-theme', user.settings.theme);
         logger.debug('[Auth] Applied user theme:', user.settings.theme);
       } else if (user) {
         // New user - apply default theme
-        document.documentElement.setAttribute('data-theme', 'default');
+        document.documentElement.setAttribute('data-user-theme', 'default');
         logger.debug('[Auth] Applied default theme for new user');
       }
       // If no user (logged out), don't change theme

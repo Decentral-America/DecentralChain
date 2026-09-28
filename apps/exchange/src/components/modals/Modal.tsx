@@ -2,13 +2,28 @@
  * Modal Component
  * Reusable modal with overlay, animations, and accessibility features
  * Supports click-to-close, ESC key, and focus trap
+ *
+ * Drawn with the shared dialog material (src/components/premium/ModalSurface,
+ * after 21st.dev "Modal" by @ddoemonn): blurred backdrop, 20px panel, spring
+ * entrance and a quick exit that AnimatePresence lets finish before unmount.
  */
+import { AnimatePresence } from 'motion/react';
 import type React from 'react';
 import { useCallback, useEffect, useRef } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { Portal } from '@/components/atoms/Portal';
+import {
+  CloseGlyph,
+  ModalBackdrop,
+  ModalBodyArea,
+  ModalCloseButton,
+  ModalHead,
+  ModalLayer,
+  ModalPanel,
+  ModalTitleText,
+  useModalVariants,
+} from '@/components/premium/ModalSurface';
 import { useEscapeKey, useFocusTrap } from '@/hooks';
-import { scrim } from '@/styles/tokens';
 
 export interface ModalProps {
   /**
@@ -84,137 +99,28 @@ export interface ModalProps {
   testId?: string;
 }
 
-/**
- * Fade in animation for overlay
- */
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+const sizeWidths = {
+  fullscreen: '95vw',
+  large: '900px',
+  medium: '600px',
+  small: '400px',
+} as const;
+
+/* The body keeps its padding when a title bar is absent, so content never touches the corner. */
+const Body = styled(ModalBodyArea)<{ $titleless: boolean }>`
+  padding-top: ${(p) => (p.$titleless ? '24px' : '4px')};
 `;
 
-/**
- * Slide up animation for modal content
- */
-const slideUp = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* A titleless modal floats its close button over the body instead of reserving a bar. */
+const FloatingClose = styled(ModalCloseButton)`
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 1;
 `;
 
-const Overlay = styled.div<{ $zIndex: number; $animationDuration: number }>`
-  position: fixed;
-  inset: 0;
-  background: ${scrim};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: ${(p) => p.$zIndex};
-  animation: ${fadeIn} ${(p) => p.$animationDuration}ms ease-out;
-  padding: ${(p) => p.theme.spacing.lg};
-  overflow-y: auto;
-  /* Keeps a scroll gesture inside the overlay instead of chaining to the page behind it. */
-  overscroll-behavior: contain;
-
-  /* Backdrop blur effect — prefixed form first for older iOS Safari, which
-     only understands -webkit-backdrop-filter. */
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
-`;
-
-const sizeStyles = {
-  fullscreen: `
-    max-width: 95vw;
-    max-height: 95vh;
-    width: 100%;
-    height: 100%;
-  `,
-  large: `
-    max-width: 900px;
-  `,
-  medium: `
-    max-width: 600px;
-  `,
-  small: `
-    max-width: 400px;
-  `,
-};
-
-const ModalContent = styled.div<{
-  size: 'small' | 'medium' | 'large' | 'fullscreen';
-  $animationDuration: number;
-}>`
-  background: ${(p) => p.theme.colors.background};
-  border-radius: ${(p) => p.theme.radii.lg};
-  box-shadow: ${(p) => p.theme.shadows.xl};
-  width: 90%;
-  ${(p) => sizeStyles[p.size]}
-  animation: ${slideUp} ${(p) => p.$animationDuration}ms ease-out;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-
-  /* Ensure modal is scrollable if content is too tall */
-  ${(p) =>
-    p.size === 'fullscreen' &&
-    `
-    overflow-y: auto;
-    overscroll-behavior: contain;
-  `}
-`;
-
-const ModalHeader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: ${(p) => p.theme.spacing.lg};
-  border-bottom: 1px solid ${(p) => p.theme.colors.border};
-`;
-
-const ModalTitle = styled.h2`
-  margin: 0;
-  font-size: ${(p) => p.theme.fontSizes.xl};
-  font-weight: ${(p) => p.theme.fontWeights.semibold};
-  color: ${(p) => p.theme.colors.text};
-`;
-
-const CloseButton = styled.button`
-  background: transparent;
-  border: none;
-  font-size: ${(p) => p.theme.fontSizes.xl};
-  color: ${(p) => p.theme.colors.disabled};
-  cursor: pointer;
-  padding: ${(p) => p.theme.spacing.xs};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: ${(p) => p.theme.radii.sm};
-  transition: ${(p) => p.theme.transitions.fast};
-
-  &:hover {
-    color: ${(p) => p.theme.colors.text};
-    background: ${(p) => p.theme.colors.hover};
-  }
-
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px ${(p) => p.theme.colors.primary};
-  }
-`;
-
-const ModalBody = styled.div`
-  padding: ${(p) => p.theme.spacing.lg};
-  flex: 1;
-  overflow-y: auto;
-  /* Keeps a scroll gesture inside the overlay instead of chaining to the page behind it. */
+/* Keeps a scroll gesture inside the overlay instead of chaining to the page behind it. */
+const Layer = styled(ModalLayer)`
   overscroll-behavior: contain;
 `;
 
@@ -228,20 +134,21 @@ export const Modal: React.FC<ModalProps> = ({
   trapFocus = true,
   size = 'medium',
   className,
-  zIndex = 1000,
-  animationDuration = 200,
+  zIndex = 1300,
+  animationDuration: _animationDuration = 200,
   showCloseButton = false,
   testId = 'modal',
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
+  const variants = useModalVariants();
   const previousActiveElement = useRef<HTMLElement | null>(null);
 
   /**
    * Handle overlay click
    */
   const handleOverlayClick = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (closeOnOverlayClick && e.target === e.currentTarget) {
+    (_e: React.MouseEvent<HTMLDivElement>) => {
+      if (closeOnOverlayClick) {
         onClose();
       }
     },
@@ -290,46 +197,67 @@ export const Modal: React.FC<ModalProps> = ({
     };
   }, [open]);
 
-  if (!open) {
-    return null;
-  }
-
   return (
     <Portal>
-      <Overlay
-        onClick={handleOverlayClick}
-        $zIndex={zIndex}
-        $animationDuration={animationDuration}
-        data-testid={`${testId}-overlay`}
-      >
-        <ModalContent
-          ref={modalRef}
-          size={size}
-          $animationDuration={animationDuration}
-          className={className}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby={title ? `${testId}-title` : undefined}
-          tabIndex={-1}
-          data-testid={testId}
-        >
-          {(title || showCloseButton) && (
-            <ModalHeader>
-              {title && <ModalTitle id={`${testId}-title`}>{title}</ModalTitle>}
-              {showCloseButton && (
-                <CloseButton
+      <AnimatePresence>
+        {open ? (
+          <Layer
+            key="modal"
+            $z={zIndex}
+            initial="closed"
+            animate="open"
+            exit="gone"
+            variants={{ closed: {}, gone: {}, open: {} }}
+            data-testid={`${testId}-overlay`}
+          >
+            <ModalBackdrop
+              aria-hidden="true"
+              variants={variants.backdrop}
+              onClick={handleOverlayClick}
+            />
+            <ModalPanel
+              ref={modalRef}
+              variants={variants.panel}
+              className={className}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={title ? `${testId}-title` : undefined}
+              tabIndex={-1}
+              data-testid={testId}
+              style={{
+                height: size === 'fullscreen' ? '95vh' : undefined,
+                maxWidth: sizeWidths[size],
+              }}
+            >
+              {title ? (
+                <ModalHead>
+                  <ModalTitleText id={`${testId}-title`}>{title}</ModalTitleText>
+                  {showCloseButton && (
+                    <ModalCloseButton
+                      type="button"
+                      onClick={onClose}
+                      aria-label="Close modal"
+                      data-testid={`${testId}-close`}
+                    >
+                      <CloseGlyph />
+                    </ModalCloseButton>
+                  )}
+                </ModalHead>
+              ) : showCloseButton ? (
+                <FloatingClose
+                  type="button"
                   onClick={onClose}
                   aria-label="Close modal"
                   data-testid={`${testId}-close`}
                 >
-                  ×
-                </CloseButton>
-              )}
-            </ModalHeader>
-          )}
-          <ModalBody>{children}</ModalBody>
-        </ModalContent>
-      </Overlay>
+                  <CloseGlyph />
+                </FloatingClose>
+              ) : null}
+              <Body $titleless={!title}>{children}</Body>
+            </ModalPanel>
+          </Layer>
+        ) : null}
+      </AnimatePresence>
     </Portal>
   );
 };

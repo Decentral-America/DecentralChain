@@ -39,7 +39,7 @@ const FormContainer = styled(Card as React.ComponentType<Record<string, unknown>
 const FormTitle = styled.h2`
   margin: 0 0 ${({ theme }) => theme.spacing.lg};
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 400;
   color: ${({ theme }) => theme.colors.text};
 `;
 

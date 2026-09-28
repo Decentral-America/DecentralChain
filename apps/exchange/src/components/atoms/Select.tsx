@@ -1,10 +1,15 @@
 /**
  * Select Component
- * Dropdown select with custom styling and options support
- * Replaces Angular w-select directive
+ *
+ * A native <select> (so the keyboard, the screen reader and the phone's own
+ * picker all behave natively) dressed in the same field material as the MUI
+ * OutlinedInput: white, a --border-strong hairline, 10px corners, an accent
+ * halo on focus, and a drawn chevron instead of the platform arrow.
  */
+import { ChevronDown } from 'lucide-react';
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { EASE, fieldFocus, fieldSurface } from '@/components/premium/fieldStyles';
 import { noTouchZoom } from '@/styles/mixins';
 
 export interface SelectOption {
@@ -24,16 +29,18 @@ export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElemen
 }
 
 const SelectWrapper = styled.div<{ $fullWidth?: boolean }>`
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
-  gap: ${(p) => p.theme.spacing.xs};
-  ${(p) => p.$fullWidth && 'width: 100%;'}
+  gap: 6px;
+  min-width: 0;
+  ${(p) => p.$fullWidth && 'display: flex; width: 100%;'}
 `;
 
 const Label = styled.label`
-  font-size: ${(p) => p.theme.fontSizes.sm};
-  font-weight: ${(p) => p.theme.fontWeights.medium};
-  color: ${(p) => p.theme.colors.text};
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.08px;
+  color: ${(p) => p.theme.colors.textSecondary};
 `;
 
 const SelectContainer = styled.div`
@@ -42,111 +49,82 @@ const SelectContainer = styled.div`
   align-items: center;
 `;
 
-/**
- * Chevron icon for select dropdown
- */
-const ChevronIcon = styled.div`
+const Chevron = styled(ChevronDown)`
   position: absolute;
   right: 12px;
   pointer-events: none;
-  color: ${(p) => p.theme.colors.disabled};
-  transition: ${(p) => p.theme.transitions.fast};
-
-  &::after {
-    content: '▼';
-    font-size: 10px;
-  }
+  color: ${(p) => p.theme.colors.textSecondary};
+  transition: color 160ms ${EASE};
 `;
 
-/**
- * Size styles
- */
 const sizeStyles = {
   large: css`
-    padding: ${(p) => p.theme.spacing.md} ${(p) => p.theme.spacing.lg};
-    font-size: ${(p) => p.theme.fontSizes.lg};
+    min-height: 52px;
+    padding: 0 40px 0 16px;
+    font-size: 17px;
   `,
   medium: css`
-    padding: ${(p) => p.theme.spacing.sm} ${(p) => p.theme.spacing.md};
-    font-size: ${(p) => p.theme.fontSizes.md};
+    min-height: 44px;
+    padding: 0 40px 0 14px;
+    font-size: 15px;
   `,
   small: css`
-    padding: ${(p) => p.theme.spacing.xs} ${(p) => p.theme.spacing.sm};
-    font-size: ${(p) => p.theme.fontSizes.sm};
+    min-height: 32px;
+    padding: 0 34px 0 12px;
+    font-size: 13px;
   `,
 };
 
 const StyledSelect = styled.select<{
-  $hasError?: boolean;
+  $invalid?: boolean;
   $selectSize?: 'small' | 'medium' | 'large';
 }>`
+  ${fieldSurface}
   width: 100%;
-  font-family: ${(p) => p.theme.fonts.main};
-  border: 1px solid ${(p) => (p.$hasError ? p.theme.colors.error : p.theme.colors.border)};
-  border-radius: ${(p) => p.theme.radii.md};
-  background: ${(p) => p.theme.colors.background};
-  color: ${(p) => p.theme.colors.text};
-  transition: ${(p) => p.theme.transitions.fast};
   cursor: pointer;
   appearance: none;
-  padding-right: 40px;
-
-  /* Size styles */
+  -webkit-appearance: none;
+  letter-spacing: -0.15px;
+  line-height: 1.2;
   ${(p) => sizeStyles[p.$selectSize || 'medium']}
 
   /* iOS Safari zooms the page on focus below 16px; touch only. */
   ${noTouchZoom}
 
-  /* Focus state */
+  &:focus-visible,
   &:focus {
-    outline: none;
-    border-color: ${(p) => p.theme.colors.primary};
-    box-shadow: 0 0 0 3px ${(p) => p.theme.colors.primary}20;
+    ${fieldFocus}
   }
 
-  /* Focus + chevron rotation */
-  &:focus + ${ChevronIcon} {
+  &:focus + ${Chevron} {
     color: ${(p) => p.theme.colors.primary};
-    transform: rotate(180deg);
   }
 
-  /* Hover state */
-  &:hover:not(:disabled):not(:focus) {
-    border-color: ${(p) => (p.$hasError ? p.theme.colors.error : p.theme.colors.primary)}80;
-  }
-
-  /* Disabled state */
   &:disabled {
-    background: ${(p) => p.theme.colors.hover};
-    color: ${(p) => p.theme.colors.disabled};
     cursor: not-allowed;
-  }
-
-  /* Placeholder (empty value) */
-  &:invalid {
     color: ${(p) => p.theme.colors.disabled};
+    background: ${(p) => p.theme.colors.hover};
   }
 
-  /* Option styles */
-  option {
-    background: ${(p) => p.theme.colors.background};
-    color: ${(p) => p.theme.colors.text};
-    padding: ${(p) => p.theme.spacing.sm};
+  /* An empty required value shows the placeholder in the secondary colour. */
+  &:invalid {
+    color: ${(p) => p.theme.colors.textSecondary};
+  }
 
-    &:disabled {
-      color: ${(p) => p.theme.colors.disabled};
-    }
+  option {
+    background: ${(p) => p.theme.colors.surface};
+    color: ${(p) => p.theme.colors.text};
   }
 `;
 
 const ErrorText = styled.span`
   color: ${(p) => p.theme.colors.error};
-  font-size: ${(p) => p.theme.fontSizes.sm};
+  font-size: 12px;
 `;
 
 const HelperText = styled.span`
-  color: ${(p) => p.theme.colors.disabled};
-  font-size: ${(p) => p.theme.fontSizes.sm};
+  color: ${(p) => p.theme.colors.textSecondary};
+  font-size: 12px;
 `;
 
 export function Select({
@@ -171,7 +149,7 @@ export function Select({
         <StyledSelect
           id={selectId}
           ref={ref}
-          $hasError={!!error}
+          $invalid={!!error}
           $selectSize={selectSize}
           aria-invalid={!!error}
           aria-describedby={
@@ -191,7 +169,7 @@ export function Select({
             </option>
           ))}
         </StyledSelect>
-        <ChevronIcon />
+        <Chevron size={selectSize === 'small' ? 14 : 16} strokeWidth={2} aria-hidden />
       </SelectContainer>
       {error && (
         <ErrorText id={`${selectId}-error`} role="alert">

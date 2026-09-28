@@ -1,25 +1,31 @@
 import {
-  AccountBalanceWallet,
-  AddCircleOutlined,
-  Apps,
-  Badge,
-  BarChart,
-  Inventory2Outlined,
-  ManageAccounts,
-  NotificationsNoneOutlined,
-  QueryStats,
-  ReceiptLong,
+  ArrowLeftRight,
+  AtSign,
+  Bell,
+  BookOpenText,
+  ChartCandlestick,
+  ChartColumn,
+  ChartLine,
+  ChartPie,
+  CirclePlus,
+  HandCoins,
+  LayoutGrid,
+  ReceiptText,
   Settings,
-  ShowChart,
-  SwapHoriz,
-  Timeline,
-} from '@mui/icons-material';
+  UserCog,
+  Waypoints,
+} from 'lucide-react';
 import { type ReactElement } from 'react';
 import { type AppTileHue } from '@/theme/tokens/semantic';
 
 export interface Destination {
   path: string;
   label: string;
+  /**
+   * A Lucide line glyph sized `1em`, so whatever renders it sets its size
+   * through `font-size` — the launcher tile's plate does, as it did for the
+   * Material glyphs these replaced.
+   */
   icon: ReactElement;
   /** One line saying what the screen does — the launcher tile's tooltip. */
   description: string;
@@ -43,7 +49,7 @@ const DASHBOARD: Destination = {
   description: 'Your balances and activity at a glance',
   exact: true,
   hue: 'indigo',
-  icon: <Apps />,
+  icon: <LayoutGrid size="1em" />,
   label: 'Dashboard',
   path: '/desktop/wallet',
 };
@@ -51,7 +57,7 @@ const DASHBOARD: Destination = {
 const PORTFOLIO: Destination = {
   description: 'Every asset this wallet holds',
   hue: 'violet',
-  icon: <Inventory2Outlined />,
+  icon: <ChartPie size="1em" />,
   label: 'Portfolio',
   path: '/desktop/wallet/portfolio',
 };
@@ -59,7 +65,7 @@ const PORTFOLIO: Destination = {
 const TRANSACTIONS: Destination = {
   description: 'The full history of this address',
   hue: 'slate',
-  icon: <ReceiptLong />,
+  icon: <ReceiptText size="1em" />,
   label: 'Transactions',
   path: '/desktop/wallet/transactions',
 };
@@ -67,7 +73,7 @@ const TRANSACTIONS: Destination = {
 const LEASING: Destination = {
   description: 'Delegate DCC to a node and earn',
   hue: 'teal',
-  icon: <Timeline />,
+  icon: <HandCoins size="1em" />,
   label: 'Leasing',
   path: '/desktop/wallet/leasing',
 };
@@ -75,7 +81,7 @@ const LEASING: Destination = {
 const ALIASES: Destination = {
   description: 'Readable names for your address',
   hue: 'violet',
-  icon: <Badge />,
+  icon: <AtSign size="1em" />,
   label: 'Aliases',
   path: '/desktop/wallet/aliases',
 };
@@ -83,7 +89,7 @@ const ALIASES: Destination = {
 const ACCOUNT_MANAGER: Destination = {
   description: 'Add, switch or remove accounts on this device',
   hue: 'green',
-  icon: <ManageAccounts />,
+  icon: <UserCog size="1em" />,
   label: 'Account manager',
   path: '/desktop/wallet/account-manager',
 };
@@ -91,7 +97,7 @@ const ACCOUNT_MANAGER: Destination = {
 const TRADE: Destination = {
   description: 'The order book, live',
   hue: 'green',
-  icon: <ShowChart />,
+  icon: <ChartCandlestick size="1em" />,
   label: 'Trade',
   path: '/desktop/dex',
 };
@@ -99,7 +105,7 @@ const TRADE: Destination = {
 const SWAP: Destination = {
   description: 'One asset for another, at the best rate',
   hue: 'teal',
-  icon: <SwapHoriz />,
+  icon: <ArrowLeftRight size="1em" />,
   label: 'Swap',
   path: '/desktop/swap',
 };
@@ -107,7 +113,7 @@ const SWAP: Destination = {
 const BRIDGE: Destination = {
   description: 'Move assets across chains',
   hue: 'rose',
-  icon: <AccountBalanceWallet />,
+  icon: <Waypoints size="1em" />,
   label: 'Bridge',
   path: '/desktop/bridge',
 };
@@ -115,7 +121,7 @@ const BRIDGE: Destination = {
 const MARKETS: Destination = {
   description: 'Price overview across markets',
   hue: 'blue',
-  icon: <BarChart />,
+  icon: <ChartLine size="1em" />,
   label: 'Markets',
   path: '/desktop/markets',
 };
@@ -123,7 +129,7 @@ const MARKETS: Destination = {
 const ORDER_BOOK: Destination = {
   description: 'Live order book and market depth',
   hue: 'amber',
-  icon: <ReceiptLong />,
+  icon: <BookOpenText size="1em" />,
   label: 'Order book',
   path: '/desktop/orderbook',
 };
@@ -131,7 +137,7 @@ const ORDER_BOOK: Destination = {
 const CREATE_TOKEN: Destination = {
   description: 'Issue an asset on DecentralChain',
   hue: 'amber',
-  icon: <AddCircleOutlined />,
+  icon: <CirclePlus size="1em" />,
   label: 'Create token',
   path: '/desktop/create-token',
 };
@@ -139,7 +145,7 @@ const CREATE_TOKEN: Destination = {
 const ANALYTICS: Destination = {
   description: 'Activity and performance over time',
   hue: 'blue',
-  icon: <QueryStats />,
+  icon: <ChartColumn size="1em" />,
   label: 'Analytics',
   path: '/desktop/analytics',
 };
@@ -147,7 +153,7 @@ const ANALYTICS: Destination = {
 const MESSAGES: Destination = {
   description: 'Notifications from the network',
   hue: 'slate',
-  icon: <NotificationsNoneOutlined />,
+  icon: <Bell size="1em" />,
   label: 'Messages',
   path: '/desktop/messages',
 };
@@ -155,7 +161,7 @@ const MESSAGES: Destination = {
 const SETTINGS: Destination = {
   description: 'Preferences, security and session',
   hue: 'indigo',
-  icon: <Settings />,
+  icon: <Settings size="1em" />,
   label: 'Settings',
   path: '/desktop/settings',
 };

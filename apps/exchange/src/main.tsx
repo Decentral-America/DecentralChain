@@ -6,6 +6,7 @@ import { config, devLog } from '@/config';
 import i18n from '@/i18n/i18n';
 import tokenFilterService from '@/services/tokenFilters';
 import App from './App';
+import '@fontsource-variable/inter';
 import './index.css';
 
 import { Buffer } from 'buffer';

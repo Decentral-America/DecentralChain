@@ -20,7 +20,7 @@ import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router';
 import { Button } from '@/components/atoms/Button';
 import { Stack } from '@/components/atoms/Stack';
-import { tokens } from '@/theme/tokens/semantic';
+import { tokens } from '@/styles/legacy/semantic';
 
 // Animated gradient background
 const gradientAnimation = keyframes`

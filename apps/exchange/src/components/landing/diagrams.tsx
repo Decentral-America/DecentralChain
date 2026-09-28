@@ -1,6 +1,6 @@
 import { Box, useTheme } from '@mui/material';
-import { palette } from '@/styles/tokens';
-import { tokens } from '@/theme/tokens/semantic';
+import { tokens } from '@/styles/legacy/semantic';
+import { palette } from '@/styles/legacy/tokens';
 
 /**
  * Diagrams for the feature cards.

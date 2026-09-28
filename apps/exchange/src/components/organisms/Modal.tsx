@@ -3,14 +3,27 @@
  * Reusable modal dialog with overlay and animation
  * Used for send/receive assets, confirmations, and other dialogs
  *
- * Migrated to Material-UI
+ * MUI's Modal supplies the focus trap, scroll lock and the themed blurred
+ * backdrop; the panel is the shared dialog material from
+ * src/components/premium/ModalSurface (after 21st.dev "Modal" by @ddoemonn),
+ * entering on the snappy spring.
  */
 
-import { Backdrop, Box, Fade, IconButton, Modal as MuiModal, Typography } from '@mui/material';
+import { Backdrop, Box, Modal as MuiModal } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import type React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useId } from 'react';
 import { Button } from '@/components/atoms/Button';
+import {
+  CloseGlyph,
+  ModalBodyArea,
+  ModalCloseButton,
+  ModalFooterBar,
+  ModalHead,
+  ModalPanel,
+  ModalTitleText,
+  useModalVariants,
+} from '@/components/premium/ModalSurface';
 
 export interface ModalProps {
   isOpen: boolean;
@@ -24,77 +37,21 @@ export interface ModalProps {
   showCloseButton?: boolean;
 }
 
-/**
- * Modal content container with size variants
+/*
+ * Centres the panel without a transform of its own, so the panel's spring
+ * (scale and rise) owns `transform`. It lets clicks through to MUI's backdrop.
  */
-const ModalContent = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'size',
-})<{ size: 'small' | 'medium' | 'large' }>(({ theme, size }) => ({
-  backgroundColor: theme.palette.background.paper,
-  borderRadius: Number(theme.shape.borderRadius) * 2,
-  boxShadow: theme.shadows[24],
-  display: 'flex',
-  flexDirection: 'column',
-  left: '50%',
-  maxHeight: '90vh',
-  maxWidth: '90vw',
+const Centre = styled(Box)({
+  display: 'grid',
+  inset: 0,
   outline: 'none',
-  overflow: 'hidden',
-  position: 'absolute',
-  top: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: size === 'small' ? '400px' : size === 'large' ? '800px' : '600px',
+  padding: 'clamp(16px, 4vw, 24px)',
+  placeItems: 'center',
+  pointerEvents: 'none',
+  position: 'fixed',
+});
 
-  [theme.breakpoints.down('sm')]: {
-    maxHeight: '95vh',
-    width: '95vw',
-  },
-}));
-
-/**
- * Modal header
- */
-const ModalHeader = styled(Box)(({ theme }) => ({
-  alignItems: 'center',
-  borderBottom: `1px solid ${theme.palette.divider}`,
-  display: 'flex',
-  justifyContent: 'space-between',
-  padding: theme.spacing(2.5),
-}));
-
-/**
- * Close button
- */
-const CloseButton = styled(IconButton)(({ theme }) => ({
-  '&:hover': {
-    backgroundColor: theme.palette.action.hover,
-  },
-  color: theme.palette.text.secondary,
-  marginLeft: theme.spacing(1),
-}));
-
-/**
- * Modal body
- */
-const ModalBody = styled(Box)(({ theme }) => ({
-  flex: 1,
-  overflowY: 'auto',
-  // Keeps a scroll gesture inside the dialog rather than chaining to the page.
-  overscrollBehavior: 'contain',
-  padding: theme.spacing(2.5),
-}));
-
-/**
- * Modal footer
- */
-const ModalFooter = styled(Box)(({ theme }) => ({
-  alignItems: 'center',
-  borderTop: `1px solid ${theme.palette.divider}`,
-  display: 'flex',
-  gap: theme.spacing(1.5),
-  justifyContent: 'flex-end',
-  padding: theme.spacing(2.5),
-}));
+const WIDTHS = { large: 800, medium: 600, small: 400 } as const;
 
 /**
  * Modal component
@@ -110,6 +67,9 @@ export const Modal: React.FC<ModalProps> = ({
   closeOnEscape = true,
   showCloseButton = true,
 }) => {
+  const titleId = useId();
+  const variants = useModalVariants();
+
   /**
    * Prevent body scroll when modal is open
    */
@@ -133,36 +93,37 @@ export const Modal: React.FC<ModalProps> = ({
         if (reason === 'backdropClick' && !closeOnOverlayClick) return;
         onClose?.();
       }}
-      closeAfterTransition
       slots={{ backdrop: Backdrop }}
-      slotProps={{
-        backdrop: {
-          timeout: 500,
-        },
-      }}
+      slotProps={{ backdrop: { timeout: 200 } }}
     >
-      <Fade in={isOpen}>
-        <ModalContent size={size}>
+      <Centre tabIndex={-1}>
+        <ModalPanel
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={title ? titleId : undefined}
+          variants={variants.panel}
+          initial="closed"
+          animate="open"
+          style={{ maxWidth: WIDTHS[size], pointerEvents: 'auto' }}
+        >
           {(title || showCloseButton) && (
-            <ModalHeader>
-              {title && (
-                <Typography variant="h6" component="h2" sx={{ fontWeight: 600 }}>
-                  {title}
-                </Typography>
-              )}
+            <ModalHead>
+              {title ? <ModalTitleText id={titleId}>{title}</ModalTitleText> : null}
               {showCloseButton && (
-                <CloseButton onClick={onClose} aria-label="Close modal">
-                  ×
-                </CloseButton>
+                <ModalCloseButton type="button" onClick={onClose} aria-label="Close modal">
+                  <CloseGlyph />
+                </ModalCloseButton>
               )}
-            </ModalHeader>
+            </ModalHead>
           )}
 
-          <ModalBody>{children}</ModalBody>
+          <ModalBodyArea style={title || showCloseButton ? undefined : { paddingTop: 24 }}>
+            {children}
+          </ModalBodyArea>
 
-          {footer && <ModalFooter>{footer}</ModalFooter>}
-        </ModalContent>
-      </Fade>
+          {footer && <ModalFooterBar>{footer}</ModalFooterBar>}
+        </ModalPanel>
+      </Centre>
     </MuiModal>
   );
 };

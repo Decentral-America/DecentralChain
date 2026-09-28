@@ -4,67 +4,25 @@
  */
 import type React from 'react';
 import styled from 'styled-components';
+import { SettingsGroup, SettingsRow } from '@/components/premium/SettingsList';
 import { NetworkConfig as networkConfig } from '@/config/networkConfig';
-
-const InfoSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  padding: 16px 0;
-`;
-
-const InfoRow = styled.div<{ $border?: boolean }>`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 0;
-  border-bottom: 1px solid ${(props) => props.theme.colors.border};
-
-  ${(props) =>
-    props.$border &&
-    `
-    border-bottom: 2px solid ${props.theme.colors.border};
-  `}
-`;
-
-const Label = styled.div`
-  font-size: 12px;
-  color: ${(props) => props.theme.colors.textMuted};
-  font-weight: 500;
-`;
-
-const Value = styled.div`
-  font-size: 13px;
-  color: ${(props) => props.theme.colors.text};
-`;
+import { Pane } from './Pane';
 
 const Link = styled.a`
-  font-size: 13px;
-  color: ${(props) => props.theme.colors.primary};
+  font-size: 15px;
+  color: ${(p) => p.theme.colors.primary};
   text-decoration: none;
+  text-underline-offset: 3px;
 
   &:hover {
     text-decoration: underline;
   }
-`;
 
-const LegalLinks = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: ${(props) => props.theme.colors.textMuted};
-`;
-
-const Copyright = styled.div`
-  font-size: 12px;
-  color: ${(props) => props.theme.colors.textMuted};
-`;
-
-const Logo = styled.div`
-  font-size: 16px;
-  font-weight: bold;
-  color: ${(props) => props.theme.colors.primary};
+  &:focus-visible {
+    outline: none;
+    border-radius: 4px;
+    box-shadow: 0 0 0 2px ${(p) => p.theme.colors.primary};
+  }
 `;
 
 export const InfoSettings: React.FC = () => {
@@ -82,42 +40,46 @@ export const InfoSettings: React.FC = () => {
   const privacyLink = networkConfig.privacyPolicy || 'https://decentralchain.io/privacy-policy';
 
   return (
-    <InfoSection>
-      {/* Version */}
-      <InfoRow>
-        <Label>Version</Label>
-        <Value>
-          {appName} {appVersion}
-        </Value>
-      </InfoRow>
-
-      {/* Support Link */}
-      <InfoRow>
-        <Label>Support</Label>
-        <Link href={supportLink} target="_blank" rel="noopener noreferrer">
-          {supportLinkName}
-        </Link>
-      </InfoRow>
-
-      {/* Legal Links */}
-      <InfoRow>
-        <Label>Legal</Label>
-        <LegalLinks>
-          <Link href={termsLink} target="_blank" rel="noopener noreferrer">
-            Terms & Conditions
-          </Link>
-          {' | '}
-          <Link href={privacyLink} target="_blank" rel="noopener noreferrer">
-            Privacy Policy
-          </Link>
-        </LegalLinks>
-      </InfoRow>
-
-      {/* Copyright */}
-      <InfoRow $border>
-        <Copyright>&copy; {new Date().getFullYear()} Blockchain Costa Rica</Copyright>
-        <Logo>DecentralChain</Logo>
-      </InfoRow>
-    </InfoSection>
+    <Pane>
+      <SettingsGroup
+        footer={`© ${new Date().getFullYear()} Blockchain Costa Rica · DecentralChain`}
+      >
+        <SettingsRow label="Version" control={`${appName} ${appVersion}`} />
+        <SettingsRow
+          label="Support"
+          control={
+            <Link href={supportLink} target="_blank" rel="noopener noreferrer">
+              {supportLinkName}
+            </Link>
+          }
+        />
+        <SettingsRow
+          label="Terms & Conditions"
+          control={
+            <Link
+              href={termsLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Read the Terms & Conditions"
+            >
+              Read
+            </Link>
+          }
+        />
+        <SettingsRow
+          label="Privacy Policy"
+          control={
+            <Link
+              href={privacyLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Read the Privacy Policy"
+            >
+              Read
+            </Link>
+          }
+        />
+      </SettingsGroup>
+    </Pane>
   );
 };

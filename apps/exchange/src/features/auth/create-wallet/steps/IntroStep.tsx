@@ -21,7 +21,7 @@ import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
 import UsbIcon from '@mui/icons-material/Usb';
 import { Box, Button, Divider, Stack, Typography, useTheme } from '@mui/material';
 import { type ReactNode } from 'react';
-import { tokens } from '@/theme/tokens/semantic';
+import { tokens } from '@/styles/legacy/semantic';
 
 const POINTS: { icon: ReactNode; text: string; title: string }[] = [
   {

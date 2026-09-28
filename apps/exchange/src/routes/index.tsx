@@ -10,6 +10,10 @@
  *   - '/desktop/*'     → ProtectedRoute (lazy) + ResponsiveAppLayout (lazy),
  *                        which renders MobileLayout or MainLayout by viewport
  *
+ *   - Onboarding      → LegacyOnboardingLayout (lazy), which keeps the landing,
+ *                        welcome, sign-in/up, import and restore screens on
+ *                        their pre-redesign look (see LegacyOnboardingTheme)
+ *
  * index.html provides an HTML/CSS loading shell so the user sees a spinner
  * before React mounts and the LandingPage chunk loads.
  */
@@ -34,16 +38,31 @@ const CreateToken = lazyPage(() => import('@/pages/CreateToken'), 'CreateToken')
 const Swap = lazyPage(() => import('@/pages/Swap'), 'Swap');
 
 /**
+ * Pathless layout that wraps onboarding routes in LegacyOnboardingTheme. Lazy,
+ * so the frozen theme loads with an onboarding screen and never sits on the
+ * app's critical path.
+ */
+const legacyOnboarding = () =>
+  import('@/components/legacy/LegacyOnboardingTheme').then((m) => ({
+    Component: m.LegacyOnboardingLayout,
+  }));
+
+/**
  * Application router. See JSDoc above for full code-splitting strategy.
  */
 export const router = createBrowserRouter([
   {
     children: [
       {
-        // '/' is lazy: LandingPage chunk (~400 kB) only loads for the landing route.
-        // index.html contains an inline shell so the user sees content before JS parses.
-        lazy: () => import('@/pages/LandingPage').then((m) => ({ Component: m.default })),
-        path: '/',
+        children: [
+          {
+            // '/' is lazy: LandingPage chunk (~400 kB) only loads for the landing route.
+            // index.html contains an inline shell so the user sees content before JS parses.
+            lazy: () => import('@/pages/LandingPage').then((m) => ({ Component: m.default })),
+            path: '/',
+          },
+        ],
+        lazy: legacyOnboarding,
       },
       {
         // AuthBoundaryLayout — lazy intermediate route that mounts
@@ -52,57 +71,63 @@ export const router = createBrowserRouter([
         // Defers ~315 kB of auth/ledger/settings context from the critical path.
         children: [
           {
-            lazy: () => import('@/pages/Welcome').then((m) => ({ Component: m.Welcome })),
-            path: '/welcome',
-          },
-          {
-            lazy: () => import('@/pages/SignUp').then((m) => ({ Component: m.SignUp })),
-            path: '/signup',
-          },
-          {
-            lazy: () => import('@/pages/SignUp').then((m) => ({ Component: m.SignUp })),
-            path: '/create-account',
-          },
-          {
-            lazy: () => import('@/pages/SignIn').then((m) => ({ Component: m.SignIn })),
-            path: '/signin',
-          },
-          {
-            lazy: () => import('@/pages/SignIn').then((m) => ({ Component: m.SignIn })),
-            path: '/sign-in',
-          },
-          {
-            lazy: () => import('@/pages/ImportPage').then((m) => ({ Component: m.ImportPage })),
-            path: '/import',
-          },
-          {
-            lazy: () =>
-              import('@/pages/ImportAccountPage').then((m) => ({
-                Component: m.ImportAccountPage,
-              })),
-            path: '/import-account',
-          },
-          {
-            lazy: () => import('@/pages/SaveSeed').then((m) => ({ Component: m.SaveSeedPage })),
-            path: '/save-seed',
-          },
-          {
-            lazy: () =>
-              import('@/pages/RestoreFromBackup').then((m) => ({
-                Component: m.RestoreFromBackupPage,
-              })),
-            path: '/restore-backup',
-          },
-          {
-            lazy: () => import('@/pages/ImportLedger').then((m) => ({ Component: m.ImportLedger })),
-            path: '/import/ledger',
-          },
-          {
-            lazy: () =>
-              import('@/pages/CubensisConnectImportPage').then((m) => ({
-                Component: m.CubensisConnectImportPage,
-              })),
-            path: '/import/cubensis-connect',
+            children: [
+              {
+                lazy: () => import('@/pages/Welcome').then((m) => ({ Component: m.Welcome })),
+                path: '/welcome',
+              },
+              {
+                lazy: () => import('@/pages/SignUp').then((m) => ({ Component: m.SignUp })),
+                path: '/signup',
+              },
+              {
+                lazy: () => import('@/pages/SignUp').then((m) => ({ Component: m.SignUp })),
+                path: '/create-account',
+              },
+              {
+                lazy: () => import('@/pages/SignIn').then((m) => ({ Component: m.SignIn })),
+                path: '/signin',
+              },
+              {
+                lazy: () => import('@/pages/SignIn').then((m) => ({ Component: m.SignIn })),
+                path: '/sign-in',
+              },
+              {
+                lazy: () => import('@/pages/ImportPage').then((m) => ({ Component: m.ImportPage })),
+                path: '/import',
+              },
+              {
+                lazy: () =>
+                  import('@/pages/ImportAccountPage').then((m) => ({
+                    Component: m.ImportAccountPage,
+                  })),
+                path: '/import-account',
+              },
+              {
+                lazy: () => import('@/pages/SaveSeed').then((m) => ({ Component: m.SaveSeedPage })),
+                path: '/save-seed',
+              },
+              {
+                lazy: () =>
+                  import('@/pages/RestoreFromBackup').then((m) => ({
+                    Component: m.RestoreFromBackupPage,
+                  })),
+                path: '/restore-backup',
+              },
+              {
+                lazy: () =>
+                  import('@/pages/ImportLedger').then((m) => ({ Component: m.ImportLedger })),
+                path: '/import/ledger',
+              },
+              {
+                lazy: () =>
+                  import('@/pages/CubensisConnectImportPage').then((m) => ({
+                    Component: m.CubensisConnectImportPage,
+                  })),
+                path: '/import/cubensis-connect',
+              },
+            ],
+            lazy: legacyOnboarding,
           },
           {
             children: [
@@ -299,11 +324,16 @@ export const router = createBrowserRouter([
                 },
                 // Onboarding is pre-authentication, so it renders without the shell.
                 {
-                  lazy: () =>
-                    import('@/pages/mobile/MobileWelcome').then((m) => ({
-                      Component: m.MobileWelcome,
-                    })),
-                  path: '/mobile-preview-welcome',
+                  children: [
+                    {
+                      lazy: () =>
+                        import('@/pages/mobile/MobileWelcome').then((m) => ({
+                          Component: m.MobileWelcome,
+                        })),
+                      path: '/mobile-preview-welcome',
+                    },
+                  ],
+                  lazy: legacyOnboarding,
                 },
               ]
             : []),

@@ -1,37 +1,33 @@
 /**
  * Wallet Page
- * Modern crypto dashboard with Material-UI theme matching landing page
+ *
+ * Parent route for the wallet module. It passes the shell's height straight
+ * through so a screen inside it can fit the shell exactly; padding and rhythm
+ * belong to `PageFrame`.
+ *
+ * It used to wrap every wallet screen in the light marketing theme, which
+ * pinned the whole module to light mode whatever the holder had chosen, and
+ * fade it in over 800ms on arrival. The app theme now reaches these screens
+ * unchanged, and they appear immediately.
+ *
+ * On mobile it supplies nothing at all: the mobile screens own their layout.
  */
 
-import { Box, Fade } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { useEffect, useState } from 'react';
+import { Box, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { Outlet } from 'react-router';
 
-const WalletContainer = styled(Box)(({ theme }) => ({
-  background: theme.palette.background.default,
-  minHeight: '100svh',
-  padding: theme.spacing(3),
-
-  [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(2),
-  },
-}));
-
 export const Wallet = () => {
-  const [isVisible, setIsVisible] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'), { noSsr: true });
 
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
+  if (isMobile) {
+    return <Outlet />;
+  }
 
   return (
-    <WalletContainer>
-      <Fade in={isVisible} timeout={800}>
-        <Box>
-          <Outlet />
-        </Box>
-      </Fade>
-    </WalletContainer>
+    <Box sx={{ height: '100%' }}>
+      <Outlet />
+    </Box>
   );
 };

@@ -19,10 +19,10 @@ import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
 import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { describe, expect, it, vi } from 'vitest';
-import { darkTheme, lightTheme } from '@/styles/themes';
+import { createAppTheme } from '@/styles/legacy/muiTheme';
+import { contrastRatio, type ThemeMode, tokens } from '@/styles/legacy/semantic';
+import { darkTheme, lightTheme } from '@/styles/legacy/themes';
 import { rgbToHex } from '@/test-utils/rgbToHex';
-import { createAppTheme } from '@/theme/mui-theme';
-import { contrastRatio, type ThemeMode, tokens } from '@/theme/tokens/semantic';
 import { SignUp } from '../SignUp';
 
 const { seedCreate } = vi.hoisted(() => ({ seedCreate: vi.fn() }));

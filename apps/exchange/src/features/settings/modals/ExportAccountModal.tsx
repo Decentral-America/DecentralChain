@@ -12,14 +12,15 @@ import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 
 const ModalBody = styled.div`
-  padding: 24px;
+  padding: 0;
 `;
 
 const Description = styled.p`
   margin: 0 0 20px 0;
-  font-size: 14px;
-  color: ${(props) => props.theme.colors.textMuted};
-  line-height: 1.6;
+  font-size: 15px;
+  letter-spacing: -0.15px;
+  color: ${(p) => p.theme.colors.textSecondary};
+  line-height: 1.47;
 `;
 
 const UserList = styled.div`
@@ -28,29 +29,36 @@ const UserList = styled.div`
   overflow-y: auto;
   /* Keeps a scroll gesture inside the overlay instead of chaining to the page behind it. */
   overscroll-behavior: contain;
-  border: 1px solid ${(props) => props.theme.colors.border};
-  border-radius: 4px;
+  border-radius: 12px;
+  background: ${(p) => p.theme.colors.backgroundAlt};
 `;
 
 const UserItem = styled.div`
   display: flex;
   align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid ${(props) => props.theme.colors.border};
+  min-height: 44px;
+  padding: 10px 16px;
+  box-sizing: border-box;
+  border-bottom: 1px solid ${(p) => p.theme.colors.border};
   cursor: pointer;
+  transition: background-color 160ms cubic-bezier(0.32, 0.72, 0, 1);
 
   &:last-child {
     border-bottom: none;
   }
 
   &:hover {
-    background-color: ${(props) => props.theme.colors.hover};
+    background-color: ${(p) => p.theme.colors.hover};
   }
 `;
 
 const Checkbox = styled.input`
-  margin-right: 12px;
+  width: 18px;
+  height: 18px;
+  margin: 1px 12px 0 0;
+  flex-shrink: 0;
   cursor: pointer;
+  accent-color: ${(p) => p.theme.colors.primary};
 `;
 
 const UserInfo = styled.div`
@@ -59,8 +67,8 @@ const UserInfo = styled.div`
 
 const UserAddress = styled.div`
   font-size: 13px;
-  color: ${(props) => props.theme.colors.text};
-  font-family: 'Roboto Mono', monospace;
+  color: ${(p) => p.theme.colors.text};
+  font-family: ${(p) => p.theme.fonts.mono};
 `;
 
 const ButtonGroup = styled.div`
@@ -76,9 +84,9 @@ const SelectionHeader = styled.div`
 `;
 
 const SelectionLabel = styled.span`
-  color: ${(props) => props.theme.colors.textMuted};
+  color: ${(props) => props.theme.colors.textSecondary};
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 400;
 `;
 
 const SelectionActions = styled.div`

@@ -9,7 +9,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Box, Button, IconButton, useMediaQuery, useTheme } from '@mui/material';
 import type React from 'react';
 import { useNavigate } from 'react-router';
-import { mobileAccent, mobileSurface, mobileText } from '@/styles/mobileTokens';
+import { mobileAccent, mobileSurface, mobileText } from '@/styles/legacy/mobileTokens';
 
 interface MobileAuthShellProps {
   /** The form component to render */

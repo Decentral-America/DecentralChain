@@ -4,9 +4,14 @@ import { useNavigate } from 'react-router';
 import { Icon } from '@/components/atoms/Icon';
 import Logo from '@/components/atoms/Logo';
 import { SurfaceProvider } from '@/components/atoms/SurfaceContext';
-import { mobileGradient, mobileLayout, mobileRadius, mobileText } from '@/styles/mobileTokens';
+import {
+  mobileGradient,
+  mobileLayout,
+  mobileRadius,
+  mobileText,
+} from '@/styles/legacy/mobileTokens';
+import { tokens } from '@/styles/legacy/semantic';
 import { brandCanvas } from '@/theme/landingTheme';
-import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * Mobile authentication screen.

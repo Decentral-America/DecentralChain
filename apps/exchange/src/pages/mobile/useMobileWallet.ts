@@ -25,6 +25,8 @@ export interface MobileAsset {
 export interface MobileWalletData {
   /** Base-chain balance in coins */
   baseBalance: number;
+  /** Everything the address owns, leased out or not (the node's `regular`). */
+  totalBalance: number;
   /** Balance usable for trading (excludes amounts leased out) */
   availableBalance: number;
   /** Net amount currently leased out */
@@ -75,6 +77,7 @@ export function useMobileWallet(pollInterval = 15000): MobileWalletData {
 
   const baseBalance = waveletsToCoins(balances?.balance ?? 0);
   const availableBalance = waveletsToCoins(balances?.available ?? balances?.balance ?? 0);
+  const totalBalance = waveletsToCoins(balances?.regular ?? balances?.balance ?? 0);
   const leasedOut = waveletsToCoins(balances?.leaseOut ?? 0);
   const leasedIn = waveletsToCoins(balances?.leaseIn ?? 0);
 
@@ -135,5 +138,6 @@ export function useMobileWallet(pollInterval = 15000): MobileWalletData {
     error,
     isLoading: isBalancesLoading || isDetailsLoading,
     leased: Math.max(leasedOut - leasedIn, 0),
+    totalBalance,
   };
 }

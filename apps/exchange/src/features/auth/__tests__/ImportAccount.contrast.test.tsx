@@ -29,9 +29,9 @@
 import { render, screen } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
 import { describe, expect, it, vi } from 'vitest';
-import { darkTheme, lightTheme } from '@/styles/themes';
+import { contrastRatio, type ThemeMode } from '@/styles/legacy/semantic';
+import { darkTheme, lightTheme } from '@/styles/legacy/themes';
 import { rgbToHex } from '@/test-utils/rgbToHex';
-import { contrastRatio, type ThemeMode } from '@/theme/tokens/semantic';
 import { ImportAccount } from '../ImportAccount';
 
 vi.mock('@/config', () => ({ config: { ledgerEnabled: false } }));

@@ -17,7 +17,7 @@
  */
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { contrastRatio, type ThemeMode, tokens } from '@/theme/tokens/semantic';
+import { contrastRatio, type ThemeMode, tokens } from '@/styles/legacy/semantic';
 import Footer from '../Footer';
 
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
@@ -51,8 +51,8 @@ function compositeOverCanvas(rgbaColor: string, canvasHex: string): string {
  * too, but ink here depends on the real app theme, so this file needs it.
  */
 import { ThemeProvider } from '@mui/material/styles';
+import { createAppTheme } from '@/styles/legacy/muiTheme';
 import { rgbToHex } from '@/test-utils/rgbToHex';
-import { createAppTheme } from '@/theme/mui-theme';
 
 const renderIn = (mode: ThemeMode) =>
   render(

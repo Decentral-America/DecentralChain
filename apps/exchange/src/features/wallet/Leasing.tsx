@@ -5,51 +5,46 @@
  */
 
 import {
-  CancelScheduleSendOutlined,
-  HistoryOutlined,
-  PlayArrowRounded,
-  RefreshOutlined,
-  ShieldOutlined,
-  TrendingUpOutlined,
-} from '@mui/icons-material';
-import {
   Alert,
   Box,
   Button,
   Card,
-  CardContent,
-  CardHeader,
   Chip,
   CircularProgress,
-  Container,
-  Divider,
-  Grid,
   IconButton,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TextField,
-  ToggleButton,
-  ToggleButtonGroup,
+  Skeleton,
   Tooltip,
-  Typography,
 } from '@mui/material';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import * as ds from 'data-service';
-import { type MouseEvent, useMemo, useState } from 'react';
+import { History, Lock, LockOpen, RefreshCw, Server } from 'lucide-react';
+import { type ReactNode, useMemo, useState } from 'react';
+import styled from 'styled-components';
 import { ConfirmDialog } from '@/components/modals/ConfirmDialog';
+import { AmountField } from '@/components/premium/AmountField';
+import { AnimatedNumber } from '@/components/premium/AnimatedNumber';
+import { EmptyState } from '@/components/premium/EmptyState';
+import { HoldToConfirm } from '@/components/premium/HoldToConfirm';
+import { InsetLabelField } from '@/components/premium/InsetLabelField';
+import {
+  DetailGroup,
+  DetailRow,
+  InsetGroup,
+  InsetGroupHeader,
+  InsetRow,
+  InsetRowSkeleton,
+  TokenAvatar,
+} from '@/components/premium/InsetList';
+import { SegmentedControl } from '@/components/premium/SegmentedControl';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
+import { chrome } from '@/styles/tokens';
 import { formatAmount, formatDcc, shortenAddress, toTimestamp } from '@/utils/formatters';
 import {
   broadcastTransaction,
   createCancelLeaseTransaction,
   createLeaseTransaction,
 } from '@/utils/transactions';
-import { LeasingChart } from './LeasingChart';
 
 const DCC_DECIMALS = 1e8;
 const LEASE_FEE_DCC = 0.001;
@@ -77,6 +72,109 @@ interface Lease {
  * Filter options for lease list
  */
 type LeaseFilter = 'all' | 'active' | 'canceled';
+
+const Summary = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+`;
+
+const Figure = styled.div`
+  strong {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: ${({ theme }) => theme.colors.text};
+  }
+
+  strong small {
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: ${({ theme }) => theme.colors.textSecondary};
+  }
+
+  > span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    font-size: 13px;
+    color: ${({ theme }) => theme.colors.textSecondary};
+  }
+`;
+
+const Dot = styled.i<{ $tone: 'accent' | 'muted' }>`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: ${({ theme, $tone }) => ($tone === 'accent' ? theme.colors.primary : theme.colors.textSubtle)};
+`;
+
+/** Available against leased, as one bar; an empty account draws the bare track. */
+const Allocation = styled.div`
+  display: flex;
+  gap: 2px;
+  height: 8px;
+  margin-top: 20px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: ${({ theme }) => chrome[theme.mode].fill};
+
+  i {
+    display: block;
+    height: 100%;
+    transition: flex-grow 420ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+`;
+
+const Columns = styled.div`
+  display: grid;
+  gap: 24px;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+
+  @media (min-width: 1100px) {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  }
+`;
+
+const FormTitle = styled.h2`
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  color: ${({ theme }) => theme.colors.text};
+`;
+
+const FormNote = styled.p`
+  margin: 4px 0 20px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: ${({ theme }) => theme.colors.textSecondary};
+`;
+
+/** Filled chip colour per lease status; see the note where it is drawn. */
+const STATUS_CHIP_COLOR = {
+  active: 'success',
+  cancelled: 'default',
+  pending: 'warning',
+} as const;
+
+const TYPE_LABEL: Record<string, string> = {
+  'cancel-leasing': 'Lease cancelled',
+  lease: 'Lease',
+  'lease-in': 'Lease in',
+  'lease-out': 'Lease out',
+};
 
 /**
  * Leasing Component
@@ -184,17 +282,15 @@ export const Leasing = () => {
   });
 
   // Extract balance values from balance watcher
-  // DCC node balance fields:
-  //   regular   = total wallet balance (regular + leaseIn - leaseOut would be generating)
-  //   available = regular - leaseOut  (what can be spent / leased further)
-  //   generating= regular + leaseIn - leaseOut  (NOT leased-out amount — do not use for that)
-  //   leaseOut  = amount delegated OUT to nodes  ← correct "currently leased" figure
-  //   leaseIn   = amount leased IN by others     (rare for end-user wallets)
-  const regularBalance = balances?.regular ?? 0;
-  const leasedBalance = balances?.leaseOut ?? 0; // Amount this wallet leased out to nodes
-  const availableBalance = balances?.available ?? regularBalance;
+  // 'regular' is everything this address owns, leased or not.
+  // 'available' is regular minus what is leased out: what can be leased now.
+  // 'leaseOut' is derived by the address service (the node omits it).
+  // 'generating' is the forging balance and says nothing about leases.
+  const regularBalance = balances?.regular ?? 0; // Total owned
+  const leasedBalance = balances?.leaseOut ?? 0; // Currently leased out
+  const availableBalance = balances?.available ?? regularBalance; // Available for new leases
 
-  const balanceInDcc = regularBalance / DCC_DECIMALS; // Spendable in DCC
+  const balanceInDcc = regularBalance / DCC_DECIMALS; // Total owned in DCC
   const leasedInDcc = leasedBalance / DCC_DECIMALS; // Leased out in DCC
   const availableInDcc = availableBalance / DCC_DECIMALS; // Available for new leases
 
@@ -391,15 +487,6 @@ export const Leasing = () => {
   };
 
   /**
-   * Handle filter change
-   */
-  const handleFilterChange = (_event: MouseEvent<HTMLElement>, next: LeaseFilter | null) => {
-    if (next) {
-      setFilter(next);
-    }
-  };
-
-  /**
    * Handle refresh
    */
   const handleRefresh = async () => {
@@ -408,470 +495,261 @@ export const Leasing = () => {
 
   if (!user) {
     return (
-      <Container maxWidth="md" sx={{ py: 8 }}>
-        <Alert severity="info" sx={{ borderRadius: 2 }}>
-          Sign in to manage leasing for your wallet.
-        </Alert>
-      </Container>
+      <Alert severity="info" sx={{ maxWidth: 'md', mx: 'auto', my: 8 }}>
+        Sign in to manage leasing for your wallet.
+      </Alert>
     );
   }
 
-  return (
-    <Container disableGutters maxWidth={false} sx={{ display: 'flex', flex: 1, minHeight: 0 }}>
-      <Stack spacing={3} sx={{ flex: 1, minHeight: 0 }}>
-        {errorMessage && (
-          <Alert severity="error" variant="outlined">
-            {errorMessage}
-          </Alert>
+  // Leased DCC is still owned, so the total is regular, not regular + leased.
+  const totalInDcc = balanceInDcc;
+  const busy = leaseMutation.isPending || initialLoading;
+
+  const figure = (value: number, label: ReactNode) => (
+    <Figure>
+      <strong>
+        {isBalanceLoading ? (
+          <Skeleton width={140} height={34} />
+        ) : (
+          <>
+            <AnimatedNumber value={value} decimals={4} />
+            <small>DCC</small>
+          </>
         )}
+      </strong>
+      <span>{label}</span>
+    </Figure>
+  );
 
-        <Grid container spacing={3} sx={{ flexShrink: 0 }}>
-          <Grid
-            size={{
-              md: 3,
-              sm: 6,
-              xs: 6,
-            }}
-          >
-            <Card variant="outlined" sx={{ height: '100%' }}>
-              <CardContent>
-                <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                  <Box
-                    sx={{
-                      alignItems: 'center',
-                      bgcolor: 'primary.main',
-                      borderRadius: 2,
-                      color: 'primary.contrastText',
-                      display: 'flex',
-                      height: 44,
-                      justifyContent: 'center',
-                      width: 44,
-                    }}
-                  >
-                    <ShieldOutlined />
-                  </Box>
-                  <div>
-                    <Typography variant="overline" color="text.secondary">
-                      Available Balance
-                    </Typography>
-                    <Typography variant="h5" sx={{ fontWeight: 400 }}>
-                      {formatDcc(availableInDcc, 4)} DCC
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      Ready for leasing
-                    </Typography>
-                  </div>
-                </Stack>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid
-            size={{
-              md: 3,
-              sm: 6,
-              xs: 6,
-            }}
-          >
-            <Card variant="outlined" sx={{ height: '100%' }}>
-              <CardContent>
-                <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                  <Box
-                    sx={{
-                      alignItems: 'center',
-                      bgcolor: 'success.main',
-                      borderRadius: 2,
-                      color: 'success.contrastText',
-                      display: 'flex',
-                      height: 44,
-                      justifyContent: 'center',
-                      width: 44,
-                    }}
-                  >
-                    <TrendingUpOutlined />
-                  </Box>
-                  <div>
-                    <Typography variant="overline" color="text.secondary">
-                      Currently Leased
-                    </Typography>
-                    <Typography variant="h5" sx={{ fontWeight: 400 }}>
-                      {formatDcc(leasedInDcc, 4)} DCC
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      Actively earning
-                    </Typography>
-                  </div>
-                </Stack>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid
-            size={{
-              md: 3,
-              sm: 6,
-              xs: 6,
-            }}
-          >
-            <Card variant="outlined" sx={{ height: '100%' }}>
-              <CardContent>
-                <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                  <Box
-                    sx={{
-                      alignItems: 'center',
-                      bgcolor: 'info.main',
-                      borderRadius: 2,
-                      color: 'info.contrastText',
-                      display: 'flex',
-                      height: 44,
-                      justifyContent: 'center',
-                      width: 44,
-                    }}
-                  >
-                    <ShieldOutlined />
-                  </Box>
-                  <div>
-                    <Typography variant="overline" color="text.secondary">
-                      Total Balance
-                    </Typography>
-                    <Typography variant="h5" sx={{ fontWeight: 400 }}>
-                      {formatDcc(balanceInDcc, 4)} DCC
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      Available + Leased
-                    </Typography>
-                  </div>
-                </Stack>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid
-            size={{
-              md: 3,
-              sm: 6,
-              xs: 6,
-            }}
-          >
-            <Card variant="outlined" sx={{ height: '100%' }}>
-              <CardContent>
-                <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                  <Box
-                    sx={{
-                      alignItems: 'center',
-                      bgcolor: 'action.selected',
-                      borderRadius: 2,
-                      color: 'primary.main',
-                      display: 'flex',
-                      height: 44,
-                      justifyContent: 'center',
-                      width: 44,
-                    }}
-                  >
-                    <HistoryOutlined />
-                  </Box>
-                  <div>
-                    <Typography variant="overline" color="text.secondary">
-                      Leasing Records
-                    </Typography>
-                    <Typography variant="h5" sx={{ fontWeight: 400 }}>
-                      {allCount}
-                    </Typography>
-                  </div>
-                </Stack>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
 
-        {/*
-          A CSS grid, not MUI's: a wrapping flex row gives its items no definite
-          height, so `height: 100%` inside them resolved against their own
-          content — which is how the donut came to paint over the card below it.
-        */}
-        <Box
-          sx={{
-            display: 'grid',
-            flex: '1 1 auto',
-            gap: 3,
-            gridTemplateColumns: { md: 'minmax(0, 5fr) minmax(0, 7fr)', xs: 'minmax(0, 1fr)' },
-            minHeight: 360,
-          }}
+      <Card sx={{ p: 3 }}>
+        <Summary>
+          {figure(
+            availableInDcc,
+            <>
+              <Dot $tone="accent" aria-hidden />
+              Available to lease
+            </>,
+          )}
+          {figure(
+            leasedInDcc,
+            <>
+              <Dot $tone="muted" aria-hidden />
+              Leased to nodes
+            </>,
+          )}
+          {figure(totalInDcc, 'Total, available and leased')}
+        </Summary>
+        <Allocation
+          role="img"
+          aria-label={
+            totalInDcc > 0
+              ? `${Math.round((leasedInDcc / totalInDcc) * 100)}% of your DCC is leased`
+              : 'No DCC to lease yet'
+          }
         >
-          <Card
-            variant="outlined"
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              minHeight: 0,
-              overflow: 'hidden',
-            }}
-          >
-            <CardHeader
-              sx={{ flexShrink: 0 }}
-              title="Distribution"
-              subheader="Breakdown of available and leased balances"
+          {totalInDcc > 0 ? (
+            <>
+              <i style={{ background: 'var(--color-indigo-ink)', flexGrow: availableInDcc }} />
+              <i style={{ background: 'var(--text-subtle)', flexGrow: leasedInDcc }} />
+            </>
+          ) : null}
+        </Allocation>
+      </Card>
+
+      <Columns>
+        <Card sx={{ p: 3 }}>
+          <FormTitle>Start a lease</FormTitle>
+          <FormNote>
+            Delegate DCC to a node. The funds stay in your wallet and you can cancel the lease at
+            any time.
+          </FormNote>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <InsetLabelField
+              label="Node address"
+              placeholder="3P…"
+              mono
+              spellCheck={false}
+              autoComplete="off"
+              value={recipient}
+              onChange={(value) => {
+                setRecipient(value);
+                if (recipientError) {
+                  validateRecipient(value);
+                }
+              }}
+              onBlur={() => validateRecipient(recipient)}
+              invalid={Boolean(recipientError)}
+              hint={recipientError ?? undefined}
+              disabled={busy}
             />
-            <Divider sx={{ flexShrink: 0 }} />
-            <CardContent sx={{ display: 'flex', flex: 1, flexDirection: 'column', minHeight: 0 }}>
-              {/*
-                  On a phone the donut is read at a glance, not studied, so it
-                  scales with the viewport instead of holding a fixed 320px —
-                  which cost most of a screen on its own.
-                */}
-              {/* The donut takes the room the card has rather than a fixed
-                    size that either overflowed the card or left it half empty. */}
-              <Box sx={{ flex: 1, minHeight: { md: 150, xs: 'clamp(170px, 48vw, 230px)' } }}>
-                <LeasingChart available={regularBalance} leasedOut={leasedBalance} leasedIn={0} />
-              </Box>
-            </CardContent>
-          </Card>
 
-          <Card
-            variant="outlined"
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              minHeight: 0,
-              overflow: 'hidden',
-            }}
-          >
-            <CardHeader
-              sx={{ flexShrink: 0 }}
-              title="Start Leasing"
-              subheader="Delegate DCC to a node and earn proportional rewards"
+            <AmountField
+              label="Amount to lease"
+              symbol="DCC"
+              value={amount}
+              onChange={(value) => {
+                setAmount(value);
+                if (amountError) {
+                  validateAmount(value);
+                }
+              }}
+              onBlur={() => validateAmount(amount)}
+              available={`${formatDcc(availableInDcc, 8)} DCC`}
+              onMax={handleMaxAmount}
+              error={amountError}
+              disabled={busy}
             />
-            <Divider sx={{ flexShrink: 0 }} />
-            <CardContent sx={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
-              <Stack spacing={2.5}>
-                <TextField
-                  label="Node Address"
-                  placeholder="3P..."
-                  value={recipient}
-                  onChange={(event) => {
-                    setRecipient(event.target.value);
-                    if (recipientError) {
-                      validateRecipient(event.target.value);
-                    }
-                  }}
-                  onBlur={() => validateRecipient(recipient)}
-                  error={Boolean(recipientError)}
-                  helperText={recipientError ?? ' '}
-                  fullWidth
-                  disabled={leaseMutation.isPending || initialLoading}
-                />
 
-                <Stack spacing={1}>
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    sx={{ alignItems: 'center', justifyContent: 'space-between' }}
-                  >
-                    <TextField
-                      label="Amount (DCC)"
-                      type="number"
-                      placeholder="0.00000000"
-                      value={amount}
-                      onChange={(event) => {
-                        setAmount(event.target.value);
-                        if (amountError) {
-                          validateAmount(event.target.value);
-                        }
-                      }}
-                      onBlur={() => validateAmount(amount)}
-                      error={Boolean(amountError)}
-                      helperText={amountError ?? ' '}
-                      fullWidth
-                      disabled={leaseMutation.isPending || initialLoading}
-                      slotProps={{ htmlInput: { min: 0, step: 0.00000001 } }}
-                    />
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={handleMaxAmount}
-                      disabled={leaseMutation.isPending || initialLoading}
-                    >
-                      MAX
-                    </Button>
-                  </Stack>
-                  <Typography variant="caption" color="text.secondary">
-                    Available: {formatDcc(balanceInDcc, 8)} DCC · Fixed network fee {LEASE_FEE_DCC}{' '}
-                    DCC · Funds stay in your control and can be unlocked anytime.
-                  </Typography>
-                </Stack>
+            <DetailGroup>
+              <DetailRow label="Node">{recipient ? shortenAddress(recipient) : '—'}</DetailRow>
+              <DetailRow label="Amount">{amount ? `${amount} DCC` : '—'}</DetailRow>
+              <DetailRow label="Network fee">{LEASE_FEE_DCC} DCC</DetailRow>
+            </DetailGroup>
 
-                <Button
-                  variant="contained"
-                  startIcon={
-                    leaseMutation.isPending ? (
-                      <CircularProgress size={18} color="inherit" />
-                    ) : (
-                      <PlayArrowRounded />
-                    )
-                  }
-                  onClick={handleLease}
-                  disabled={leaseMutation.isPending || !recipient || !amount}
-                  sx={{ alignSelf: 'flex-start', minWidth: 180 }}
-                >
-                  {leaseMutation.isPending ? 'Leasing…' : 'Start Lease'}
-                </Button>
-              </Stack>
-            </CardContent>
-          </Card>
-        </Box>
+            <HoldToConfirm
+              fullWidth
+              onConfirm={handleLease}
+              pending={leaseMutation.isPending}
+              pendingLabel="Leasing…"
+              confirmLabel="Signing"
+              disabled={leaseMutation.isPending || !recipient || !amount}
+            >
+              Hold to start lease
+            </HoldToConfirm>
+          </Box>
+        </Card>
 
-        <Card
-          variant="outlined"
-          sx={{
-            display: 'flex',
-            flex: '1 1 0',
-            flexDirection: 'column',
-            minHeight: 160,
-            overflow: 'hidden',
-          }}
-        >
-          <CardHeader
-            sx={{ flexShrink: 0 }}
-            title="Leasing History"
-            subheader="Track your active, canceled, and historical leases"
-            action={
-              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-                <ToggleButtonGroup
-                  size="small"
+        <section aria-labelledby="lease-history">
+          <InsetGroupHeader
+            id="lease-history"
+            title="History"
+            count={allCount}
+            trailing={
+              <>
+                <SegmentedControl
+                  size="sm"
+                  label="Filter leases"
                   value={filter}
-                  exclusive
-                  onChange={handleFilterChange}
-                >
-                  <ToggleButton value="all">All ({allCount})</ToggleButton>
-                  <ToggleButton value="active">Active ({activeCount})</ToggleButton>
-                  <ToggleButton value="canceled">Canceled ({canceledCount})</ToggleButton>
-                </ToggleButtonGroup>
+                  onValueChange={(v) => setFilter(v as LeaseFilter)}
+                  options={[
+                    { label: 'All', value: 'all' },
+                    { label: `Active ${activeCount}`, value: 'active' },
+                    { label: `Canceled ${canceledCount}`, value: 'canceled' },
+                  ]}
+                />
                 <Tooltip title="Refresh leasing data">
                   <span>
-                    <IconButton color="primary" onClick={handleRefresh} disabled={isRefreshing}>
-                      {isRefreshing ? <CircularProgress size={22} /> : <RefreshOutlined />}
+                    <IconButton
+                      size="small"
+                      aria-label="Refresh leasing data"
+                      onClick={handleRefresh}
+                      disabled={isRefreshing}
+                    >
+                      <RefreshCw size={16} />
                     </IconButton>
                   </span>
                 </Tooltip>
-              </Stack>
+              </>
             }
           />
-          <Divider sx={{ flexShrink: 0 }} />
-          <CardContent sx={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+          <InsetGroup>
             {isHistoryLoading && !recentTxs ? (
-              <Stack sx={{ alignItems: 'center', py: 6 }}>
-                <CircularProgress />
-              </Stack>
+              <InsetRowSkeleton rows={3} />
             ) : tableRows.length === 0 ? (
-              <Box sx={{ py: 6, textAlign: 'center' }}>
-                <Typography variant="body2" color="text.secondary">
-                  No leasing activity yet. Start a lease to see it appear here.
-                </Typography>
-              </Box>
+              <EmptyState
+                icons={[Server, Lock, History]}
+                title="No leases yet"
+                description="Start a lease and it will be listed here, with a way to cancel it."
+              />
             ) : (
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Type</TableCell>
-                    <TableCell>Node</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Status</TableCell>
-                    <TableCell align="right">Action</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {tableRows.map((lease) => {
-                    const cancelInFlight =
-                      cancelLeaseMutation.isPending && cancelLeaseMutation.variables === lease.id;
-                    let chipColor: 'success' | 'default' | 'warning' = 'warning';
-                    if (lease.status === 'active') {
-                      chipColor = 'success';
-                    } else if (lease.status === 'cancelled') {
-                      chipColor = 'default';
+              tableRows.map((lease) => {
+                const cancelInFlight =
+                  cancelLeaseMutation.isPending && cancelLeaseMutation.variables === lease.id;
+                return (
+                  <InsetRow
+                    key={lease.id}
+                    leading={
+                      <TokenAvatar icon={lease.status === 'cancelled' ? <LockOpen /> : <Lock />} />
                     }
-                    return (
-                      <TableRow hover key={lease.id}>
-                        <TableCell>
-                          <Typography variant="body2" sx={{ fontWeight: 400 }}>
-                            {lease.type.replace('-', ' ')}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Tooltip title={lease.recipient || 'Unknown'}>
-                            <Typography variant="body2" color="text.secondary">
-                              {shortenAddress(lease.recipient)}
-                            </Typography>
-                          </Tooltip>
-                        </TableCell>
-                        <TableCell align="right">
-                          <Typography variant="body2" sx={{ fontWeight: 400 }}>
-                            {formatDcc(lease.amount / DCC_DECIMALS, 4)} DCC
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant="body2" color="text.secondary">
-                            {new Date(lease.timestamp).toLocaleString(undefined, {
-                              day: 'numeric',
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              month: 'short',
-                            })}
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          {/*
-                           * Filled, not outlined. `<TableRow hover>` paints
-                           * `action.hover` (`surface.hover`) under this cell on
-                           * hover — an outlined chip has no fill of its own, so
-                           * its label read straight off that background:
-                           * `intent.warning` measured 4.1654:1 there in light
-                           * mode, `intent.success` 4.2865:1, both under the
-                           * 4.5:1 AA floor for body text. Filled gives the chip
-                           * its own opaque `intent.*` fill with the matching
-                           * verified `intent.on*` ink (≥4.5:1 in both modes,
-                           * see `theme/tokens/semantic.ts`), so the row's hover
-                           * state underneath it stops mattering — the same
-                           * pattern every other status chip in this codebase
-                           * already uses (Messages' unread badge, Dashboard's
-                           * activity chip, AliasManagement's "Copied!" chip).
-                           */}
-                          <Chip
-                            size="small"
-                            label={lease.status.charAt(0).toUpperCase() + lease.status.slice(1)}
-                            color={chipColor}
-                          />
-                        </TableCell>
-                        <TableCell align="right">
-                          {lease.canCancel ? (
-                            <Button
-                              size="small"
-                              variant="outlined"
-                              color="error"
-                              startIcon={
-                                cancelInFlight ? (
-                                  <CircularProgress size={16} color="inherit" />
-                                ) : (
-                                  <CancelScheduleSendOutlined fontSize="small" />
-                                )
-                              }
-                              onClick={() => handleCancelLease(lease.id)}
-                              disabled={cancelLeaseMutation.isPending}
-                            >
-                              Cancel
-                            </Button>
-                          ) : (
-                            <Typography variant="body2" color="text.secondary">
-                              —
-                            </Typography>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
+                    title={TYPE_LABEL[lease.type] ?? lease.type.replace('-', ' ')}
+                    subtitle={
+                      <>
+                        {/* The full node address stays one hover away. */}
+                        <Tooltip title={lease.recipient || 'Unknown'}>
+                          <span>{shortenAddress(lease.recipient) || 'Unknown node'}</span>
+                        </Tooltip>
+                        {' · '}
+                        {new Date(lease.timestamp).toLocaleString(undefined, {
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          month: 'short',
+                        })}
+                      </>
+                    }
+                    value={`${formatDcc(lease.amount / DCC_DECIMALS, 4)} DCC`}
+                    valueSub={
+                      /*
+                       * Filled, not a tint. Intent-coloured ink on a light
+                       * wash (an outlined chip on a hover fill, or a 10% tint
+                       * of itself) measured under the 4.5:1 AA floor for
+                       * warning and success in light mode. A filled chip
+                       * carries its own `intent.*` fill with the matching
+                       * verified `intent.on*` ink, so whatever sits under the
+                       * row stops mattering.
+                       *
+                       * The fill is restated here because the theme's
+                       * `MuiChip.filled` override repaints every filled chip
+                       * with the neutral translucent `chrome.fill`, coloured
+                       * ones included, which left the `intent.on*` ink on a
+                       * grey wash (1.15:1 light, 1.65:1 dark).
+                       */
+                      <Chip
+                        size="small"
+                        label={lease.status.charAt(0).toUpperCase() + lease.status.slice(1)}
+                        color={STATUS_CHIP_COLOR[lease.status]}
+                        sx={
+                          STATUS_CHIP_COLOR[lease.status] === 'default'
+                            ? undefined
+                            : { bgcolor: `${STATUS_CHIP_COLOR[lease.status]}.main` }
+                        }
+                      />
+                    }
+                    accessory={
+                      lease.canCancel ? (
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          color="error"
+                          // The theme's outlined button paints its own
+                          // translucent `chrome.fill`, and `intent.danger` on
+                          // it is under 4.5:1 (3.75:1 dark at rest, 4.32:1
+                          // light on hover). The alert set's deeper danger
+                          // ink keeps the red and clears AA on both fills.
+                          sx={(theme) => ({ color: chrome[theme.palette.mode].alert.error.fg })}
+                          onClick={() => handleCancelLease(lease.id)}
+                          disabled={cancelLeaseMutation.isPending}
+                          startIcon={
+                            cancelInFlight ? (
+                              <CircularProgress size={14} color="inherit" />
+                            ) : undefined
+                          }
+                        >
+                          Cancel
+                        </Button>
+                      ) : undefined
+                    }
+                  />
+                );
+              })
             )}
-          </CardContent>
-        </Card>
-      </Stack>
+          </InsetGroup>
+        </section>
+      </Columns>
 
       <ConfirmDialog
         open={!!cancelLeaseId}
@@ -882,6 +760,6 @@ export const Leasing = () => {
         confirmText="Cancel Lease"
         destructive
       />
-    </Container>
+    </Box>
   );
 };

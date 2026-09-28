@@ -1,30 +1,27 @@
-import { Box, ButtonBase, Divider, Drawer, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router';
 import { Icon, type IconName } from '@/components/atoms/Icon';
+import { BottomSheet } from '@/components/mobile/BottomSheet';
 import { AssetMark } from '@/components/mobile/primitives';
+import { GroupedList, ListRow } from '@/components/premium/GroupedList';
 import { useAuth } from '@/contexts/AuthContext';
-import {
-  mobileAccent,
-  mobileRadius,
-  mobileStatus,
-  mobileSurface,
-  mobileText,
-} from '@/styles/mobileTokens';
 
 /**
- * Navigation drawer.
+ * Navigation sheet.
  *
- * The tab bar carries the four destinations people use constantly; everything
- * else the product can do lives here. Without it the secondary features —
- * swap, bridge, analytics, token creation, the order book — are unreachable on
- * mobile, since a phone has no room for a persistent sidebar.
+ * The tab bar carries the destinations people use constantly; everything else
+ * the product can do lives here. Without it the secondary features — bridge,
+ * analytics, token creation, the order book — are unreachable on mobile,
+ * since a phone has no room for a persistent sidebar.
+ *
+ * Presented as a tall bottom sheet of grouped lists, the way iOS presents an
+ * account menu, so it can be flicked away with the thumb that opened it.
  */
 
 interface MenuItem {
   icon: IconName;
   label: string;
   to: string;
-  description?: string;
 }
 
 interface MenuGroup {
@@ -63,6 +60,31 @@ const GROUPS: MenuGroup[] = [
   },
 ];
 
+/** A 30px tinted glyph tile, the iOS Settings row mark. */
+function RowGlyph({ name, active }: { name: IconName; active: boolean }) {
+  return (
+    <Box
+      aria-hidden="true"
+      sx={{
+        alignItems: 'center',
+        bgcolor: active ? 'primary.main' : 'var(--surface-lavender)',
+        borderRadius: '8px',
+        // The accent's own ink on the filled tile: white in light mode, black on
+        // the light dark-mode indigo, where white would be 3.71:1.
+        color: active ? 'primary.contrastText' : 'var(--color-indigo-ink)',
+        display: 'flex',
+        flexShrink: 0,
+        height: 30,
+        justifyContent: 'center',
+        transition: 'background-color 160ms var(--ease), color 160ms var(--ease)',
+        width: 30,
+      }}
+    >
+      <Icon name={name} size={17} strokeWidth={2} />
+    </Box>
+  );
+}
+
 export function MobileMenuDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -75,157 +97,60 @@ export function MobileMenuDrawer({ open, onClose }: { open: boolean; onClose: ()
   };
 
   return (
-    <Drawer
-      anchor="right"
+    <BottomSheet
       open={open}
       onClose={onClose}
-      slotProps={{
-        paper: {
-          sx: {
-            backgroundImage: 'none',
-            bgcolor: mobileSurface.canvas,
-            /*
-             * Fixed fill, so the ink is fixed with it. The drawer's own rows
-             * all name a colour, but the account name at the top did not, and
-             * inherited MUI's mode-aware `text.primary` through `CssBaseline`:
-             * `#f5f4ff` on `#F4F5F7`, 1.00:1 in dark — the wallet's own name,
-             * invisible, in the shell's primary navigation drawer.
-             */
-            color: mobileText.primary,
-            // Leaves the underlying screen partly visible, as a drawer should.
-            maxWidth: '92vw',
-            width: 320,
-          },
-        },
-      }}
+      label="Menu"
+      closeLabel="Close menu"
+      grouped
+      maxHeightRatio={0.92}
     >
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100%',
-          pb: 'calc(env(safe-area-inset-bottom) + 12px)',
-          pt: 'calc(env(safe-area-inset-top) + 12px)',
-        }}
-      >
-        {/* Identity */}
-        <Box sx={{ alignItems: 'center', display: 'flex', gap: 1.5, px: 2, py: 1.5 }}>
-          <AssetMark size={44} bg={mobileAccent.wash}>
-            <Box sx={{ color: mobileAccent.base, fontSize: 15 }}>
+      {/* Identity */}
+      <GroupedList>
+        <ListRow
+          leading={
+            <AssetMark size={48} tone="accent">
               {address ? address.slice(0, 2).toUpperCase() : 'DX'}
-            </Box>
-          </AssetMark>
-          <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography sx={{ fontSize: 15, fontWeight: 700 }}>
-              {user?.name || 'My wallet'}
-            </Typography>
-            <Typography
-              sx={{
-                color: mobileText.muted,
-                fontSize: 12,
-                fontVariantNumeric: 'tabular-nums',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {address ? `${address.slice(0, 10)}…${address.slice(-6)}` : 'Not connected'}
-            </Typography>
-          </Box>
-          <ButtonBase
-            aria-label="Close menu"
-            onClick={onClose}
-            sx={{ borderRadius: '50%', color: mobileText.muted, height: 44, width: 44 }}
-          >
-            <Icon name="close" size={20} strokeWidth={2} />
-          </ButtonBase>
-        </Box>
+            </AssetMark>
+          }
+          leadingWidth={48}
+          title={user?.name || 'My wallet'}
+          subtitle={address ? `${address.slice(0, 10)}…${address.slice(-6)}` : 'Not connected'}
+        />
+      </GroupedList>
 
-        <Divider sx={{ borderColor: mobileSurface.border }} />
+      {GROUPS.map((group) => (
+        <GroupedList key={group.title} title={group.title} quiet>
+          {group.items.map((item) => {
+            const active = location.pathname === item.to;
+            return (
+              <ListRow
+                key={item.to}
+                leading={<RowGlyph name={item.icon} active={active} />}
+                leadingWidth={30}
+                title={item.label}
+                {...(active ? { tone: 'accent' as const } : {})}
+                onClick={() => go(item.to)}
+              />
+            );
+          })}
+        </GroupedList>
+      ))}
 
-        {/* Destinations */}
-        {/* Scrolling the destination list must not chain to the page behind the drawer. */}
-        <Box sx={{ flex: 1, overflowY: 'auto', overscrollBehavior: 'contain', px: 1.5, py: 1 }}>
-          {GROUPS.map((group) => (
-            <Box key={group.title} sx={{ mb: 1.5 }}>
-              <Typography
-                sx={{
-                  color: mobileText.muted,
-                  fontSize: 11,
-                  fontWeight: 700,
-                  letterSpacing: '0.5px',
-                  px: 1,
-                  py: 1,
-                  textTransform: 'uppercase',
-                }}
-              >
-                {group.title}
-              </Typography>
+      <GroupedList>
+        <ListRow
+          title="Sign out"
+          tone="danger"
+          chevron={false}
+          onClick={() => {
+            onClose();
+            void logout();
+            void navigate('/');
+          }}
+        />
+      </GroupedList>
 
-              {group.items.map((item) => {
-                const active = location.pathname === item.to;
-                return (
-                  <ButtonBase
-                    key={item.to}
-                    onClick={() => go(item.to)}
-                    sx={{
-                      bgcolor: active ? mobileAccent.wash : 'transparent',
-                      borderRadius: mobileRadius.md,
-                      color: active ? mobileAccent.base : mobileText.primary,
-                      display: 'flex',
-                      gap: 1.5,
-                      justifyContent: 'flex-start',
-                      minHeight: 46,
-                      px: 1,
-                      width: '100%',
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        color: active ? mobileAccent.base : mobileText.secondary,
-                        flexShrink: 0,
-                        lineHeight: 0,
-                      }}
-                    >
-                      <Icon name={item.icon} size={19} strokeWidth={1.8} />
-                    </Box>
-                    <Typography sx={{ fontSize: 15, fontWeight: active ? 600 : 500 }}>
-                      {item.label}
-                    </Typography>
-                  </ButtonBase>
-                );
-              })}
-            </Box>
-          ))}
-        </Box>
-
-        <Divider sx={{ borderColor: mobileSurface.border }} />
-
-        <Box sx={{ px: 1.5, py: 1 }}>
-          <ButtonBase
-            onClick={() => {
-              onClose();
-              void logout();
-              void navigate('/');
-            }}
-            sx={{
-              borderRadius: mobileRadius.md,
-              color: mobileStatus.danger,
-              display: 'flex',
-              gap: 1.5,
-              justifyContent: 'flex-start',
-              minHeight: 46,
-              px: 1,
-              width: '100%',
-            }}
-          >
-            <Box sx={{ flexShrink: 0, lineHeight: 0 }}>
-              <Icon name="logout" size={19} strokeWidth={1.8} />
-            </Box>
-            <Typography sx={{ fontSize: 15, fontWeight: 500 }}>Sign out</Typography>
-          </ButtonBase>
-        </Box>
-      </Box>
-    </Drawer>
+      <Box sx={{ height: 8 }} />
+    </BottomSheet>
   );
 }

@@ -3,7 +3,6 @@
  * Modal for creating a new alias for the user's address
  */
 
-import CloseIcon from '@mui/icons-material/Close';
 import {
   Alert,
   Box,
@@ -18,7 +17,9 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { Check, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { DetailGroup, DetailRow } from '@/components/premium/InsetList';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAliases } from '@/hooks/useAliases';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
@@ -193,59 +194,21 @@ export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalP
 
   const isValid = alias && !validationError && !isValidating && !hasInsufficientBalance;
 
+  const available = Boolean(alias) && !validationError && !isValidating;
+
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle>
-        <Stack
-          direction="row"
-          sx={{
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <Typography
-            variant="h6"
-            sx={{
-              fontWeight: 600,
-            }}
-          >
-            Create Alias
-          </Typography>
-          <IconButton onClick={handleClose} disabled={isCreating} size="small">
-            <CloseIcon />
-          </IconButton>
-        </Stack>
+    <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
+      <DialogTitle sx={{ alignItems: 'center', display: 'flex', justifyContent: 'space-between' }}>
+        Create alias
+        <IconButton onClick={handleClose} disabled={isCreating} size="small" aria-label="Close">
+          <X size={18} />
+        </IconButton>
       </DialogTitle>
       <DialogContent>
-        <Stack spacing={3} sx={{ mt: 1 }}>
-          <Box>
-            <Typography
-              variant="body2"
-              sx={{
-                color: 'text.secondary',
-                mb: 2,
-              }}
-            >
-              Create a custom alias for your address. Aliases are shorter and easier to remember
-              than full addresses.
-            </Typography>
-
-            <Alert severity="info" sx={{ mb: 2 }}>
-              <Typography variant="body2">
-                Fee: <strong>0.001 DCC</strong>
-              </Typography>
-            </Alert>
-
-            {hasInsufficientBalance && (
-              <Alert severity="warning" sx={{ mb: 2 }}>
-                <Typography variant="body2">
-                  Insufficient balance. You need at least 0.001 DCC to create an alias.
-                  <br />
-                  Current balance: <strong>{formatAmount(dccBalance)} DCC</strong>
-                </Typography>
-              </Alert>
-            )}
-          </Box>
+        <Stack spacing={2.5} sx={{ pt: 1 }}>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            A short name anyone can send to instead of your full address. Aliases are permanent.
+          </Typography>
 
           <TextField
             label="Alias"
@@ -253,18 +216,38 @@ export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalP
             onChange={(e) => setAlias(e.target.value.toLowerCase())}
             placeholder="myalias"
             fullWidth
+            autoFocus
             disabled={isCreating}
             error={!!validationError}
             helperText={
               validationError ||
-              `${alias.length}/${MAX_ALIAS_LENGTH} characters (minimum ${MIN_ALIAS_LENGTH})`
+              (available
+                ? 'Available'
+                : `${alias.length}/${MAX_ALIAS_LENGTH} characters (minimum ${MIN_ALIAS_LENGTH})`)
             }
             slotProps={{
+              formHelperText: { sx: available ? { color: 'success.main' } : {} },
               input: {
-                endAdornment: isValidating && <CircularProgress size={20} />,
+                endAdornment: isValidating ? (
+                  <CircularProgress size={18} />
+                ) : available ? (
+                  <Box sx={{ color: 'success.main', display: 'flex' }}>
+                    <Check size={18} aria-hidden />
+                  </Box>
+                ) : null,
               },
             }}
           />
+
+          <DetailGroup aria-label="What will be signed">
+            <DetailRow label="Alias">{alias || '—'}</DetailRow>
+            <DetailRow label="Network fee">0.001 DCC</DetailRow>
+            <DetailRow label="Your balance">{formatAmount(dccBalance)} DCC</DetailRow>
+          </DetailGroup>
+
+          {hasInsufficientBalance && (
+            <Alert severity="warning">You need at least 0.001 DCC to create an alias.</Alert>
+          )}
 
           {error && (
             <Alert severity="error" onClose={() => setError(null)}>
@@ -289,9 +272,9 @@ export const CreateAliasModal = ({ open, onClose, onSuccess }: CreateAliasModalP
           variant="contained"
           onClick={handleCreate}
           disabled={!isValid || isCreating}
-          startIcon={isCreating && <CircularProgress size={16} />}
+          startIcon={isCreating ? <CircularProgress size={16} color="inherit" /> : undefined}
         >
-          {isCreating ? 'Creating...' : 'Create Alias'}
+          {isCreating ? 'Creating…' : 'Create alias'}
         </Button>
       </DialogActions>
     </Dialog>

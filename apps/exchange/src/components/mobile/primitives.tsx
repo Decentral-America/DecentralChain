@@ -1,13 +1,17 @@
 import { Box, type BoxProps, ButtonBase, Typography, useTheme } from '@mui/material';
 import { type ReactNode } from 'react';
 import { Icon, type IconName } from '@/components/atoms/Icon';
+import { Avatar, ListRow } from '@/components/premium/GroupedList';
+import { hasContent } from '@/components/premium/hasContent';
+import { PressAction } from '@/components/premium/PressAction';
+import { SegmentedControl } from '@/components/premium/SegmentedControl';
 import {
   mobileAccent,
-  mobileGradient,
+  mobileElevation,
+  mobileFluid,
   mobileLayout,
   mobileMarket,
   mobileRadius,
-  mobileShadow,
   mobileSurface,
   mobileText,
   mobileType,
@@ -17,10 +21,11 @@ import { tokens } from '@/theme/tokens/semantic';
 /**
  * Mobile UI primitives.
  *
- * These exist so the mobile screens are assembled from real components rather
- * than being a narrower rendering of the desktop layout. Each maps to a
- * recognisable native pattern: a branded header band, rounded cards, pill
- * actions, a segmented control, and dense list rows.
+ * The mobile screens are assembled from these rather than being a narrower
+ * rendering of the desktop layout. Each maps to a native iOS pattern: a
+ * large title on the grouped ground, grouped inset lists, round tinted
+ * actions under a hero figure, a search field in the system fill, and a
+ * full-width primary button.
  */
 
 /* ------------------------------------------------------------------ header */
@@ -32,57 +37,40 @@ interface MobileHeaderProps {
   leading?: ReactNode;
   /** Rendered at the far right — usually a notification or menu action */
   trailing?: ReactNode;
-  /** Uses the branded gradient band instead of the plain canvas */
-  gradient?: boolean;
-  /** Extra bottom padding so an overlapping card can sit on the band */
-  overlap?: boolean;
   children?: ReactNode;
 }
 
-export function MobileHeader({
-  title,
-  leading,
-  trailing,
-  gradient = false,
-  overlap = false,
-  children,
-}: MobileHeaderProps) {
+/** A static large-title header, for screens outside the app shell. */
+export function MobileHeader({ title, leading, trailing, children }: MobileHeaderProps) {
   return (
     <Box
       component="header"
       sx={{
-        background: gradient ? mobileGradient.header : mobileSurface.canvas,
-        color: gradient ? mobileText.onAccent : mobileText.primary,
-        // When a card overlaps the band, the band must extend past the title.
-        pb: overlap ? 9 : 2,
-        // Room for the status bar on notched devices.
-        pt: 'calc(env(safe-area-inset-top) + 12px)',
+        color: mobileText.primary,
+        pb: 2,
+        pt: 'calc(env(safe-area-inset-top) + 8px)',
         px: `${mobileLayout.gutter}px`,
       }}
     >
-      <Box sx={{ alignItems: 'center', display: 'flex', gap: 1.5, minHeight: 44 }}>
-        {leading}
-        <Typography
-          component="h1"
-          sx={{
-            display: '-webkit-box',
-            flex: 1,
-            fontSize: 'clamp(18px, 5.2vw, 22px)',
-            fontWeight: mobileType.title.weight,
-            letterSpacing: mobileType.title.tracking,
-            lineHeight: 1.25,
-            minWidth: 0,
-            overflow: 'hidden',
-            overflowWrap: 'anywhere',
-            WebkitBoxOrient: 'vertical',
-            // Wraps to a second line rather than clipping a long account name.
-            WebkitLineClamp: 2,
-          }}
-        >
-          {title}
-        </Typography>
-        {trailing}
-      </Box>
+      {hasContent(leading) || hasContent(trailing) ? (
+        <Box sx={{ alignItems: 'center', display: 'flex', minHeight: 44, mx: -1 }}>
+          {leading}
+          <Box sx={{ flex: 1 }} />
+          {trailing}
+        </Box>
+      ) : null}
+      <Typography
+        component="h1"
+        sx={{
+          fontSize: mobileFluid.largeTitle,
+          fontWeight: mobileType.largeTitle.weight,
+          letterSpacing: mobileType.largeTitle.tracking,
+          lineHeight: mobileType.largeTitle.lineHeight,
+          overflowWrap: 'anywhere',
+        }}
+      >
+        {title}
+      </Typography>
       {children}
     </Box>
   );
@@ -95,29 +83,26 @@ interface MobileCardProps extends BoxProps {
   padded?: boolean;
 }
 
+/** The elevated surface: shadow in light mode, hairline in dark. */
 export function MobileCard({ children, padded = true, sx, ...rest }: MobileCardProps) {
   return (
     <Box
       sx={{
+        ...mobileElevation.card,
         bgcolor: mobileSurface.card,
         borderRadius: mobileRadius.card,
-        boxShadow: mobileShadow.card,
         /*
-         * The fill is `styles/mobileTokens`' fixed `#ffffff` — one literal in
-         * both modes — so the card has to carry its ink as well. Without this
-         * line anything inside it that does not set its own `color` inherits
-         * MUI's mode-aware `text.primary` from the `<body>` rule `CssBaseline`
-         * writes, and dark mode paints `#f5f4ff` on `#ffffff`: 1.09:1. That was
-         * live on the balance figures of `MobileHome` and `MobilePortfolio` and
-         * on `MobileAccount`'s wallet name — every one of them a `Typography`
-         * with a size and a weight but no colour. Pinned ink on a pinned fill
-         * is the correct pairing here; `mobileTokens` is deliberately
-         * mode-blind, and this is the half of that bargain the card owes.
+         * The card carries its ink as well as its fill. Without this, anything
+         * inside it that does not set its own `color` inherits MUI's
+         * `text.primary` from the `<body>` rule `CssBaseline` writes, which
+         * only agrees with this theme-variable fill while the two mode sources
+         * agree — the balance figures of `MobileHome` and `MobilePortfolio`
+         * and `MobileAccount`'s wallet name are all `Typography` with no
+         * colour of their own. Ink and fill now read the same variables.
          */
         color: mobileText.primary,
         p: padded ? `${mobileLayout.cardPadding}px` : 0,
         position: 'relative',
-        zIndex: 1,
         ...sx,
       }}
       {...rest}
@@ -150,21 +135,126 @@ export function MobileSectionHeader({ title, action }: SectionHeaderProps) {
         alignItems: 'center',
         display: 'flex',
         justifyContent: 'space-between',
-        mb: 1.5,
-        mt: 3,
+        mb: 1,
+        mt: 3.5,
+        pl: 0.5,
       }}
     >
       <Typography
         component="h2"
-        sx={{
-          fontSize: mobileType.heading.size,
-          fontWeight: mobileType.heading.weight,
-          letterSpacing: mobileType.heading.tracking,
-        }}
+        sx={{ fontSize: 20, fontWeight: 600, letterSpacing: '-0.3px', lineHeight: 1.25 }}
       >
         {title}
       </Typography>
       {action}
+    </Box>
+  );
+}
+
+/** Plain accent text action for a section header, e.g. "See all". */
+export function MobileTextAction({
+  children,
+  onClick,
+}: {
+  children: ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <ButtonBase
+      onClick={onClick}
+      sx={{
+        '&:active': { opacity: 0.5 },
+        '&:focus-visible': { boxShadow: '0 0 0 2px var(--color-indigo-ink)' },
+        borderRadius: mobileRadius.sm,
+        color: mobileAccent.base,
+        fontSize: 15,
+        fontWeight: 400,
+        letterSpacing: '-0.15px',
+        minHeight: mobileLayout.minTapTarget,
+        px: 1,
+        transition: 'opacity 160ms var(--ease)',
+      }}
+    >
+      {children}
+    </ButtonBase>
+  );
+}
+
+/* -------------------------------------------------------------------- hero */
+
+interface MobileHeroProps {
+  /** Quiet label above the figure */
+  label: ReactNode;
+  /** The figure itself, usually an AnimatedNumber */
+  children: ReactNode;
+  /** Unit set beside the figure in secondary type */
+  unit?: string | undefined;
+  /** Control beside the label, e.g. hide-balance */
+  labelAction?: ReactNode;
+  /** Secondary figures beneath */
+  footer?: ReactNode;
+}
+
+/** The hero figure, set straight on the ground as iOS Wallet and Stocks do. */
+export function MobileHero({ label, children, unit, labelAction, footer }: MobileHeroProps) {
+  return (
+    <Box>
+      <Box sx={{ alignItems: 'center', display: 'flex', gap: 0.25, minHeight: 32 }}>
+        <Typography sx={{ color: mobileText.secondary, fontSize: 15, letterSpacing: '-0.15px' }}>
+          {label}
+        </Typography>
+        {labelAction}
+      </Box>
+      <Box
+        sx={{
+          alignItems: 'baseline',
+          display: 'flex',
+          flexWrap: 'wrap',
+          fontSize: mobileFluid.hero,
+          fontVariantNumeric: 'tabular-nums',
+          fontWeight: mobileType.display.weight,
+          gap: 1,
+          letterSpacing: mobileType.display.tracking,
+          lineHeight: mobileType.display.lineHeight,
+          minWidth: 0,
+        }}
+      >
+        {children}
+        {unit ? (
+          <Box
+            component="span"
+            sx={{
+              color: mobileText.secondary,
+              fontSize: 20,
+              fontWeight: 500,
+              letterSpacing: '-0.3px',
+            }}
+          >
+            {unit}
+          </Box>
+        ) : null}
+      </Box>
+      {footer}
+    </Box>
+  );
+}
+
+/** One secondary figure under the hero: label above, value beneath. */
+export function MobileStat({ label, value }: { label: string; value: ReactNode }) {
+  return (
+    <Box>
+      <Typography sx={{ color: mobileText.secondary, fontSize: 13 }}>{label}</Typography>
+      <Typography
+        component="div"
+        sx={{
+          fontSize: 17,
+          fontVariantNumeric: 'tabular-nums',
+          fontWeight: 500,
+          letterSpacing: '-0.3px',
+        }}
+      >
+        {value}
+      </Typography>
     </Box>
   );
 }
@@ -178,8 +268,8 @@ export interface QuickAction {
 }
 
 /**
- * The three-up action row under the balance. Each target is a full column so
- * the tap area comfortably exceeds the minimum, even though the icon is small.
+ * The action row under the balance: round 56px tinted keys with the label
+ * beneath, spread evenly. Each column is the tap target, not just the circle.
  */
 export function MobileQuickActions({ actions }: { actions: QuickAction[] }) {
   return (
@@ -187,50 +277,23 @@ export function MobileQuickActions({ actions }: { actions: QuickAction[] }) {
       sx={{
         display: 'grid',
         gridTemplateColumns: `repeat(${actions.length}, 1fr)`,
-        mt: 2.5,
+        justifyItems: 'center',
+        mt: 3,
       }}
     >
       {actions.map((action) => (
-        <ButtonBase
+        <PressAction
           key={action.label}
-          onClick={action.onClick}
-          sx={{
-            borderRadius: mobileRadius.md,
-            flexDirection: 'column',
-            gap: 0.75,
-            minHeight: mobileLayout.minTapTarget,
-            py: 1,
-          }}
-        >
-          <Box
-            sx={{
-              alignItems: 'center',
-              bgcolor: mobileAccent.wash,
-              border: `1px solid ${mobileAccent.wash}`,
-              borderRadius: '50%',
-              color: mobileAccent.base,
-              display: 'flex',
-              height: 46,
-              justifyContent: 'center',
-              width: 46,
-            }}
-          >
-            <Icon name={action.icon} size={20} strokeWidth={1.9} />
-          </Box>
-          <Typography
-            sx={{
-              color: mobileText.secondary,
-              fontSize: mobileType.label.size,
-              fontWeight: mobileType.label.weight,
-            }}
-          >
-            {action.label}
-          </Typography>
-        </ButtonBase>
+          label={action.label}
+          icon={<Icon name={action.icon} size={22} strokeWidth={2} />}
+          {...(action.onClick ? { onClick: action.onClick } : {})}
+        />
       ))}
     </Box>
   );
 }
+
+/* ------------------------------------------------------------ search field */
 
 /* --------------------------------------------------------------- sparkline */
 
@@ -246,7 +309,7 @@ interface SparklineProps {
 
 /**
  * Inline trend line. Rendered as a plain SVG polyline rather than pulling a
- * charting library into a 32px-tall slot.
+ * charting library into a 32px-tall slot. Draws nothing without two points.
  */
 export function Sparkline({
   data,
@@ -269,7 +332,7 @@ export function Sparkline({
     return `${x.toFixed(2)},${y.toFixed(2)}`;
   });
 
-  const stroke = positive ? mobileAccent.base : mobileMarket.down;
+  const stroke = positive ? mobileMarket.up : mobileMarket.down;
 
   return (
     <svg
@@ -303,16 +366,15 @@ interface AssetRowProps {
   logo: ReactNode;
   name: string;
   subtitle: string;
-  price: string;
+  price: ReactNode;
   change: string;
   positive: boolean;
-  spark?: number[];
   onClick?: () => void;
 }
 
 /**
- * Dense row used by the wishlist and holdings lists: mark, identity, trend,
- * then the figures right-aligned with tabular numerals so columns line up.
+ * Holdings row: mark, identity, then the figure right-aligned in tabular
+ * numerals. A grouped-list row; place it inside a `GroupedList`.
  */
 export function MobileAssetRow({
   logo,
@@ -321,89 +383,17 @@ export function MobileAssetRow({
   price,
   change,
   positive,
-  spark,
   onClick,
 }: AssetRowProps) {
   return (
-    <ButtonBase
-      onClick={onClick}
-      sx={{
-        borderRadius: mobileRadius.md,
-        display: 'flex',
-        gap: 1.5,
-        justifyContent: 'flex-start',
-        minHeight: 64,
-        px: 0.5,
-        py: 1,
-        textAlign: 'left',
-        width: '100%',
-      }}
-    >
-      {logo}
-
-      {/* minWidth:0 lets long names truncate instead of pushing the figures off */}
-      <Box sx={{ flex: 1, minWidth: 0 }}>
-        <Typography
-          sx={{
-            color: mobileText.primary,
-            fontSize: mobileType.body.size,
-            fontWeight: 600,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {name}
-        </Typography>
-        <Typography
-          sx={{
-            color: mobileText.muted,
-            fontSize: mobileType.caption.size,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}
-        >
-          {subtitle}
-        </Typography>
-      </Box>
-
-      {spark ? (
-        <Box sx={{ flexShrink: 0, lineHeight: 0 }}>
-          <Sparkline data={spark} positive={positive} width={56} height={26} />
-        </Box>
-      ) : null}
-
-      <Box sx={{ flexShrink: 0, textAlign: 'right' }}>
-        <Typography
-          sx={{
-            color: mobileText.primary,
-            fontSize: mobileType.body.size,
-            fontVariantNumeric: 'tabular-nums',
-            fontWeight: 600,
-          }}
-        >
-          {price}
-        </Typography>
-        <Typography
-          sx={{
-            color: positive ? mobileMarket.up : mobileMarket.down,
-            fontSize: mobileType.caption.size,
-            fontVariantNumeric: 'tabular-nums',
-            fontWeight: 500,
-          }}
-        >
-          {change}
-        </Typography>
-      </Box>
-
-      {/* Signals the row opens a detail view */}
-      {onClick ? (
-        <Box sx={{ color: mobileText.muted, flexShrink: 0, lineHeight: 0 }}>
-          <Icon name="chevronRight" size={17} />
-        </Box>
-      ) : null}
-    </ButtonBase>
+    <ListRow
+      leading={logo}
+      title={name}
+      subtitle={subtitle}
+      value={price}
+      {...(change ? { detail: change, detailTone: positive ? 'up' : 'down' } : {})}
+      {...(onClick ? { onClick } : {})}
+    />
   );
 }
 
@@ -413,50 +403,24 @@ interface SegmentedControlProps<T extends string> {
   options: readonly T[];
   value: T;
   onChange: (value: T) => void;
+  label?: string;
 }
 
-/** Range selector for charts — a pill track with a filled active segment. */
+/** Range selector — the kit's iOS segmented control, stretched to the row. */
 export function MobileSegmentedControl<T extends string>({
   options,
   value,
   onChange,
+  label = 'Range',
 }: SegmentedControlProps<T>) {
   return (
-    <Box
-      role="tablist"
-      sx={{
-        bgcolor: mobileSurface.sunken,
-        border: `1px solid ${mobileSurface.border}`,
-        borderRadius: mobileRadius.md,
-        display: 'grid',
-        gap: 0.5,
-        gridTemplateColumns: `repeat(${options.length}, 1fr)`,
-        p: 0.5,
-      }}
-    >
-      {options.map((option) => {
-        const active = option === value;
-        return (
-          <ButtonBase
-            key={option}
-            role="tab"
-            aria-selected={active}
-            onClick={() => onChange(option)}
-            sx={{
-              bgcolor: active ? mobileAccent.base : 'transparent',
-              borderRadius: mobileRadius.sm,
-              color: active ? mobileText.onAccent : mobileText.secondary,
-              fontSize: mobileType.label.size,
-              fontWeight: 600,
-              minHeight: mobileLayout.minTapTarget,
-              transition: 'background-color 150ms ease, color 150ms ease',
-            }}
-          >
-            {option}
-          </ButtonBase>
-        );
-      })}
-    </Box>
+    <SegmentedControl
+      fullWidth
+      label={label}
+      value={value}
+      onValueChange={onChange}
+      options={options.map((option) => ({ label: option, value: option }))}
+    />
   );
 }
 
@@ -465,7 +429,7 @@ export function MobileSegmentedControl<T extends string>({
 interface MobileButtonProps {
   children: ReactNode;
   onClick?: () => void;
-  /** `accent` is the filled primary; `dark` is the compact secondary */
+  /** `accent` is the filled primary; `dark` and `outline` are the grey-fill secondary */
   variant?: 'accent' | 'dark' | 'outline';
   fullWidth?: boolean;
   disabled?: boolean;
@@ -473,28 +437,13 @@ interface MobileButtonProps {
 }
 
 /**
- * Pill action. The accent variant is the mobile primary call to action.
+ * The full-width iOS button. The accent variant is the mobile primary action.
  *
- * `accent` and `dark` carry their own opaque fills, so their ink is pinned to
- * match — a fixed fill under fixed ink, which is correct and mode-independent.
- *
- * `outline` is different: its fill is *transparent*, so its ink is read
- * against whatever surface it happens to land on. Pinning that ink to the
- * fixed-light `mobileText.primary` only worked while every surface beneath it
- * was fixed light too. Its one shipping caller is `MobileAuthScreen`'s footer
- * (`SignIn` and `SignUp` on a phone), whose sheet now follows the app's
- * light/dark toggle — so this variant has to follow it as well, or the "create
- * a new wallet" / "import an existing wallet" actions turn near-black on a
- * near-black sheet. `text.primary`/`border.strong` are the same two roles with
- * the mode dimension `styles/mobileTokens` deliberately does not have.
- *
- * The other two callers are `MobileWelcome` — which really is behind
- * `import.meta.env.DEV`, the `/mobile-preview*` tree — and `MobileReceiveSheet`,
- * which is NOT: `MobileHome` renders it at line 210, and `MobileHome` is routed
- * at `routes/walletRoutes.tsx:51` through `ResponsiveScreen`, i.e. selected by
- * VIEWPORT on every phone. Both use the `accent` variant, whose fill and ink
- * are both fixed, so neither is affected either way — but the DEV claim itself
- * was wrong and is corrected here rather than left to mislead the next reader.
+ * The accent fill takes the accent's own ink (`accent.onPrimary`): white on
+ * the light-mode indigo, black on the light dark-mode one, where white would
+ * be 3.71:1. Fill, hover and ink all come from the same mode so they cannot
+ * disagree. `dark` and `outline` share the grey system fill, whose ink follows
+ * the same theme variables as the fill.
  */
 export function MobileButton({
   children,
@@ -505,11 +454,7 @@ export function MobileButton({
   type = 'button',
 }: MobileButtonProps) {
   const t = tokens(useTheme().palette.mode);
-  const palette = {
-    accent: { bg: mobileAccent.base, border: 'transparent', color: mobileText.onAccent },
-    dark: { bg: mobileText.primary, border: 'transparent', color: mobileText.onAccent },
-    outline: { bg: 'transparent', border: t.border.strong, color: t.text.primary },
-  }[variant];
+  const accent = variant === 'accent';
 
   return (
     <ButtonBase
@@ -517,15 +462,22 @@ export function MobileButton({
       onClick={onClick}
       disabled={disabled}
       sx={{
-        bgcolor: palette.bg,
-        border: `1px solid ${palette.border}`,
-        borderRadius: mobileRadius.pill,
-        color: palette.color,
-        fontSize: 16,
-        fontWeight: 600,
-        minHeight: 54,
-        opacity: disabled ? 0.5 : 1,
+        '@media (hover: hover)': {
+          '&:hover': accent ? { bgcolor: t.accent.primaryHover } : { filter: 'brightness(0.97)' },
+        },
+        '@media (prefers-reduced-motion: reduce)': { '&:active': { transform: 'none' } },
+        '&:active': { transform: 'scale(0.97)' },
+        '&:focus-visible': { boxShadow: '0 0 0 3px var(--focus-ring-color)' },
+        '&.Mui-disabled': { opacity: 0.45 },
+        bgcolor: accent ? t.accent.primary : mobileSurface.chip,
+        borderRadius: '14px',
+        color: accent ? t.accent.onPrimary : mobileText.primary,
+        fontSize: 17,
+        fontWeight: 500,
+        letterSpacing: '-0.3px',
+        minHeight: 50,
         px: 3,
+        transition: 'transform 160ms var(--ease), background-color 160ms var(--ease)',
         width: fullWidth ? '100%' : 'auto',
       }}
     >
@@ -537,32 +489,42 @@ export function MobileButton({
 /* -------------------------------------------------------------- asset mark */
 
 /**
- * Circular brand plate. Token logos are conventionally round, so this is one
- * of the few circular elements the system keeps.
+ * Circular mark for a token or an identity. Token logos are conventionally
+ * round, so this is one of the few circular elements the system keeps.
  */
 export function AssetMark({
   children,
   size = 40,
-  bg = mobileSurface.chip,
+  tone = 'neutral',
 }: {
   children: ReactNode;
   size?: number;
-  bg?: string;
+  tone?: 'accent' | 'neutral';
 }) {
   return (
+    <Avatar size={size} tone={tone}>
+      {children}
+    </Avatar>
+  );
+}
+
+/** Initials for a mark that has no logo of its own. */
+export function initialsFor(name: string): string {
+  return name.slice(0, 2).toUpperCase();
+}
+
+/** Visually hidden text, for context a sighted reader gets from layout. */
+export function VisuallyHidden({ children }: { children: ReactNode }) {
+  return (
     <Box
+      component="span"
       sx={{
-        alignItems: 'center',
-        bgcolor: bg,
-        borderRadius: '50%',
-        display: 'flex',
-        flexShrink: 0,
-        fontSize: size * 0.42,
-        fontWeight: 700,
-        height: size,
-        justifyContent: 'center',
+        clip: 'rect(0 0 0 0)',
+        height: 1,
         overflow: 'hidden',
-        width: size,
+        position: 'absolute',
+        whiteSpace: 'nowrap',
+        width: 1,
       }}
     >
       {children}

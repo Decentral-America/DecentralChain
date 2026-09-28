@@ -17,6 +17,7 @@ import {
   useDexStore,
 } from '@/stores/dexStore';
 import { noTouchZoom } from '@/styles/mixins';
+import { chrome } from '@/styles/tokens';
 import { AVAILABLE_PAIRS, cacheAssetName, DEFAULT_PAIR, loadTradingPairs } from './tradingPairs';
 
 /**
@@ -65,219 +66,170 @@ const useAssetNameFetcher = (assetIds: string[]) => {
  */
 const SelectorContainer = styled.div`
   position: relative;
-  width: 100%;
+  display: inline-block;
   overflow: visible;
-  z-index: 1000;
+  z-index: 10;
 `;
 
-/**
- * Selected pair display button
+/*
+ * The pair is the page's subject, so the trigger reads as a title with a
+ * chevron rather than a form field: no border at rest, a soft fill on hover.
  */
 const SelectedPairButton = styled.button`
-  width: 100%;
-  height: 100%;
-  background: ${(p) => p.theme.colors.background};
-  border: 1px solid ${(p) => p.theme.colors.border};
-  border-radius: ${(p) => p.theme.radii.md};
-  padding: ${(p) => p.theme.spacing.sm} ${(p) => p.theme.spacing.md};
-  display: flex;
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 6px;
+  margin-left: -8px;
+  padding: 4px 8px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background-color 160ms cubic-bezier(0.32, 0.72, 0, 1);
 
   &:hover {
-    border-color: ${(p) => p.theme.colors.primary};
+    background: color-mix(in srgb, ${(p) => p.theme.colors.text} 6%, transparent);
   }
 
-  &:focus {
-    outline: none;
-    border-color: ${(p) => p.theme.colors.primary};
-    box-shadow: 0 0 0 2px ${(p) => p.theme.colors.primary}20;
+  &:focus-visible {
+    box-shadow: 0 0 0 2px ${(p) => p.theme.colors.primary};
   }
 `;
 
-/**
- * Pair text display
- */
 const PairText = styled.div`
   display: flex;
-  align-items: center;
-  gap: ${(p) => p.theme.spacing.xs};
-  font-size: ${(p) => p.theme.fontSizes.lg};
-  font-weight: ${(p) => p.theme.fontWeights.semibold};
+  align-items: baseline;
+  gap: 4px;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 28px;
   color: ${(p) => p.theme.colors.text};
 `;
 
-/**
- * Asset name in pair
- */
 const AssetName = styled.span<{ $isBase?: boolean }>`
-  color: ${(p) => (p.$isBase ? p.theme.colors.primary : p.theme.colors.text)};
+  color: ${(p) => (p.$isBase ? p.theme.colors.text : p.theme.colors.textSecondary)};
 `;
 
-/**
- * Separator between assets
- */
 const Separator = styled.span`
-  color: ${(p) => p.theme.colors.text};
-  opacity: 0.5;
+  color: ${(p) => p.theme.colors.textSubtle};
+  font-weight: 400;
 `;
 
-/**
- * Chevron icon
- */
 const ChevronIcon = styled(FiChevronDown as React.ComponentType<Record<string, unknown>>)<{
   $isOpen: boolean;
 }>`
-  color: ${(p) => p.theme.colors.text};
-  opacity: 0.7;
-  transition: transform 0.2s;
+  color: ${(p) => p.theme.colors.textSecondary};
+  transition: transform 200ms cubic-bezier(0.32, 0.72, 0, 1);
   transform: ${(p) => (p.$isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
 `;
 
-/**
- * Dropdown panel
- */
 const DropdownPanel = styled.div<{ $isOpen: boolean }>`
   position: absolute;
-  top: calc(100% + ${(p) => p.theme.spacing.xs});
-  left: 0;
-  right: 0;
-  background: ${(p) => p.theme.colors.background};
-  border: 1px solid ${(p) => p.theme.colors.border};
-  border-radius: ${(p) => p.theme.radii.md};
-  box-shadow: ${(p) => p.theme.shadows.lg};
+  top: calc(100% + 8px);
+  left: -8px;
+  width: 300px;
+  max-width: calc(100vw - 32px);
+  background: ${(p) => p.theme.colors.surface};
+  border-radius: 14px;
+  box-shadow: ${(p) =>
+    p.theme.mode === 'dark'
+      ? `0 0 0 1px ${p.theme.colors.borderStrong}, ${p.theme.shadows.xl}`
+      : p.theme.shadows.xl};
   max-height: 400px;
   overflow-y: auto;
   z-index: 1000;
   display: ${(p) => (p.$isOpen ? 'block' : 'none')};
-
-  /* Custom scrollbar */
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: ${(p) => p.theme.colors.background};
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${(p) => p.theme.colors.border};
-    border-radius: 3px;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background: ${(p) => p.theme.colors.primary};
-  }
+  scrollbar-width: thin;
 `;
 
-/**
- * Search input container
- */
 const SearchContainer = styled.div`
-  padding: ${(p) => p.theme.spacing.sm};
-  border-bottom: 1px solid ${(p) => p.theme.colors.border};
+  padding: 8px;
   position: sticky;
   top: 0;
-  background: ${(p) => p.theme.colors.background};
+  background: ${(p) => p.theme.colors.surface};
   z-index: 1;
 `;
 
-/**
- * Search input wrapper
- */
 const SearchInputWrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
 `;
 
-/**
- * Search icon
- */
 const SearchIcon = styled(FiSearch as React.ComponentType<Record<string, unknown>>)`
   position: absolute;
-  left: ${(p) => p.theme.spacing.sm};
-  color: ${(p) => p.theme.colors.text};
-  opacity: 0.5;
+  left: 10px;
+  color: ${(p) => p.theme.colors.textSecondary};
 `;
 
-/**
- * Search input
- */
 const SearchInput = styled.input`
   width: 100%;
-  background: ${(p) => p.theme.colors.background};
-  border: 1px solid ${(p) => p.theme.colors.border};
-  border-radius: ${(p) => p.theme.radii.sm};
-  padding: ${(p) => p.theme.spacing.xs} ${(p) => p.theme.spacing.sm};
-  padding-left: calc(${(p) => p.theme.spacing.sm} + 24px);
-  font-size: ${(p) => p.theme.fontSizes.sm};
+  box-sizing: border-box;
+  height: 36px;
+  border: none;
+  border-radius: 10px;
+  padding: 0 10px 0 32px;
+  font: inherit;
+  font-size: 14px;
   color: ${(p) => p.theme.colors.text};
-  transition: border-color 0.2s;
+  background: ${(p) => chrome[p.theme.mode].fill};
 
   /* iOS Safari zooms the page on focus below 16px; touch only. */
   ${noTouchZoom}
 
   &:focus {
     outline: none;
-    border-color: ${(p) => p.theme.colors.primary};
+    box-shadow: 0 0 0 2px ${(p) => p.theme.colors.primary};
   }
 
   &::placeholder {
-    color: ${(p) => p.theme.colors.text};
-    opacity: 0.5;
+    color: ${(p) => p.theme.colors.textSecondary};
   }
 `;
 
-/**
- * Pair list container
- */
 const PairList = styled.div`
-  padding: ${(p) => p.theme.spacing.xs} 0;
+  padding: 0 8px 8px;
 `;
 
-/**
- * Pair item button
- */
 const PairItem = styled.button<{ $isSelected: boolean }>`
+  all: unset;
+  box-sizing: border-box;
   width: 100%;
-  background: ${(p) => (p.$isSelected ? `${p.theme.colors.primary}10` : 'transparent')};
-  border: none;
-  padding: ${(p) => p.theme.spacing.sm} ${(p) => p.theme.spacing.md};
+  padding: 8px 10px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  transition: background 0.2s;
-  text-align: left;
+  background: ${(p) => (p.$isSelected ? p.theme.colors.primarySurface : 'transparent')};
+  transition: background-color 160ms cubic-bezier(0.32, 0.72, 0, 1);
 
   &:hover {
-    background: ${(p) => p.theme.colors.primary}15;
+    background: ${(p) =>
+      p.$isSelected
+        ? p.theme.colors.primarySurface
+        : `color-mix(in srgb, ${p.theme.colors.text} 6%, transparent)`};
+  }
+
+  &:focus-visible {
+    box-shadow: inset 0 0 0 2px ${(p) => p.theme.colors.primary};
   }
 `;
 
-/**
- * Pair item text
- */
 const PairItemText = styled.div`
   display: flex;
-  align-items: center;
-  gap: ${(p) => p.theme.spacing.xs};
-  font-size: ${(p) => p.theme.fontSizes.md};
-  font-weight: ${(p) => p.theme.fontWeights.medium};
+  align-items: baseline;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 500;
 `;
 
-/**
- * No results message
- */
 const NoResults = styled.div`
-  padding: ${(p) => p.theme.spacing.lg};
+  padding: 24px 16px;
   text-align: center;
-  color: ${(p) => p.theme.colors.text};
-  opacity: 0.5;
-  font-size: ${(p) => p.theme.fontSizes.sm};
+  color: ${(p) => p.theme.colors.textSecondary};
+  font-size: 13px;
 `;
 
 /**
@@ -403,7 +355,12 @@ export const TradingPairSelector: React.FC = () => {
   return (
     <SelectorContainer data-pair-selector>
       {/* Selected Pair Button */}
-      <SelectedPairButton onClick={handleToggle} aria-expanded={isOpen} aria-haspopup="listbox">
+      <SelectedPairButton
+        type="button"
+        onClick={handleToggle}
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+      >
         <PairText>
           {selectedPair ? (
             <>
@@ -417,7 +374,7 @@ export const TradingPairSelector: React.FC = () => {
             <span>Select Trading Pair</span>
           )}
         </PairText>
-        <ChevronIcon $isOpen={isOpen} size={20} />
+        <ChevronIcon $isOpen={isOpen} size={18} strokeWidth={2.25} />
       </SelectedPairButton>
 
       {/* Dropdown Panel */}

@@ -26,7 +26,7 @@ import { type TouchEvent, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { GlassCard } from '@/components/auth/GlassCard';
 import { StepRail } from '@/components/auth/StepRail';
-import { tokens } from '@/theme/tokens/semantic';
+import { tokens } from '@/styles/legacy/semantic';
 import { IntroStep } from './steps/IntroStep';
 import { RecoveryPhraseStep } from './steps/RecoveryPhraseStep';
 import { SecureStep } from './steps/SecureStep';

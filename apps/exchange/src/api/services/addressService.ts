@@ -127,6 +127,18 @@ export const useAddressBalance = (
         assets[asset.assetId] = asset.balance;
       });
 
+      /*
+       * /addresses/balance/details returns regular, available, effective and
+       * generating, never leaseIn or leaseOut. On this chain available is
+       * regular minus what is leased out, and effective is available plus
+       * what is leased in, so both lease figures derive from what the node
+       * does return. Reading the missing fields as 0 showed every holder
+       * "0 leased" however much they had delegated.
+       */
+      const regular = balanceDetails.regular ?? 0;
+      const available = balanceDetails.available ?? regular;
+      const effective = balanceDetails.effective ?? available;
+
       // Combine data
       return {
         address: balanceDetails.address,
@@ -135,8 +147,8 @@ export const useAddressBalance = (
         balance: balanceDetails.available ?? balanceDetails.regular ?? 0,
         effective: balanceDetails.effective ?? 0,
         generating: balanceDetails.generating ?? 0,
-        leaseIn: balanceDetails.leaseIn ?? 0,
-        leaseOut: balanceDetails.leaseOut ?? 0,
+        leaseIn: balanceDetails.leaseIn ?? Math.max(0, effective - available),
+        leaseOut: balanceDetails.leaseOut ?? Math.max(0, regular - available),
         regular: balanceDetails.regular ?? 0,
       };
     },

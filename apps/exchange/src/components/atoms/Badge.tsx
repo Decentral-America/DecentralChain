@@ -5,7 +5,7 @@
  */
 
 import MuiChip, { type ChipProps as MuiChipProps } from '@mui/material/Chip';
-import { styled } from '@mui/material/styles';
+import { alpha, styled } from '@mui/material/styles';
 import type React from 'react';
 
 export interface BadgeProps extends Omit<MuiChipProps, 'variant' | 'size'> {
@@ -31,44 +31,41 @@ const StyledBadge = styled(MuiChip, {
       success: theme.palette.success.main,
       warning: theme.palette.warning.main,
     };
-    // A hardcoded 'white' ink reads fine on the vivid intent colours but is
-    // unreadable on `secondary.main` (accent.muted, light in light mode:
-    // ~1.2:1). Each palette entry's `contrastText` is either explicitly
-    // token-verified (secondary) or MUI-computed against its own `main`, so
-    // it's correct per variant rather than a single guess. See
-    // task-2-report.md, Fix round 2.
-    const contrastMap = {
-      error: theme.palette.error.contrastText,
-      info: theme.palette.info.contrastText,
-      primary: theme.palette.primary.contrastText,
-      secondary: theme.palette.secondary.contrastText,
-      success: theme.palette.success.contrastText,
-      warning: theme.palette.warning.contrastText,
-    };
-
     const color = colorMap[badgeVariant || 'primary'];
-    const contrastColor = contrastMap[badgeVariant || 'primary'];
+    const isDark = theme.palette.mode === 'dark';
+    // `secondary.main` is a *background* role (accent.muted, ~1.2:1 against
+    // itself), so the secondary badge keeps it as the fill and takes its
+    // token-verified `contrastText` as ink. Every other intent is vivid
+    // enough to be its own ink on a tint of itself. See task-2-report.md,
+    // Fix round 2.
+    const isSecondary = badgeVariant === 'secondary';
+    const ink = isSecondary ? theme.palette.secondary.contrastText : color;
+    const tint = isSecondary ? color : alpha(color, isDark ? 0.22 : 0.12);
 
+    /*
+     * A pill with a tint of its colour and the colour as ink: it names a state
+     * without shouting over the figures around it. `outline` keeps the ink and
+     * swaps the tint for a hairline.
+     */
     return {
-      backgroundColor: outline ? 'transparent' : color,
-      border: outline ? `1px solid ${color}` : 'none',
-      borderRadius: Number(theme.shape.borderRadius) * 4,
-      color: outline ? color : contrastColor,
-      fontSize:
-        badgeSize === 'small'
-          ? theme.typography.caption.fontSize
-          : badgeSize === 'large'
-            ? theme.typography.body1.fontSize
-            : theme.typography.body2.fontSize,
-      fontWeight: theme.typography.fontWeightMedium,
-      height: badgeSize === 'small' ? 18 : badgeSize === 'large' ? 28 : 22,
+      '& .MuiChip-label': { padding: 0 },
+      backgroundColor: outline ? 'transparent' : tint,
+      border: outline ? `1px solid ${alpha(ink, 0.4)}` : 'none',
+      borderRadius: 9999,
+      color: ink,
+      fontSize: badgeSize === 'large' ? 13 : 12,
+      fontVariantNumeric: 'tabular-nums',
+      fontWeight: 500,
+      height: badgeSize === 'small' ? 18 : badgeSize === 'large' ? 26 : 22,
+      letterSpacing: 0,
       lineHeight: 1,
-      minWidth: badgeSize === 'small' ? 18 : badgeSize === 'large' ? 28 : 22,
-      padding: badgeSize === 'small' ? '2px 6px' : badgeSize === 'large' ? '6px 12px' : '4px 8px',
+      minWidth: badgeSize === 'small' ? 18 : badgeSize === 'large' ? 26 : 22,
+      padding: badgeSize === 'small' ? '0 6px' : badgeSize === 'large' ? '0 12px' : '0 8px',
       ...(dot && {
         '& .MuiChip-label': {
           display: 'none',
         },
+        backgroundColor: color,
         borderRadius: '50%',
         height: 8,
         minWidth: 8,

@@ -11,8 +11,8 @@ import {
   StackDiagram,
 } from '@/components/landing/diagrams';
 import Reveal from '@/components/landing/Reveal';
+import { tokens } from '@/styles/legacy/semantic';
 import { brandSurface, onCanvas } from '@/theme/landingTheme';
-import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * What this wallet is, told as a set of drawings.

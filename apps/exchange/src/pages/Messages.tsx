@@ -1,122 +1,63 @@
 /**
  * Messages Page
- * Internal messaging and notifications
+ *
+ * Network messaging is not live. The notice says so first, and the examples
+ * beneath it are held back (dimmed and inert) so they read as a preview of the
+ * format, never as mail this account received.
  */
 
-import { Mail, MailOutlined } from '@mui/icons-material';
-import { Avatar, Chip, Paper, Stack, Typography } from '@mui/material';
+import { Bell, Megaphone, ShieldCheck } from 'lucide-react';
+import { ComingSoon } from '@/components/feedback/ComingSoon';
+import { type NotificationItem, NotificationStack } from '@/components/premium/NotificationStack';
+import { StatusPill } from '@/components/premium/StatusPill';
 import { PageFrame } from '@/layouts/PageFrame';
 
+/** Illustrative only: none of these were sent, and none quotes a real figure. */
+const EXAMPLES: NotificationItem[] = [
+  {
+    description: 'A short note from the network about a new feature, with a link to read more.',
+    icon: Megaphone,
+    id: 1,
+    source: 'DCC Network',
+    time: '2h ago',
+    title: 'New feature: activity analytics',
+    unread: true,
+  },
+  {
+    description: 'Security guidance for this wallet, such as keeping the backup phrase offline.',
+    icon: ShieldCheck,
+    id: 2,
+    source: 'Security',
+    time: '5h ago',
+    title: 'Keep your backup phrase offline',
+    unread: true,
+  },
+  {
+    description: 'An alert you set up yourself, sent when the condition you chose is met.',
+    icon: Bell,
+    id: 3,
+    source: 'Alerts',
+    time: '1d ago',
+    title: 'A price alert you created was triggered',
+    unread: false,
+  },
+];
+
 export const Messages = () => {
-  const messages = [
-    {
-      from: 'DCC Network',
-      id: 1,
-      preview: 'We are excited to announce the launch of our new analytics dashboard...',
-      subject: 'New feature: Enhanced Analytics Dashboard',
-      time: '2 hours ago',
-      unread: true,
-    },
-    {
-      from: 'Security Team',
-      id: 2,
-      preview: 'For enhanced security, we recommend enabling two-factor authentication...',
-      subject: 'Security Update: Enable 2FA',
-      time: '5 hours ago',
-      unread: true,
-    },
-    {
-      from: 'Trading Alerts',
-      id: 3,
-      preview: 'Your DCC holdings have increased by 15% in the last 24 hours...',
-      subject: 'DCC Price Alert: +15% in 24h',
-      time: '1 day ago',
-      unread: false,
-    },
-  ];
+  const unread = EXAMPLES.filter((m) => m.unread).length;
 
   return (
     <PageFrame
       title="Messages"
       subtitle="Notifications and alerts from the network."
-      actions={<Chip label="20 Unread" color="error" size="small" />}
+      actions={<StatusPill tone="neutral">{`Examples · ${unread} unread`}</StatusPill>}
     >
-      <Stack spacing={2}>
-        {messages.map((message) => (
-          <Paper
-            key={message.id}
-            sx={{
-              '&:hover': {
-                boxShadow: 4,
-              },
-              bgcolor: message.unread ? 'action.selected' : 'background.paper',
-              border: '1px solid',
-              borderColor: message.unread ? 'primary.main' : 'divider',
-              borderRadius: 2,
-              cursor: 'pointer',
-              p: 2.5,
-              transition: 'all 0.2s',
-            }}
-          >
-            <Stack direction="row" spacing={2}>
-              <Avatar
-                sx={{
-                  bgcolor: message.unread ? 'primary.main' : 'action.selected',
-                  color: message.unread ? 'primary.contrastText' : 'text.secondary',
-                  height: 48,
-                  width: 48,
-                }}
-              >
-                {message.unread ? <Mail /> : <MailOutlined />}
-              </Avatar>
-              <Stack sx={{ flex: 1 }}>
-                <Stack
-                  direction="row"
-                  sx={{
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <Typography
-                    variant="subtitle1"
-                    sx={{
-                      fontWeight: 700,
-                    }}
-                  >
-                    {message.from}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color: 'text.secondary',
-                    }}
-                  >
-                    {message.time}
-                  </Typography>
-                </Stack>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    fontWeight: 600,
-                    mt: 0.5,
-                  }}
-                >
-                  {message.subject}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: 'text.secondary',
-                    mt: 0.5,
-                  }}
-                >
-                  {message.preview}
-                </Typography>
-              </Stack>
-            </Stack>
-          </Paper>
-        ))}
-      </Stack>
+      <ComingSoon
+        title="Messaging is not live yet"
+        description="The messages below are examples of what network notifications will look like. Nothing here was sent to this account."
+      >
+        <NotificationStack items={EXAMPLES} label="Example notifications" defaultExpanded />
+      </ComingSoon>
     </PageFrame>
   );
 };

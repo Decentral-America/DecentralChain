@@ -3,212 +3,166 @@
  * Displays user's active and completed orders with cancel functionality
  * Shows order history with status tracking and order management
  */
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Skeleton,
+} from '@mui/material';
+import { Clock, History, ListOrdered, ReceiptText, Unplug, Wallet } from 'lucide-react';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useCancelOrder, useUserOrders } from '@/api/services/matcherService';
-import { Badge } from '@/components/atoms/Badge';
-import { Button } from '@/components/atoms/Button';
-import { Spinner } from '@/components/atoms/Spinner';
-import { Modal } from '@/components/organisms/Modal';
+import { EmptyState } from '@/components/premium/EmptyState';
+import { SegmentedControl } from '@/components/premium/SegmentedControl';
+import { StatusPill, type StatusTone } from '@/components/premium/StatusPill';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 import { selectSelectedPair, useDexStore } from '@/stores/dexStore';
 import { formatAmount } from '@/utils/formatters';
 
-/**
- * Container
- */
 const OrdersContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: ${(p) => p.theme.colors.background};
+  min-height: 0;
 `;
 
-/**
- * Header
- */
 const Header = styled.div`
-  padding: ${(p) => p.theme.spacing.md};
-  border-bottom: 1px solid ${(p) => p.theme.colors.border};
-`;
-
-/**
- * Title
- */
-const Title = styled.h3`
-  font-size: ${(p) => p.theme.fontSizes.md};
-  font-weight: ${(p) => p.theme.fontWeights.semibold};
-  color: ${(p) => p.theme.colors.text};
-  margin: 0 0 ${(p) => p.theme.spacing.sm} 0;
-`;
-
-/**
- * Tab navigation
- */
-const Tabs = styled.div`
   display: flex;
-  gap: ${(p) => p.theme.spacing.sm};
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px 10px;
+  flex-shrink: 0;
 `;
 
-/**
- * Tab button
- */
-const Tab = styled.button<{ $isActive: boolean }>`
-  padding: ${(p) => p.theme.spacing.xs} ${(p) => p.theme.spacing.sm};
-  font-size: ${(p) => p.theme.fontSizes.sm};
-  font-weight: ${(p) => p.theme.fontWeights.medium};
-  color: ${(p) => (p.$isActive ? p.theme.colors.primary : p.theme.colors.text)};
-  background: ${(p) => (p.$isActive ? `${p.theme.colors.primary}15` : 'transparent')};
-  border: none;
-  border-bottom: 2px solid ${(p) => (p.$isActive ? p.theme.colors.primary : 'transparent')};
-  cursor: pointer;
-  transition: all 0.2s;
-  opacity: ${(p) => (p.$isActive ? 1 : 0.7)};
-
-  &:hover {
-    opacity: 1;
-    background: ${(p) => p.theme.colors.primary}15;
-  }
+const Title = styled.h2`
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: ${(p) => p.theme.colors.text};
 `;
 
-/**
- * Orders list
- */
-const OrdersList = styled.div`
+const OrdersList = styled.ul`
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
-  padding: ${(p) => p.theme.spacing.sm};
-
-  /* Custom scrollbar */
-  &::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: ${(p) => p.theme.colors.background};
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${(p) => p.theme.colors.border};
-    border-radius: 2px;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background: ${(p) => p.theme.colors.primary};
-  }
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  scrollbar-width: thin;
 `;
 
-/**
- * Order row
+/*
+ * A grouped inset row: side mark on the left, price and size as the primary
+ * and secondary lines, fill and status on the right. The hairline is inset
+ * past the mark, as in an Apple list.
  */
-const OrderRow = styled.div<{ $type: 'buy' | 'sell' }>`
+const OrderRow = styled.li`
+  position: relative;
   display: grid;
-  grid-template-columns: 80px 1fr 1fr 1fr 80px 100px;
-  gap: ${(p) => p.theme.spacing.sm};
+  grid-template-columns: 40px minmax(0, 1fr) auto auto;
   align-items: center;
-  padding: ${(p) => p.theme.spacing.sm};
-  background: ${(p) => p.theme.colors.secondary};
-  border-left: 3px solid
-    ${(p) => (p.$type === 'buy' ? p.theme.colors.success : p.theme.colors.error)};
-  border-radius: ${(p) => p.theme.radii.sm};
-  margin-bottom: ${(p) => p.theme.spacing.sm};
-  font-size: ${(p) => p.theme.fontSizes.sm};
+  gap: 12px;
+  padding: 10px 16px;
+  font-variant-numeric: tabular-nums;
+  transition: background-color 160ms cubic-bezier(0.32, 0.72, 0, 1);
 
   &:hover {
-    background: ${(p) => p.theme.colors.secondary}cc;
+    background: color-mix(in srgb, ${(p) => p.theme.colors.text} 5%, transparent);
+  }
+
+  & + &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 68px;
+    border-top: 1px solid ${(p) => p.theme.colors.border};
   }
 `;
 
-/**
- * Order label
- */
-const OrderLabel = styled.div`
-  font-size: ${(p) => p.theme.fontSizes.xs};
-  color: ${(p) => p.theme.colors.text};
-  opacity: 0.6;
-  margin-bottom: 2px;
+const SideMark = styled.span<{ $type: 'buy' | 'sell' }>`
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: ${(p) => (p.$type === 'buy' ? p.theme.colors.buy : p.theme.colors.sell)};
+  background: ${(p) =>
+    `color-mix(in srgb, ${p.$type === 'buy' ? p.theme.colors.buy : p.theme.colors.sell} 12%, transparent)`};
 `;
 
-/**
- * Order value
- */
-const OrderValue = styled.div`
-  font-size: ${(p) => p.theme.fontSizes.sm};
+const Primary = styled.div`
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 500;
   color: ${(p) => p.theme.colors.text};
-  font-family: ${(p) => p.theme.fonts.mono};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
-/**
- * Empty state
- */
-const EmptyState = styled.div`
+const Secondary = styled.div`
+  font-size: 12px;
+  color: ${(p) => p.theme.colors.textSecondary};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const Fill = styled.div`
+  text-align: right;
+  font-size: 13px;
+  color: ${(p) => p.theme.colors.text};
+`;
+
+const Actions = styled.div`
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: ${(p) => p.theme.spacing.xl};
-  color: ${(p) => p.theme.colors.text};
-  opacity: 0.5;
-  font-size: ${(p) => p.theme.fontSizes.sm};
-  text-align: center;
-`;
-
-/**
- * Loading state
- */
-const LoadingState = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: ${(p) => p.theme.spacing.xl};
-`;
-
-/**
- * Error state
- */
-const ErrorState = styled.div`
-  padding: ${(p) => p.theme.spacing.md};
-  color: ${(p) => p.theme.colors.error};
-  font-size: ${(p) => p.theme.fontSizes.sm};
-  text-align: center;
-`;
-
-/**
- * Order type badge
- */
-const OrderTypeBadge = styled.span<{ $type: 'buy' | 'sell' }>`
-  padding: 2px 8px;
-  font-size: ${(p) => p.theme.fontSizes.xs};
-  font-weight: ${(p) => p.theme.fontWeights.medium};
-  color: ${(p) => p.theme.colors.background};
-  background: ${(p) => (p.$type === 'buy' ? p.theme.colors.success : p.theme.colors.error)};
-  border-radius: ${(p) => p.theme.radii.sm};
-  text-transform: uppercase;
-`;
-
-const ConfirmBody = styled.div`
-  padding: 16px;
-`;
-
-const ConfirmText = styled.p`
-  margin-bottom: 16px;
-`;
-
-const ConfirmActions = styled.div`
-  display: flex;
   gap: 8px;
-  justify-content: flex-end;
+`;
+
+/** The price and size lines; lets them ellipsize inside their grid track. */
+const Lines = styled.div`
+  min-width: 0;
+`;
+
+/** The text column of a loading row, taking the space between mark and pill. */
+const Grow = styled.div`
+  flex: 1;
+`;
+
+const SkeletonRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
 `;
 
 /**
  * Status badges mapping
  */
-const statusColors: Record<string, 'primary' | 'success' | 'error' | 'warning'> = {
-  cancelled: 'error',
+const statusTone: Record<string, StatusTone> = {
+  cancelled: 'neutral',
   filled: 'success',
-  partially_filled: 'primary',
+  partially_filled: 'accent',
   pending: 'warning',
+};
+
+const statusLabel: Record<string, string> = {
+  cancelled: 'Cancelled',
+  filled: 'Filled',
+  partially_filled: 'Partly filled',
+  pending: 'Open',
 };
 
 /**
@@ -308,22 +262,34 @@ export const UserOrders: React.FC = () => {
     return (
       <OrdersContainer>
         <Header>
-          <Title>Your Orders</Title>
+          <Title>Your orders</Title>
         </Header>
-        <EmptyState>Please connect your wallet to view orders</EmptyState>
+        <EmptyState
+          compact
+          icons={[Wallet]}
+          title="Please connect your wallet to view orders"
+          description="Your open and filled orders for this pair appear here."
+        />
       </OrdersContainer>
     );
   }
 
   if (isLoading) {
     return (
-      <OrdersContainer>
+      <OrdersContainer aria-busy="true">
         <Header>
-          <Title>Your Orders</Title>
+          <Title>Your orders</Title>
         </Header>
-        <LoadingState>
-          <Spinner size="md" />
-        </LoadingState>
+        {[0, 1, 2].map((i) => (
+          <SkeletonRow key={i}>
+            <Skeleton variant="circular" width={40} height={40} />
+            <Grow>
+              <Skeleton variant="text" width="40%" />
+              <Skeleton variant="text" width="25%" />
+            </Grow>
+            <Skeleton variant="text" width={56} />
+          </SkeletonRow>
+        ))}
       </OrdersContainer>
     );
   }
@@ -332,118 +298,124 @@ export const UserOrders: React.FC = () => {
     return (
       <OrdersContainer>
         <Header>
-          <Title>Your Orders</Title>
+          <Title>Your orders</Title>
         </Header>
-        <ErrorState>Failed to load orders. Please try again.</ErrorState>
+        <EmptyState
+          compact
+          icons={[Unplug]}
+          title="Failed to load orders. Please try again."
+          description="The matcher did not answer. This list retries on its own."
+        />
       </OrdersContainer>
     );
   }
 
+  const quote = selectedPair?.priceAssetName ?? '';
+  const base = selectedPair?.amountAssetName ?? '';
+
   return (
     <OrdersContainer>
-      {/* Header with Tabs */}
       <Header>
-        <Title>Your Orders</Title>
-        <Tabs>
-          <Tab $isActive={activeTab === 'active'} onClick={() => setActiveTab('active')}>
-            Active ({activeOrders.length})
-          </Tab>
-          <Tab $isActive={activeTab === 'history'} onClick={() => setActiveTab('history')}>
-            History ({historyOrders.length})
-          </Tab>
-        </Tabs>
+        <Title>Your orders</Title>
+        <SegmentedControl
+          size="sm"
+          label="Order status"
+          value={activeTab}
+          onValueChange={setActiveTab}
+          options={[
+            { label: `Active (${activeOrders.length})`, value: 'active' },
+            { label: `History (${historyOrders.length})`, value: 'history' },
+          ]}
+        />
       </Header>
 
-      {/* Orders List */}
-      <OrdersList>
-        {displayOrders.length === 0 ? (
-          <EmptyState>
-            {activeTab === 'active' ? 'No active orders' : 'No order history'}
-          </EmptyState>
-        ) : (
-          displayOrders.map((order) => (
-            <OrderRow key={order.id} $type={order.type}>
-              <OrderTypeBadge $type={order.type}>{order.type}</OrderTypeBadge>
+      {displayOrders.length === 0 ? (
+        <EmptyState
+          compact
+          icons={activeTab === 'active' ? [ListOrdered, Clock, ReceiptText] : [History]}
+          title={activeTab === 'active' ? 'No active orders' : 'No order history'}
+          description={
+            activeTab === 'active'
+              ? 'Orders you place that have not filled yet wait here.'
+              : 'Filled and cancelled orders are listed here.'
+          }
+        />
+      ) : (
+        <OrdersList>
+          {displayOrders.map((order) => (
+            <OrderRow key={order.id}>
+              <SideMark $type={order.type}>{order.type}</SideMark>
 
-              <div>
-                <OrderLabel>Price</OrderLabel>
-                <OrderValue>{formatAmount(parseFloat(order.price))}</OrderValue>
-              </div>
+              <Lines>
+                <Primary>
+                  {formatAmount(parseFloat(order.amount))} {base}
+                </Primary>
+                <Secondary>
+                  at {formatAmount(parseFloat(order.price))} {quote}
+                </Secondary>
+              </Lines>
 
-              <div>
-                <OrderLabel>Amount</OrderLabel>
-                <OrderValue>{formatAmount(parseFloat(order.amount))}</OrderValue>
-              </div>
+              <Fill>
+                {order.filled
+                  ? `${((parseFloat(order.filled) / parseFloat(order.amount)) * 100).toFixed(1)}%`
+                  : '0%'}
+                <Secondary>filled</Secondary>
+              </Fill>
 
-              <div>
-                <OrderLabel>Filled</OrderLabel>
-                <OrderValue>
-                  {order.filled
-                    ? `${((parseFloat(order.filled) / parseFloat(order.amount)) * 100).toFixed(1)}%`
-                    : '0%'}
-                </OrderValue>
-              </div>
-
-              <div>
-                <Badge
-                  variant={
-                    statusColors[order.status] as 'primary' | 'success' | 'error' | 'warning'
-                  }
-                  label={order.status}
-                />
-              </div>
-
-              <div>
+              <Actions>
+                <StatusPill tone={statusTone[order.status] ?? 'neutral'}>
+                  {statusLabel[order.status] ?? order.status}
+                </StatusPill>
                 {activeTab === 'active' &&
                   (order.status === 'pending' || order.status === 'partially_filled') && (
                     <Button
-                      variant="secondary"
+                      variant="outlined"
                       size="small"
                       onClick={() => handleCancelOrder(order.id)}
-                      isLoading={cancelOrderMutation.isPending && cancellingOrderId === order.id}
                       disabled={cancelOrderMutation.isPending}
                     >
-                      Cancel
+                      {cancelOrderMutation.isPending && cancellingOrderId === order.id
+                        ? 'Cancelling'
+                        : 'Cancel'}
                     </Button>
                   )}
-              </div>
+              </Actions>
             </OrderRow>
-          ))
-        )}
-      </OrdersList>
+          ))}
+        </OrdersList>
+      )}
 
       {/* Cancel Confirmation Modal */}
-      {cancellingOrderId && (
-        <Modal
-          isOpen={!!cancellingOrderId}
-          onClose={() => setCancellingOrderId(null)}
-          title="Cancel Order"
-        >
-          <ConfirmBody>
-            <ConfirmText>
-              Are you sure you want to cancel this order? This action cannot be undone.
-            </ConfirmText>
-            <ConfirmActions>
-              <Button
-                variant="secondary"
-                size="small"
-                onClick={() => setCancellingOrderId(null)}
-                disabled={cancelOrderMutation.isPending}
-              >
-                Keep Order
-              </Button>
-              <Button
-                variant="primary"
-                size="small"
-                onClick={confirmCancel}
-                isLoading={cancelOrderMutation.isPending}
-              >
-                Cancel Order
-              </Button>
-            </ConfirmActions>
-          </ConfirmBody>
-        </Modal>
-      )}
+      <Dialog
+        open={!!cancellingOrderId}
+        onClose={() => setCancellingOrderId(null)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>Cancel Order</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to cancel this order? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="outlined"
+            onClick={() => setCancellingOrderId(null)}
+            disabled={cancelOrderMutation.isPending}
+          >
+            Keep Order
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={confirmCancel}
+            disabled={cancelOrderMutation.isPending}
+          >
+            Cancel Order
+          </Button>
+        </DialogActions>
+      </Dialog>
     </OrdersContainer>
   );
 };

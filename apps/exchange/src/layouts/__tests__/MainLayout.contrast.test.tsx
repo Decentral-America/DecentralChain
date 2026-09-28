@@ -5,25 +5,43 @@
  * `AppTopBar` and `AppLauncher` it had **zero test coverage**, which is how the
  * three of them together shipped a dark mode nobody could read.
  *
- * The specific defect here is a **half-conversion**: the shell's fill was
- * moved to a mode-aware token (`background.paper`) while the hairline drawn
- * around it on the very next line was left as `palette.frost` — `#e5edf5`, a
- * fixed near-white, which in dark mode draws a bright ring around a near-black
- * shell (16.60:1 against the ground it sits on). One branch converted, its
- * sibling not: the pair stopped moving together.
+ * The defect this file was written for was a **half-conversion**: the old
+ * floating shell's fill moved to a mode-aware token while the hairline drawn
+ * around it was left as `palette.frost` — a fixed near-white that drew a bright
+ * ring (16.60:1) around the near-black dark-mode shell. One branch converted,
+ * its sibling not: the pair stopped moving together.
  *
- * The night ground *outside* the shell is deliberately fixed in both modes —
- * it is the brand register the marketing and auth surfaces stand on, and it
- * carries no text of its own. That is asserted below so it cannot be mistaken
- * for the same defect and "fixed" into following the mode.
+ * The redesign made the shell frameless. There is no rounded surface and no
+ * hairline around one any more, and the ground is no longer a fixed brand
+ * night that only the shell stood on: the ground *is* the application's
+ * `background.default`, the top bar floats over it as a translucent material,
+ * and routed pages lay their titles and cards directly on it. So the same
+ * guarantees now land on different elements:
+ *
+ *   - the ground follows the mode, and nothing opaque sits between it and the
+ *     routed content (the old "shell paints a mode-aware surface");
+ *   - the one hairline left — the bar's bottom edge between chrome and
+ *     content — is the mode's quiet divider, not a fixed near-white (the old
+ *     shell hairline);
+ *   - ink placed on the ground clears AA, since the ground now carries ink
+ *     (this replaces the old "fixed ground carries no ink" case, which the
+ *     redesign inverted);
+ *   - the network tag clears AA on the plate it paints, where it sits in the
+ *     bar over the ground.
+ *
+ * Both theme providers are mounted, as the app does: the premium
+ * `StatusPill` in the bar reads the styled-components theme.
  */
+import { Typography } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, Route, Routes } from 'react-router';
+import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { describe, expect, it, vi } from 'vitest';
 import { MainLayout } from '@/layouts/MainLayout';
+import { darkTheme, lightTheme } from '@/styles/themes';
+import { paintedBackground } from '@/test-utils/paintedBackground';
 import { rgbToHex } from '@/test-utils/rgbToHex';
-import { brandInk } from '@/theme/landingTheme';
 import { createAppTheme } from '@/theme/mui-theme';
 import { contrastRatio, type ThemeMode, tokens } from '@/theme/tokens/semantic';
 
@@ -43,65 +61,118 @@ function toHex(value: string): string {
   return value.startsWith('#') ? value.toLowerCase() : rgbToHex(value);
 }
 
+/**
+ * A `StatusPill` plate as painted: its tint composited onto the surface under it.
+ *
+ * The plate is `color-mix(in srgb, <tone hue> 10%, transparent)`. jsdom
+ * resolves that to `color(srgb r g b / 0.1)`, a form `paintedBackground` does
+ * not parse and so skips as if transparent — it measures the surface under
+ * the plate. This reads the plate's own resolved value and lays it over that
+ * surface. Throws on any other form rather than silently measuring the
+ * surface alone.
+ */
+function plateOver(tag: HTMLElement, under: string): string {
+  const value = getComputedStyle(tag).backgroundColor;
+  const m = value.match(/^color\(srgb ([\d.]+) ([\d.]+) ([\d.]+) \/ ([\d.]+)\)$/);
+  if (!m) throw new Error(`Unexpected plate colour: ${value}`);
+  const alpha = Number(m[4]);
+  const base = [1, 3, 5].map((i) => Number.parseInt(under.slice(i, i + 2), 16));
+  return `#${[m[1], m[2], m[3]]
+    .map((c, i) =>
+      Math.round(Math.round(Number(c) * 255) * alpha + (base[i] as number) * (1 - alpha))
+        .toString(16)
+        .padStart(2, '0'),
+    )
+    .join('')}`;
+}
+
+/**
+ * The shell with one routed page in its outlet: a line of the quietest page
+ * ink (`text.secondary`), standing in for the titles and captions every page
+ * lays directly on the ground.
+ */
 function renderIn(mode: ThemeMode) {
   return render(
     <ThemeProvider theme={createAppTheme(mode)}>
-      <MemoryRouter initialEntries={['/desktop/wallet']}>
-        <MainLayout />
-      </MemoryRouter>
+      <StyledThemeProvider theme={mode === 'dark' ? darkTheme : lightTheme}>
+        <MemoryRouter initialEntries={['/desktop/wallet']}>
+          <Routes>
+            <Route element={<MainLayout />}>
+              <Route
+                path="/desktop/wallet"
+                element={<Typography sx={{ color: 'text.secondary' }}>Routed page copy</Typography>}
+              />
+            </Route>
+          </Routes>
+        </MemoryRouter>
+      </StyledThemeProvider>
     </ThemeProvider>,
   );
 }
 
-/** The rounded shell: the ancestor of the top bar that paints `surface.raised`. */
-function shellOf(header: HTMLElement): HTMLElement {
-  const shell = header.parentElement;
-  if (!shell) throw new Error('top bar has no shell parent');
-  return shell;
+/** The ground: `MainLayout`'s root, which holds the frameless shell. */
+function groundOf(): HTMLElement {
+  const ground = screen.getByRole('main').parentElement?.parentElement;
+  if (!ground) throw new Error('content column has no ground ancestor');
+  return ground;
 }
 
 describe.each(['light', 'dark'] as const)('MainLayout (%s mode)', (mode) => {
-  it('paints the shell from a mode-aware surface token', () => {
+  it('paints the ground from a mode-aware surface token, with nothing opaque over it', () => {
     renderIn(mode);
-    const shell = shellOf(document.querySelector('header') as HTMLElement);
-    expect(toHex(getComputedStyle(shell).backgroundColor)).toBe(tokens(mode).surface.raised);
+    const ground = groundOf();
+    expect(ground.contains(document.querySelector('header'))).toBe(true);
+    expect(toHex(getComputedStyle(ground).backgroundColor)).toBe(tokens(mode).surface.base);
+    // No rounded shell surface any more: the content column shows the ground
+    // itself — anything painted in between would change this composite.
+    expect(toHex(paintedBackground(screen.getByRole('main')))).toBe(tokens(mode).surface.base);
   });
 
-  it('draws the shell hairline from a mode-aware token, not a fixed near-white', () => {
+  it('draws the chrome/content hairline from a mode-aware token, not a fixed near-white', () => {
     renderIn(mode);
-    const shell = shellOf(document.querySelector('header') as HTMLElement);
-    const border = toHex(getComputedStyle(shell).borderTopColor);
+    const header = document.querySelector('header') as HTMLElement;
+    const border = toHex(getComputedStyle(header).borderBottomColor);
     /*
-     * A hairline softening the shell's own edge, not a control boundary — so
-     * what it must stay quiet against is the surface it edges. Pre-fix,
-     * `palette.frost` sat 15.64:1 from the dark shell it was supposed to be
-     * edging (and 16.60:1 from the ground), i.e. a bright ring rather than a
-     * hairline. Measured against the shell rather than the ground because the
-     * ground is deliberately fixed dark in *both* modes: a light-mode
-     * hairline is necessarily far from it, and that separation is carried by
-     * the shell/ground fill step, not by this line.
+     * With the shell's outline gone, the bar's bottom edge is the one hairline
+     * the frame draws. It softens the bar's edge rather than bounding a
+     * control, so what it must stay quiet against is the bar it edges — the
+     * translucent material as painted over the ground. `palette.frost` in dark
+     * mode would sit 15.07:1 from that, a bright rule rather than a hairline
+     * (`border.subtle` measures 1.19:1 light / 1.32:1 dark).
      *
-     * Ratio first, so a run against the broken source reports the number.
+     * Ratio first, so a run against broken source reports the number.
      */
-    expect(contrastRatio(border, tokens(mode).surface.raised)).toBeLessThan(3);
+    expect(contrastRatio(border, toHex(paintedBackground(header)))).toBeLessThan(3);
     expect(border).toBe(tokens(mode).border.subtle);
   });
 
-  it('keeps the brand ground fixed in both modes, and it carries no ink', () => {
+  it('routed content sits directly on the ground, and ink there clears AA', () => {
     renderIn(mode);
-    const shell = shellOf(document.querySelector('header') as HTMLElement);
-    const ground = shell.parentElement as HTMLElement;
-    expect(toHex(getComputedStyle(ground).backgroundColor)).toBe(brandInk.night);
-    // Nothing is painted directly on it — the shell covers it entirely — so
-    // the fixed fill needs no mode-aware ink to answer to.
-    expect(ground.childElementCount).toBe(1);
+    /*
+     * Replaces "the brand ground is fixed and carries no ink": the redesign
+     * turned that around. The ground now follows the mode and every page lays
+     * its title, subtitle and section headings straight onto it, so the
+     * guarantee is that what the shell paints behind the outlet is the mode's
+     * ground and the quietest page ink reads on it.
+     */
+    const copy = screen.getByText('Routed page copy');
+    const ground = toHex(paintedBackground(copy));
+    expect(ground).toBe(tokens(mode).surface.base);
+    const ink = toHex(getComputedStyle(copy).color);
+    // Guard: the line declares its own ink. jsdom's default when nothing is
+    // declared is black, which "passes" on the light ground by accident.
+    expect(ink).toBe(tokens(mode).text.secondary);
+    expect(contrastRatio(ink, ground)).toBeGreaterThanOrEqual(4.5);
   });
 
-  it('the network tag in the top bar clears AA on the shell', () => {
+  it('the network tag in the top bar clears AA on its plate', () => {
     renderIn(mode);
     const tag = screen.getByText('mainnet');
     const ink = toHex(getComputedStyle(tag).color);
-    const fill = toHex(getComputedStyle(tag).backgroundColor);
-    expect(contrastRatio(ink, fill)).toBeGreaterThanOrEqual(4.5);
+    // Under the plate: the bar's translucent material over the ground.
+    const bar = toHex(paintedBackground(tag));
+    // The plate: the success hue's 10% tint laid over that.
+    expect(contrastRatio(ink, plateOver(tag, bar))).toBeGreaterThanOrEqual(4.5);
+    expect(contrastRatio(ink, bar)).toBeGreaterThanOrEqual(4.5);
   });
 });

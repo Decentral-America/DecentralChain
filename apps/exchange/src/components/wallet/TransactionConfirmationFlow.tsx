@@ -28,6 +28,7 @@ import { Spinner } from '@/components/atoms/Spinner';
 import { Modal } from '@/components/modals/Modal';
 import { useTransactionSigning } from '@/hooks/useTransactionSigning';
 import { type Transaction, transactionService } from '@/services/transactionService';
+import { chrome } from '@/styles/tokens';
 
 /**
  * Strips the network-specific fields that are injected by the signing layer.
@@ -397,35 +398,38 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
-  min-height: 300px;
 `;
 
 const ReviewSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 16px;
-  background-color: ${({ theme }) => theme.colors.background};
-  border-radius: 4px;
-  border: 1px solid ${({ theme }) => theme.colors.border};
+  padding: 4px 16px;
+  border-radius: 12px;
+  background-color: ${({ theme }) => chrome[theme.mode].fillSubtle};
 `;
 
 const ReviewRow = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
+  align-items: baseline;
+  gap: 16px;
+  padding: 11px 0;
+
+  & + & {
+    box-shadow: inset 0 1px 0 ${({ theme }) => theme.colors.border};
+  }
 `;
 
 const Label = styled.span`
   font-size: 14px;
   font-weight: 400;
-  color: ${({ theme }) => theme.colors.disabled};
+  color: ${({ theme }) => theme.colors.textSecondary};
 `;
 
 const Value = styled.span`
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
   color: ${({ theme }) => theme.colors.text};
   word-break: break-all;
   text-align: right;
@@ -442,7 +446,9 @@ const StatusContainer = styled.div`
 `;
 
 const StatusMessage = styled.p`
-  font-size: 16px;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
   color: ${({ theme }) => theme.colors.text};
   text-align: center;
   margin: 0;
@@ -453,16 +459,16 @@ const ErrorMessage = styled.p`
   color: ${({ theme }) => theme.colors.error};
   text-align: center;
   margin: 0;
-  padding: 12px;
-  background-color: ${({ theme }) => theme.colors.error}20;
-  border-radius: 4px;
+  padding: 12px 16px;
+  background-color: ${({ theme }) => theme.colors.errorSurface};
+  border-radius: 10px;
 `;
 
 const SuccessIcon = styled.div`
   width: 64px;
   height: 64px;
-  border-radius: 4px;
-  background-color: ${({ theme }) => theme.colors.success}20;
+  border-radius: 50%;
+  background-color: ${({ theme }) => theme.colors.successSurface};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -477,18 +483,14 @@ const ButtonGroup = styled.div`
   margin-top: 8px;
 `;
 
-const ReviewTitle = styled.h3`
-  margin: 0;
-`;
-
 const StatusHint = styled.p`
-  color: ${({ theme }) => theme.colors.textMuted};
+  color: ${({ theme }) => theme.colors.textSecondary};
   font-size: 14px;
   margin: 0;
 `;
 
 const TxIdHint = styled.p`
-  color: ${({ theme }) => theme.colors.textMuted};
+  color: ${({ theme }) => theme.colors.textSubtle};
   font-family: monospace;
   font-size: 12px;
   margin: 8px 0 0;
@@ -496,8 +498,8 @@ const TxIdHint = styled.p`
 
 const ErrorIcon = styled.div`
   align-items: center;
-  background-color: ${({ theme }) => theme.colors.error}20;
-  border-radius: 4px;
+  background-color: ${({ theme }) => theme.colors.errorSurface};
+  border-radius: 50%;
   color: ${({ theme }) => theme.colors.error};
   display: flex;
   font-size: 32px;
@@ -655,7 +657,6 @@ export const TransactionConfirmationFlow: React.FC<TransactionConfirmationProps>
         return (
           <>
             <Content>
-              <ReviewTitle>Review Transaction</ReviewTitle>
               <ReviewSection>
                 <ReviewRow>
                   <Label>Type</Label>

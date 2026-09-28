@@ -21,9 +21,9 @@
 import { ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { createAppTheme } from '@/styles/legacy/muiTheme';
+import { contrastRatio, type ThemeMode, tokens } from '@/styles/legacy/semantic';
 import { rgbToHex } from '@/test-utils/rgbToHex';
-import { createAppTheme } from '@/theme/mui-theme';
-import { contrastRatio, type ThemeMode, tokens } from '@/theme/tokens/semantic';
 import BigCTA from '../BigCTA';
 
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));

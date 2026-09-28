@@ -1,0 +1,941 @@
+{
+  "components": [
+    {
+      "css": ".ds-btn-primary{background:var(--color-indigo-ink, #533afd);color:#fff;border:none;border-radius:10px;min-height:44px;padding:10px 20px;font:500 15px/1 -apple-system,BlinkMacSystemFont,\"Inter Variable\",system-ui,sans-serif;letter-spacing:-0.15px;box-shadow:0 1px 2px rgba(83,58,253,0.24);cursor:pointer;transition:background-color 160ms cubic-bezier(0.32,0.72,0,1),transform 160ms cubic-bezier(0.32,0.72,0,1),box-shadow 160ms cubic-bezier(0.32,0.72,0,1)}.ds-btn-primary:hover{background:var(--color-indigo-hover, #4a34f0);box-shadow:none}.ds-btn-primary:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(83,58,253,0.18)}.ds-btn-primary:active{transform:scale(0.97)}",
+      "description": "The one indigo action on a surface.",
+      "html": "<button class=\"ds-btn-primary\">Unlock wallet</button>",
+      "kind": "button",
+      "name": "Primary Button",
+      "refersTo": "button-primary"
+    },
+    {
+      "css": ".ds-btn-secondary{background:rgba(118,118,128,0.12);color:var(--text-primary, #1d1d1f);border:1px solid transparent;border-radius:10px;min-height:44px;padding:10px 20px;font:500 15px/1 -apple-system,BlinkMacSystemFont,\"Inter Variable\",system-ui,sans-serif;cursor:pointer;transition:background-color 160ms cubic-bezier(0.32,0.72,0,1),transform 160ms cubic-bezier(0.32,0.72,0,1)}.ds-btn-secondary:hover{background:rgba(118,118,128,0.18)}.ds-btn-secondary:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(83,58,253,0.18)}.ds-btn-secondary:active{transform:scale(0.97)}",
+      "description": "Borderless control-fill button for the non-primary action.",
+      "html": "<button class=\"ds-btn-secondary\">Open Trade</button>",
+      "kind": "button",
+      "name": "Secondary Button",
+      "refersTo": "button-secondary"
+    },
+    {
+      "css": ".ds-seg{display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:2px;padding:2px;border-radius:10px;background:rgba(118,118,128,0.12)}.ds-seg-opt{all:unset;cursor:pointer;padding:7px 16px;border-radius:8px;font:500 13px/18px -apple-system,BlinkMacSystemFont,\"Inter Variable\",system-ui,sans-serif;letter-spacing:-0.01em;text-align:center;color:var(--text-secondary, #6e6e73);transition:color 160ms cubic-bezier(0.32,0.72,0,1),background-color 200ms cubic-bezier(0.32,0.72,0,1)}.ds-seg-opt:hover{color:var(--text-primary, #1d1d1f)}.ds-seg-on{background:#fff;color:var(--text-primary, #1d1d1f);box-shadow:0 1px 2px rgba(0,0,0,0.08),0 3px 8px rgba(0,0,0,0.06)}.ds-seg-opt:focus-visible{box-shadow:inset 0 0 0 2px var(--color-indigo-ink, #533afd)}",
+      "description": "Signature: a raised thumb that springs between options (static snapshot).",
+      "html": "<div class=\"ds-seg\" role=\"radiogroup\" aria-label=\"Range\"><button class=\"ds-seg-opt\" role=\"radio\" aria-checked=\"false\">1D</button><button class=\"ds-seg-opt ds-seg-on\" role=\"radio\" aria-checked=\"true\">1W</button><button class=\"ds-seg-opt\" role=\"radio\" aria-checked=\"false\">1M</button><button class=\"ds-seg-opt\" role=\"radio\" aria-checked=\"false\">1Y</button></div>",
+      "kind": "custom",
+      "name": "Segmented Control",
+      "refersTo": "segmented-track"
+    },
+    {
+      "css": ".ds-ilf{position:relative;display:block;width:320px;border-radius:10px;border:1px solid var(--border-strong, #d2d2d7);background:#fff;transition:border-color 160ms cubic-bezier(0.32,0.72,0,1),box-shadow 160ms cubic-bezier(0.32,0.72,0,1)}.ds-ilf:hover{border-color:#b0b0b8}.ds-ilf-input{display:block;width:100%;box-sizing:border-box;height:54px;padding:24px 14px 8px;border:0;border-radius:10px;background:transparent;font:400 16px/22px -apple-system,BlinkMacSystemFont,\"Inter Variable\",system-ui,sans-serif;color:var(--text-primary, #1d1d1f);outline:none}.ds-ilf-label{position:absolute;left:14px;top:16px;font:400 16px/22px -apple-system,BlinkMacSystemFont,\"Inter Variable\",system-ui,sans-serif;color:var(--text-secondary, #6e6e73);transform-origin:0 0;pointer-events:none;transition:transform 240ms cubic-bezier(0.32,0.72,0,1)}.ds-ilf:focus-within{border-color:var(--color-indigo-ink, #533afd);box-shadow:0 0 0 3px rgba(83,58,253,0.45)}.ds-ilf:focus-within .ds-ilf-label,.ds-ilf-input:not(:placeholder-shown)+.ds-ilf-label{transform:translateY(-9px) scale(0.75)}",
+      "description": "The form vocabulary: the label rests inside and lifts to the top edge on focus.",
+      "html": "<label class=\"ds-ilf\"><input class=\"ds-ilf-input\" placeholder=\" \" /><span class=\"ds-ilf-label\">Password</span></label>",
+      "kind": "input",
+      "name": "Inset-Label Field",
+      "refersTo": "inset-label-field"
+    },
+    {
+      "css": ".ds-search{display:flex;align-items:center;gap:6px;min-height:40px;width:320px;padding:0 4px 0 10px;border-radius:10px;background:rgba(118,118,128,0.12);color:var(--text-secondary, #6e6e73);transition:box-shadow 160ms cubic-bezier(0.32,0.72,0,1)}.ds-search:focus-within{box-shadow:0 0 0 3px rgba(83,58,253,0.45)}.ds-search-input{flex:1;min-width:0;height:40px;border:0;outline:none;background:transparent;font:400 16px -apple-system,BlinkMacSystemFont,\"Inter Variable\",system-ui,sans-serif;letter-spacing:-0.01em;color:var(--text-primary, #1d1d1f)}.ds-search-input::placeholder{color:var(--text-secondary, #6e6e73);opacity:1}",
+      "description": "The only search style: a borderless control-fill well.",
+      "html": "<div class=\"ds-search\"><svg width=\"17\" height=\"17\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/></svg><input class=\"ds-search-input\" type=\"search\" placeholder=\"Search assets\" aria-label=\"Search assets\" /></div>",
+      "kind": "input",
+      "name": "Search Field",
+      "refersTo": "search-field"
+    },
+    {
+      "css": ".ds-rail{display:inline-flex;gap:2px;padding:3px;border-radius:9999px;background:rgba(118,118,128,0.12)}.ds-rail-tab{padding:9px 16px;border-radius:9999px;font:500 13px/1 -apple-system,BlinkMacSystemFont,\"Inter Variable\",system-ui,sans-serif;color:var(--text-secondary, #6e6e73);text-decoration:none;white-space:nowrap;transition:color 200ms cubic-bezier(0.32,0.72,0,1),transform 160ms cubic-bezier(0.32,0.72,0,1)}.ds-rail-tab:hover{color:var(--text-primary, #1d1d1f)}.ds-rail-tab:active{transform:scale(0.97)}.ds-rail-tab:focus-visible{outline:3px solid rgba(83,58,253,0.45);outline-offset:2px}.ds-rail-on{background:#fff;color:var(--text-primary, #1d1d1f);box-shadow:0 1px 2px rgba(0,0,0,0.08),0 3px 8px rgba(0,0,0,0.06)}",
+      "description": "Centred destinations in a pill track; the current one rides a raised pill.",
+      "html": "<nav class=\"ds-rail\" aria-label=\"Primary\"><a class=\"ds-rail-tab ds-rail-on\" aria-current=\"page\" href=\"#\">Dashboard</a><a class=\"ds-rail-tab\" href=\"#\">Portfolio</a><a class=\"ds-rail-tab\" href=\"#\">Trade</a><a class=\"ds-rail-tab\" href=\"#\">Swap</a></nav>",
+      "kind": "nav",
+      "name": "Top Navigation Rail",
+      "refersTo": "nav-rail"
+    },
+    {
+      "css": ".ds-group{width:360px;border-radius:16px;overflow:hidden;background:var(--surface-canvas, #fff);box-shadow:0 1px 2px rgba(0,0,0,0.04),0 4px 16px rgba(0,0,0,0.05);font-family:-apple-system,BlinkMacSystemFont,\"Inter Variable\",system-ui,sans-serif;font-feature-settings:\"tnum\" on}.ds-row{position:relative;display:flex;align-items:center;gap:12px;min-height:60px;padding:10px 16px;cursor:pointer;transition:background-color 160ms cubic-bezier(0.32,0.72,0,1)}.ds-row:hover{background:rgba(118,118,128,0.12)}.ds-row+.ds-row::before{content:\"\";position:absolute;top:0;left:68px;right:0;height:1px;background:var(--border-default, #e8e8ed);transform:scaleY(0.5)}.ds-av{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:rgba(118,118,128,0.12);font-weight:600;font-size:16px}.ds-body,.ds-fig{display:flex;flex-direction:column;gap:2px}.ds-body{flex:1}.ds-fig{align-items:flex-end}.ds-t{font-size:17px;line-height:22px;font-weight:500;color:var(--text-primary, #1d1d1f)}.ds-s{font-size:13px;line-height:18px;color:var(--text-secondary, #6e6e73)}.ds-up{font-size:13px;color:var(--color-buy, #1d7f39)}.ds-down{font-size:13px;color:var(--color-sell, #d70015)}",
+      "description": "One lifted surface per group; hairlines inset past the avatar; figures right-aligned in tabular numerals.",
+      "html": "<div class=\"ds-group\"><div class=\"ds-row\"><span class=\"ds-av\">D</span><span class=\"ds-body\"><span class=\"ds-t\">DecentralCoin</span><span class=\"ds-s\">DCC</span></span><span class=\"ds-fig\"><span class=\"ds-t\">1,204.50</span><span class=\"ds-up\">+2.41%</span></span></div><div class=\"ds-row\"><span class=\"ds-av\">C</span><span class=\"ds-body\"><span class=\"ds-t\">CR Coin</span><span class=\"ds-s\">CRC</span></span><span class=\"ds-fig\"><span class=\"ds-t\">88.00</span><span class=\"ds-down\">-0.37%</span></span></div></div>",
+      "kind": "card",
+      "name": "Grouped Inset List",
+      "refersTo": "grouped-list-row"
+    },
+    {
+      "css": ".ds-pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:9999px;font:500 12px/18px -apple-system,BlinkMacSystemFont,\"Inter Variable\",system-ui,sans-serif;color:var(--color-success, #1d7f39);background:color-mix(in srgb,var(--color-success, #1d7f39) 10%,transparent)}.ds-dot{width:7px;height:7px;border-radius:50%;background:currentColor}",
+      "description": "Pill with a live dot; the tone at 10% as its background.",
+      "html": "<span class=\"ds-pill\"><span class=\"ds-dot\"></span>Mainnet</span>",
+      "kind": "chip",
+      "name": "Status Pill",
+      "refersTo": "status-pill"
+    },
+    {
+      "css": ".ds-soon{display:grid;grid-template-columns:32px minmax(0,1fr);column-gap:12px;align-items:start;width:440px;padding:16px 20px;border-radius:16px;background:var(--color-warning-surface, #fff6ea);font-family:-apple-system,BlinkMacSystemFont,\"Inter Variable\",system-ui,sans-serif}.ds-soon-glyph{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:rgba(255,159,10,0.18);color:var(--color-warning, #a35200)}.ds-soon-t{display:block;font-size:15px;font-weight:600;letter-spacing:-0.15px;color:var(--text-primary, #1d1d1f)}.ds-soon-d{display:block;margin-top:2px;font-size:13px;line-height:1.45;color:var(--text-secondary, #6e6e73)}",
+      "description": "The notice comes first; the unfinished preview sits inert beneath it.",
+      "html": "<div class=\"ds-soon\" role=\"status\"><span class=\"ds-soon-glyph\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M12 6v6l4 2\"/></svg></span><span><span class=\"ds-soon-t\">Swapping is not live yet</span><span class=\"ds-soon-d\">Orders can be placed against the live order book on Trade in the meantime.</span></span></div>",
+      "kind": "card",
+      "name": "ComingSoon Notice",
+      "refersTo": "coming-soon-notice"
+    },
+    {
+      "css": ".ds-tile{all:unset;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;gap:10px;width:200px;min-height:72px;padding:12px;border-radius:14px;cursor:pointer;background:rgba(118,118,128,0.1);color:var(--text-primary, #1d1d1f);font-family:-apple-system,BlinkMacSystemFont,\"Inter Variable\",system-ui,sans-serif;transition:background-color 160ms cubic-bezier(0.32,0.72,0,1),transform 160ms cubic-bezier(0.32,0.72,0,1)}.ds-tile:hover{background:rgba(118,118,128,0.17)}.ds-tile:active{transform:scale(0.97)}.ds-tile:focus-visible{box-shadow:0 0 0 3px var(--color-lavender-border, #cdc6ff)}.ds-tile-g{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#fff;color:var(--color-indigo-ink, #533afd);box-shadow:0 1px 2px rgba(0,0,0,0.05),0 1px 1px rgba(0,0,0,0.03)}.ds-tile-l{font-size:14px;font-weight:500;line-height:18px}",
+      "description": "Pressable quick action beside the balance hero.",
+      "html": "<button class=\"ds-tile\"><span class=\"ds-tile-g\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M7 17 17 7\"/><path d=\"M7 7h10v10\"/></svg></span><span class=\"ds-tile-l\">Receive</span></button>",
+      "kind": "button",
+      "name": "Action Tile",
+      "refersTo": "action-tile"
+    }
+  ],
+  "extensions": {
+    "breakpoints": [
+      {
+        "name": "xs",
+        "value": "0px"
+      },
+      {
+        "name": "sm",
+        "value": "600px"
+      },
+      {
+        "name": "mobile",
+        "value": "768px"
+      },
+      {
+        "name": "tablet",
+        "value": "1024px"
+      },
+      {
+        "name": "desktop",
+        "value": "1280px"
+      },
+      {
+        "name": "wide",
+        "value": "1536px"
+      },
+      {
+        "name": "min-viewport",
+        "value": "320px"
+      }
+    ],
+    "colorMeta": {
+      "amethyst-edge": {
+        "displayName": "Amethyst Edge",
+        "role": "primary",
+        "tonalRamp": [
+          "#1f1a4d",
+          "#3a26c4",
+          "#4a34f0",
+          "#533afd",
+          "#7a66ff",
+          "#8b7cff",
+          "#cdc6ff",
+          "#efedff"
+        ]
+      },
+      "buy-green": {
+        "canonical": "oklch(52.5% 0.137 148)",
+        "displayName": "Buy Green",
+        "role": "secondary",
+        "tonalRamp": [
+          "#001500",
+          "#003300",
+          "#005108",
+          "#01712c",
+          "#3a964f",
+          "#61bc72",
+          "#88e397",
+          "#b4ffc0"
+        ]
+      },
+      "buy-green-deep": {
+        "displayName": "Buy Green Deep",
+        "role": "secondary"
+      },
+      "chart-charcoal": {
+        "displayName": "Chart Charcoal",
+        "role": "tertiary"
+      },
+      "chart-graphite": {
+        "displayName": "Chart Graphite",
+        "role": "tertiary"
+      },
+      "chart-haze": {
+        "displayName": "Chart Haze",
+        "role": "tertiary"
+      },
+      "chart-lilac": {
+        "displayName": "Chart Lilac",
+        "role": "tertiary"
+      },
+      "chrome-material": {
+        "displayName": "Chrome Material",
+        "note": "Paired with backdrop-filter: saturate(180%) blur(20px). Chrome only.",
+        "role": "neutral"
+      },
+      "control-fill": {
+        "displayName": "Control Fill",
+        "note": "Translucent system fill; reads on any ground.",
+        "role": "neutral"
+      },
+      "control-fill-hover": {
+        "displayName": "Control Fill Hover",
+        "role": "neutral"
+      },
+      "danger-surface": {
+        "displayName": "Danger Surface",
+        "role": "secondary"
+      },
+      "dark-buy-green": {
+        "canonical": "oklch(75.6% 0.208 146)",
+        "displayName": "Buy Green (dark)",
+        "role": "secondary",
+        "tonalRamp": [
+          "#001500",
+          "#003400",
+          "#005500",
+          "#007800",
+          "#009e21",
+          "#44c15c",
+          "#83e58f",
+          "#b6ffbe"
+        ]
+      },
+      "dark-chrome-material": {
+        "displayName": "Dark Chrome Material",
+        "role": "neutral"
+      },
+      "dark-control-fill": {
+        "displayName": "Dark Control Fill",
+        "role": "neutral"
+      },
+      "dark-danger-surface": {
+        "displayName": "Danger Surface (dark)",
+        "role": "secondary"
+      },
+      "dark-frosted": {
+        "displayName": "Dark Hairline",
+        "role": "neutral",
+        "tonalRamp": [
+          "#000000",
+          "#1c1c1e",
+          "#2c2c2e",
+          "#3a3a3c",
+          "#6e6e73",
+          "#aeaeb2",
+          "#e8e8ed",
+          "#f5f5f7"
+        ]
+      },
+      "dark-graphite": {
+        "displayName": "Graphite (dark surface)",
+        "role": "neutral",
+        "tonalRamp": [
+          "#000000",
+          "#1c1c1e",
+          "#2c2c2e",
+          "#3a3a3c",
+          "#6e6e73",
+          "#aeaeb2",
+          "#e8e8ed",
+          "#f5f5f7"
+        ]
+      },
+      "dark-ground": {
+        "displayName": "True Black (dark ground)",
+        "role": "neutral",
+        "tonalRamp": [
+          "#000000",
+          "#1c1c1e",
+          "#2c2c2e",
+          "#3a3a3c",
+          "#6e6e73",
+          "#aeaeb2",
+          "#e8e8ed",
+          "#f5f5f7"
+        ]
+      },
+      "dark-hairline-strong": {
+        "displayName": "Dark Strong Hairline",
+        "role": "neutral",
+        "tonalRamp": [
+          "#000000",
+          "#1c1c1e",
+          "#2c2c2e",
+          "#3a3a3c",
+          "#6e6e73",
+          "#aeaeb2",
+          "#e8e8ed",
+          "#f5f5f7"
+        ]
+      },
+      "dark-indigo-deep": {
+        "displayName": "Indigo Deep (dark)",
+        "role": "primary"
+      },
+      "dark-indigo-hover": {
+        "displayName": "Indigo Hover (dark)",
+        "role": "primary"
+      },
+      "dark-indigo-ink": {
+        "canonical": "oklch(63.3% 0.205 283)",
+        "displayName": "Indigo Ink (dark)",
+        "role": "primary",
+        "tonalRamp": [
+          "#0e003c",
+          "#230268",
+          "#3b2297",
+          "#573ec9",
+          "#7665f3",
+          "#9991ff",
+          "#bebcff",
+          "#e3e4ff"
+        ]
+      },
+      "dark-lavender": {
+        "displayName": "Lavender Wash (dark)",
+        "role": "primary"
+      },
+      "dark-primary-border": {
+        "displayName": "Primary Border (dark)",
+        "role": "primary"
+      },
+      "dark-sell-red": {
+        "canonical": "oklch(66.3% 0.224 28)",
+        "displayName": "Sell Red (dark)",
+        "role": "secondary",
+        "tonalRamp": [
+          "#2e0000",
+          "#580000",
+          "#850000",
+          "#b50000",
+          "#e2372e",
+          "#ff7061",
+          "#ffa292",
+          "#ffcebf"
+        ]
+      },
+      "dark-success-surface": {
+        "displayName": "Success Surface (dark)",
+        "role": "secondary"
+      },
+      "dark-text": {
+        "displayName": "Dark Primary Text",
+        "role": "neutral"
+      },
+      "dark-text-muted": {
+        "displayName": "Dark Muted Text",
+        "role": "neutral"
+      },
+      "dark-text-secondary": {
+        "displayName": "Dark Secondary Text",
+        "role": "neutral"
+      },
+      "dark-text-subtle": {
+        "displayName": "Dark Subtle Text",
+        "role": "neutral"
+      },
+      "dark-thumb": {
+        "displayName": "Dark Segment Thumb",
+        "role": "neutral",
+        "tonalRamp": [
+          "#000000",
+          "#1c1c1e",
+          "#2c2c2e",
+          "#3a3a3c",
+          "#6e6e73",
+          "#aeaeb2",
+          "#e8e8ed",
+          "#f5f5f7"
+        ]
+      },
+      "dark-warning-amber": {
+        "canonical": "oklch(78.2% 0.171 67)",
+        "displayName": "Warning Amber (dark)",
+        "role": "secondary",
+        "tonalRamp": [
+          "#280000",
+          "#4e0000",
+          "#761d00",
+          "#994100",
+          "#c16600",
+          "#e98b00",
+          "#ffb652",
+          "#ffde91"
+        ]
+      },
+      "dark-warning-surface": {
+        "displayName": "Warning Surface (dark)",
+        "role": "secondary"
+      },
+      "deep-violet": {
+        "displayName": "Deep Violet",
+        "role": "primary",
+        "tonalRamp": [
+          "#1f1a4d",
+          "#3a26c4",
+          "#4a34f0",
+          "#533afd",
+          "#7a66ff",
+          "#8b7cff",
+          "#cdc6ff",
+          "#efedff"
+        ]
+      },
+      "frost": {
+        "displayName": "Frost",
+        "role": "neutral",
+        "tonalRamp": [
+          "#000000",
+          "#1c1c1e",
+          "#2c2c2e",
+          "#3a3a3c",
+          "#6e6e73",
+          "#aeaeb2",
+          "#e8e8ed",
+          "#f5f5f7"
+        ]
+      },
+      "hairline-strong": {
+        "displayName": "Strong Hairline",
+        "role": "neutral",
+        "tonalRamp": [
+          "#000000",
+          "#1c1c1e",
+          "#2c2c2e",
+          "#3a3a3c",
+          "#6e6e73",
+          "#aeaeb2",
+          "#e8e8ed",
+          "#f5f5f7"
+        ]
+      },
+      "indigo-bright": {
+        "displayName": "Indigo Bright",
+        "role": "primary",
+        "tonalRamp": [
+          "#1f1a4d",
+          "#3a26c4",
+          "#4a34f0",
+          "#533afd",
+          "#7a66ff",
+          "#8b7cff",
+          "#cdc6ff",
+          "#efedff"
+        ]
+      },
+      "indigo-hover": {
+        "displayName": "Indigo Hover",
+        "role": "primary",
+        "tonalRamp": [
+          "#1f1a4d",
+          "#3a26c4",
+          "#4a34f0",
+          "#533afd",
+          "#7a66ff",
+          "#8b7cff",
+          "#cdc6ff",
+          "#efedff"
+        ]
+      },
+      "indigo-ink": {
+        "canonical": "#533afd",
+        "displayName": "Indigo Ink",
+        "role": "primary",
+        "tonalRamp": [
+          "#1f1a4d",
+          "#3a26c4",
+          "#4a34f0",
+          "#533afd",
+          "#7a66ff",
+          "#8b7cff",
+          "#cdc6ff",
+          "#efedff"
+        ]
+      },
+      "lavender-border": {
+        "displayName": "Lavender Border",
+        "role": "primary",
+        "tonalRamp": [
+          "#1f1a4d",
+          "#3a26c4",
+          "#4a34f0",
+          "#533afd",
+          "#7a66ff",
+          "#8b7cff",
+          "#cdc6ff",
+          "#efedff"
+        ]
+      },
+      "lilac-border": {
+        "displayName": "Lilac Border",
+        "role": "primary",
+        "tonalRamp": [
+          "#1f1a4d",
+          "#3a26c4",
+          "#4a34f0",
+          "#533afd",
+          "#7a66ff",
+          "#8b7cff",
+          "#cdc6ff",
+          "#efedff"
+        ]
+      },
+      "midnight-ink": {
+        "displayName": "Midnight Ink",
+        "role": "neutral",
+        "tonalRamp": [
+          "#000000",
+          "#1c1c1e",
+          "#2c2c2e",
+          "#3a3a3c",
+          "#6e6e73",
+          "#aeaeb2",
+          "#e8e8ed",
+          "#f5f5f7"
+        ]
+      },
+      "periwinkle-wash": {
+        "displayName": "Periwinkle Wash",
+        "role": "primary",
+        "tonalRamp": [
+          "#1f1a4d",
+          "#3a26c4",
+          "#4a34f0",
+          "#533afd",
+          "#7a66ff",
+          "#8b7cff",
+          "#cdc6ff",
+          "#efedff"
+        ]
+      },
+      "pure-white": {
+        "displayName": "Pure White",
+        "role": "neutral",
+        "tonalRamp": [
+          "#000000",
+          "#1c1c1e",
+          "#2c2c2e",
+          "#3a3a3c",
+          "#6e6e73",
+          "#aeaeb2",
+          "#e8e8ed",
+          "#f5f5f7"
+        ]
+      },
+      "sell-red": {
+        "canonical": "oklch(55.3% 0.225 27)",
+        "displayName": "Sell Red",
+        "role": "secondary",
+        "tonalRamp": [
+          "#2e0000",
+          "#580000",
+          "#850000",
+          "#b50007",
+          "#e23732",
+          "#ff7064",
+          "#ffa294",
+          "#ffcec1"
+        ]
+      },
+      "sell-red-deep": {
+        "displayName": "Sell Red Deep",
+        "role": "secondary"
+      },
+      "shell-ground": {
+        "displayName": "Shell Ground",
+        "role": "neutral",
+        "tonalRamp": [
+          "#000000",
+          "#1c1c1e",
+          "#2c2c2e",
+          "#3a3a3c",
+          "#6e6e73",
+          "#aeaeb2",
+          "#e8e8ed",
+          "#f5f5f7"
+        ]
+      },
+      "slate": {
+        "displayName": "Slate",
+        "role": "neutral",
+        "tonalRamp": [
+          "#000000",
+          "#1c1c1e",
+          "#2c2c2e",
+          "#3a3a3c",
+          "#6e6e73",
+          "#aeaeb2",
+          "#e8e8ed",
+          "#f5f5f7"
+        ]
+      },
+      "smoke": {
+        "displayName": "Smoke",
+        "role": "neutral",
+        "tonalRamp": [
+          "#000000",
+          "#1c1c1e",
+          "#2c2c2e",
+          "#3a3a3c",
+          "#6e6e73",
+          "#aeaeb2",
+          "#e8e8ed",
+          "#f5f5f7"
+        ]
+      },
+      "steel": {
+        "displayName": "Steel",
+        "role": "neutral",
+        "tonalRamp": [
+          "#000000",
+          "#1c1c1e",
+          "#2c2c2e",
+          "#3a3a3c",
+          "#6e6e73",
+          "#aeaeb2",
+          "#e8e8ed",
+          "#f5f5f7"
+        ]
+      },
+      "success-surface": {
+        "displayName": "Success Surface",
+        "role": "secondary"
+      },
+      "warning-amber": {
+        "canonical": "oklch(52.8% 0.131 54)",
+        "displayName": "Warning Amber",
+        "role": "secondary",
+        "tonalRamp": [
+          "#2b0000",
+          "#4e0000",
+          "#702300",
+          "#934400",
+          "#bb6825",
+          "#e38c4e",
+          "#ffb274",
+          "#ffd89d"
+        ]
+      },
+      "warning-amber-deep": {
+        "displayName": "Warning Amber Deep",
+        "role": "secondary"
+      },
+      "warning-surface": {
+        "displayName": "Warning Surface",
+        "role": "secondary"
+      }
+    },
+    "layout": {
+      "cardPadding": "clamp(16px, 4vw, 24px)",
+      "elementGap": "8px",
+      "gutter": "clamp(16px, 4vw, 24px)",
+      "headerHeight": "64px",
+      "minTapTarget": "44px",
+      "minViewportWidth": "320px",
+      "mobileCardPadding": "16px",
+      "mobileHeaderHeight": "44px",
+      "mobileTabBarHeight": "56px",
+      "pageMaxWidth": "1320px",
+      "sectionGap": "clamp(48px, 8vw, 96px)",
+      "sidebarWidth": "260px"
+    },
+    "materials": {
+      "backdrop": "blur(6px) over rgba(0, 0, 0, 0.24) light / rgba(0, 0, 0, 0.56) dark",
+      "dark": "rgba(28, 28, 30, 0.72)",
+      "filter": "saturate(180%) blur(20px)",
+      "light": "rgba(255, 255, 255, 0.72)",
+      "sheetBackdrop": "rgba(0, 0, 0, 0.4)"
+    },
+    "motion": [
+      {
+        "name": "spring",
+        "purpose": "The one spring: every sliding selection, sheet, toast, tile press.",
+        "value": "{ type: \"spring\", stiffness: 520, damping: 38, mass: 0.8 }"
+      },
+      {
+        "name": "spring-label-lift",
+        "purpose": "InsetLabelField label rising to the top edge.",
+        "value": "{ type: \"spring\", stiffness: 760, damping: 46, mass: 0.5 }"
+      },
+      {
+        "name": "spring-snappy",
+        "purpose": "Modal panel entrance.",
+        "value": "{ type: \"spring\", stiffness: 420, damping: 36, mass: 0.9 }"
+      },
+      {
+        "name": "spring-soft",
+        "purpose": "Content crossfades inside a modal.",
+        "value": "{ type: \"spring\", stiffness: 260, damping: 34, mass: 0.8 }"
+      },
+      {
+        "name": "ease",
+        "purpose": "Apple's curve; every tween.",
+        "value": "cubic-bezier(0.32, 0.72, 0, 1)"
+      },
+      {
+        "name": "transition-fast",
+        "purpose": "Hover fills, colour, press scale.",
+        "value": "160ms cubic-bezier(0.32, 0.72, 0, 1)"
+      },
+      {
+        "name": "transition-medium",
+        "purpose": "Card shadow, switch thumb.",
+        "value": "240ms cubic-bezier(0.32, 0.72, 0, 1)"
+      },
+      {
+        "name": "transition-slow",
+        "purpose": "Larger surface changes.",
+        "value": "420ms cubic-bezier(0.32, 0.72, 0, 1)"
+      },
+      {
+        "name": "tabs-indicator",
+        "purpose": "MUI Tabs pill slide.",
+        "value": "320ms cubic-bezier(0.32, 0.72, 0, 1)"
+      },
+      {
+        "name": "number-roll",
+        "purpose": "AnimatedNumber digit roll.",
+        "value": "750ms cubic-bezier(0.32, 0.72, 0, 1)"
+      },
+      {
+        "name": "exit",
+        "purpose": "Modal and toast exits leave faster than they arrive.",
+        "value": "150ms tween"
+      },
+      {
+        "name": "press",
+        "purpose": "Press feedback on buttons, tiles, tabs; round chrome controls 0.94.",
+        "value": "scale(0.97)"
+      },
+      {
+        "name": "easing-standard",
+        "purpose": "Token easeInOut for non-React consumers.",
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)"
+      },
+      {
+        "name": "reduced-motion",
+        "purpose": "Global prefers-reduced-motion override; premium components jump to final state.",
+        "value": "animation/transition 0.01ms"
+      }
+    ],
+    "policy": {
+      "command": "npm run policy:design",
+      "rules": [
+        "No linear/radial gradients outside skeletons, LazyImage, mixins, components/premium and components/charts",
+        "No hard offset shadows (Npx Npx 0)",
+        "backdrop-filter only in layouts/shell, components/premium, components/modals and Modal organisms",
+        "Font weights 100/200/300/800/900 rejected",
+        "No emoji; use the Icon component",
+        "Every border-radius px literal must be on the radius scale",
+        "Every six-digit hex outside token files must be in the sanctioned palette; crypto brand colours exempt in CoinsMarquee, Bridge and Swap",
+        "Circles only for asset logos, avatars, skeletons, badges, spinners and shell chrome controls"
+      ],
+      "scope": "Surface rules (gradient, elevation, blur, weight, radius) are relaxed for the mobile layer and brand layer (landing, sign-in, sign-up, launcher); palette and emoji rules apply everywhere. Unreachable pages are skipped.",
+      "script": "scripts/checkDesignSystem.js"
+    },
+    "radiusScale": [0, 2, 4, 6, 8, 10, 12, 14, 16, 20, 24, 28, 40, 9999],
+    "shadows": [
+      {
+        "name": "sm",
+        "purpose": "Resting cards; glyph plates inside action tiles. Light mode only.",
+        "value": "0 1px 2px rgba(0, 0, 0, 0.05), 0 1px 1px rgba(0, 0, 0, 0.03)"
+      },
+      {
+        "name": "md",
+        "purpose": "Grouped inset lists and mobile cards. Light mode only.",
+        "value": "0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.05)"
+      },
+      {
+        "name": "lg",
+        "purpose": "Menus, popovers, bottom sheets. Light mode only.",
+        "value": "0 2px 4px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.08)"
+      },
+      {
+        "name": "xl",
+        "purpose": "MUI dialogs. Dark: 0 24px 64px rgba(0, 0, 0, 0.6).",
+        "value": "0 4px 8px rgba(0, 0, 0, 0.05), 0 24px 64px rgba(0, 0, 0, 0.16)"
+      },
+      {
+        "name": "segment-thumb",
+        "purpose": "Raised selection pill in segmented controls, tabs and the nav rail. Dark: 0 1px 2px rgba(0, 0, 0, 0.4).",
+        "value": "0 1px 2px rgba(0, 0, 0, 0.08), 0 3px 8px rgba(0, 0, 0, 0.06)"
+      },
+      {
+        "name": "modal-panel",
+        "purpose": "Premium ModalSurface. Dark: 0 0 0 1px #3a3a3c, 0 24px 64px rgba(0, 0, 0, 0.6).",
+        "value": "0 1px 2px rgba(0, 0, 0, 0.06), 0 28px 56px -24px rgba(0, 0, 0, 0.35)"
+      },
+      {
+        "name": "toast",
+        "purpose": "Toast cards. Dark adds a 1px inset top highlight rgba(255,255,255,0.06).",
+        "value": "0 0 0 1px rgba(0, 0, 0, 0.04), 0 2px 4px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.1)"
+      },
+      {
+        "name": "hairline-dark",
+        "purpose": "Dark-mode replacement for every resting shadow.",
+        "value": "0 0 0 1px #2c2c2e"
+      },
+      {
+        "name": "focus-halo",
+        "purpose": "Focused fields and buttons. Dark rgba(127, 112, 255, 0.32); error rgba(215, 0, 21, 0.14).",
+        "value": "0 0 0 4px rgba(83, 58, 253, 0.18)"
+      },
+      {
+        "name": "focus-outline",
+        "purpose": "Global :focus-visible outline. Dark rgba(127, 112, 255, 0.55).",
+        "value": "3px solid rgba(83, 58, 253, 0.45), offset 2px"
+      },
+      {
+        "name": "primary-lift",
+        "purpose": "Contained primary button, light mode only.",
+        "value": "0 1px 2px rgba(83, 58, 253, 0.24)"
+      }
+    ],
+    "typographyMeta": {
+      "body": {
+        "displayName": "Body",
+        "purpose": "Default text; buttons at 500."
+      },
+      "body-lg": {
+        "displayName": "Body Large",
+        "purpose": "Grouped-list row titles (at 500), lead paragraphs."
+      },
+      "body-sm": {
+        "displayName": "Body Small",
+        "purpose": "Secondary lines, table cells, alerts."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Chips, tooltips, table heads, field hints."
+      },
+      "display": {
+        "displayName": "Display",
+        "purpose": "MUI h1; the landing hero scales the same recipe to clamp(44px, 7.2vw, 96px) at -0.03em."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Desktop page large titles."
+      },
+      "headline-lg": {
+        "displayName": "Headline Large",
+        "purpose": "MUI h2; the hero balance figure."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Segmented labels, nav tabs, field labels."
+      },
+      "mobile-large-title": {
+        "displayName": "Mobile Large Title",
+        "purpose": "The iOS large title opening every mobile screen."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Addresses, transaction ids, script source, seed words only."
+      },
+      "subheading": {
+        "displayName": "Subheading",
+        "purpose": "Card and dialog titles."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Sheet titles, grouped-list headings, section titles."
+      }
+    },
+    "zIndex": {
+      "dropdown": 1000,
+      "fixed": 1200,
+      "modal": 1300,
+      "popover": 1400,
+      "sticky": 1100,
+      "toast": 1500,
+      "tooltip": 1600
+    }
+  },
+  "generatedAt": "2026-09-27T23:27:59.348Z",
+  "narrative": {
+    "donts": [
+      "**Don't** use an uppercase, letter-spaced eyebrow or kicker above a heading. Labels are sentence case.",
+      "**Don't** use gradient text or decorative gradients. Gradients are allowed only for skeleton shimmer, image placeholders and chart fills that fade a series to nothing (the policy exempts `components/premium/`, `components/charts/`, skeletons and LazyImage for exactly this).",
+      "**Don't** lay decorative grid, dot or noise overlays over the ground.",
+      "**Don't** put a coloured side-stripe border on cards, rows, alerts or notices. Selection is a tinted wash or a raised pill.",
+      "**Don't** stack a border and a shadow on one surface, or use hard offset shadows.",
+      "**Don't** blur content surfaces; blur is chrome material and overlay backdrops only.",
+      "**Don't** use weights 100, 200, 300, 800 or 900, or a second typeface.",
+      "**Don't** introduce a hex outside the policy palette, or a radius outside the scale.",
+      "**Don't** use emoji; use the Icon component.",
+      "**Don't** add an ink ripple; presses answer with scale and tint.",
+      "**Don't** draw a chart, trend or metric the data does not have. With no series, show the baseline and say so."
+    ],
+    "dos": [
+      "**Do** take every value from `src/styles/tokens.ts` (or its mirrors: the `index.css` custom properties, the styled-components themes, the MUI theme). Nothing is hand-tuned per page.",
+      "**Do** keep indigo for primary action, current selection, focus and links, and nothing else.",
+      "**Do** give a surface a shadow in light mode or a hairline in dark mode, never both.",
+      "**Do** use the shared spring (stiffness 520, damping 38, mass 0.8) for anything that slides, presses, stacks or rises, and `cubic-bezier(0.32, 0.72, 0, 1)` for tweens (160 / 240 / 420ms). Honour `prefers-reduced-motion`; every premium component drops to an instant change.",
+      "**Do** render every figure in tabular numerals, and roll balances and prices with AnimatedNumber.",
+      "**Do** use SegmentedControl (or the themed MUI Tabs, which render the same pill) for every two-to-five-way choice.",
+      "**Do** build forms from InsetLabelField, searches from SearchField, and lists from the grouped inset list.",
+      "**Do** use the fanned EmptyState at most once per screen and PanelEmpty everywhere else; put a ComingSoon notice first and render the unfinished preview `inert` beneath it.",
+      "**Do** keep tap targets at 44px or more and radii on the scale.",
+      "**Do** run `npm run policy:design` before shipping; it must pass."
+    ],
+    "keyCharacteristics": [
+      "Apple-neutral ground (light `#f5f5f7`, dark `#000000`) with white or graphite surfaces on top.",
+      "One accent, indigo, reserved for primary action, current selection, focus and links.",
+      "Depth is a soft two-layer shadow in light mode and a 1px hairline in dark mode, never both on one surface.",
+      "System font stack (SF Pro on Apple platforms, self-hosted Inter Variable elsewhere); semibold titles, regular body, tabular numerals everywhere.",
+      "10px on operable controls, 16px on cards, 20px on sheets and dialogs, 24px on the shell, pills for tags.",
+      "One spring, one curve; selection slides, it never repaints."
+    ],
+    "northStar": "The Precision Instrument",
+    "overview": "DecentralExchange is built like an instrument, not a dashboard template. Balances and prices are the truth of every screen, so they get the size, the weight and the motion; everything around them recedes into material. The ground is Apple's neutral grey, content sits on white (graphite in dark mode) surfaces lifted by one soft shadow, and the only chroma on a resting screen is the logo's indigo on whatever the holder is about to press or has selected. Buy and sell speak in system green and red, and nothing else is allowed to borrow them.\n\nThe craft bar is Apple Wallet and Stocks, macOS System Settings and Uniswap's swap card, played at full fidelity: large titles, grouped inset lists with hairlines that start past the avatar, segmented controls whose selection rides on a raised thumb, a translucent top bar content scrolls beneath, and digits that roll to their new value. The same system runs across the desktop shell, the mobile shell, the landing page and the auth screens, in light and dark, in 17 languages. Density is comfortable rather than terminal-like: an 8px rhythm, 44px tap targets, 24px card padding.\n\nMotion is one physical system. A single spring (stiffness 520, damping 38, mass 0.8) drives every sliding selection, sheet, toast and press, and Apple's curve `cubic-bezier(0.32, 0.72, 0, 1)` drives every tween. Presses answer with scale (0.97) and tint, never with an ink ripple. The component kit in `src/components/premium/` ports 21st.dev components into styled-components and motion; each file credits its origin.",
+    "rules": [
+      {
+        "body": "Indigo means \"act here\" or \"this is selected\". It never decorates, never fills a heading, never tints a card for atmosphere.",
+        "name": "The One Accent Rule",
+        "section": "colors"
+      },
+      {
+        "body": "Green and red belong to buy/sell and outcome. A positive number is green because it went up, not because green looks good.",
+        "name": "The Meaning-Only Status Rule",
+        "section": "colors"
+      },
+      {
+        "body": "Every six-digit hex outside the token files must appear in the policy script's palette set. A new color is a system change, not a styling choice. Crypto brand colors (Bridge, Swap, the coins marquee) are the one exemption, kept native.",
+        "name": "The Sanctioned Palette Rule",
+        "section": "colors"
+      },
+      {
+        "body": "Every price, balance, amount and metric renders in tabular numerals, and every balance and price that changes rolls its digits (AnimatedNumber, 750ms on the system curve) instead of swapping text.",
+        "name": "The Tabular Truth Rule",
+        "section": "typography"
+      },
+      {
+        "body": "Weights are 400, 500 and 600. 700 is permitted for rare emphasis; 100, 200, 300, 800 and 900 fail the policy check.",
+        "name": "The Weight Ceiling Rule",
+        "section": "typography"
+      },
+      {
+        "body": "Group headings, column heads and field labels are sentence case in secondary text. There is no uppercase, letter-spaced label above a heading anywhere in the system.",
+        "name": "The Sentence-Case Label Rule",
+        "section": "typography"
+      },
+      {
+        "body": "A surface gets a shadow in light mode or a hairline in dark mode, never both, and never a border plus a shadow at the same time. Light cards carry `1px solid transparent` so their geometry matches dark.",
+        "name": "The One Elevation Rule",
+        "section": "elevation"
+      },
+      {
+        "body": "Backdrop blur belongs to chrome and overlays only: the top bar, mobile header, tab bar, landing header once scrolled, modal and sheet backdrops (`blur(6px)` over `rgba(0, 0, 0, 0.24)` light, `0.56` dark), tooltips and snackbars. Content surfaces are opaque. The policy check rejects blur anywhere else.",
+        "name": "The Material Is Chrome Rule",
+        "section": "elevation"
+      },
+      {
+        "body": "Shadows are offset down and diffuse. Hard offset shadows (`Npx Npx 0`) fail the policy check.",
+        "name": "The Soft Shadow Rule",
+        "section": "elevation"
+      },
+      {
+        "body": "A radius not on the scale is a violation, whatever it looks like.",
+        "name": "The Scale Is The Statement Rule",
+        "section": "shapes"
+      }
+    ]
+  },
+  "schemaVersion": 2,
+  "title": "Design System: DecentralExchange"
+}

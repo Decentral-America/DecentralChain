@@ -6,7 +6,7 @@
 import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
 import { Stack } from '@/components/atoms/Stack';
-import { scrimStrong } from '@/styles/tokens';
+import { scrimStrong } from '@/styles/legacy/tokens';
 
 interface LedgerErrorModalProps {
   error: Error | null;

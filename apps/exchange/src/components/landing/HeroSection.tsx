@@ -6,6 +6,7 @@ import AuroraField from '@/components/landing/AuroraField';
 import BandTexture from '@/components/landing/BandTexture';
 import Reveal from '@/components/landing/Reveal';
 import { hasStoredAccount } from '@/lib/accountStorage';
+import { tokens } from '@/styles/legacy/semantic';
 import {
   brandCanvas,
   brandInk,
@@ -13,7 +14,6 @@ import {
   heroHeadlineGradient,
   onCanvas,
 } from '@/theme/landingTheme';
-import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * Hero section.

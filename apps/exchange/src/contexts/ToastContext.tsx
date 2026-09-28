@@ -1,7 +1,25 @@
-import { createContext, type ReactNode, useCallback, useContext, useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import {
+  createContext,
+  lazy,
+  type ReactNode,
+  Suspense,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { useAnnouncement } from '@/components/a11y';
-import { noTapHighlight } from '@/styles/mixins';
+
+/*
+ * The stack animates with `motion`, and this provider mounts with the app, so a
+ * static import put the whole animation library on first paint (+126 kB raw,
+ * +40 kB gzipped on the entry chunk) for UI that shows nothing until the first
+ * toast. It loads on demand instead, and is warmed once the browser is idle so
+ * that first toast rarely waits. The accessible part — the announcement — is
+ * made here in `showToast`, not by the stack, so it never waits on the chunk.
+ */
+const loadToastStack = () => import('@/components/premium/ToastStack');
+const ToastStack = lazy(() => loadToastStack().then((m) => ({ default: m.ToastStack })));
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
@@ -23,152 +41,6 @@ interface ToastContextType {
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
-const slideIn = keyframes`
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-`;
-
-const slideOut = keyframes`
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-`;
-
-const ToastContainer = styled.div`
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 10000;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  max-width: 400px;
-  pointer-events: none;
-
-  @media (max-width: 768px) {
-    left: 1rem;
-    right: 1rem;
-    max-width: 100%;
-  }
-`;
-
-const ToastItem = styled.div<{ type: ToastType; isRemoving?: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 1.25rem;
-  background: ${({ theme }) => theme.colors.background};
-  border: 2px solid
-    ${({ theme, type }) => {
-      switch (type) {
-        case 'success':
-          return theme.colors.success;
-        case 'error':
-          return theme.colors.error;
-        case 'warning':
-          return theme.colors.warning;
-        default:
-          return theme.colors.primary;
-      }
-    }};
-  border-radius: 8px;
-  box-shadow: ${({ theme }) => theme.shadows.lg};
-  pointer-events: auto;
-  animation: ${({ isRemoving }) => (isRemoving ? slideOut : slideIn)} 0.3s ease-out;
-  min-height: 60px;
-`;
-
-const ToastIcon = styled.div<{ type: ToastType }>`
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  background: ${({ theme, type }) => {
-    switch (type) {
-      case 'success':
-        return theme.colors.success;
-      case 'error':
-        return theme.colors.error;
-      case 'warning':
-        return theme.colors.warning;
-      default:
-        return theme.colors.primary;
-    }
-  }}20;
-  border-radius: 50%;
-`;
-
-const ToastContent = styled.div`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-`;
-
-const ToastMessage = styled.p`
-  margin: 0;
-  font-size: 0.9375rem;
-  line-height: 1.5;
-  color: ${({ theme }) => theme.colors.text};
-  word-wrap: break-word;
-`;
-
-const CloseButton = styled.button`
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: none;
-  color: ${({ theme }) => theme.colors.text};
-  opacity: 0.6;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: all 0.2s;
-  padding: 0;
-
-  &:hover {
-    opacity: 1;
-    background: ${({ theme }) => theme.colors.border}40;
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-
-  /* Own press state above, so the grey tap flash is redundant. */
-  ${noTapHighlight}
-`;
-
-const getToastIcon = (type: ToastType): string => {
-  switch (type) {
-    case 'success':
-      return '✓';
-    case 'error':
-      return '✕';
-    case 'warning':
-      return '⚠';
-    default:
-      return 'ℹ';
-  }
-};
-
 interface ToastProviderProps {
   children: ReactNode;
 }
@@ -176,7 +48,18 @@ interface ToastProviderProps {
 export const ToastProvider = ({ children }: ToastProviderProps) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [removingToasts, setRemovingToasts] = useState<Set<string>>(new Set());
+  const [stackMounted, setStackMounted] = useState(false);
   const { announce } = useAnnouncement();
+
+  useEffect(() => {
+    const warm = () => void loadToastStack();
+    if (typeof window.requestIdleCallback === 'function') {
+      const id = window.requestIdleCallback(warm, { timeout: 4000 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const timer = window.setTimeout(warm, 2000);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   const removeToast = useCallback((id: string) => {
     setRemovingToasts((prev) => new Set(prev).add(id));
@@ -196,6 +79,7 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
       const toast: Toast = { duration, id, message, type };
 
       setToasts((prev) => [...prev, toast]);
+      setStackMounted(true);
 
       // Announce to screen readers — stringify for the accessibility layer
       // (ReactNode content is rendered visually; the a11y label uses a plain string)
@@ -253,19 +137,12 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
       }}
     >
       {children}
-      <ToastContainer>
-        {toasts.map((toast) => (
-          <ToastItem key={toast.id} type={toast.type} isRemoving={removingToasts.has(toast.id)}>
-            <ToastIcon type={toast.type}>{getToastIcon(toast.type)}</ToastIcon>
-            <ToastContent>
-              <ToastMessage>{toast.message}</ToastMessage>
-            </ToastContent>
-            <CloseButton onClick={() => removeToast(toast.id)} aria-label="Close notification">
-              ✕
-            </CloseButton>
-          </ToastItem>
-        ))}
-      </ToastContainer>
+      {/* Mounted from the first toast on and kept mounted, so exit animations still play. */}
+      {(toasts.length > 0 || stackMounted) && (
+        <Suspense fallback={null}>
+          <ToastStack toasts={toasts} removingIds={removingToasts} onDismiss={removeToast} />
+        </Suspense>
+      )}
     </ToastContext.Provider>
   );
 };

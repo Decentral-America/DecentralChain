@@ -5,27 +5,18 @@
  */
 
 import { BigNumber } from '@decentralchain/bignumber';
-import { CheckCircle, InfoOutlined, Login } from '@mui/icons-material';
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Container,
-  Grid,
-  Paper,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from '@mui/material';
+import { InfoOutlined } from '@mui/icons-material';
+import { Alert, Box, Button, ButtonBase, Stack, Typography } from '@mui/material';
 import bnbIcon from 'cryptocurrency-icons/svg/color/bnb.svg';
 // Crypto logos
 import btcIcon from 'cryptocurrency-icons/svg/color/btc.svg';
 import ethIcon from 'cryptocurrency-icons/svg/color/eth.svg';
 import solIcon from 'cryptocurrency-icons/svg/color/sol.svg';
+import { Check, KeyRound, Link2, Wallet } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { Link as RouterLink } from 'react-router';
+import { EmptyState } from '@/components/premium/EmptyState';
+import { SegmentedControl } from '@/components/premium/SegmentedControl';
 import { BRIDGE_SUPPORTED } from '@/config/bridge';
 import { useAuth } from '@/contexts/AuthContext';
 import { BridgeAssetSelector } from '@/features/bridge/BridgeAssetSelector';
@@ -34,8 +25,9 @@ import { SolanaBridgePanel } from '@/features/bridge/SolanaBridgePanel';
 import { WithdrawAsset } from '@/features/bridge/WithdrawAsset';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
 import { useGatewayTransaction } from '@/hooks/useGatewayTransaction';
-import { PageFrame } from '@/layouts/PageFrame';
+import { PageFrame, pageRhythm } from '@/layouts/PageFrame';
 import { networkBrandColor } from '@/styles/brandMarks';
+import { radii } from '@/styles/tokens';
 
 interface SelectedAsset {
   assetId: string;
@@ -205,188 +197,182 @@ export const Bridge: React.FC = () => {
     setSelectedAsset(null);
   };
 
-  /**
-   * Handle mode toggle change
-   */
-  const handleModeChange = (
-    _event: React.MouseEvent<HTMLElement>,
-    newMode: 'deposit' | 'withdraw' | null,
-  ) => {
-    if (newMode !== null) {
-      setMode(newMode);
-    }
-  };
-
   // Show login prompt if not authenticated
   if (!user) {
     return (
-      <Box
-        sx={{
-          bgcolor: 'background.default',
-          minHeight: '100svh',
-          py: 4,
-        }}
+      <PageFrame
+        title="Cross-Chain Bridge"
+        subtitle="Transfer assets between DecentralChain and external blockchains securely through our gateway infrastructure."
       >
-        <Container maxWidth="sm">
-          <Paper
-            elevation={3}
-            sx={{
-              borderRadius: 2,
-              p: 4,
-              textAlign: 'center',
-            }}
-          >
-            <Login sx={{ color: 'primary.main', fontSize: 64, mb: 2 }} />
-            <Typography
-              variant="h5"
-              gutterBottom
-              sx={{
-                fontWeight: 600,
-              }}
-            >
-              Authentication Required
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                color: 'text.secondary',
-                mb: 3,
-              }}
-            >
-              Please log in to access the cross-chain bridge. You need an active wallet to transfer
-              assets between DecentralChain and external blockchains.
-            </Typography>
-            <Button variant="contained" size="large" href="/wallet">
-              Go to Wallet
-            </Button>
-          </Paper>
-        </Container>
-      </Box>
+        <Box
+          sx={{
+            bgcolor: 'background.paper',
+            borderRadius: radii.cards,
+            maxWidth: 520,
+            mx: 'auto',
+            width: '100%',
+          }}
+        >
+          <EmptyState
+            icons={[Wallet, KeyRound, Link2]}
+            title="Authentication Required"
+            description="Please log in to access the cross-chain bridge. You need an active wallet to transfer assets between DecentralChain and external blockchains."
+            action={
+              <Button variant="contained" component={RouterLink} to="/wallet">
+                Go to Wallet
+              </Button>
+            }
+          />
+        </Box>
+      </PageFrame>
     );
   }
+
+  const network = SUPPORTED_NETWORKS.find((n) => n.id === selectedNetwork);
 
   return (
     <PageFrame
       title="Cross-Chain Bridge"
       subtitle="Transfer assets between DecentralChain and external blockchains securely through our gateway infrastructure."
     >
-      <Container maxWidth="xl">
-        {/* Network Selector */}
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="subtitle2" sx={{ color: 'text.secondary', mb: 1 }}>
-            Network
+      <Stack spacing={pageRhythm}>
+        {/* Network selector: one card per chain, a single selection. */}
+        <Box component="section" aria-labelledby="bridge-network">
+          <Typography
+            id="bridge-network"
+            variant="h6"
+            sx={{ fontSize: 17, fontWeight: 600, mb: 1.5 }}
+          >
+            Select network
           </Typography>
-          <Grid container spacing={1}>
-            {SUPPORTED_NETWORKS.map((network) => (
-              <Grid
-                key={network.id}
-                size={{
-                  md: 'auto',
-                  sm: 3,
-                  xs: 6,
-                }}
-              >
-                <Card
-                  onClick={() => network.available && setSelectedNetwork(network.id)}
-                  sx={{
-                    '&:hover': network.available
-                      ? {
-                          boxShadow: 1,
-                        }
-                      : {},
-                    border: 1,
-                    borderColor: selectedNetwork === network.id ? network.color : 'transparent',
-                    cursor: network.available ? 'pointer' : 'not-allowed',
-                    opacity: network.available ? 1 : 0.6,
-                    position: 'relative',
-                    transition: 'all 0.2s',
-                  }}
+          <Box
+            role="radiogroup"
+            aria-labelledby="bridge-network"
+            sx={{
+              display: 'grid',
+              gap: 1.5,
+              gridTemplateColumns: {
+                md: 'repeat(4, minmax(0, 1fr))',
+                xs: 'repeat(2, minmax(0, 1fr))',
+              },
+            }}
+          >
+            {SUPPORTED_NETWORKS.map((n) => {
+              const selected = selectedNetwork === n.id && n.available;
+              return (
+                <ButtonBase
+                  key={n.id}
+                  role="radio"
+                  aria-checked={selected}
+                  aria-disabled={!n.available || undefined}
+                  disabled={!n.available}
+                  onClick={() => n.available && setSelectedNetwork(n.id)}
+                  sx={(theme) => ({
+                    '&:active': n.available ? { transform: 'scale(0.97)' } : {},
+                    '&:hover': n.available ? { bgcolor: 'action.hover' } : {},
+                    '&.Mui-focusVisible': {
+                      outline: `2px solid ${theme.palette.primary.main}`,
+                      outlineOffset: 2,
+                    },
+                    alignItems: 'center',
+                    bgcolor: 'background.paper',
+                    borderRadius: radii.cards,
+                    boxShadow: selected
+                      ? `inset 0 0 0 2px ${theme.palette.primary.main}`
+                      : theme.palette.mode === 'dark'
+                        ? `inset 0 0 0 1px ${theme.palette.divider}`
+                        : 'var(--shadow-sm)',
+                    display: 'flex',
+                    gap: 1.5,
+                    justifyContent: 'flex-start',
+                    minHeight: 72,
+                    px: 2,
+                    py: 1.5,
+                    textAlign: 'left',
+                    transition: 'background-color 160ms, box-shadow 160ms, transform 160ms',
+                  })}
                 >
-                  <CardContent
+                  <Box
+                    component="img"
+                    src={n.icon}
+                    alt=""
+                    aria-hidden
                     sx={{
-                      '&:last-child': { pb: 1 },
-                      alignItems: 'center',
-                      display: 'flex',
-                      gap: 1,
-                      px: 1.5,
-                      py: 1,
+                      filter: n.available ? 'none' : 'grayscale(1)',
+                      flexShrink: 0,
+                      height: 40,
+                      opacity: n.available ? 1 : 0.45,
+                      width: 40,
                     }}
-                  >
-                    <Box
-                      component="img"
-                      src={network.icon}
-                      alt=""
-                      aria-hidden
-                      sx={{ display: 'block', flexShrink: 0, height: 20, width: 20 }}
-                    />
-                    <Typography variant="body2" sx={{ fontWeight: 600, whiteSpace: 'nowrap' }}>
-                      {network.name}
+                  />
+                  <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Typography
+                      sx={{
+                        color: n.available ? 'text.primary' : 'text.secondary',
+                        fontSize: 15,
+                        fontWeight: 500,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {n.name}
                     </Typography>
-                    {selectedNetwork === network.id && network.available && (
-                      <CheckCircle
-                        sx={{
-                          color: network.color,
-                          fontSize: 16,
-                          position: 'static',
-                          right: 8,
-                          top: 8,
-                        }}
-                      />
-                    )}
-                    {network.comingSoon && (
-                      <Chip label="Coming Soon" size="small" sx={{ mt: 1 }} variant="outlined" />
-                    )}
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+                    <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                      {n.comingSoon ? 'Coming Soon' : n.ticker}
+                    </Typography>
+                  </Box>
+                  {selected ? (
+                    <Box
+                      aria-hidden
+                      sx={{
+                        alignItems: 'center',
+                        bgcolor: 'primary.main',
+                        borderRadius: '50%',
+                        color: 'primary.contrastText',
+                        display: 'flex',
+                        flexShrink: 0,
+                        height: 20,
+                        justifyContent: 'center',
+                        width: 20,
+                      }}
+                    >
+                      <Check size={13} strokeWidth={3} />
+                    </Box>
+                  ) : null}
+                </ButtonBase>
+              );
+            })}
+          </Box>
         </Box>
 
-        {/* Mode Toggle — gateway networks only; Solana owns its own. */}
+        {/* Mode — gateway networks only; Solana owns its own. */}
         {selectedNetwork !== 'SOL' && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
-            <ToggleButtonGroup
+          <Box>
+            <SegmentedControl
+              label="Bridge mode"
               value={mode}
-              exclusive
-              onChange={handleModeChange}
-              aria-label="Bridge mode"
-              sx={{
-                '& .MuiToggleButton-root': {
-                  fontSize: '1rem',
-                  fontWeight: 500,
-                  px: 4,
-                  py: 1.5,
-                  textTransform: 'none',
-                },
-              }}
-            >
-              <ToggleButton value="deposit" aria-label="Deposit mode">
-                Deposit to DecentralChain
-              </ToggleButton>
-              <ToggleButton value="withdraw" aria-label="Withdraw mode">
-                Withdraw to External
-              </ToggleButton>
-            </ToggleButtonGroup>
+              onValueChange={setMode}
+              options={[
+                { label: 'Deposit to DecentralChain', value: 'deposit' },
+                { label: 'Withdraw to External', value: 'withdraw' },
+              ]}
+            />
           </Box>
         )}
 
-        {/* Info Alert — same reason as the toggle above. */}
+        {/* Info Alert — same reason as the mode control above. */}
         {selectedNetwork !== 'SOL' && (
-          <Alert severity="info" icon={<InfoOutlined />} sx={{ maxWidth: 800, mb: 4, mx: 'auto' }}>
+          <Alert severity="info" icon={<InfoOutlined />}>
             {mode === 'deposit' ? (
               <>
-                <strong>Deposit Mode:</strong> Send{' '}
-                {SUPPORTED_NETWORKS.find((n) => n.id === selectedNetwork)?.name} assets to the
-                gateway address. You&apos;ll receive wrapped tokens on DecentralChain after network
-                confirmations.
+                <strong>Deposit Mode:</strong> Send {network?.name} assets to the gateway address.
+                You&apos;ll receive wrapped tokens on DecentralChain after network confirmations.
               </>
             ) : (
               <>
                 <strong>Withdraw Mode:</strong> Send wrapped tokens from DecentralChain to the
-                gateway. You&apos;ll receive native{' '}
-                {SUPPORTED_NETWORKS.find((n) => n.id === selectedNetwork)?.name} assets after
-                processing.
+                gateway. You&apos;ll receive native {network?.name} assets after processing.
               </>
             )}
           </Alert>
@@ -445,7 +431,7 @@ export const Bridge: React.FC = () => {
             onWithdraw={handleWithdrawSubmit}
           />
         )}
-      </Container>
+      </Stack>
     </PageFrame>
   );
 };

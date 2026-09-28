@@ -20,9 +20,9 @@
 import { ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { createAppTheme } from '@/styles/legacy/muiTheme';
+import { tokens } from '@/styles/legacy/semantic';
 import { rgbToHex } from '@/test-utils/rgbToHex';
-import { createAppTheme } from '@/theme/mui-theme';
-import { tokens } from '@/theme/tokens/semantic';
 import LandingPage from '../LandingPage';
 
 vi.mock('react-i18next', () => ({

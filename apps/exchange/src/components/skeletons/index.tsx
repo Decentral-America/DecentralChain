@@ -3,33 +3,36 @@
  * Provides animated skeleton screens for better perceived performance during loading
  */
 import styled, { css, keyframes } from 'styled-components';
+import { chrome } from '@/styles/tokens';
 
 /**
- * Shimmer animation for skeleton loading effect
+ * The wave: a soft highlight that travels across a grey fill, the same
+ * treatment as the themed MUI Skeleton, so hand-built and MUI skeletons match.
  */
-const shimmer = keyframes`
+const wave = keyframes`
   0% {
-    background-position: -1000px 0;
+    transform: translateX(-100%);
   }
+  60%,
   100% {
-    background-position: 1000px 0;
+    transform: translateX(100%);
   }
 `;
 
 /**
- * Pulse animation for alternative loading effect
+ * Pulse animation for the alternative loading effect
  */
 const pulse = keyframes`
   0%, 100% {
     opacity: 1;
   }
   50% {
-    opacity: 0.4;
+    opacity: 0.5;
   }
 `;
 
 /**
- * Base skeleton element with shimmer animation
+ * Base skeleton element. `variant="shimmer"` (the default) is the wave.
  */
 export const Skeleton = styled.div<{
   width?: string;
@@ -37,29 +40,41 @@ export const Skeleton = styled.div<{
   variant?: 'shimmer' | 'pulse';
   borderRadius?: string;
 }>`
-  ${(props) => {
-    // Use theme colors
-    const baseColor = props.theme.colors.border;
-    const highlightColor = props.theme.colors.hover;
+  position: relative;
+  overflow: hidden;
+  background: ${(p) => chrome[p.theme.mode].fill};
+  border-radius: ${(p) => p.borderRadius || '8px'};
+  width: ${(p) => p.width || '100%'};
+  height: ${(p) => p.height || '20px'};
 
-    return css`
-      background: ${
-        props.variant === 'pulse'
-          ? baseColor
-          : `linear-gradient(
-            90deg,
-            ${baseColor} 0%,
-            ${highlightColor} 50%,
-            ${baseColor} 100%
-          )`
-      };
-      background-size: 1000px 100%;
-      animation: ${props.variant === 'pulse' ? pulse : shimmer} 2s infinite linear;
-      border-radius: ${props.borderRadius || '4px'};
-      width: ${props.width || '100%'};
-      height: ${props.height || '20px'};
-    `;
-  }}
+  ${(p) =>
+    p.variant === 'pulse'
+      ? css`
+          animation: ${pulse} 1.6s ease-in-out infinite;
+        `
+      : css`
+          &::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+              90deg,
+              transparent,
+              ${chrome[p.theme.mode].skeletonWave},
+              transparent
+            );
+            animation: ${wave} 1.8s linear 0.4s infinite;
+            transform: translateX(-100%);
+          }
+        `}
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+
+    &::after {
+      animation: none;
+    }
+  }
 `;
 
 /**

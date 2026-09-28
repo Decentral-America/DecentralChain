@@ -28,10 +28,10 @@ import type React from 'react';
 import { useNavigate } from 'react-router';
 import Logo from '@/components/atoms/Logo';
 import { AuthScene } from '@/components/auth/AuthScene';
+import { MobileButton } from '@/components/legacy/mobilePrimitives';
 import { MobileAuthScreen } from '@/components/mobile/MobileAuthScreen';
-import { MobileButton } from '@/components/mobile/primitives';
 import { CreateWalletWizard, useCreateWallet } from '@/features/auth/create-wallet';
-import { tokens } from '@/theme/tokens/semantic';
+import { tokens } from '@/styles/legacy/semantic';
 
 const SignUpInner: React.FC = () => {
   const navigate = useNavigate();

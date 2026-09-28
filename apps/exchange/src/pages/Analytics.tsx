@@ -1,25 +1,76 @@
 /**
  * Analytics Page
- * Portfolio analytics and performance insights with real-time data
+ *
+ * What this account can honestly say about itself from the node: its balances
+ * and how many transactions it has made. There is no price oracle, so there is
+ * no profit, no loss and no value growth here; a figure the wallet cannot know
+ * is left out rather than approximated. The one change it does show is
+ * activity — transactions in the last 30 days against the 30 before — because
+ * that is counted from real timestamps, not inferred.
  */
 
-import {
-  AccountBalanceWallet,
-  SwapHoriz,
-  Timeline,
-  TrendingDown,
-  TrendingUp,
-} from '@mui/icons-material';
-import { Alert, Box, Grid, Paper, Skeleton, Stack, Typography, useTheme } from '@mui/material';
+import { Box, Card, CardContent, Grid, Skeleton, Typography } from '@mui/material';
+import { Activity, ArrowLeftRight, ReceiptText } from 'lucide-react';
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router';
 import { useAddressTransactions } from '@/api/services/addressService';
+import { Button } from '@/components/atoms/Button';
+import { StatCard } from '@/components/atoms/StatCard';
+import { EmptyState } from '@/components/premium/EmptyState';
+import { SkeletonLines, SkeletonSwap } from '@/components/premium/SkeletonSwap';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
-import { PageFrame } from '@/layouts/PageFrame';
-import { formatAmount } from '@/utils/formatters';
+import { PageFrame, pageRhythm } from '@/layouts/PageFrame';
+import { typeScale } from '@/styles/tokens';
+
+/** Base units per DCC. */
+const DCCLETS = 100000000;
+
+/** The skeleton for one stat card: a figure-height bar over a label-height bar. */
+function StatSkeleton() {
+  return (
+    <Box>
+      <Skeleton variant="rounded" height={30} width="70%" />
+      <Skeleton variant="rounded" height={12} width="45%" sx={{ mt: 1.25 }} />
+    </Box>
+  );
+}
+
+function Stat({
+  label,
+  value,
+  caption,
+  suffix,
+  decimals,
+  ready,
+}: {
+  label: string;
+  /** Numbers roll; a string (a signed percentage, an em dash) renders as given. */
+  value: number | string;
+  caption?: string | undefined;
+  suffix?: string | undefined;
+  decimals?: number | undefined;
+  ready: boolean;
+}) {
+  return (
+    <SkeletonSwap
+      ready={ready}
+      label={label}
+      skeleton={
+        <Card sx={{ height: '100%' }}>
+          <CardContent>
+            <StatSkeleton />
+          </CardContent>
+        </Card>
+      }
+    >
+      <StatCard label={label} value={value} caption={caption} suffix={suffix} decimals={decimals} />
+    </SkeletonSwap>
+  );
+}
 
 export const Analytics = () => {
-  const { palette } = useTheme();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { balances, isLoading: isLoadingBalance } = useBalanceWatcher({
     enabled: !!user?.address,
@@ -30,47 +81,37 @@ export const Analytics = () => {
     { enabled: !!user?.address },
   );
 
-  // Calculate total portfolio value in DCC
-  const portfolioValue = useMemo(() => {
+  const available = useMemo(() => {
     if (!balances || balances.available === undefined) return 0;
     // Convert dcclets to DCC
-    return balances.available / 100000000;
+    return balances.available / DCCLETS;
   }, [balances]);
 
-  // Calculate transaction count (flatten nested array)
-  const transactionCount = useMemo(() => {
-    if (!transactions) return 0;
-    return transactions.flat().length;
-  }, [transactions]);
+  const generating = (balances?.generating || 0) / DCCLETS;
 
-  // Calculate today's transactions
-  const todayTransactionCount = useMemo(() => {
-    if (!transactions) return 0;
+  // Transactions arrive as a nested array; flatten once.
+  const flat = useMemo(() => (transactions ? transactions.flat() : []), [transactions]);
+
+  const todayCount = useMemo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const todayTimestamp = today.getTime();
-
-    return transactions.flat().filter((tx) => {
-      const txTimestamp = tx.timestamp || 0;
-      return txTimestamp >= todayTimestamp;
-    }).length;
-  }, [transactions]);
+    const start = today.getTime();
+    return flat.filter((tx) => (tx.timestamp || 0) >= start).length;
+  }, [flat]);
 
   // Real 30-day windows: transactions in the last 30 days vs the 30 days before
   // that, both cut by actual timestamp — not by array position, which does not
   // correspond to a time window at all when txs arrive in bursts.
   const activityChange = useMemo(() => {
-    if (!transactions) return null;
-    const flatTxs = transactions.flat();
-    if (flatTxs.length === 0) return null;
+    if (flat.length === 0) return null;
 
     const DAY_MS = 24 * 60 * 60 * 1000;
     const now = Date.now();
     const recentCutoff = now - 30 * DAY_MS;
     const priorCutoff = now - 60 * DAY_MS;
 
-    const recentCount = flatTxs.filter((tx) => (tx.timestamp || 0) >= recentCutoff).length;
-    const priorCount = flatTxs.filter(
+    const recentCount = flat.filter((tx) => (tx.timestamp || 0) >= recentCutoff).length;
+    const priorCount = flat.filter(
       (tx) => (tx.timestamp || 0) >= priorCutoff && (tx.timestamp || 0) < recentCutoff,
     ).length;
 
@@ -78,182 +119,121 @@ export const Analytics = () => {
 
     const change = ((recentCount - priorCount) / priorCount) * 100;
     return { recentCount, text: change >= 0 ? `+${change.toFixed(1)}%` : `${change.toFixed(1)}%` };
-  }, [transactions]);
-
-  const stats = [
-    {
-      change: 'Available Balance',
-      icon: <AccountBalanceWallet />,
-      label: 'Total Portfolio Value',
-      trend: 'neutral' as const,
-      value: isLoadingBalance ? <Skeleton width={100} /> : `${formatAmount(portfolioValue)} DCC`,
-    },
-    {
-      // Renamed from "Total Profit/Loss": no price oracle or historical-balance
-      // data exists anywhere in this stack (see BalanceChart.tsx), so P&L is
-      // not a computable figure — showing generatingBalance under a P&L label
-      // was a real number wearing the wrong name. This is what it actually is.
-      change: 'Eligible to earn block rewards',
-      icon: <TrendingUp />,
-      label: 'Generating Balance',
-      trend: 'neutral' as const,
-      value: isLoadingBalance ? (
-        <Skeleton width={100} />
-      ) : (
-        `${formatAmount((balances?.generating || 0) / 100000000)} DCC`
-      ),
-    },
-    {
-      change: `+${todayTransactionCount} today`,
-      icon: <SwapHoriz />,
-      label: 'Total Transactions',
-      trend: 'neutral' as const,
-      value: isLoadingTransactions ? <Skeleton width={80} /> : transactionCount.toLocaleString(),
-    },
-    {
-      change: activityChange ? 'vs. previous 30 days' : 'Not enough history yet',
-      icon: <Timeline />,
-      label: '30-Day Activity',
-      trend: activityChange
-        ? activityChange.text.startsWith('+')
-          ? ('up' as const)
-          : ('down' as const)
-        : ('neutral' as const),
-      value: isLoadingTransactions ? <Skeleton width={80} /> : (activityChange?.text ?? '—'),
-    },
-  ];
+  }, [flat]);
 
   if (!user) {
     return (
-      <PageFrame title="Analytics" subtitle="Activity and performance over time.">
-        <Alert severity="info">Please connect your wallet to view analytics</Alert>
+      <PageFrame title="Analytics">
+        <Card>
+          <EmptyState
+            icons={[Activity]}
+            title="No wallet connected"
+            description="Sign in to see this account's balances and activity."
+          />
+        </Card>
       </PageFrame>
     );
   }
 
+  const balancesReady = !isLoadingBalance;
+  const txReady = !isLoadingTransactions;
+
+  // The query reads the latest 100, so a count of 100 is a floor, not a total.
+  const transactionsCaption = [flat.length >= 100 ? 'latest 100' : null, `${todayCount} today`]
+    .filter(Boolean)
+    .join(' · ');
+
   return (
-    <PageFrame title="Analytics" subtitle="Activity and performance over time.">
-      <Grid container spacing={3}>
-        {stats.map((stat) => (
-          <Grid
-            key={stat.label}
-            size={{
-              md: 3,
-              sm: 6,
-              xs: 12,
-            }}
-          >
-            <Paper
+    <PageFrame
+      title="Analytics"
+      subtitle="Balances and activity for this account, read from the node."
+    >
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: pageRhythm }}>
+        <Grid container spacing={{ md: pageRhythm, xs: 1.5 }}>
+          <Grid size={{ md: 3, xs: 6 }}>
+            <Stat label="Available balance" value={available} suffix=" DCC" ready={balancesReady} />
+          </Grid>
+          <Grid size={{ md: 3, xs: 6 }}>
+            {/*
+              Not "Total Profit/Loss": no price oracle or historical-balance
+              data exists anywhere in this stack (see BalanceChart.tsx), so P&L
+              is not a computable figure — showing the generating balance under
+              a P&L label was a real number wearing the wrong name.
+            */}
+            <Stat
+              label="Generating balance"
+              caption="eligible to earn block rewards"
+              value={generating}
+              suffix=" DCC"
+              ready={balancesReady}
+            />
+          </Grid>
+          <Grid size={{ md: 3, xs: 6 }}>
+            <Stat
+              label="Transactions"
+              caption={transactionsCaption}
+              value={flat.length}
+              decimals={0}
+              ready={txReady}
+            />
+          </Grid>
+          <Grid size={{ md: 3, xs: 6 }}>
+            <Stat
+              label="30-day activity"
+              caption={activityChange ? 'vs. previous 30 days' : 'not enough history yet'}
+              value={activityChange?.text ?? '—'}
+              ready={txReady}
+            />
+          </Grid>
+        </Grid>
+
+        <Card>
+          <CardContent>
+            <Typography
+              component="h2"
               sx={{
-                bgcolor: 'background.paper',
-                border: '1px solid',
-                borderColor: 'divider',
-                borderRadius: 2,
-                p: 2.5,
+                fontSize: typeScale.subheading.size,
+                fontWeight: 600,
+                letterSpacing: typeScale.subheading.tracking,
+                mb: 1.5,
               }}
             >
-              <Stack spacing={1.5}>
+              Recent activity
+            </Typography>
+            <SkeletonSwap ready={txReady} skeleton={<SkeletonLines lines={2} height={14} />}>
+              {flat.length > 0 ? (
                 <Box
                   sx={{
-                    alignItems: 'center',
-                    background: `linear-gradient(180deg, ${palette.primary.main} 0%, ${palette.primary.dark} 100%)`,
-                    borderRadius: 2,
-                    color: 'primary.contrastText',
+                    alignItems: { sm: 'center', xs: 'flex-start' },
                     display: 'flex',
-                    height: 48,
-                    justifyContent: 'center',
-                    width: 48,
+                    flexDirection: { sm: 'row', xs: 'column' },
+                    gap: 2,
+                    justifyContent: 'space-between',
                   }}
                 >
-                  {stat.icon}
+                  <Typography sx={{ color: 'text.secondary', fontSize: typeScale.body.size }}>
+                    Showing {Math.min(10, flat.length)} of {flat.length} total transactions
+                  </Typography>
+                  <Button
+                    variant="secondary"
+                    size="small"
+                    onClick={() => navigate('/desktop/wallet/transactions')}
+                  >
+                    View all transactions
+                  </Button>
                 </Box>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    color: 'text.secondary',
-                    fontWeight: 600,
-                  }}
-                >
-                  {stat.label}
-                </Typography>
-                <Typography
-                  variant="h5"
-                  sx={{
-                    fontWeight: 700,
-                  }}
-                >
-                  {stat.value}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color={
-                    stat.trend === 'up'
-                      ? 'success.main'
-                      : stat.trend === 'down'
-                        ? 'error.main'
-                        : 'text.secondary'
-                  }
-                  sx={{
-                    alignItems: 'center',
-                    display: 'flex',
-                    fontWeight: 600,
-                    gap: 0.5,
-                  }}
-                >
-                  {stat.trend === 'up' && <TrendingUp fontSize="small" />}
-                  {stat.trend === 'down' && <TrendingDown fontSize="small" />}
-                  {stat.change}
-                </Typography>
-              </Stack>
-            </Paper>
-          </Grid>
-        ))}
-      </Grid>
-      <Paper
-        sx={{
-          border: '1px solid',
-          borderColor: 'divider',
-          borderRadius: 2,
-          mt: 3,
-          p: 3,
-        }}
-      >
-        <Typography
-          variant="h6"
-          gutterBottom
-          sx={{
-            fontWeight: 700,
-          }}
-        >
-          Recent Transaction Activity
-        </Typography>
-        {isLoadingTransactions ? (
-          <Stack spacing={1}>
-            <Skeleton variant="rectangular" height={40} />
-            <Skeleton variant="rectangular" height={40} />
-            <Skeleton variant="rectangular" height={40} />
-          </Stack>
-        ) : transactions && transactions.flat().length > 0 ? (
-          <Typography
-            variant="body2"
-            sx={{
-              color: 'text.secondary',
-            }}
-          >
-            Showing {Math.min(10, transactions.flat().length)} of {transactions.flat().length} total
-            transactions
-          </Typography>
-        ) : (
-          <Typography
-            variant="body2"
-            sx={{
-              color: 'text.secondary',
-            }}
-          >
-            No transaction history available
-          </Typography>
-        )}
-      </Paper>
+              ) : (
+                <EmptyState
+                  compact
+                  icons={[ReceiptText, ArrowLeftRight, Activity]}
+                  title="No activity yet"
+                  description="Transfers, trades and leases made from this address will be counted here."
+                />
+              )}
+            </SkeletonSwap>
+          </CardContent>
+        </Card>
+      </Box>
     </PageFrame>
   );
 };

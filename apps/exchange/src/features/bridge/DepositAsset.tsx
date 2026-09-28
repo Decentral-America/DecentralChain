@@ -10,13 +10,13 @@ import {
   Box,
   Button,
   Chip,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Divider,
   Link,
+  Skeleton,
   Typography,
 } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
@@ -154,27 +154,21 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
         </Typography>
       </DialogTitle>
       <DialogContent dividers>
-        {/* Loading State */}
+        {/* Loading State: placeholders shaped like the QR and address */}
         {loading && (
           <Box
-            sx={{
-              alignItems: 'center',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 2,
-              justifyContent: 'center',
-              py: 4,
-            }}
+            aria-busy="true"
+            aria-label="Loading deposit details..."
+            sx={{ alignItems: 'center', display: 'flex', flexDirection: 'column', gap: 2, py: 2 }}
           >
-            <CircularProgress />
-            <Typography
-              variant="body2"
-              sx={{
-                color: 'text.secondary',
-              }}
-            >
-              Loading deposit details...
-            </Typography>
+            <Skeleton variant="text" width={220} height={28} />
+            <Skeleton variant="rounded" width={216} height={216} sx={{ borderRadius: '20px' }} />
+            <Skeleton
+              variant="rounded"
+              width="100%"
+              height={48}
+              sx={{ borderRadius: '12px', maxWidth: 440 }}
+            />
           </Box>
         )}
 
@@ -195,49 +189,34 @@ export const DepositAsset: React.FC<DepositAssetProps> = ({ asset, open, onClose
 
             {/* Amount Limits and Fees */}
             <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle2" gutterBottom sx={{ mb: 1.5 }}>
+              <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 600, mb: 1.5 }}>
                 Transaction Limits
               </Typography>
 
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      color: 'text.secondary',
-                    }}
-                  >
-                    Minimum:
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    Minimum
                   </Typography>
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  <Typography variant="body2" sx={{ fontVariantNumeric: 'tabular-nums' }}>
                     {depositDetails.minimumAmount.toFixed()} {asset.ticker}
                   </Typography>
                 </Box>
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      color: 'text.secondary',
-                    }}
-                  >
-                    Maximum:
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    Maximum
                   </Typography>
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  <Typography variant="body2" sx={{ fontVariantNumeric: 'tabular-nums' }}>
                     {depositDetails.maximumAmount.toFixed()} {asset.ticker}
                   </Typography>
                 </Box>
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      color: 'text.secondary',
-                    }}
-                  >
-                    Gateway Fee:
+                  <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                    Gateway Fee
                   </Typography>
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  <Typography variant="body2" sx={{ fontVariantNumeric: 'tabular-nums' }}>
                     {depositDetails.gatewayFee.toFixed()} {asset.ticker}
                   </Typography>
                 </Box>

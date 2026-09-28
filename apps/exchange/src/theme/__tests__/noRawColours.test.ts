@@ -49,6 +49,18 @@ const ALLOWED = [
   // mobile visual system's literals live), explicit in its own header:
   // "Declared here so the app bar has no raw colour literals of its own."
   'styles/mobileTokens.ts',
+  // Frozen pre-redesign copies of the three token files above, served only to
+  // onboarding through `LegacyOnboardingTheme` until onboarding is redesigned.
+  // Same role as the originals, so the same reason: they are where the old
+  // system's literals live, so its consumers name roles instead.
+  'styles/legacy/tokens.ts',
+  'styles/legacy/semantic.ts',
+  'styles/legacy/mobileTokens.ts',
+  // Contrast-suite helpers, not UI: they build the `rgb(...)` strings jsdom
+  // reports so a measured colour can be compared with a token. Nothing in them
+  // is ever painted.
+  'test-utils/cssVars.ts',
+  'test-utils/paintedBackground.ts',
   // Third-party brand identity colours (Bitcoin/Ethereum/Solana/BNB, paired
   // with their real brand icons from the `cryptocurrency-icons` package) —
   // genuinely not this app's theme, the brief's own "third-party embed's

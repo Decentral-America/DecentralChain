@@ -1,16 +1,15 @@
 /**
  * Tabs Component
- * Tabbed interface for organizing content into sections
- * Provides accessible keyboard navigation and active state styling
- * Migrated to Material-UI Tabs
+ *
+ * Section switching drawn as the system's segmented control: a grey track with
+ * a raised pill that springs to the chosen section, the same control used for
+ * timeframes and buy/sell. The underline and pill variants of the old tab bar
+ * are accepted for compatibility and all render this one look.
  */
-
-import Box from '@mui/material/Box';
-import { styled } from '@mui/material/styles';
-import MuiTab from '@mui/material/Tab';
-import MuiTabs from '@mui/material/Tabs';
 import type React from 'react';
-import { useState } from 'react';
+import { useId, useState } from 'react';
+import styled from 'styled-components';
+import { SegmentedControl } from '@/components/premium/SegmentedControl';
 
 export interface Tab {
   id: string;
@@ -23,86 +22,64 @@ export interface TabsProps {
   tabs: Tab[];
   defaultActiveTab?: string;
   onChange?: (tabId: string) => void;
+  /** Kept for existing call sites; every variant renders the segmented track. */
   variant?: 'default' | 'pills' | 'underline';
+  /** Accessible name for the section switcher. */
+  label?: string;
 }
 
-const StyledTabs = styled(MuiTabs, {
-  shouldForwardProp: (prop) => prop !== 'tabVariant',
-})<{ tabVariant?: string }>(({ theme, tabVariant }) => ({
-  backgroundColor: tabVariant === 'default' ? theme.palette.background.paper : 'transparent',
-  borderBottom: tabVariant === 'underline' ? `2px solid ${theme.palette.divider}` : 'none',
-  borderRadius: tabVariant === 'default' ? theme.shape.borderRadius : 0,
-  marginBottom: theme.spacing(3),
-  minHeight: tabVariant === 'pills' ? 40 : 48,
-  padding: tabVariant === 'default' ? theme.spacing(0.5) : 0,
-}));
+const Bar = styled.div`
+  display: flex;
+  margin-bottom: 24px;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
 
-const StyledTab = styled(MuiTab, {
-  shouldForwardProp: (prop) => prop !== 'tabVariant',
-})<{ tabVariant?: string }>(({ theme, tabVariant }) => ({
-  '&.Mui-selected': {
-    backgroundColor: tabVariant === 'pills' ? theme.palette.primary.main : 'transparent',
-    // A selected pill is filled with `primary.main`, so its label takes
-    // `primary.contrastText`; the other variants are transparent and keep
-    // the accent as ink.
-    color: tabVariant === 'pills' ? theme.palette.primary.contrastText : theme.palette.primary.main,
-    fontWeight: 600,
-  },
-  borderRadius:
-    tabVariant === 'pills'
-      ? Number(theme.shape.borderRadius) * 4
-      : tabVariant === 'default'
-        ? Number(theme.shape.borderRadius)
-        : 0,
-  fontSize: '0.875rem',
-  fontWeight: 500,
-  minHeight: tabVariant === 'pills' ? 40 : 48,
-  padding: tabVariant === 'pills' ? '10px 20px' : '12px 16px',
-  textTransform: 'none',
-}));
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
 
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-const TabPanel = ({ children, value, index }: TabPanelProps) => {
-  return (
-    <div role="tabpanel" hidden={value !== index}>
-      {value === index && <Box>{children}</Box>}
-    </div>
-  );
-};
+const Panel = styled.div`
+  &:focus-visible {
+    outline: none;
+  }
+`;
 
 export const Tabs: React.FC<TabsProps> = ({
   tabs,
   defaultActiveTab,
   onChange,
-  variant = 'default',
+  label = 'Sections',
 }) => {
-  const defaultIndex = defaultActiveTab ? tabs.findIndex((tab) => tab.id === defaultActiveTab) : 0;
-  const [activeTab, setActiveTab] = useState(defaultIndex >= 0 ? defaultIndex : 0);
+  const initial = tabs.find((tab) => tab.id === defaultActiveTab)?.id ?? tabs[0]?.id ?? '';
+  const [active, setActive] = useState(initial);
+  const panelId = useId();
 
-  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setActiveTab(newValue);
-    if (onChange && tabs[newValue]) {
-      onChange(tabs[newValue].id);
-    }
+  const select = (id: string) => {
+    setActive(id);
+    onChange?.(id);
   };
+
+  const current = tabs.find((tab) => tab.id === active);
 
   return (
     <div>
-      <StyledTabs value={activeTab} onChange={handleChange} variant="standard">
-        {tabs.map((tab) => (
-          <StyledTab key={tab.id} label={tab.label} disabled={tab.disabled} tabVariant={variant} />
-        ))}
-      </StyledTabs>
-      {tabs.map((tab, index) => (
-        <TabPanel key={tab.id} value={activeTab} index={index}>
-          {tab.content}
-        </TabPanel>
-      ))}
+      <Bar>
+        <SegmentedControl
+          label={label}
+          value={active}
+          onValueChange={select}
+          options={tabs.map((tab) => ({
+            label: tab.label,
+            value: tab.id,
+            ...(tab.disabled ? { disabled: true } : {}),
+          }))}
+        />
+      </Bar>
+      <Panel id={panelId} role="tabpanel" aria-label={current?.label}>
+        {current?.content}
+      </Panel>
     </div>
   );
 };

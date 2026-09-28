@@ -16,8 +16,10 @@ import { tokens } from '@/theme/tokens/semantic';
  * expected to own their own headers. Sharing one layout would mean every screen
  * fighting the desktop scaffolding.
  *
- * The scroll container sits above a fixed tab bar, so it reserves bottom space
- * equal to the bar plus the home-indicator inset.
+ * The scroll container runs beneath a fixed, translucent tab bar, so it
+ * reserves bottom space equal to the bar plus the home-indicator inset. The
+ * ground is the same neutral grouped background desktop uses (true black in
+ * dark mode), taken from the shared CSS variables.
  */
 export function MobileLayout() {
   /*
@@ -74,7 +76,8 @@ export function MobileLayout() {
            * every screen below, and the header would scroll away with the page.
            */
           overflowX: 'clip',
-          // Screens render their own header, so no top offset here.
+          // Screens render their own header, so no top offset here. The bottom
+          // reserves the translucent tab bar plus the home-indicator inset.
           pb: `calc(${mobileLayout.tabBarHeight}px + env(safe-area-inset-bottom))`,
           width: '100%',
         }}

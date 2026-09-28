@@ -33,28 +33,30 @@ export interface InputProps extends Omit<TextFieldProps, 'size' | 'variant' | 'e
 
 const StyledTextField = styled(TextField, {
   shouldForwardProp: (prop) => !['inputSize', 'leftIcon', 'rightIcon'].includes(prop as string),
-})<{ inputSize?: string }>(({ theme, inputSize }) => {
-  const fontSize = inputSize === 'small' ? '0.875rem' : inputSize === 'large' ? '1.125rem' : '1rem';
+})<{ inputSize?: string }>(({ inputSize }) => {
+  const fontSize = inputSize === 'small' ? 13 : inputSize === 'large' ? 17 : 15;
 
   return {
+    /*
+     * Medium is the theme's OutlinedInput exactly (11px 14px, 15px type, 10px
+     * corners, focus halo); only the other two sizes adjust it.
+     */
     '& .MuiInputBase-input': {
-      padding:
-        inputSize === 'small'
-          ? theme.spacing(1, 1.5)
-          : inputSize === 'large'
-            ? theme.spacing(2, 3)
-            : theme.spacing(1.5, 2),
+      ...(inputSize === 'small' ? { padding: '7px 12px' } : {}),
+      ...(inputSize === 'large' ? { padding: '15px 16px' } : {}),
     },
     '& .MuiInputBase-root': {
       /*
        * iOS Safari zooms the viewport whenever a focused control computes to
-       * under 16px, and does not zoom back out afterwards. `small` is 14px, so
-       * it takes the floor on touch devices; a pointer-precise device keeps the
-       * compact size the design asks for. max() rather than a flat 16px so the
-       * `large` size is raised to the floor, never pulled down to it.
+       * under 16px, and does not zoom back out afterwards. `small` and
+       * `medium` are under it, so they take the floor on touch devices; a
+       * pointer-precise device keeps the compact size the design asks for.
+       * max() rather than a flat 16px so the `large` size is raised to the
+       * floor, never pulled down to it.
        */
-      '@media (pointer: coarse)': { fontSize: `max(1rem, ${fontSize})` },
+      '@media (pointer: coarse)': { fontSize: `max(16px, ${fontSize}px)` },
       fontSize,
+      letterSpacing: '-0.15px',
     },
   };
 });

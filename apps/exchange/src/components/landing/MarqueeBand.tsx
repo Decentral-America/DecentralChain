@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { palette } from '@/styles/tokens';
+import { palette } from '@/styles/legacy/tokens';
 
 /**
  * The marquee band.

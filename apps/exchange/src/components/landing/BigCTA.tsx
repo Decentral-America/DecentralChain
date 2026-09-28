@@ -2,8 +2,8 @@ import { alpha, Box, Button, Container, Stack, Typography, useTheme } from '@mui
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import BandTexture from '@/components/landing/BandTexture';
+import { tokens } from '@/styles/legacy/semantic';
 import { brandInk, brandSurface, ctaGradientStyles, onCanvas } from '@/theme/landingTheme';
-import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * Closing conversion panel.

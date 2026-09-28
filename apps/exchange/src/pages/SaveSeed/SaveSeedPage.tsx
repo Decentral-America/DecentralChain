@@ -29,7 +29,7 @@ import { NetworkConfig } from '@/config';
 import { useAuth } from '@/contexts/AuthContext';
 import { SeedBackup } from '@/features/auth/SeedBackup';
 import { logger } from '@/lib/logger';
-import { tokens } from '@/theme/tokens/semantic';
+import { tokens } from '@/styles/legacy/semantic';
 
 // Animations
 const gradientShift = keyframes`

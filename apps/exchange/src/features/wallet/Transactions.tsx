@@ -1,192 +1,180 @@
 /**
- * Transactions Component
- * Transaction history table with filtering and pagination
+ * Transactions
+ *
+ * History as a grouped list by day, the way Wallet shows it: a direction glyph,
+ * what happened and with whom, and the amount on the right. Amounts are
+ * coloured only when colour means something (money in is green; money out
+ * stays in the text colour), loading draws skeleton rows shaped like the list,
+ * and an empty account gets an empty state that says what will appear.
  */
 
+import { Alert, Box, Button, MenuItem, Pagination, Select } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import * as ds from 'data-service';
-import { useCallback, useMemo, useState } from 'react';
+import {
+  ArrowDownLeft,
+  ArrowLeftRight,
+  ArrowUpRight,
+  Download,
+  Lock,
+  LockOpen,
+  Receipt,
+} from 'lucide-react';
+import { type ReactNode, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useMultipleAssetDetails } from '@/api/services/assetsService';
-import { Button } from '@/components/atoms/Button';
-import { Card } from '@/components/atoms/Card';
-import { Select } from '@/components/atoms/Select';
-import { Spinner } from '@/components/atoms/Spinner';
-import { Stack } from '@/components/atoms/Stack';
+import { EmptyState } from '@/components/premium/EmptyState';
+import {
+  InsetGroup,
+  InsetRow,
+  InsetRowSkeleton,
+  TokenAvatar,
+} from '@/components/premium/InsetList';
+import { SegmentedControl } from '@/components/premium/SegmentedControl';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 import { formatAmount } from '@/utils/formatters';
 import { TransactionDetailsDialog } from './TransactionDetailsDialog';
 
-const TransactionsContainer = styled.div`
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-`;
-
-const FilterBar = styled.div`
+const Toolbar = styled.div`
   display: flex;
-  gap: ${(p) => p.theme.spacing.md};
-  margin-bottom: ${(p) => p.theme.spacing.md};
-  flex-wrap: wrap;
-
-  @media (max-width: 600px) {
-    flex-direction: column;
-    gap: ${(p) => p.theme.spacing.sm};
-  }
-`;
-
-const TableWrapper = styled.div`
-  width: 100%;
-  overflow-x: auto;
-`;
-
-const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 640px;
-
-  th,
-  td {
-    padding: ${(p) => p.theme.spacing.md} ${(p) => p.theme.spacing.sm};
-    text-align: left;
-    border-bottom: 1px solid ${(p) => p.theme.colors.border};
-    white-space: nowrap;
-  }
-
-  @media (max-width: 600px) {
-    min-width: 560px;
-
-    th,
-    td {
-      padding: ${(p) => p.theme.spacing.sm};
-      font-size: 0.8rem;
-    }
-  }
-
-  th {
-    font-weight: ${(p) => p.theme.fontWeights.semibold};
-    color: ${(p) => p.theme.colors.text};
-    background-color: ${(p) => p.theme.colors.background};
-    position: sticky;
-    top: 0;
-    z-index: 1;
-  }
-
-  tbody tr {
-    transition: ${(p) => p.theme.transitions.fast};
-    cursor: pointer;
-
-    &:hover {
-      background-color: ${(p) => p.theme.colors.hover};
-    }
-
-    /*
-     * The row has been reachable by keyboard since it became clickable; without
-     * this it was reachable and invisible, which is worse than not reachable.
-     */
-    &:focus-visible {
-      outline: 2px solid ${(p) => p.theme.colors.primary};
-      outline-offset: -2px;
-    }
-  }
-`;
-
-const TransactionType = styled.span<{ $type: string }>`
-  padding: 4px 8px;
-  border-radius: ${(p) => p.theme.radii.sm};
-  font-size: ${(p) => p.theme.fontSizes.sm};
-  font-weight: ${(p) => p.theme.fontWeights.medium};
-  background-color: ${(p) => {
-    switch (p.$type) {
-      case 'transfer':
-      case 'send':
-        return `${p.theme.colors.error}20`;
-      case 'receive':
-        return `${p.theme.colors.success}20`;
-      case 'exchange':
-      case 'swap':
-        return `${p.theme.colors.info}20`;
-      case 'lease':
-        return `${p.theme.colors.secondary}20`;
-      default:
-        return `${p.theme.colors.disabled}20`;
-    }
-  }};
-  color: ${(p) => {
-    switch (p.$type) {
-      case 'transfer':
-      case 'send':
-        return p.theme.colors.error;
-      case 'receive':
-        return p.theme.colors.success;
-      case 'exchange':
-      case 'swap':
-        return p.theme.colors.info;
-      case 'lease':
-        return p.theme.colors.textMuted;
-      default:
-        return p.theme.colors.disabled;
-    }
-  }};
-`;
-
-const Amount = styled.span<{ $positive: boolean }>`
-  font-weight: ${(p) => p.theme.fontWeights.semibold};
-  color: ${(p) => (p.$positive ? p.theme.colors.success : p.theme.colors.error)};
-`;
-
-const LoadingWrapper = styled.div`
-  display: flex;
-  justify-content: center;
   align-items: center;
-  min-height: 400px;
-`;
-
-const ErrorMessage = styled.div`
-  padding: ${(p) => p.theme.spacing.lg};
-  text-align: center;
-  color: ${(p) => p.theme.colors.error};
-  background-color: ${(p) => p.theme.colors.error}10;
-  border-radius: ${(p) => p.theme.radii.md};
-`;
-
-const EmptyState = styled.div`
-  padding: ${(p) => p.theme.spacing.xl};
-  text-align: center;
-  color: ${(p) => p.theme.colors.text};
-  opacity: 0.6;
-`;
-
-const Pagination = styled.div`
-  display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-top: ${(p) => p.theme.spacing.md};
-  padding: ${(p) => p.theme.spacing.md};
+  gap: 12px;
   flex-wrap: wrap;
-  gap: ${(p) => p.theme.spacing.sm};
+  margin-bottom: 20px;
+`;
 
-  @media (max-width: 480px) {
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
+const DayLabel = styled.h3`
+  margin: 20px 4px 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.textSecondary};
+
+  &:first-of-type {
+    margin-top: 0;
   }
 `;
 
-const PageInfo = styled.span`
-  color: ${(p) => p.theme.colors.text};
-  opacity: 0.7;
-`;
-
-const PaginationButtons = styled.div`
+const Footer = styled.div`
   display: flex;
-  gap: ${(p) => p.theme.spacing.sm};
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  font-size: 13px;
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-variant-numeric: tabular-nums;
 `;
 
-const StatusCell = styled.span`
-  text-transform: capitalize;
-`;
+const TYPE_OPTIONS = [
+  { label: 'All', value: 'all' },
+  { label: 'Sent', value: 'send' },
+  { label: 'Received', value: 'receive' },
+  { label: 'Exchange', value: 'exchange' },
+  { label: 'Lease', value: 'lease' },
+];
+
+const TYPE_LABEL: Record<string, string> = {
+  cancel_lease: 'Lease cancelled',
+  exchange: 'Exchange',
+  lease: 'Leased',
+  receive: 'Received',
+  send: 'Sent',
+  swap: 'Swap',
+  transfer: 'Transfer',
+};
+
+function typeIcon(type: string): ReactNode {
+  switch (type) {
+    case 'receive':
+      return <ArrowDownLeft />;
+    case 'send':
+    case 'transfer':
+      return <ArrowUpRight />;
+    case 'exchange':
+    case 'swap':
+      return <ArrowLeftRight />;
+    case 'lease':
+      return <Lock />;
+    case 'cancel_lease':
+      return <LockOpen />;
+    default:
+      return <Receipt />;
+  }
+}
+
+function shortAddress(a?: string) {
+  if (!a) return '';
+  return a.length > 14 ? `${a.slice(0, 6)}…${a.slice(-4)}` : a;
+}
+
+/** "Today", "Yesterday", or the date, for a day heading. */
+function dayLabel(ts: number) {
+  const d = new Date(ts);
+  const today = new Date();
+  const y = new Date();
+  y.setDate(today.getDate() - 1);
+  if (d.toDateString() === today.toDateString()) return 'Today';
+  if (d.toDateString() === y.toDateString()) return 'Yesterday';
+  return d.toLocaleDateString(undefined, {
+    day: 'numeric',
+    month: 'long',
+    ...(d.getFullYear() !== today.getFullYear() ? { year: 'numeric' } : {}),
+  });
+}
+
+/** "Send", "Set Asset Script": the display form of a transaction type. */
+function typeLabel(type: string): string {
+  return (
+    TYPE_LABEL[type] ??
+    type
+      .split('_')
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ')
+  );
+}
+
+/**
+ * One transaction as a list row: direction, counterparty and time, amount.
+ * The whole row is a button that opens the transaction's full record.
+ */
+function TxRow({
+  tx,
+  assetName,
+  onOpen,
+}: {
+  tx: Transaction;
+  assetName: string;
+  onOpen: () => void;
+}) {
+  const incoming = tx.amount > 0 && tx.type === 'receive';
+  let counterparty = '';
+  if (tx.type === 'receive') counterparty = `From ${shortAddress(tx.sender)}`;
+  else if (tx.recipient) counterparty = `To ${shortAddress(tx.recipient)}`;
+  const time = new Date(tx.timestamp).toLocaleTimeString(undefined, {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+  let sign = '';
+  if (tx.amount > 0) sign = '+';
+  else if (tx.amount < 0) sign = '−';
+  return (
+    <InsetRow
+      onClick={onOpen}
+      aria-label={`Show details for this ${tx.type.replace(/_/g, ' ')} transaction`}
+      leading={<TokenAvatar icon={typeIcon(tx.type)} />}
+      title={typeLabel(tx.type)}
+      subtitle={[counterparty, time, tx.status === 'pending' ? 'Pending' : '']
+        .filter(Boolean)
+        .join(' · ')}
+      value={`${sign}${formatAmount(Math.abs(tx.amount))}`}
+      valueTone={incoming ? 'buy' : undefined}
+      valueSub={`${assetName} · fee ${formatAmount(tx.fee)}`}
+    />
+  );
+}
 
 export interface Transaction {
   id: string;
@@ -457,178 +445,145 @@ export const Transactions = () => {
     }
   }, [user?.address, isExporting]);
 
+  const groups = useMemo(() => {
+    const out: { label: string; items: Transaction[] }[] = [];
+    for (const tx of paginatedTransactions ?? []) {
+      const label = dayLabel(tx.timestamp);
+      const last = out[out.length - 1];
+      if (last && last.label === label) last.items.push(tx);
+      else out.push({ items: [tx], label });
+    }
+    return out;
+  }, [paginatedTransactions]);
+
   if (isLoading) {
     return (
-      <TransactionsContainer>
-        <LoadingWrapper>
-          <Spinner size="lg" />
-        </LoadingWrapper>
-      </TransactionsContainer>
+      <Box aria-busy="true" aria-label="Loading transactions">
+        <InsetGroup>
+          <InsetRowSkeleton rows={6} />
+        </InsetGroup>
+      </Box>
     );
   }
 
   if (error) {
     return (
-      <TransactionsContainer>
-        <ErrorMessage>
-          Failed to load transactions. Please try again later.
-          {error instanceof Error && <div>{error.message}</div>}
-        </ErrorMessage>
-      </TransactionsContainer>
+      <Alert severity="error">
+        Failed to load transactions. Please try again later.
+        {error instanceof Error && <div>{error.message}</div>}
+      </Alert>
     );
   }
 
   if (!transactions || transactions.length === 0) {
     return (
-      <TransactionsContainer>
-        <Card>
-          <EmptyState>No transactions found in your wallet.</EmptyState>
-        </Card>
-      </TransactionsContainer>
+      <InsetGroup>
+        <EmptyState
+          icons={[ArrowDownLeft, Receipt, ArrowUpRight]}
+          title="No transactions yet"
+          description="Transfers, exchanges and leases on this account will be listed here by day as they confirm."
+        />
+      </InsetGroup>
     );
   }
 
   return (
-    <TransactionsContainer>
-      <Stack
-        sx={{
-          gap: '1rem',
-        }}
-      >
-        {/* Filters */}
-        <FilterBar>
+    <Box>
+      <Toolbar>
+        <SegmentedControl
+          size="sm"
+          label="Transaction type"
+          options={TYPE_OPTIONS}
+          value={typeFilter}
+          onValueChange={(v) => {
+            setTypeFilter(v);
+            setCurrentPage(1);
+          }}
+        />
+        <Box sx={{ alignItems: 'center', display: 'flex', flexWrap: 'wrap', gap: 1 }}>
           <Select
-            value={limit.toString()}
-            onChange={(e) => {
-              setLimit(Number(e.target.value));
-              setCurrentPage(1);
-            }}
-            options={[
-              { label: 'Last 50', value: '50' },
-              { label: 'Last 100', value: '100' },
-              { label: 'Last 500', value: '500' },
-            ]}
-          />
-
-          <Select
-            value={typeFilter}
-            onChange={(e) => {
-              setTypeFilter(e.target.value);
-              setCurrentPage(1);
-            }}
-            options={[
-              { label: 'All Types', value: 'all' },
-              { label: 'Send', value: 'send' },
-              { label: 'Receive', value: 'receive' },
-              { label: 'Exchange', value: 'exchange' },
-              { label: 'Lease', value: 'lease' },
-            ]}
-          />
-
-          <Select
+            size="small"
             value={assetFilter}
+            inputProps={{ 'aria-label': 'Asset' }}
             onChange={(e) => {
               setAssetFilter(e.target.value);
               setCurrentPage(1);
             }}
-            options={[
-              { label: 'All Assets', value: 'all' },
-              ...uniqueAssets.map((asset) => ({
-                label: assetNameMap[asset] ?? asset,
-                value: asset,
-              })),
-            ]}
-          />
-
-          <Button onClick={handleExport} disabled={isExporting} variant="secondary">
-            {isExporting ? 'Exporting...' : 'Export CSV'}
+          >
+            <MenuItem value="all">All assets</MenuItem>
+            {uniqueAssets.map((asset) => (
+              <MenuItem key={asset} value={asset}>
+                {assetNameMap[asset] ?? asset}
+              </MenuItem>
+            ))}
+          </Select>
+          <Select
+            size="small"
+            value={limit.toString()}
+            inputProps={{ 'aria-label': 'How many to load' }}
+            onChange={(e) => {
+              setLimit(Number(e.target.value));
+              setCurrentPage(1);
+            }}
+          >
+            <MenuItem value="50">Last 50</MenuItem>
+            <MenuItem value="100">Last 100</MenuItem>
+            <MenuItem value="500">Last 500</MenuItem>
+          </Select>
+          <Button
+            variant="outlined"
+            onClick={handleExport}
+            disabled={isExporting}
+            startIcon={<Download size={16} />}
+          >
+            {isExporting ? 'Exporting…' : 'Export CSV'}
           </Button>
-        </FilterBar>
+        </Box>
+      </Toolbar>
 
-        {/* Transactions Table */}
-        <Card>
-          <TableWrapper>
-            <Table>
-              <thead>
-                <tr>
-                  <th>Type</th>
-                  <th>Amount</th>
-                  <th>Asset</th>
-                  <th>Fee</th>
-                  <th>Date & Time</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedTransactions?.map((tx) => (
-                  <tr
-                    key={tx.id}
-                    tabIndex={0}
-                    aria-label={`Show details for this ${tx.type.replace(/_/g, ' ')} transaction`}
-                    onClick={() => setOpenTxId(tx.id)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        setOpenTxId(tx.id);
-                      }
-                    }}
-                  >
-                    <td>
-                      <TransactionType $type={tx.type}>
-                        {tx.type
-                          .split('_')
-                          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-                          .join(' ')}
-                      </TransactionType>
-                    </td>
-                    <td>
-                      <Amount $positive={tx.amount >= 0}>
-                        {tx.amount >= 0 ? '+' : ''}
-                        {formatAmount(Math.abs(tx.amount))}
-                      </Amount>
-                    </td>
-                    <td>{assetNameMap[tx.assetId] ?? tx.assetId}</td>
-                    <td>{formatAmount(tx.fee)}</td>
-                    <td>{new Date(tx.timestamp).toLocaleString()}</td>
-                    <td>
-                      <StatusCell>{tx.status}</StatusCell>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </TableWrapper>
+      {groups.length === 0 ? (
+        <InsetGroup>
+          <EmptyState
+            compact
+            icons={[Receipt]}
+            title="Nothing matches these filters"
+            description="Try another type or asset."
+          />
+        </InsetGroup>
+      ) : (
+        groups.map((group) => (
+          <section key={group.label} aria-label={group.label}>
+            <DayLabel>{group.label}</DayLabel>
+            <InsetGroup>
+              {group.items.map((tx) => (
+                <TxRow
+                  key={tx.id}
+                  tx={tx}
+                  assetName={assetNameMap[tx.assetId] ?? tx.assetId}
+                  onOpen={() => setOpenTxId(tx.id)}
+                />
+              ))}
+            </InsetGroup>
+          </section>
+        ))
+      )}
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <Pagination>
-              <PageInfo>
-                Page {currentPage} of {totalPages} ({filteredTransactions?.length} transactions)
-              </PageInfo>
-              <PaginationButtons>
-                <Button
-                  variant="secondary"
-                  size="small"
-                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  disabled={currentPage === 1}
-                >
-                  Previous
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="small"
-                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                  disabled={currentPage === totalPages}
-                >
-                  Next
-                </Button>
-              </PaginationButtons>
-            </Pagination>
-          )}
-        </Card>
-      </Stack>
+      {totalPages > 1 && (
+        <Footer>
+          <span>
+            Page {currentPage} of {totalPages} · {filteredTransactions?.length} transactions
+          </span>
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={(_, p) => setCurrentPage(p)}
+            shape="rounded"
+            size="small"
+          />
+        </Footer>
+      )}
 
       {openTxId && <TransactionDetailsDialog txId={openTxId} onClose={() => setOpenTxId(null)} />}
-    </TransactionsContainer>
+    </Box>
   );
 };

@@ -35,3 +35,10 @@ export const networkBrandColor = {
 export const swapMarkColor = {
   usdt: '#F7931A',
 } as const;
+
+/**
+ * Ink for the initials drawn on a per-asset mark (`SwapTicket`'s avatar). The
+ * mark is filled with the asset's own saturated hue in both modes, so its ink
+ * does not follow the theme either.
+ */
+export const markInk = '#ffffff';

@@ -1,172 +1,100 @@
-import { Box, ButtonBase, Typography } from '@mui/material';
-import { House, Repeat, Sprout, User } from 'lucide-react';
+import { ChartCandlestick, House, Repeat, Sprout, User } from 'lucide-react';
 import { useState } from 'react';
-import { NavLink, useLocation } from 'react-router';
-import { Icon } from '@/components/atoms/Icon';
+import { useLocation } from 'react-router';
 import { MobileMenuDrawer } from '@/components/mobile/MobileMenuDrawer';
-import {
-  mobileAccent,
-  mobileLayout,
-  mobileShadow,
-  mobileSurface,
-  mobileText,
-} from '@/styles/mobileTokens';
+import { TabBar, type TabBarItem } from '@/components/premium/TabBar';
+import { mobileLayout } from '@/styles/mobileTokens';
 
 /**
  * Bottom tab bar.
  *
- * Four labelled destinations around a raised trade action. Labels are shown
+ * Five labelled destinations on a translucent material bar. Labels are shown
  * rather than icons alone: the destinations here are not universally
- * recognisable glyphs, and an unlabelled bar forces people to guess.
+ * recognisable glyphs, and an unlabelled bar forces people to guess. Trade is
+ * an ordinary tab rather than a raised button: every tab is one tap, so none
+ * needs to shout.
  *
- * The final slot opens the navigation drawer instead of linking to a screen —
+ * The final slot opens the navigation sheet instead of linking to a screen —
  * a phone has no room for the persistent sidebar the desktop uses, so
  * everything beyond these four lives behind it.
  *
- * The bar is fixed and clears the home indicator via a safe-area inset, so it
- * must be paired with bottom padding on the scroll container (see
- * `mobileLayout.scrollPaddingBottom`).
+ * The bar is fixed and clears the home indicator via a safe-area inset;
+ * MobileLayout reserves the same height at the bottom of the scroll area.
  */
 
+type TabKey = 'portfolio' | 'swap' | 'trade' | 'earn' | 'profile';
+
 type Tab = {
+  key: Exclude<TabKey, 'profile'>;
   to: string;
   label: string;
   icon: typeof House;
-  /** Matches the route exactly rather than by prefix */
-  exact?: boolean;
 };
 
-const LEFT_TABS: Tab[] = [
-  { exact: true, icon: House, label: 'Portfolio', to: '/desktop/wallet' },
-  { icon: Repeat, label: 'Swap', to: '/desktop/swap' },
+const TABS: Tab[] = [
+  { icon: House, key: 'portfolio', label: 'Portfolio', to: '/desktop/wallet' },
+  { icon: Repeat, key: 'swap', label: 'Swap', to: '/desktop/swap' },
+  { icon: ChartCandlestick, key: 'trade', label: 'Trade', to: '/desktop/dex' },
+  { icon: Sprout, key: 'earn', label: 'Earn', to: '/desktop/wallet/leasing' },
 ];
 
-const RIGHT_TABS: Tab[] = [{ icon: Sprout, label: 'Earn', to: '/desktop/wallet/leasing' }];
+/**
+ * Which tab each route belongs to. Explicit rather than prefix-matched:
+ * `/desktop/wallet` is a prefix of Earn's route, and a prefix rule lit
+ * Portfolio on screens it does not own. A route missing here lights no tab.
+ */
+const ROUTE_TAB: Record<string, TabKey> = {
+  '/desktop/bridge': 'swap',
+  '/desktop/dex': 'trade',
+  '/desktop/markets': 'trade',
+  '/desktop/orderbook': 'trade',
+  '/desktop/settings': 'profile',
+  '/desktop/swap': 'swap',
+  '/desktop/wallet': 'portfolio',
+  '/desktop/wallet/aliases': 'portfolio',
+  '/desktop/wallet/leasing': 'earn',
+  '/desktop/wallet/portfolio': 'portfolio',
+  '/desktop/wallet/transactions': 'portfolio',
+};
+
+function tabForPath(pathname: string): TabKey | undefined {
+  const path = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
+  // The trading screen takes a pair in the path (/desktop/dex/:amount/:price).
+  if (path.startsWith('/desktop/dex/')) return 'trade';
+  return ROUTE_TAB[path];
+}
 
 export function MobileTabBar() {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const isActive = (tab: Tab) =>
-    tab.exact
-      ? location.pathname === tab.to || location.pathname === `${tab.to}/`
-      : location.pathname.startsWith(tab.to);
+  const current = tabForPath(location.pathname);
 
-  const renderTab = (tab: Tab) => {
-    const active = isActive(tab);
-    const TabIcon = tab.icon;
-    return (
-      <Box
-        key={tab.to}
-        component={NavLink}
-        to={tab.to}
-        aria-label={tab.label}
-        aria-current={active ? 'page' : undefined}
-        sx={{
-          alignItems: 'center',
-          color: active ? mobileAccent.base : mobileText.muted,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 0.5,
-          height: '100%',
-          justifyContent: 'center',
-          textDecoration: 'none',
-          transition: 'color 150ms ease',
-        }}
-      >
-        <TabIcon size={21} strokeWidth={active ? 2.2 : 1.8} />
-        <Typography sx={{ fontSize: 11, fontWeight: active ? 600 : 500, lineHeight: 1 }}>
-          {tab.label}
-        </Typography>
-      </Box>
-    );
-  };
+  const items: TabBarItem[] = [
+    ...TABS.map((tab) => ({
+      active: !menuOpen && current === tab.key,
+      icon: tab.icon,
+      key: tab.to,
+      label: tab.label,
+      to: tab.to,
+    })),
+    {
+      // Profile opens the navigation sheet; it reads as selected while that
+      // sheet is open or on Settings, and nowhere else.
+      active: menuOpen || current === 'profile',
+      'aria-expanded': menuOpen,
+      'aria-haspopup': 'dialog' as const,
+      'aria-label': 'Profile and more',
+      icon: User,
+      key: 'profile',
+      label: 'Profile',
+      onClick: () => setMenuOpen(true),
+    },
+  ];
 
   return (
     <>
-      <Box
-        component="nav"
-        aria-label="Primary"
-        sx={{
-          bgcolor: mobileSurface.card,
-          borderTop: `1px solid ${mobileSurface.border}`,
-          bottom: 0,
-          boxShadow: mobileShadow.tabBar,
-          left: 0,
-          pb: 'env(safe-area-inset-bottom)',
-          position: 'fixed',
-          right: 0,
-          zIndex: 1200,
-        }}
-      >
-        <Box
-          sx={{
-            alignItems: 'center',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(5, 1fr)',
-            height: mobileLayout.tabBarHeight,
-          }}
-        >
-          {LEFT_TABS.map(renderTab)}
-
-          {/* Raised trade action */}
-          <Box
-            component={NavLink}
-            to="/desktop/dex"
-            aria-label="Trade"
-            sx={{
-              alignItems: 'center',
-              display: 'flex',
-              // Fills the cell so the touch target is the whole column.
-              height: '100%',
-              justifyContent: 'center',
-              textDecoration: 'none',
-            }}
-          >
-            <Box
-              sx={{
-                alignItems: 'center',
-                bgcolor: mobileAccent.base,
-                borderRadius: '50%',
-                boxShadow: mobileShadow.accent,
-                color: mobileText.onAccent,
-                display: 'flex',
-                height: 52,
-                justifyContent: 'center',
-                // Lifts the action clear of the bar without changing its height.
-                mt: -3,
-                width: 52,
-              }}
-            >
-              <Icon name="swap" size={23} strokeWidth={2.2} />
-            </Box>
-          </Box>
-
-          {RIGHT_TABS.map(renderTab)}
-
-          {/* Everything else */}
-          <ButtonBase
-            aria-label="Profile and more"
-            aria-haspopup="dialog"
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen(true)}
-            sx={{
-              color: menuOpen ? mobileAccent.base : mobileText.muted,
-              flexDirection: 'column',
-              gap: 0.5,
-              height: '100%',
-              transition: 'color 150ms ease',
-              width: '100%',
-            }}
-          >
-            <User size={21} strokeWidth={menuOpen ? 2.2 : 1.8} />
-            <Typography sx={{ fontSize: 11, fontWeight: menuOpen ? 600 : 500, lineHeight: 1 }}>
-              Profile
-            </Typography>
-          </ButtonBase>
-        </Box>
-      </Box>
-
+      <TabBar items={items} height={mobileLayout.tabBarHeight} />
       <MobileMenuDrawer open={menuOpen} onClose={() => setMenuOpen(false)} />
     </>
   );

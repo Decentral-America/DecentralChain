@@ -61,6 +61,12 @@ import { SignIn } from '@/pages/SignIn';
 import { SignUp } from '@/pages/SignUp';
 import { Swap } from '@/pages/Swap';
 import { Wallet } from '@/pages/Wallet';
+import { createAppTheme as createLegacyTheme } from '@/styles/legacy/muiTheme';
+import { tokens as legacyTokens } from '@/styles/legacy/semantic';
+import {
+  darkTheme as legacyDarkTheme,
+  lightTheme as legacyLightTheme,
+} from '@/styles/legacy/themes';
 import { darkTheme, lightTheme } from '@/styles/themes';
 import { rgbToHex } from '@/test-utils/rgbToHex';
 import { createAppTheme } from '@/theme/mui-theme';
@@ -275,22 +281,35 @@ function declared(el: HTMLElement, property: string): string {
   throw new Error(`.${hashClass} declares no ${property} of its own`);
 }
 
-/** Renders `node` under the real MUI theme for `mode`, optionally also the
- * styled-components theme (only the auth pages read both systems). */
-function renderPage(node: ReactElement, mode: ThemeMode, withStyled = false): RenderResult {
-  const tree = (
-    <MuiThemeProvider theme={createAppTheme(mode)}>
+/**
+ * Renders `node` under the real MUI and styled-components themes for `mode`,
+ * as `App.tsx` does for every page (the redesign's premium components read the
+ * styled-components theme, so the app pages need it too).
+ *
+ * `surface: 'onboarding'` renders under the frozen pre-redesign themes instead,
+ * which is what `LegacyOnboardingTheme` gives those routes in the app; their
+ * expectations below read the same frozen tokens (`legacyTokens`).
+ */
+function renderPage(
+  node: ReactElement,
+  mode: ThemeMode,
+  surface: 'app' | 'onboarding' = 'app',
+): RenderResult {
+  const onboarding = surface === 'onboarding';
+  const mui = onboarding ? createLegacyTheme(mode) : createAppTheme(mode);
+  const styled = onboarding
+    ? mode === 'light'
+      ? legacyLightTheme
+      : legacyDarkTheme
+    : mode === 'light'
+      ? lightTheme
+      : darkTheme;
+  return render(
+    <MuiThemeProvider theme={mui}>
       <CssBaseline />
-      {withStyled ? (
-        <StyledThemeProvider theme={mode === 'light' ? lightTheme : darkTheme}>
-          {node}
-        </StyledThemeProvider>
-      ) : (
-        node
-      )}
-    </MuiThemeProvider>
+      <StyledThemeProvider theme={styled}>{node}</StyledThemeProvider>
+    </MuiThemeProvider>,
   );
-  return render(tree);
 }
 
 beforeEach(() => {
@@ -340,15 +359,15 @@ describe('Acceptance — the twelve pages render differently in each mode', () =
   // Task 5 (auth + marketing)
 
   it('LandingPage: the canvas colour differs, and matches surface.base in each mode', () => {
-    const { unmount } = renderPage(<LandingPage />, 'light');
+    const { unmount } = renderPage(<LandingPage />, 'light', 'onboarding');
     const light = rgbToHex(getComputedStyle(screen.getByTestId('landing-canvas')).backgroundColor);
     unmount();
-    renderPage(<LandingPage />, 'dark');
+    renderPage(<LandingPage />, 'dark', 'onboarding');
     const dark = rgbToHex(getComputedStyle(screen.getByTestId('landing-canvas')).backgroundColor);
 
     expect(dark).not.toBe(light);
-    expect(light).toBe(tokens('light').surface.base);
-    expect(dark).toBe(tokens('dark').surface.base);
+    expect(light).toBe(legacyTokens('light').surface.base);
+    expect(dark).toBe(legacyTokens('dark').surface.base);
   });
 
   /*
@@ -365,74 +384,74 @@ describe('Acceptance — the twelve pages render differently in each mode', () =
    */
   it('SignIn: the AuthScene canvas declares its own fill and ink, and both differ per mode', () => {
     const canvas = () => screen.getByTestId('auth-canvas');
-    const { unmount } = renderPage(<SignIn />, 'light', true);
+    const { unmount } = renderPage(<SignIn />, 'light', 'onboarding');
     const lightInk = rgbToHex(declared(canvas(), 'color'));
     const lightFill = declared(canvas(), 'background');
     unmount();
-    renderPage(<SignIn />, 'dark', true);
+    renderPage(<SignIn />, 'dark', 'onboarding');
     const darkInk = rgbToHex(declared(canvas(), 'color'));
     const darkFill = declared(canvas(), 'background');
 
     expect(darkInk).not.toBe(lightInk);
-    expect(lightInk).toBe(tokens('light').text.primary);
-    expect(darkInk).toBe(tokens('dark').text.primary);
+    expect(lightInk).toBe(legacyTokens('light').text.primary);
+    expect(darkInk).toBe(legacyTokens('dark').text.primary);
 
     // Light is the two-stop wash, dark the flat night ground — see AuthScene.
     expect(darkFill).not.toBe(lightFill);
     expect(lightFill).toContain('linear-gradient');
-    expect(rgbToHex(darkFill)).toBe(tokens('dark').surface.base);
+    expect(rgbToHex(darkFill)).toBe(legacyTokens('dark').surface.base);
   });
 
   it('SignUp: the AuthScene canvas declares its own fill and ink, and both differ per mode', () => {
     const canvas = () => screen.getByTestId('auth-canvas');
-    const { unmount } = renderPage(<SignUp />, 'light', true);
+    const { unmount } = renderPage(<SignUp />, 'light', 'onboarding');
     const lightInk = rgbToHex(declared(canvas(), 'color'));
     const lightFill = declared(canvas(), 'background');
     unmount();
-    renderPage(<SignUp />, 'dark', true);
+    renderPage(<SignUp />, 'dark', 'onboarding');
     const darkInk = rgbToHex(declared(canvas(), 'color'));
     const darkFill = declared(canvas(), 'background');
 
     expect(darkInk).not.toBe(lightInk);
-    expect(lightInk).toBe(tokens('light').text.primary);
-    expect(darkInk).toBe(tokens('dark').text.primary);
+    expect(lightInk).toBe(legacyTokens('light').text.primary);
+    expect(darkInk).toBe(legacyTokens('dark').text.primary);
 
     expect(darkFill).not.toBe(lightFill);
     expect(lightFill).toContain('linear-gradient');
-    expect(rgbToHex(darkFill)).toBe(tokens('dark').surface.base);
+    expect(rgbToHex(darkFill)).toBe(legacyTokens('dark').surface.base);
   });
 
   it('ImportPage: the page-heading background differs, and matches background.default in each mode', () => {
-    const { unmount } = renderPage(<ImportPage />, 'light');
+    const { unmount } = renderPage(<ImportPage />, 'light', 'onboarding');
     const light = rgbToHex(nearestBackground(screen.getByText('Import Account')));
     unmount();
-    renderPage(<ImportPage />, 'dark');
+    renderPage(<ImportPage />, 'dark', 'onboarding');
     const dark = rgbToHex(nearestBackground(screen.getByText('Import Account')));
 
     expect(dark).not.toBe(light);
-    expect(light).toBe(tokens('light').surface.base);
-    expect(dark).toBe(tokens('dark').surface.base);
+    expect(light).toBe(legacyTokens('light').surface.base);
+    expect(dark).toBe(legacyTokens('dark').surface.base);
   });
 
   it('ImportLedger: the headline background differs, and matches background.default in each mode', () => {
-    const { unmount } = renderPage(<ImportLedger />, 'light');
+    const { unmount } = renderPage(<ImportLedger />, 'light', 'onboarding');
     const light = rgbToHex(nearestBackground(screen.getByText('Maximum security with Ledger')));
     unmount();
-    renderPage(<ImportLedger />, 'dark');
+    renderPage(<ImportLedger />, 'dark', 'onboarding');
     const dark = rgbToHex(nearestBackground(screen.getByText('Maximum security with Ledger')));
 
     expect(dark).not.toBe(light);
-    expect(light).toBe(tokens('light').surface.base);
-    expect(dark).toBe(tokens('dark').surface.base);
+    expect(light).toBe(legacyTokens('light').surface.base);
+    expect(dark).toBe(legacyTokens('dark').surface.base);
   });
 
   it('ImportAccountPage: the decorative panel background differs between modes', () => {
-    const { unmount } = renderPage(<ImportAccountPage />, 'light', true);
+    const { unmount } = renderPage(<ImportAccountPage />, 'light', 'onboarding');
     const light = rgbToHex(
       getComputedStyle(screen.getByTestId('import-account-panel')).backgroundColor,
     );
     unmount();
-    renderPage(<ImportAccountPage />, 'dark', true);
+    renderPage(<ImportAccountPage />, 'dark', 'onboarding');
     const dark = rgbToHex(
       getComputedStyle(screen.getByTestId('import-account-panel')).backgroundColor,
     );
@@ -446,35 +465,35 @@ describe('Acceptance — the twelve pages render differently in each mode', () =
 
   // Task 6 (app)
 
-  it('Dashboard: the "Quick Actions" card background differs, and matches surface.raised in each mode', () => {
+  it('Dashboard: the quick-actions card background differs, and matches surface.raised in each mode', () => {
     authUser = { address: '3P123', name: 'Trader' };
+    const actions = () => screen.getByRole('group', { name: 'Quick actions' });
     const { unmount } = renderPage(<Dashboard />, 'light');
-    const light = rgbToHex(nearestBackground(screen.getByText('Quick Actions')));
+    const light = rgbToHex(nearestBackground(actions()));
     unmount();
     renderPage(<Dashboard />, 'dark');
-    const dark = rgbToHex(nearestBackground(screen.getByText('Quick Actions')));
+    const dark = rgbToHex(nearestBackground(actions()));
 
     expect(dark).not.toBe(light);
     expect(light).toBe(tokens('light').surface.raised);
     expect(dark).toBe(tokens('dark').surface.raised);
   });
 
-  it('Wallet: the container background differs, and matches surface.base in each mode', () => {
-    const { unmount } = renderPage(<Wallet />, 'light');
-    const outlet = screen.getByTestId('outlet-content');
-    const light = rgbToHex(
-      getComputedStyle(outlet.parentElement?.parentElement as HTMLElement).backgroundColor,
-    );
-    unmount();
-    renderPage(<Wallet />, 'dark');
-    const outlet2 = screen.getByTestId('outlet-content');
-    const dark = rgbToHex(
-      getComputedStyle(outlet2.parentElement?.parentElement as HTMLElement).backgroundColor,
-    );
-
-    expect(dark).not.toBe(light);
-    expect(light).toBe(tokens('light').surface.base);
-    expect(dark).toBe(tokens('dark').surface.base);
+  /*
+   * `Wallet` is a pass-through since the redesign: it paints no ground of its
+   * own, so the shell's per-mode `background.default` (MainLayout, covered by
+   * its own suite) shows through. What must never come back is a container
+   * pinned to a light literal, so the assertion is that nothing between the
+   * outlet and the page root paints at all, in either mode.
+   */
+  it('Wallet: paints no ground of its own in either mode, so the shell ground shows through', () => {
+    for (const mode of ['light', 'dark'] as const) {
+      const { unmount } = renderPage(<Wallet />, mode);
+      expect(() => nearestBackground(screen.getByTestId('outlet-content'))).toThrow(
+        /Walked out of the page/,
+      );
+      unmount();
+    }
   });
 
   it('Dex: the "Order book" panel background differs, and matches surface.raised in each mode', () => {
@@ -518,7 +537,7 @@ describe('Acceptance — the twelve pages render differently in each mode', () =
   it('Bridge: a network card it paints itself differs, and matches surface.raised in each mode', () => {
     authUser = { address: '3P123', name: 'Trader' };
     const card = () =>
-      nearestBackground(screen.getByText('Ethereum').closest('.MuiCard-root') as HTMLElement);
+      nearestBackground(screen.getByText('Ethereum').closest('[role="radio"]') as HTMLElement);
     const { unmount } = renderPage(<Bridge />, 'light');
     const light = rgbToHex(card());
     unmount();
@@ -530,19 +549,16 @@ describe('Acceptance — the twelve pages render differently in each mode', () =
     expect(dark).toBe(tokens('dark').surface.raised);
   });
 
-  it('CreateToken: the step-0 panel background differs, and matches surface.raised in each mode', () => {
+  it('CreateToken: the step-0 name field background differs, and matches surface.raised in each mode', () => {
     authUser = { address: '3P123', name: 'Trader' };
+    // The step-0 form is inset fields on the raised surface; the input itself is
+    // transparent, so the walk lands on the field container the page painted.
+    const nameRow = () => screen.getByLabelText('Token name');
     const { unmount } = renderPage(<CreateToken />, 'light');
-    const light = rgbToHex(
-      getComputedStyle(screen.getByText('Token Name *').closest('.MuiPaper-root') as HTMLElement)
-        .backgroundColor,
-    );
+    const light = rgbToHex(nearestBackground(nameRow()));
     unmount();
     renderPage(<CreateToken />, 'dark');
-    const dark = rgbToHex(
-      getComputedStyle(screen.getByText('Token Name *').closest('.MuiPaper-root') as HTMLElement)
-        .backgroundColor,
-    );
+    const dark = rgbToHex(nearestBackground(nameRow()));
 
     expect(dark).not.toBe(light);
     expect(light).toBe(tokens('light').surface.raised);

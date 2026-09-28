@@ -5,8 +5,9 @@
  */
 
 import { BigNumber } from '@decentralchain/bignumber';
-import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
-import { Avatar, Box, Button, Card, CardContent, Grid, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Button, Card, Stack, Typography } from '@mui/material';
+import { ArrowDown, ArrowLeftRight, ArrowUp, Link2, Network } from 'lucide-react';
+import { EmptyState } from '@/components/premium/EmptyState';
 import { useConfig } from '@/contexts/ConfigContext';
 
 interface GatewayAsset {
@@ -62,172 +63,142 @@ export const BridgeAssetSelector: React.FC<BridgeAssetSelectorProps> = ({
   // Handle case where no gateway assets are configured
   if (gatewayAssets.length === 0) {
     return (
-      <Box sx={{ py: 8, textAlign: 'center' }}>
-        <Typography
-          variant="h6"
-          gutterBottom
-          sx={{
-            color: 'text.secondary',
-          }}
-        >
-          No Gateway Assets Available
-        </Typography>
-        <Typography
-          variant="body2"
-          sx={{
-            color: 'text.secondary',
-          }}
-        >
-          Gateway assets are not configured for this network
-        </Typography>
-      </Box>
+      <Card>
+        <EmptyState
+          icons={[Link2, ArrowLeftRight, Network]}
+          title="No Gateway Assets Available"
+          description="Gateway assets are not configured for this network"
+        />
+      </Card>
     );
   }
 
+  /*
+   * One grouped inset list: token avatar, ticker and name on the left, the
+   * balance right-aligned, then the two actions. Hairlines are inset past
+   * the avatar.
+   */
   return (
-    <Grid container spacing={3}>
-      {gatewayAssets.map((asset) => (
-        <Grid
+    <Card component="section" aria-label="Gateway assets" sx={{ py: 0.5 }}>
+      {gatewayAssets.map((asset, index) => (
+        <Box
           key={asset.assetId}
-          size={{
-            md: 4,
-            sm: 6,
-            xs: 12,
+          sx={{
+            '&:hover': { bgcolor: 'action.hover' },
+            alignItems: 'center',
+            display: 'grid',
+            gap: 2,
+            gridTemplateAreas: {
+              sm: '"who balance actions"',
+              xs: '"who balance" "actions actions" "hint hint"',
+            },
+            gridTemplateColumns: { sm: 'minmax(0, 1fr) auto auto', xs: 'minmax(0, 1fr) auto' },
+            position: 'relative',
+            px: 2.5,
+            py: 1.5,
+            transition: 'background-color 160ms',
+            ...(index > 0
+              ? {
+                  '&::before': {
+                    borderTop: 1,
+                    borderTopColor: 'divider',
+                    content: '""',
+                    left: 76,
+                    position: 'absolute',
+                    right: 0,
+                    top: 0,
+                  },
+                }
+              : {}),
           }}
         >
-          <Card
-            sx={{
-              '&:hover': {
-                boxShadow: 4,
-                transform: 'translateY(-4px)',
-              },
-              display: 'flex',
-              flexDirection: 'column',
-              height: '100%',
-              transition: 'transform 0.2s, box-shadow 0.2s',
-            }}
+          <Box
+            sx={{ alignItems: 'center', display: 'flex', gap: 1.5, gridArea: 'who', minWidth: 0 }}
           >
-            <CardContent sx={{ flexGrow: 1 }}>
-              {/* Asset Header */}
-              <Box sx={{ alignItems: 'center', display: 'flex', mb: 2 }}>
-                <Avatar
-                  src={asset.icon}
-                  sx={{
-                    bgcolor: 'primary.main',
-                    // Explicit: MUI's Avatar otherwise inks its fallback letter
-                    // with `background.default`, which is not a contrast-checked
-                    // pairing with `primary.main`.
-                    color: 'primary.contrastText',
-                    height: 48,
-                    mr: 2,
-                    width: 48,
-                  }}
-                >
-                  {asset.ticker[0]}
-                </Avatar>
-                <Box sx={{ flexGrow: 1 }}>
-                  <Typography variant="h6" component="div">
-                    {asset.ticker}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color: 'text.secondary',
-                    }}
-                  >
-                    {asset.name}
-                  </Typography>
-                </Box>
-              </Box>
+            <Avatar
+              src={asset.icon}
+              sx={{
+                bgcolor: 'primary.main',
+                // Explicit: MUI's Avatar otherwise inks its fallback letter
+                // with `background.default`, which is not a contrast-checked
+                // pairing with `primary.main`.
+                color: 'primary.contrastText',
+                fontSize: 16,
+                fontWeight: 600,
+                height: 40,
+                width: 40,
+              }}
+            >
+              {asset.ticker[0]}
+            </Avatar>
+            <Box sx={{ minWidth: 0 }}>
+              <Typography noWrap sx={{ fontSize: 15, fontWeight: 500 }}>
+                {asset.ticker}
+              </Typography>
+              <Typography noWrap variant="body2" sx={{ color: 'text.secondary' }}>
+                {asset.name}
+              </Typography>
+            </Box>
+          </Box>
 
-              {/* Balance Display */}
-              <Box
-                sx={{
-                  bgcolor: 'background.default',
-                  borderRadius: 1,
-                  mb: 2,
-                  p: 1.5,
-                }}
+          <Box sx={{ gridArea: 'balance', textAlign: 'right' }}>
+            <Typography sx={{ fontSize: 15, fontVariantNumeric: 'tabular-nums', fontWeight: 500 }}>
+              {asset.balance.toFixed()} {asset.ticker}
+            </Typography>
+            {/* On phones the zero-balance hint takes its own full-width line below. */}
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              <Box component="span" sx={{ display: { sm: 'none', xs: 'inline' } }}>
+                Your Balance
+              </Box>
+              <Box component="span" sx={{ display: { sm: 'inline', xs: 'none' } }}>
+                {asset.balance.lte(0)
+                  ? `Deposit ${asset.ticker} to enable withdrawals`
+                  : 'Your Balance'}
+              </Box>
+            </Typography>
+          </Box>
+
+          <Stack direction="row" spacing={1} sx={{ gridArea: 'actions' }}>
+            {asset.hasDeposit && (
+              <Button
+                variant="contained"
+                size="small"
+                startIcon={<ArrowDown size={16} />}
+                onClick={() => onDeposit(asset)}
+                sx={{ flex: { sm: 'none', xs: 1 } }}
               >
-                <Typography
-                  variant="caption"
-                  sx={{
-                    color: 'text.secondary',
-                    display: 'block',
-                  }}
-                >
-                  Your Balance
-                </Typography>
-                <Typography variant="h6" component="div">
-                  {asset.balance.toFixed()} {asset.ticker}
-                </Typography>
-              </Box>
+                Deposit
+              </Button>
+            )}
+            {asset.hasWithdraw && (
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<ArrowUp size={16} />}
+                onClick={() => onWithdraw(asset)}
+                disabled={asset.balance.lte(0)}
+                sx={{ flex: { sm: 'none', xs: 1 } }}
+              >
+                Withdraw
+              </Button>
+            )}
+          </Stack>
 
-              {/* Action Buttons */}
-              <Stack direction="row" spacing={1}>
-                {asset.hasDeposit && (
-                  <Button
-                    variant="outlined"
-                    size="medium"
-                    fullWidth
-                    startIcon={<ArrowDownward />}
-                    onClick={() => onDeposit(asset)}
-                    sx={{
-                      '&:hover': {
-                        bgcolor: 'success.light',
-                        borderColor: 'success.dark',
-                      },
-                      borderColor: 'success.main',
-                      color: 'success.main',
-                    }}
-                  >
-                    Deposit
-                  </Button>
-                )}
-                {asset.hasWithdraw && (
-                  <Button
-                    variant="outlined"
-                    size="medium"
-                    fullWidth
-                    startIcon={<ArrowUpward />}
-                    onClick={() => onWithdraw(asset)}
-                    disabled={asset.balance.lte(0)}
-                    sx={{
-                      '&:disabled': {
-                        borderColor: 'grey.300',
-                        color: 'grey.400',
-                      },
-                      '&:hover': {
-                        bgcolor: 'warning.light',
-                        borderColor: 'warning.dark',
-                      },
-                      borderColor: 'warning.main',
-                      color: 'warning.main',
-                    }}
-                  >
-                    Withdraw
-                  </Button>
-                )}
-              </Stack>
-
-              {/* Zero Balance Hint */}
-              {asset.balance.lte(0) && (
-                <Typography
-                  variant="caption"
-                  sx={{
-                    color: 'text.secondary',
-                    display: 'block',
-                    mt: 1,
-                    textAlign: 'center',
-                  }}
-                >
-                  Deposit {asset.ticker} to enable withdrawals
-                </Typography>
-              )}
-            </CardContent>
-          </Card>
-        </Grid>
+          {asset.balance.lte(0) ? (
+            <Typography
+              variant="caption"
+              sx={{
+                color: 'text.secondary',
+                display: { sm: 'none', xs: 'block' },
+                gridArea: 'hint',
+                textAlign: 'center',
+              }}
+            >
+              Deposit {asset.ticker} to enable withdrawals
+            </Typography>
+          ) : null}
+        </Box>
       ))}
-    </Grid>
+    </Card>
   );
 };

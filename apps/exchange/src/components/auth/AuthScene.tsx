@@ -2,7 +2,7 @@ import { Box, Container, useTheme } from '@mui/material';
 import { type ReactNode } from 'react';
 import AuroraField from '@/components/landing/AuroraField';
 import BandTexture from '@/components/landing/BandTexture';
-import { tokens } from '@/theme/tokens/semantic';
+import { tokens } from '@/styles/legacy/semantic';
 
 /**
  * The scene every pre-app screen plays in.

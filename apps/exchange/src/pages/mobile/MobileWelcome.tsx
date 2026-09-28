@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router';
-import { MobileButton, Sparkline } from '@/components/mobile/primitives';
+import { MobileButton, Sparkline } from '@/components/legacy/mobilePrimitives';
 import {
   mobileAccent,
   mobileLayout,
@@ -8,7 +8,7 @@ import {
   mobileShadow,
   mobileSurface,
   mobileText,
-} from '@/styles/mobileTokens';
+} from '@/styles/legacy/mobileTokens';
 
 /**
  * Mobile onboarding.

@@ -39,7 +39,7 @@ import { useNavigate } from 'react-router';
 import { Button } from '@/components/atoms/Button';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
-import { tokens } from '@/theme/tokens/semantic';
+import { tokens } from '@/styles/legacy/semantic';
 
 // Animations
 const gradientShift = keyframes`

@@ -63,65 +63,61 @@ export interface AlertModalProps {
 const AlertContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${(p) => p.theme.spacing.lg};
+  gap: 20px;
   align-items: center;
   text-align: center;
+  padding-top: 4px;
 `;
 
+/* A round tinted glyph, the way a system alert marks its kind. */
 const IconWrapper = styled.div<{ type: AlertType }>`
-  width: 64px;
-  height: 64px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 32px;
-  margin-bottom: ${(p) => p.theme.spacing.sm};
-
   ${(p) => {
-    switch (p.type) {
-      case 'success':
-        return `
-          background: ${p.theme.colors.success}20;
-          color: ${p.theme.colors.success};
-        `;
-      case 'error':
-        return `
-          background: ${p.theme.colors.error}20;
-          color: ${p.theme.colors.error};
-        `;
-      case 'warning':
-        return `
-          background: ${p.theme.colors.warning}20;
-          color: ${p.theme.colors.warning};
-        `;
-      default:
-        return `
-          background: ${p.theme.colors.primary}20;
-          color: ${p.theme.colors.primary};
-        `;
-    }
+    const tone =
+      p.type === 'success'
+        ? [p.theme.colors.successSurface, p.theme.colors.success]
+        : p.type === 'error'
+          ? [p.theme.colors.errorSurface, p.theme.colors.error]
+          : p.type === 'warning'
+            ? [p.theme.colors.warningSurface, p.theme.colors.warning]
+            : [p.theme.colors.primarySurface, p.theme.colors.primary];
+    return `
+      background: ${tone[0]};
+      color: ${tone[1]};
+    `;
   }}
 `;
 
 const AlertTitle = styled.h3`
   margin: 0;
-  font-size: ${(p) => p.theme.fontSizes.xl};
-  font-weight: ${(p) => p.theme.fontWeights.semibold};
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.3px;
   color: ${(p) => p.theme.colors.text};
 `;
 
 const AlertMessage = styled.p`
-  margin: 0;
-  font-size: ${(p) => p.theme.fontSizes.md};
-  color: ${(p) => p.theme.colors.disabled};
-  line-height: 1.5;
+  margin: 6px 0 0;
+  font-size: 15px;
+  letter-spacing: -0.15px;
+  color: ${(p) => p.theme.colors.textSecondary};
+  line-height: 1.47;
 `;
 
 const AlertActions = styled.div`
   display: flex;
-  justify-content: center;
-  margin-top: ${(p) => p.theme.spacing.md};
+  justify-content: stretch;
+  width: 100%;
+
+  & > * {
+    flex: 1;
+  }
 `;
 
 /**

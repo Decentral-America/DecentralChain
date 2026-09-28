@@ -1,99 +1,64 @@
-import { Box, ButtonBase, Typography } from '@mui/material';
+import { Box, ButtonBase } from '@mui/material';
 import { useNavigate } from 'react-router';
 import { Icon, type IconName } from '@/components/atoms/Icon';
 import { MobileAppBar } from '@/components/mobile/MobileAppBar';
-import { AssetMark, MobileCard, MobileSection } from '@/components/mobile/primitives';
+import { AssetMark, MobileSection } from '@/components/mobile/primitives';
+import { GroupedList, ListRow } from '@/components/premium/GroupedList';
 import { useAuth } from '@/contexts/AuthContext';
 import { useClipboard } from '@/hooks/useClipboard';
-import {
-  mobileAccent,
-  mobileLayout,
-  mobileRadius,
-  mobileStatus,
-  mobileSurface,
-  mobileText,
-} from '@/styles/mobileTokens';
+import { mobileLayout, mobileStatus, mobileSurface, mobileText } from '@/styles/mobileTokens';
 
 /**
  * Mobile account screen.
  *
- * Identity card followed by grouped settings rows — the native pattern for
- * this surface, rather than the desktop settings page's tabbed panels.
+ * An identity row followed by grouped settings lists — the iOS Settings
+ * pattern for this surface, rather than the desktop settings page's tabbed
+ * panels.
  */
 
 interface Row {
   icon: IconName;
   label: string;
-  to?: string;
-  onClick?: () => void;
-  danger?: boolean;
+  to: string;
+}
+
+/** A 30px tinted glyph tile, the iOS Settings row mark. */
+function RowGlyph({ name }: { name: IconName }) {
+  return (
+    <Box
+      aria-hidden="true"
+      sx={{
+        alignItems: 'center',
+        bgcolor: 'var(--surface-lavender)',
+        borderRadius: '8px',
+        color: 'var(--color-indigo-ink)',
+        display: 'flex',
+        flexShrink: 0,
+        height: 30,
+        justifyContent: 'center',
+        width: 30,
+      }}
+    >
+      <Icon name={name} size={17} strokeWidth={2} />
+    </Box>
+  );
 }
 
 function SettingsGroup({ title, rows }: { title: string; rows: Row[] }) {
   const navigate = useNavigate();
 
   return (
-    <Box sx={{ mt: 3 }}>
-      <Typography
-        sx={{
-          color: mobileText.muted,
-          fontSize: 12,
-          fontWeight: 600,
-          letterSpacing: '0.4px',
-          mb: 1,
-          ml: 0.5,
-          textTransform: 'uppercase',
-        }}
-      >
-        {title}
-      </Typography>
-
-      <MobileCard padded={false} sx={{ overflow: 'hidden' }}>
-        {rows.map((row, index) => (
-          <ButtonBase
-            key={row.label}
-            onClick={row.onClick ?? (row.to ? () => navigate(row.to as string) : undefined)}
-            sx={{
-              borderBottom:
-                index === rows.length - 1 ? 'none' : `1px solid ${mobileSurface.border}`,
-              display: 'flex',
-              gap: 1.5,
-              justifyContent: 'flex-start',
-              minHeight: 52,
-              px: 2,
-              py: 1.5,
-              width: '100%',
-            }}
-          >
-            <Box
-              sx={{
-                color: row.danger ? mobileStatus.danger : mobileAccent.base,
-                flexShrink: 0,
-                lineHeight: 0,
-              }}
-            >
-              <Icon name={row.icon} size={19} strokeWidth={1.8} />
-            </Box>
-            <Typography
-              sx={{
-                color: row.danger ? mobileStatus.danger : mobileText.primary,
-                flex: 1,
-                fontSize: 15,
-                fontWeight: 500,
-                textAlign: 'left',
-              }}
-            >
-              {row.label}
-            </Typography>
-            {!row.danger && (
-              <Box sx={{ color: mobileText.muted, flexShrink: 0, lineHeight: 0 }}>
-                <Icon name="chevronRight" size={18} />
-              </Box>
-            )}
-          </ButtonBase>
-        ))}
-      </MobileCard>
-    </Box>
+    <GroupedList title={title} quiet>
+      {rows.map((row) => (
+        <ListRow
+          key={row.label}
+          leading={<RowGlyph name={row.icon} />}
+          leadingWidth={30}
+          title={row.label}
+          onClick={() => navigate(row.to)}
+        />
+      ))}
+    </GroupedList>
   );
 }
 
@@ -109,7 +74,7 @@ export function MobileAccount() {
     <Box
       sx={{
         bgcolor: mobileSurface.canvas,
-        // Fixed fill, fixed ink — see the note on MobileHome's canvas.
+        // The canvas states its own ink — see the note on MobileHome's canvas.
         color: mobileText.primary,
         minHeight: '100%',
       }}
@@ -118,48 +83,40 @@ export function MobileAccount() {
 
       <MobileSection sx={{ pb: `${mobileLayout.scrollPaddingBottom}px` }}>
         {/* Identity */}
-        <MobileCard sx={{ p: 2.5 }}>
-          <Box sx={{ alignItems: 'center', display: 'flex', gap: 1.75 }}>
-            <AssetMark size={52} bg={mobileAccent.wash}>
-              <Box sx={{ color: mobileAccent.base }}>
+        <GroupedList>
+          <ListRow
+            leading={
+              <AssetMark size={56} tone="accent">
                 {address ? address.slice(0, 2).toUpperCase() : 'DX'}
-              </Box>
-            </AssetMark>
-            <Box sx={{ flex: 1, minWidth: 0 }}>
-              <Typography sx={{ fontSize: 17, fontWeight: 700 }}>
-                {user?.name || 'My wallet'}
-              </Typography>
-              <Typography
-                sx={{
-                  color: mobileText.muted,
-                  fontSize: 13,
-                  fontVariantNumeric: 'tabular-nums',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {shortAddress}
-              </Typography>
-            </Box>
-            {address ? (
-              <ButtonBase
-                aria-label="Copy address"
-                onClick={() => copyToClipboard(address)}
-                sx={{
-                  bgcolor: mobileSurface.sunken,
-                  borderRadius: mobileRadius.sm,
-                  color: isCopied ? mobileStatus.success : mobileText.secondary,
-                  flexShrink: 0,
-                  height: 44,
-                  width: 44,
-                }}
-              >
-                <Icon name={isCopied ? 'check' : 'copy'} size={18} strokeWidth={1.8} />
-              </ButtonBase>
-            ) : null}
-          </Box>
-        </MobileCard>
+              </AssetMark>
+            }
+            leadingWidth={56}
+            title={user?.name || 'My wallet'}
+            subtitle={shortAddress}
+            chevron={false}
+            accessory={
+              address ? (
+                <ButtonBase
+                  aria-label="Copy address"
+                  onClick={() => copyToClipboard(address)}
+                  sx={{
+                    '&:active': { transform: 'scale(0.94)' },
+                    '&:focus-visible': { boxShadow: '0 0 0 2px var(--color-indigo-ink)' },
+                    bgcolor: 'var(--surface-fill)',
+                    borderRadius: '50%',
+                    color: isCopied ? mobileStatus.success : mobileText.secondary,
+                    flexShrink: 0,
+                    height: mobileLayout.minTapTarget,
+                    transition: 'transform 160ms var(--ease), color 160ms var(--ease)',
+                    width: mobileLayout.minTapTarget,
+                  }}
+                >
+                  <Icon name={isCopied ? 'check' : 'copy'} size={18} strokeWidth={1.8} />
+                </ButtonBase>
+              ) : null
+            }
+          />
+        </GroupedList>
 
         <SettingsGroup
           title="Wallet"
@@ -180,20 +137,17 @@ export function MobileAccount() {
           ]}
         />
 
-        <SettingsGroup
-          title="Session"
-          rows={[
-            {
-              danger: true,
-              icon: 'logout',
-              label: 'Sign out',
-              onClick: () => {
-                void logout();
-                void navigate('/');
-              },
-            },
-          ]}
-        />
+        <GroupedList>
+          <ListRow
+            title="Sign out"
+            tone="danger"
+            chevron={false}
+            onClick={() => {
+              void logout();
+              void navigate('/');
+            }}
+          />
+        </GroupedList>
       </MobileSection>
     </Box>
   );

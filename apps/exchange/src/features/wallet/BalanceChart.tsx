@@ -1,110 +1,78 @@
 /**
- * BalanceChart Component
- * Historical balance chart with timeframe selection (hour, day, week, month)
- * Uses Victory Charts (React 19 compatible)
+ * Balance hero: the figure, a timeframe control and the balance-history area
+ * chart under them.
  *
- * Historical balance API is not yet available on the DCC node.
- * When the endpoint exists, wire it up here.
+ * This used to fill the chart with random points around the current balance
+ * ("mock data with slight variations"), which drew a market that never
+ * happened under a real number. There is no balance-history endpoint in the
+ * data service yet, so the chart now receives whatever real series the caller
+ * has and otherwise draws its honest empty baseline. When an endpoint lands,
+ * pass its points as `history`, keyed by the selected range.
  */
-
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import styled from 'styled-components';
+import { AreaChart, type AreaPoint } from '@/components/premium/AreaChart';
+import { SegmentedControl } from '@/components/premium/SegmentedControl';
 
-type ChartMode = 'hour' | 'day' | 'week' | 'month';
+export type BalanceRange = '1D' | '1W' | '1M' | '1Y';
+
+const RANGES: { value: BalanceRange; label: string }[] = [
+  { label: '1D', value: '1D' },
+  { label: '1W', value: '1W' },
+  { label: '1M', value: '1M' },
+  { label: '1Y', value: '1Y' },
+];
 
 interface BalanceChartProps {
-  totalBalance: number; // Total DCC balance in DCC (not dcclets)
+  /** The hero figure block, drawn at the top left. */
+  figure: ReactNode;
+  /** Real balance points per range. Omit when there is no source. */
+  history?: Partial<Record<BalanceRange, AreaPoint[]>>;
+  unit?: string;
+  height?: number;
 }
 
-export function BalanceChart({ totalBalance: _totalBalance }: BalanceChartProps) {
-  const [chartMode, setChartMode] = useState<ChartMode>('week');
+const Head = styled.div`
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+`;
+
+const Plot = styled.div`
+  margin-top: 16px;
+  flex: 1;
+  min-height: 0;
+`;
+
+export function BalanceChart({ figure, history, unit = 'DCC', height = 200 }: BalanceChartProps) {
+  const [range, setRange] = useState<BalanceRange>('1W');
+  const data = history?.[range] ?? [];
 
   return (
-    <ChartContainer>
-      <ChartHeader>
-        <ChartTitle>Balance History</ChartTitle>
-        <TimeframeButtons>
-          <TimeButton $active={chartMode === 'hour'} onClick={() => setChartMode('hour')}>
-            1H
-          </TimeButton>
-          <TimeButton $active={chartMode === 'day'} onClick={() => setChartMode('day')}>
-            1D
-          </TimeButton>
-          <TimeButton $active={chartMode === 'week'} onClick={() => setChartMode('week')}>
-            1W
-          </TimeButton>
-          <TimeButton $active={chartMode === 'month'} onClick={() => setChartMode('month')}>
-            1M
-          </TimeButton>
-        </TimeframeButtons>
-      </ChartHeader>
-      <UnavailableContainer>
-        <UnavailableMessage>Historical balance data is not yet available.</UnavailableMessage>
-      </UnavailableContainer>
-    </ChartContainer>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <Head>
+        <div style={{ minWidth: 0 }}>{figure}</div>
+        <SegmentedControl
+          size="sm"
+          label="Balance history range"
+          options={RANGES}
+          value={range}
+          onValueChange={setRange}
+        />
+      </Head>
+      <Plot>
+        <AreaChart
+          data={data}
+          height={height}
+          aria-label="Balance history"
+          emptyLabel="Balance history will appear here once it is available"
+          formatValue={(v) =>
+            `${v.toLocaleString(undefined, { maximumFractionDigits: 4 })} ${unit}`
+          }
+        />
+      </Plot>
+    </div>
   );
 }
-
-// Styled Components
-const ChartContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  min-height: 400px;
-  padding: 20px;
-  background: ${(props) => props.theme.colors.background};
-  border: 1px solid ${(props) => props.theme.colors.border};
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-`;
-
-const ChartHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-`;
-
-const ChartTitle = styled.h3`
-  font-size: ${(props) => props.theme.fontSizes.lg};
-  font-weight: ${(props) => props.theme.fontWeights.semibold};
-  color: ${(props) => props.theme.colors.text};
-  margin: 0;
-`;
-
-const TimeframeButtons = styled.div`
-  display: flex;
-  gap: 8px;
-`;
-
-const TimeButton = styled.button<{ $active: boolean }>`
-  padding: 6px 12px;
-  background: ${(props) => (props.$active ? props.theme.colors.primary : 'transparent')};
-  color: ${(props) => (props.$active ? props.theme.colors.onPrimary : props.theme.colors.text)};
-  border: 1px solid
-    ${(props) => (props.$active ? props.theme.colors.primary : props.theme.colors.border)};
-  border-radius: 4px;
-  font-size: ${(props) => props.theme.fontSizes.sm};
-  font-weight: ${(props) => props.theme.fontWeights.medium};
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    background: ${(props) =>
-      props.$active ? props.theme.colors.primary : props.theme.colors.border};
-  }
-`;
-
-const UnavailableContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 300px;
-`;
-
-const UnavailableMessage = styled.p`
-  color: ${(props) => props.theme.colors.text};
-  opacity: 0.5;
-  font-size: ${(props) => props.theme.fontSizes.sm};
-  text-align: center;
-`;

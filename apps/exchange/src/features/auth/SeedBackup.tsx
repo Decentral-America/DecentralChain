@@ -6,9 +6,9 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@/components/atoms/Button';
-import { Card } from '@/components/atoms/Card';
 import { CommonIcons, Icon } from '@/components/atoms/Icon';
 import { Stack } from '@/components/atoms/Stack';
+import { Card } from '@/components/legacy/Card';
 import { useClipboard } from '@/hooks/useClipboard';
 
 interface SeedBackupProps {

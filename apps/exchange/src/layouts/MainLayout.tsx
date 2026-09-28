@@ -37,8 +37,6 @@ import { useRouteStateTracking } from '@/hooks/useRouteStateTracking';
 import { AppLauncher } from '@/layouts/shell/AppLauncher';
 import { AppTopBar, NetworkTag, RoundAction } from '@/layouts/shell/AppTopBar';
 import { logger } from '@/lib/logger';
-import { radii } from '@/styles/tokens';
-import { brandInk } from '@/theme/landingTheme';
 
 /**
  * Application chrome height. The main content offsets by exactly this much, so
@@ -117,52 +115,35 @@ export const MainLayout = () => {
   return (
     <Box
       sx={{
-        /*
-         * The night ground the marketing and auth surfaces stand on. The
-         * shell and its content stay light and unchanged — only the ground
-         * they float on joins the brand register.
-         */
-        bgcolor: brandInk.night,
+        // The Apple-neutral ground every card sits on.
+        bgcolor: 'background.default',
         boxSizing: 'border-box',
         /*
          * The ground is the viewport, exactly: the application never scrolls
-         * as a document. The shell's chrome stays put and only the content
-         * column inside it scrolls — the frame of a desktop app, not a page.
+         * as a document. Only the content column scrolls — the frame of a
+         * desktop app, not a page.
          */
         height: '100dvh',
         overflow: 'hidden',
-        // The gap that makes the shell read as floating rather than filling.
-        p: { lg: 2.5, xs: 1.5 },
       }}
     >
       {/* Listens for incoming transactions */}
       <TransactionNotificationsMonitor />
 
       {/*
-        The shell. One rounded surface holding the chrome, the rail and the
-        routed content, so the top bar spans the whole application rather than
-        stopping short of the navigation beside it.
+        The shell: the chrome and the routed content on the ground itself, so
+        the top bar spans the whole application. There is no separate rounded
+        surface — and so no hairline around one to keep in step with the mode;
+        cards carry their own surfaces on the ground.
       */}
       <Box
         sx={{
-          bgcolor: 'background.paper',
-          /*
-           * The shell's fill was already a mode-aware token while this
-           * hairline was still `palette.frost` (`#e5edf5`, no mode dimension)
-           * — a half-conversion. In dark mode that drew a near-white ring
-           * around a near-black shell, 16.60:1 against the ground it sits on.
-           * `divider` is `border.subtle`, and moves with the fill it edges.
-           */
-          border: '1px solid',
-          borderColor: 'divider',
-          borderRadius: radii.shell,
           display: 'flex',
           flexDirection: 'column',
           // Fills the fixed ground; the column below it does the scrolling.
           height: '100%',
-          maxWidth: 1720,
-          mx: 'auto',
-          overflow: 'clip',
+          // The top bar floats over the column so content scrolls beneath it.
+          position: 'relative',
         }}
       >
         <AppTopBar
@@ -189,9 +170,10 @@ export const MainLayout = () => {
         />
 
         {/*
-          The content fills the shell. The shell itself caps at 1720px, which
-          is bound enough — capping the column again at 1320 left a dead
-          gutter either side of every page.
+          The content column is the one scroller. The top bar floats over it
+          and the column pads its top by the bar's height, so content slides
+          under the bar's translucent material while a page that fits the
+          shell (`fit`) still resolves 100% to the space below the bar.
         */}
         <Box
           component="main"
@@ -211,7 +193,8 @@ export const MainLayout = () => {
              * that fits the shell exactly cannot do so if the column it sits in
              * adds height underneath it.
              */
-            px: { lg: 3, xs: 2 },
+            pt: '72px',
+            px: { lg: 4, xs: 2 },
           }}
         >
           {/* Only the content column suspends; the shell stays put. */}

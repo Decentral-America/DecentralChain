@@ -15,6 +15,7 @@ import {
 } from '@/api/services/matcherService';
 import { Button } from '@/components/atoms/Button';
 import { Input } from '@/components/atoms/Input';
+import { TicketNotice } from '@/components/premium/OrderTicket';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBalanceWatcher } from '@/hooks/useBalanceWatcher';
 import { type SignedOrderResult, useTransactionSigning } from '@/hooks/useTransactionSigning';
@@ -26,7 +27,7 @@ import {
   useDexStore,
 } from '@/stores/dexStore';
 import { formatAmount } from '@/utils/formatters';
-import { buildOrderCoins, coinsToTokens } from './orderScaling';
+import { buildOrderCoins, coinsToTokens, DCC_DECIMALS } from './orderScaling';
 import { usePairDecimals } from './usePairDecimals';
 
 /**
@@ -116,7 +117,7 @@ const InfoRow = styled.div`
   align-items: center;
   padding: ${(p) => p.theme.spacing.sm};
   background: ${(p) => p.theme.colors.secondary};
-  border-radius: ${(p) => p.theme.radii.md};
+  border-radius: 10px;
 `;
 
 /**
@@ -124,8 +125,7 @@ const InfoRow = styled.div`
  */
 const InfoLabel = styled.span`
   font-size: ${(p) => p.theme.fontSizes.sm};
-  color: ${(p) => p.theme.colors.text};
-  opacity: 0.7;
+  color: ${(p) => p.theme.colors.textSecondary};
 `;
 
 /**
@@ -136,6 +136,7 @@ const InfoValue = styled.span`
   font-weight: ${(p) => p.theme.fontWeights.medium};
   color: ${(p) => p.theme.colors.text};
   font-family: ${(p) => p.theme.fonts.mono};
+  font-variant-numeric: tabular-nums;
 `;
 
 /**
@@ -153,8 +154,7 @@ const BalanceRow = styled.div`
  */
 const BalanceLabel = styled.span`
   font-size: ${(p) => p.theme.fontSizes.xs};
-  color: ${(p) => p.theme.colors.text};
-  opacity: 0.6;
+  color: ${(p) => p.theme.colors.textSecondary};
 `;
 
 /**
@@ -173,6 +173,7 @@ const BalanceAmount = styled.span`
   font-size: ${(p) => p.theme.fontSizes.xs};
   color: ${(p) => p.theme.colors.text};
   font-family: ${(p) => p.theme.fonts.mono};
+  font-variant-numeric: tabular-nums;
 `;
 
 /**
@@ -232,18 +233,6 @@ const PercentageButton = styled.button<{ $isActive?: boolean }>`
     opacity: 0.5;
     cursor: not-allowed;
   }
-`;
-
-/**
- * Error message
- */
-const ErrorMessage = styled.div`
-  padding: ${(p) => p.theme.spacing.sm};
-  background: ${(p) => p.theme.colors.error}15;
-  border: 1px solid ${(p) => p.theme.colors.error};
-  border-radius: ${(p) => p.theme.radii.md};
-  color: ${(p) => p.theme.colors.error};
-  font-size: ${(p) => p.theme.fontSizes.sm};
 `;
 
 /**
@@ -501,13 +490,19 @@ export const BuyOrderForm: React.FC = () => {
     void handleBuyOrder();
   };
 
+  // The fee the order is signed with, read from the matcher. A dash until the
+  // settings arrive, rather than a figure the order may not carry.
+  const feeDcc = matcherSettings
+    ? coinsToTokens(getMatcherBaseFee(matcherSettings.orderFee), DCC_DECIMALS)
+    : null;
+
   if (!selectedPair) {
     return (
       <FormContainer>
         <FormHeader data-slot="header">
           <Title>Buy</Title>
         </FormHeader>
-        <ErrorMessage>Please select a trading pair</ErrorMessage>
+        <TicketNotice $tone="neutral">Please select a trading pair</TicketNotice>
       </FormContainer>
     );
   }
@@ -635,7 +630,7 @@ export const BuyOrderForm: React.FC = () => {
 
         <InfoRow data-slot="info">
           <InfoLabel>Fee</InfoLabel>
-          <InfoValue>0.003 DCC</InfoValue>
+          <InfoValue>{feeDcc !== null ? `${formatAmount(feeDcc)} DCC` : '—'}</InfoValue>
         </InfoRow>
 
         <InfoRow data-slot="info">
@@ -644,7 +639,7 @@ export const BuyOrderForm: React.FC = () => {
         </InfoRow>
 
         {/* Error Message */}
-        {displayError && <ErrorMessage>{displayError}</ErrorMessage>}
+        {displayError && <TicketNotice role="alert">{displayError}</TicketNotice>}
 
         {/* Submit Button */}
         <Button

@@ -5,7 +5,7 @@
 
 import { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { scrimStrong } from '@/styles/tokens';
+import { scrimStrong } from '@/styles/legacy/tokens';
 
 const STEPS = [
   {

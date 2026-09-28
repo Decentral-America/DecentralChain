@@ -29,11 +29,11 @@ import { render, screen } from '@testing-library/react';
 import styled, { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { describe, expect, it, vi } from 'vitest';
 import { GlassCard } from '@/components/auth/GlassCard';
-import { MobileButton } from '@/components/mobile/primitives';
-import { darkTheme, lightTheme } from '@/styles/themes';
+import { MobileButton } from '@/components/legacy/mobilePrimitives';
+import { createAppTheme } from '@/styles/legacy/muiTheme';
+import { contrastRatio, type ThemeMode, tokens } from '@/styles/legacy/semantic';
+import { darkTheme, lightTheme } from '@/styles/legacy/themes';
 import { rgbToHex } from '@/test-utils/rgbToHex';
-import { createAppTheme } from '@/theme/mui-theme';
-import { contrastRatio, type ThemeMode, tokens } from '@/theme/tokens/semantic';
 import { MobileAuthScreen } from '../MobileAuthScreen';
 
 vi.mock('react-router', () => ({ useNavigate: () => vi.fn() }));

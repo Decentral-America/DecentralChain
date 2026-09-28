@@ -14,6 +14,7 @@ import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
+import { paintedBackground } from '@/test-utils/paintedBackground';
 import { rgbToHex } from '@/test-utils/rgbToHex';
 import { createAppTheme } from '@/theme/mui-theme';
 import { contrastRatio, type ThemeMode, tokens } from '@/theme/tokens/semantic';
@@ -52,16 +53,6 @@ vi.mock('react-router', async (importOriginal) => ({
   useNavigate: () => vi.fn(),
 }));
 
-function nearestBackground(el: HTMLElement): string {
-  let node: HTMLElement | null = el;
-  while (node) {
-    const bg = getComputedStyle(node).backgroundColor;
-    if (bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') return bg;
-    node = node.parentElement;
-  }
-  throw new Error('No ancestor with an explicit background found');
-}
-
 const renderIn = (mode: ThemeMode) =>
   render(
     <ThemeProvider theme={createAppTheme(mode)}>
@@ -78,7 +69,7 @@ describe.each(['light', 'dark'] as const)('Swap — page chrome (%s mode)', (mod
     // The panel title sits directly on the card; the amount wells have their
     // own tinted ground, so measuring from one of those reads the well.
     const title = screen.getAllByText('Swap').at(-1) as HTMLElement;
-    const bg = nearestBackground(title);
+    const bg = paintedBackground(title);
 
     expect(rgbToHex(bg)).toBe(tokens(mode).surface.raised);
   });
@@ -88,7 +79,7 @@ describe.each(['light', 'dark'] as const)('Swap — page chrome (%s mode)', (mod
     for (const name of ['Liquidity', 'Pools', 'Explore']) {
       const tab = screen.getByRole('tab', { name });
       const ink = rgbToHex(getComputedStyle(tab).color);
-      const bg = rgbToHex(nearestBackground(tab));
+      const bg = rgbToHex(paintedBackground(tab));
 
       expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
     }
@@ -99,7 +90,7 @@ describe.each(['light', 'dark'] as const)('Swap — page chrome (%s mode)', (mod
     for (const label of ['You pay', 'You receive']) {
       const text = screen.getByText(label);
       const ink = rgbToHex(getComputedStyle(text).color);
-      const bg = rgbToHex(nearestBackground(text));
+      const bg = rgbToHex(paintedBackground(text));
 
       expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
     }

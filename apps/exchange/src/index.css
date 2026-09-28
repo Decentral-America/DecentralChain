@@ -1,11 +1,156 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+/**
+ * Design system custom properties + document reset.
+ *
+ * Mirrors src/styles/tokens.ts. Values live here as CSS custom properties so
+ * that plain CSS, third-party widgets (TradingView) and any non-React surface
+ * can consume the same system the React themes are built from.
+ */
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+:root {
+  /* Colors */
+  --color-indigo-ink: #533afd;
+  --color-indigo-hover: #4a34f0;
+  --color-midnight-ink: #1d1d1f;
+  --color-slate: #66666b;
+  --color-steel: #424245;
+  --color-smoke: #aeaeb2;
+  --color-pure-white: #ffffff;
+  --color-mist: #f5f5f7;
+  --color-frost: #e8e8ed;
+  --color-lavender-border: #cdc6ff;
+  --color-lilac-border: #e3dfff;
+  --color-periwinkle-wash: #efedff;
+  --color-deep-violet: #1f1a4d;
+  --color-amethyst-edge: #8b7cff;
+
+  /* Semantic status */
+  --color-success: #1d7f39;
+  --color-success-surface: #eef8f0;
+  --color-danger: #d70015;
+  --color-danger-surface: #fff1f1;
+  /* Red for text: the system red is 4.09:1 on a lifted dark cell (#2c2c2e). */
+  --color-danger-ink: var(--color-danger);
+  --color-warning: #a35200;
+  --color-warning-surface: #fff6ea;
+  --color-buy: #1d7f39;
+  --color-sell: #d70015;
+
+  /* Surfaces — white cards lifted off an Apple-neutral ground */
+  --surface-ground: var(--color-mist);
+  --surface-canvas: var(--color-pure-white);
+  --surface-band: var(--color-mist);
+  --surface-frosted: var(--color-frost);
+  --surface-lavender: var(--color-periwinkle-wash);
+  --surface-indigo: var(--color-indigo-ink);
+  --surface-fill: rgba(118, 118, 128, 0.12);
+  --material-chrome: rgba(255, 255, 255, 0.72);
+
+  /* Semantic aliases */
+  --text-primary: var(--color-midnight-ink);
+  --text-secondary: var(--color-slate);
+  --text-muted: var(--color-steel);
+  /* Least emphasis, but still read: held to 4.5:1 like every text role. */
+  --text-subtle: var(--color-slate);
+  --border-default: var(--color-frost);
+  --border-strong: #d2d2d7;
+
+  /* Typography */
+  --font-sohne-var:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter Variable", "Inter",
+    system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  --font-features: "tnum" on, "cv11" on;
+
+  --font-weight-light: 400;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  --text-caption: 12px;
+  --leading-caption: 1.33;
+  --tracking-caption: 0px;
+  --text-body-sm: 13px;
+  --leading-body-sm: 1.43;
+  --tracking-body-sm: -0.08px;
+  --text-body: 15px;
+  --leading-body: 1.47;
+  --tracking-body: -0.15px;
+  --text-body-lg: 17px;
+  --leading-body-lg: 1.47;
+  --tracking-body-lg: -0.3px;
+  --text-subheading: 17px;
+  --leading-subheading: 1.26;
+  --tracking-subheading: -0.3px;
+  --text-heading-sm: 22px;
+  --leading-heading-sm: 1.2;
+  --tracking-heading-sm: -0.4px;
+  --text-heading: 30px;
+  --leading-heading: 1.12;
+  --tracking-heading: -0.6px;
+  --text-heading-lg: 44px;
+  --leading-heading-lg: 1.08;
+  --tracking-heading-lg: -1.1px;
+  --text-display: 56px;
+  --leading-display: 1.05;
+  --tracking-display: -1.6px;
+
+  /* Spacing — 8px base */
+  --spacing-unit: 8px;
+  --spacing-8: 8px;
+  --spacing-16: 16px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-40: 40px;
+  --spacing-48: 48px;
+  --spacing-64: 64px;
+  --spacing-80: 80px;
+  --spacing-96: 96px;
+
+  /* Layout */
+  --page-max-width: 1320px;
+  --card-padding: 24px;
+  --element-gap: 8px;
+  --header-height: 64px;
+  --sidebar-width: 260px;
+  --min-tap-target: 44px;
+
+  --section-gap: clamp(48px, 8vw, 96px);
+  --page-gutter: clamp(16px, 4vw, 24px);
+
+  /* Radius — 10px controls, 16px cards, pills for tags */
+  --radius-md: 10px;
+  --radius-buttons: 10px;
+  --radius-cards: 16px;
+  --radius-inputs: 10px;
+  --radius-tags: 9999px;
+
+  /* Elevation — soft two-layer shadows in light mode */
+  --shadow-none: none;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05), 0 1px 1px rgba(0, 0, 0, 0.03);
+  --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 2px 4px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.08);
+
+  /* Motion — Apple's curve */
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --transition-fast: 160ms var(--ease);
+  --transition-medium: 240ms var(--ease);
+  --transition-slow: 420ms var(--ease);
+
+  /* Focus */
+  --focus-ring-color: rgba(83, 58, 253, 0.45);
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
+
+  color-scheme: light;
+  font-family: var(--font-sohne-var);
+  font-weight: var(--font-weight-regular);
+  font-feature-settings: var(--font-features);
+  line-height: var(--leading-body);
+  color: var(--text-primary);
+  background-color: var(--surface-ground);
+  accent-color: var(--color-indigo-ink);
+  caret-color: var(--color-indigo-ink);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,33 +158,173 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+/**
+ * Dark mode — Apple's dark grouped system: true black ground, graphite
+ * surfaces, hairlines standing in for shadow.
+ */
+:root[data-theme="dark"] {
+  --color-indigo-ink: #7f70ff;
+  --color-indigo-hover: #9d91ff;
+
+  --surface-ground: #000000;
+  --surface-canvas: #1c1c1e;
+  --surface-band: #1c1c1e;
+  --surface-frosted: #2c2c2e;
+  --surface-lavender: #1f1b3d;
+  --surface-fill: rgba(118, 118, 128, 0.24);
+  --material-chrome: rgba(28, 28, 30, 0.72);
+
+  --text-primary: #f5f5f7;
+  --text-secondary: #aeaeb2;
+  --text-muted: #98989d;
+  --text-subtle: #98989d;
+  --border-default: #2c2c2e;
+  --border-strong: #3a3a3c;
+
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+
+  --color-success-surface: #0c2a16;
+  --color-danger-surface: #3a1210;
+  --color-warning-surface: #33230a;
+  --color-success: #30d158;
+  --color-danger: #ff453a;
+  --color-danger-ink: #ff6961;
+  --color-warning: #ff9f0a;
+  --color-buy: #30d158;
+  --color-sell: #ff453a;
+
+  --focus-ring-color: rgba(127, 112, 255, 0.55);
+
+  color-scheme: dark;
 }
-a:hover {
-  color: #535bf2;
+
+::selection {
+  background-color: rgba(83, 58, 253, 0.2);
+}
+
+/* Quiet overlay-style scrollbars, like macOS. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
+}
+
+:root[data-theme="dark"] * {
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /*
+   * No `overflow-x` here on purpose.
+   *
+   * Any non-`visible` overflow on the root element is propagated to the
+   * viewport, which makes the viewport the scrollport for sticky descendants —
+   * the mobile header then scrolls away with the page instead of pinning.
+   * `clip` does not avoid this; only leaving the root alone does. Verified in
+   * Chrome: with a value here the band sits at -312px after a 312px scroll,
+   * without it at 0.
+   *
+   * Horizontal overflow is still contained, by `#root` and by the mobile
+   * `main` — both clip, and neither affects sticky.
+   */
+  /*
+   * Safe-area insets are applied by the components that need them — the mobile
+   * header pads its top, the tab bar pads its bottom. Applying them here
+   * instead insets the whole document, which leaves a visible gutter of page
+   * background around every full-bleed surface on notched devices.
+   */
+  -webkit-text-size-adjust: 100%;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
 }
 
 body {
-  margin: 0;
-  padding: 0;
+  /* 320px is the narrowest supported viewport. */
   min-width: 320px;
-  /* 100vh is iOS Safari's *large* viewport — it ignores the address bar, so a
-     full-height page is cut off below the fold. svh is the small viewport and,
-     unlike dvh, does not reflow while the toolbar animates. The vh line is the
-     fallback for browsers without svh. */
   min-height: 100vh;
-  /* biome-ignore lint/suspicious/noDuplicateProperties: deliberate progressive-enhancement fallback — the vh line above is what pre-svh browsers use */
-  min-height: 100svh;
-  width: 100%;
-  height: 100%;
+  /*
+   * No `overflow-x` here on purpose. `html` above already contains horizontal
+   * overflow for the whole document, and any non-`visible` overflow on `body`
+   * is resolved against the viewport in a way that makes body a vertical scroll
+   * container — which then becomes the containing block for sticky descendants,
+   * so the mobile header scrolls away instead of pinning. Verified in Chrome:
+   * with a value here the band sits at -412px after a 412px scroll; without it,
+   * at 0.
+   */
+  font-family: var(--font-sohne-var);
+  font-feature-settings: var(--font-features);
+  color: var(--text-primary);
+  background-color: var(--surface-ground);
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+/*
+ * 100vh is iOS Safari's *large* viewport — it ignores the address bar, so a
+ * full-height page is cut off below the fold. svh is the small viewport and,
+ * unlike dvh, does not reflow while the toolbar animates. The vh line above is
+ * the fallback for browsers without svh.
+ */
+@supports (min-height: 100svh) {
+  body {
+    min-height: 100svh;
+  }
+}
+
+/*
+ * While the mobile shell is mounted the document adopts its canvas colour.
+ * Without this, overscroll rubber-banding and any short-content gap expose the
+ * white page background as a border around the app.
+ */
+html[data-shell="mobile"],
+html[data-shell="mobile"] body,
+html[data-shell="mobile"] #root {
+  background-color: var(--surface-ground);
+}
+
+/* Media and embedded content must never exceed their container. */
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block;
+  max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+/* Long unbroken strings — addresses, tx ids, seed words — must wrap, not overflow. */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+li,
+dd,
+dt,
+figcaption {
+  overflow-wrap: break-word;
 }
 
 /*
@@ -71,34 +356,35 @@ input[type="submit"] {
   touch-action: manipulation;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/* Form controls inherit the type system rather than the UA default. */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  font-feature-settings: inherit;
+  color: inherit;
+  letter-spacing: inherit;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
+/* A visible, consistent focus ring is the one outline the system requires. */
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: must beat component-level animations */
+    animation-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: must beat component-level animations */
+    animation-iteration-count: 1 !important;
+    /* biome-ignore lint/complexity/noImportantStyles: must beat component-level transitions */
+    transition-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: must beat component-level scroll behavior */
+    scroll-behavior: auto !important;
   }
 }

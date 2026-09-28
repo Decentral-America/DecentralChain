@@ -1,4 +1,4 @@
-import { layout as layoutTokens, palette, typeScale } from '@/styles/tokens';
+import { layout as layoutTokens, palette, typeScale } from '@/styles/legacy/tokens';
 
 /**
  * Brand tokens for the landing/marketing surfaces.

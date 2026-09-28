@@ -1,40 +1,55 @@
 /**
- * Leasing — status chip contrast on row hover
+ * Leasing — status chip and Cancel button contrast, row hovered or not
  *
  * `LeasingModern` (a thin `PageFrame` wrapper around this component) is a
  * live, authenticated route — `/desktop/wallet/leasing`, reachable on mobile
- * too via `MobilePageShell` (`walletRoutes.tsx`). Its leasing-history table
- * renders `<TableRow hover>`, so pointing at a row paints MUI's
- * `action.hover` underneath it — the same token as `tokens(mode).surface.hover`
- * (`mui-theme.ts:19`).
+ * too via `MobilePageShell` (`walletRoutes.tsx`). Its lease history is an
+ * `InsetGroup` of `InsetRow`s (a grouped list inside the "History" section,
+ * no longer a `<TableRow hover>` table): white `surface.raised` in light mode,
+ * graphite in dark, with each lease's status chip under its amount and a
+ * "Cancel" button as the row's accessory.
  *
- * The status `Chip` was `variant="outlined"`: no fill of its own, so its
- * label read directly off whatever sat behind it. At rest that is the card's
- * `surface.raised` (fine, ≥5.19:1 for every intent colour); on hover it
- * became `surface.hover`, where `intent.warning` measures 4.1654:1 in light
- * mode and `intent.success` 4.2865:1 — both under the 4.5:1 AA floor for
- * body text. (The row's other outlined intent element, the "Cancel" button's
- * `color="error"` label, clears at 4.5122:1 — tight, but not a genuine
- * failure, so it is measured here and left alone.)
+ * The status `Chip` was once `variant="outlined"`: no fill of its own, so its
+ * label read directly off the table row's `action.hover` fill, where
+ * `intent.warning` measured 4.1654:1 and `intent.success` 4.2865:1 in light
+ * mode. Fixed by filling it: `intent.<x>` as its own opaque fill with the
+ * matching `intent.on<X>` ink (verified ≥4.5:1 in both modes for all four
+ * intents — see `theme/tokens/semantic.ts`), so nothing behind the row can
+ * reach its ink.
  *
- * Fixed by dropping `variant="outlined"` on the status chip: MUI's filled
- * variant gives it `intent.<x>` as its own opaque fill with the matching
- * `intent.on<X>` ink (verified ≥4.5:1 in both modes for all four intents —
- * see `theme/tokens/semantic.ts`), so the row's hover state can no longer
- * reach its ink at all.
+ * The redesign's theme then broke that fix without touching `Leasing.tsx`:
+ * its `MuiChip.filled` override repaints *every* filled chip with the neutral
+ * translucent `chrome.fill`, coloured ones included, leaving the `intent.on*`
+ * ink on a grey wash — 1.15:1 (white on #efeff0) in light mode, 1.65:1 (black
+ * on #323236) in dark. `Leasing.tsx` now restates the intent fill on the chip.
  *
- * `paintedBackground` below encodes that behaviour honestly: if the element
- * has no opaque background of its own, the row's `:hover` background is what
- * is actually visible behind it (read out of the emitted emotion stylesheet
- * — jsdom does not apply `:hover`, so a simulated pointer would silently
- * measure the rest state and pass on broken code, the same trap
- * `AppTopBar.contrast.test.tsx` documents). If the element *does* paint its
- * own background, that is what is actually visible, regardless of the row.
+ * The Cancel button is no longer "genuinely outlined": the redesign's
+ * outlined buttons paint their own translucent `chrome.fill` at rest and
+ * `chrome.fillHover` under the pointer, and `color="error"` inked them
+ * `intent.danger` — 3.75:1 at rest / 3.37:1 hovered in dark mode, 4.69:1 /
+ * 4.32:1 in light. `Leasing.tsx` now inks it with the alert set's danger ink
+ * (`chrome[mode].alert.error.fg`): 7.13:1 / 6.57:1 light, 6.26:1 / 5.64:1
+ * dark.
+ *
+ * What is behind an ink is measured with the shared `paintedBackground`,
+ * which composites translucent fills onto the first opaque surface — reading
+ * a translucent fill as if it were solid reports a contrast nobody sees. The
+ * pointer state is read out of the emitted stylesheets (`declaredHover`
+ * below): jsdom does not apply `:hover`, so a simulated pointer would
+ * silently measure the rest state and pass on broken code, the same trap
+ * `AppTopBar.contrast.test.tsx` documents. Rows with their own controls are
+ * plain `div`s that declare no hover fill (only whole-row buttons take
+ * `listHover`), so today a hovered row reveals its rest background; the
+ * measurement still applies whatever the row declares, so a hover fill added
+ * later is measured, not assumed away.
  */
 import { ThemeProvider } from '@mui/material/styles';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
+import { ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { describe, expect, it, vi } from 'vitest';
+import { darkTheme, lightTheme } from '@/styles/themes';
+import { paintedBackground } from '@/test-utils/paintedBackground';
 import { rgbToHex } from '@/test-utils/rgbToHex';
 import { createAppTheme } from '@/theme/mui-theme';
 import { contrastRatio, type ThemeMode, tokens } from '@/theme/tokens/semantic';
@@ -82,59 +97,110 @@ function ink(el: HTMLElement): string {
   return toHex(resolveVar(style, style.color));
 }
 
-/** `el`'s own background, or `null` if it paints no opaque fill of its own. */
+/**
+ * `el`'s own fill: hex when opaque, the raw `rgba(...)` when translucent (so
+ * it can never equal an opaque token by accident — `rgbToHex` would drop the
+ * alpha), `null` when it paints none.
+ */
 function ownBackground(el: HTMLElement): string | null {
   const style = getComputedStyle(el);
   const raw = resolveVar(style, style.backgroundColor);
   if (!raw || raw === 'rgba(0, 0, 0, 0)' || raw === 'transparent') return null;
+  const alpha = raw.match(/^rgba\(.*,\s*([\d.]+)\)$/);
+  if (alpha && Number(alpha[1]) < 1) return raw;
   return toHex(raw);
 }
 
 /**
- * The `&:hover` background declared for `el` in the emitted stylesheet.
- *
- * Matched only against `el`'s own `css-<hash>` emotion class, never against
- * MUI's static classes (`MuiTableRow-hover`, `MuiTableRow-root`, ...). This
- * suite renders `Leasing` in both modes across several `it()`s in one file;
- * emotion never removes a `<style>` tag once injected, so by the time a
- * later test runs, `document.styleSheets` holds `.MuiTableRow-hover:hover`
- * rules from *every* mode rendered so far, all sharing that static
- * substring. The first match by static class alone is whichever rule
- * happened to be injected first across the whole file — provably the wrong
- * one here (confirmed by mutation: filtering on the static class matched
- * light mode's own leftover rule while measuring the dark-mode render,
- * silently substituting light's `surface.hover` for dark's). The `css-`
- * hash is emotion's own de-duplication key — content-derived, so it differs
- * between light and dark (their `action.hover` values differ) and is
- * therefore the only selector fragment that safely identifies *this*
- * render's rule and no other's.
+ * `el`'s generated class: emotion's `css-<hash>` for MUI, or the
+ * styled-components name class (the one that is not the static `sc-<id>`
+ * component id).
  */
-function hoverBackground(el: HTMLElement): string {
-  const hashClass = Array.from(el.classList).find((c) => c.startsWith('css-'));
-  if (!hashClass) throw new Error(`${el.className} has no emotion hash class to match`);
-  // The hash class is a compound member of the selector, not the segment
-  // `:hover` is appended to (that is `.MuiTableRow-hover`) — so it has to be
-  // matched as "present somewhere in this selector", not "immediately
-  // followed by :hover".
-  for (const sheet of Array.from(document.styleSheets)) {
-    for (const rule of Array.from(sheet.cssRules) as CSSStyleRule[]) {
-      if (!rule.selectorText) continue;
-      if (!rule.selectorText.includes(`.${hashClass}`) || !rule.selectorText.includes(':hover')) {
-        continue;
-      }
-      const value = rule.style.getPropertyValue('background-color');
-      if (value) return toHex(value.trim());
-    }
-  }
-  throw new Error(`no :hover background-color rule found for ${el.className}`);
+function generatedClass(el: HTMLElement): string | undefined {
+  const classes = Array.from(el.classList);
+  return (
+    classes.find((c) => c.startsWith('css-')) ??
+    classes.find((c) => !c.startsWith('sc-') && !c.startsWith('Mui'))
+  );
+}
+
+function styleRules(rules: CSSRuleList): CSSStyleRule[] {
+  return Array.from(rules).flatMap((rule) =>
+    'selectorText' in rule
+      ? [rule as CSSStyleRule]
+      : 'cssRules' in rule
+        ? styleRules((rule as CSSGroupingRule).cssRules)
+        : [],
+  );
 }
 
 /**
- * What a pointer actually resting on `row` reveals behind `el`: `el`'s own
- * fill if it paints one, otherwise the row's hover fill showing through.
+ * The `:hover` background declared for `el` in the emitted stylesheets, or
+ * `null` when it declares none.
+ *
+ * Matched only against `el`'s own generated class, never against static
+ * class names (`MuiButton-root`, `sc-<id>`, ...). This suite renders
+ * `Leasing` in both modes across several `it()`s in one file; neither emotion
+ * nor styled-components removes a `<style>` rule once injected, so by the
+ * time a later test runs, `document.styleSheets` holds `:hover` rules from
+ * *every* mode rendered so far, all sharing those static substrings. The
+ * first match by static class alone is whichever rule happened to be
+ * injected first across the whole file — provably the wrong one (confirmed
+ * by mutation on the old table: filtering on `MuiTableRow-hover` matched
+ * light mode's leftover rule while measuring the dark-mode render, silently
+ * substituting light's `surface.hover` for dark's). The generated class is
+ * each library's content-derived de-duplication key, so it differs between
+ * light and dark and is the only selector fragment that safely identifies
+ * *this* render's rule and no other's.
+ *
+ * The hash class is a compound member of the selector, not necessarily the
+ * segment `:hover` is appended to, so it is matched as "present somewhere in
+ * this selector". Later rules win at equal specificity, so the last
+ * declaration is the one the browser paints.
  */
-function paintedBackground(el: HTMLElement, row: HTMLElement): string {
-  return ownBackground(el) ?? hoverBackground(row);
+function declaredHover(el: HTMLElement): string | null {
+  const hashClass = generatedClass(el);
+  if (!hashClass) return null;
+  let value: string | null = null;
+  for (const sheet of Array.from(document.styleSheets)) {
+    for (const rule of styleRules(sheet.cssRules)) {
+      if (!rule.selectorText.includes(`.${hashClass}`) || !rule.selectorText.includes(':hover')) {
+        continue;
+      }
+      const declared = rule.style.getPropertyValue('background-color');
+      if (declared) value = declared.trim();
+    }
+  }
+  return value;
+}
+
+/**
+ * What is painted behind `el` with the pointer resting on it: `el` and every
+ * ancestor match `:hover` at once, so each one's declared hover fill replaces
+ * its rest fill before the layers are composited.
+ */
+function paintedUnderPointer(el: HTMLElement): string {
+  const restored: Array<[HTMLElement, string]> = [];
+  for (let node: HTMLElement | null = el; node; node = node.parentElement) {
+    const hover = declaredHover(node);
+    if (hover === null) continue;
+    restored.push([node, node.style.backgroundColor]);
+    node.style.backgroundColor = hover;
+  }
+  try {
+    return toHex(paintedBackground(el));
+  } finally {
+    for (const [node, previous] of restored) node.style.backgroundColor = previous;
+  }
+}
+
+/** The lease row (an `InsetRow` in the "History" list) that `el` sits in. */
+function historyRow(el: HTMLElement): HTMLElement {
+  const history = screen.getByRole('region', { name: /^History/ });
+  let node: HTMLElement | null = el;
+  while (node && node.parentElement?.parentElement !== history) node = node.parentElement;
+  if (!node) throw new Error('element is not inside a History row');
+  return node;
 }
 
 function renderLeasing(mode: ThemeMode) {
@@ -175,7 +241,9 @@ function renderLeasing(mode: ThemeMode) {
   return render(
     <QueryClientProvider client={client}>
       <ThemeProvider theme={createAppTheme(mode)}>
-        <Leasing />
+        <StyledThemeProvider theme={mode === 'dark' ? darkTheme : lightTheme}>
+          <Leasing />
+        </StyledThemeProvider>
       </ThemeProvider>
     </QueryClientProvider>,
   );
@@ -184,15 +252,15 @@ function renderLeasing(mode: ThemeMode) {
 describe.each([
   'light',
   'dark',
-] as const)('Leasing — status chip on row hover (%s mode)', (mode) => {
-  it('the pending-status chip is filled with its own intent fill, not outlined on the row', () => {
+] as const)('Leasing — status chip and Cancel button, row hovered or not (%s mode)', (mode) => {
+  it('the pending-status chip is filled with its own intent fill, not a neutral wash', () => {
     renderLeasing(mode);
     const chip = screen.getByText('Pending').closest('.MuiChip-root') as HTMLElement;
     expect(ownBackground(chip)).toBe(tokens(mode).intent.warning);
     expect(ink(chip)).toBe(tokens(mode).intent.onWarning);
   });
 
-  it('the active-status chip is filled with its own intent fill, not outlined on the row', () => {
+  it('the active-status chip is filled with its own intent fill, not a neutral wash', () => {
     renderLeasing(mode);
     const chip = screen.getByText('Active').closest('.MuiChip-root') as HTMLElement;
     expect(ownBackground(chip)).toBe(tokens(mode).intent.success);
@@ -202,24 +270,35 @@ describe.each([
   it('the pending chip clears AA against whatever is actually visible behind it, row hovered or not', () => {
     renderLeasing(mode);
     const chip = screen.getByText('Pending').closest('.MuiChip-root') as HTMLElement;
-    const row = chip.closest('tr') as HTMLElement;
-    expect(contrastRatio(ink(chip), paintedBackground(chip, row))).toBeGreaterThanOrEqual(4.5);
+    // The row is found structurally and carries a generated class, so "no
+    // hover fill declared" is a real absence, not a lookup that missed.
+    expect(generatedClass(historyRow(chip))).toBeDefined();
+    expect(contrastRatio(ink(chip), toHex(paintedBackground(chip)))).toBeGreaterThanOrEqual(4.5);
+    expect(contrastRatio(ink(chip), paintedUnderPointer(chip))).toBeGreaterThanOrEqual(4.5);
   });
 
   it('the active chip clears AA against whatever is actually visible behind it, row hovered or not', () => {
     renderLeasing(mode);
     const chip = screen.getByText('Active').closest('.MuiChip-root') as HTMLElement;
-    const row = chip.closest('tr') as HTMLElement;
-    expect(contrastRatio(ink(chip), paintedBackground(chip, row))).toBeGreaterThanOrEqual(4.5);
+    expect(generatedClass(historyRow(chip))).toBeDefined();
+    expect(contrastRatio(ink(chip), toHex(paintedBackground(chip)))).toBeGreaterThanOrEqual(4.5);
+    expect(contrastRatio(ink(chip), paintedUnderPointer(chip))).toBeGreaterThanOrEqual(4.5);
   });
 
-  it("the Cancel button's outlined error ink clears AA on the row's hover fill (audited, already passing, left alone)", () => {
+  it("the Cancel button's error ink clears AA on its own translucent fill, at rest and under the pointer", () => {
     renderLeasing(mode);
     const button = screen.getByRole('button', { name: 'Cancel' });
-    const row = button.closest('tr') as HTMLElement;
-    // Genuinely outlined — no fill of its own in either mode — so what it
-    // must clear is the row's hover background, not itself.
-    expect(ownBackground(button)).toBeNull();
-    expect(contrastRatio(ink(button), paintedBackground(button, row))).toBeGreaterThanOrEqual(4.5);
+    expect(generatedClass(historyRow(button))).toBeDefined();
+    // Not outlined-on-the-row any more: the theme gives outlined buttons a
+    // translucent fill of their own, and a different one on hover. The
+    // hover lookup must find it in this mode's render, or the pointer
+    // measurement below would silently repeat the rest state.
+    expect(ownBackground(button)).toMatch(/^rgba\(/);
+    expect(declaredHover(button)).toMatch(/^rgba\(/);
+    expect(declaredHover(button)).not.toBe(ownBackground(button));
+    expect(contrastRatio(ink(button), toHex(paintedBackground(button)))).toBeGreaterThanOrEqual(
+      4.5,
+    );
+    expect(contrastRatio(ink(button), paintedUnderPointer(button))).toBeGreaterThanOrEqual(4.5);
   });
 });

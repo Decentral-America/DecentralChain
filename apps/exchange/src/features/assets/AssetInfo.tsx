@@ -36,7 +36,7 @@ const Header = styled.div`
 const AssetName = styled.h3`
   margin: 0 0 ${({ theme }) => theme.spacing.xs};
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 400;
   color: ${({ theme }) => theme.colors.text};
 `;
 

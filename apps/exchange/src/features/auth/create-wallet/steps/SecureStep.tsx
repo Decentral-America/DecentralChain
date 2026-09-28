@@ -11,7 +11,7 @@
  */
 import { Alert, Box, Button, Stack, TextField, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
-import { type ThemeMode, tokens } from '@/theme/tokens/semantic';
+import { type ThemeMode, tokens } from '@/styles/legacy/semantic';
 
 /** Count how many of the wallet's password rules a candidate satisfies (0-5). */
 export function passwordStrength(password: string): number {

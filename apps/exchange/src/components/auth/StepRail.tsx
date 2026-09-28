@@ -5,7 +5,7 @@
  * tests read from one source rather than inferring position twice.
  */
 import { Box, Stack, Typography, useTheme } from '@mui/material';
-import { tokens } from '@/theme/tokens/semantic';
+import { tokens } from '@/styles/legacy/semantic';
 
 type StepState = 'complete' | 'current' | 'upcoming';
 

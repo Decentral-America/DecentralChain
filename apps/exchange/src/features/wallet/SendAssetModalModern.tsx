@@ -1,14 +1,17 @@
 /**
  * SendAssetModalModern Component
- * Modern MUI-based modal for sending assets with recipient, amount, and fee inputs
+ *
+ * A sheet-like dialog: the amount is the field, large and centred like Apple
+ * Cash, with a MAX chip under it; the recipient and an optional note follow;
+ * and a summary of exactly what will be signed, fee included, sits above a
+ * hold-to-confirm button. Holding only calls the same send handler the old
+ * button did, so validation and signing are unchanged.
  */
 
-import { CheckCircle, Close as CloseIcon, Send as SendIcon } from '@mui/icons-material';
 import {
   Alert,
   Box,
   Button,
-  Card,
   CircularProgress,
   Dialog,
   DialogActions,
@@ -19,15 +22,18 @@ import {
   Stack,
   TextField,
   Typography,
-  useTheme,
 } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Check, CircleCheck, X } from 'lucide-react';
 import type React from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { getAddressByAlias, validateAliasFormat } from '@/api/services/aliasService';
+import { AmountField } from '@/components/premium/AmountField';
+import { ClipboardButton } from '@/components/premium/ClipboardButton';
+import { HoldToConfirm } from '@/components/premium/HoldToConfirm';
+import { DetailGroup, DetailRow } from '@/components/premium/InsetList';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
-import { tokens } from '@/theme/tokens/semantic';
 import { broadcastTransaction, createTransferTransaction } from '@/utils/transactions';
 
 export interface SendAssetModalModernProps {
@@ -52,7 +58,6 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
 }) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const t = tokens(useTheme().palette.mode);
 
   // Form state
   const [recipient, setRecipient] = useState('');
@@ -299,110 +304,59 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
     onClose();
   };
 
+  // The base asset reads as its ticker, not "DecentralChain", in figures.
+  const symbol = assetId === 'DCC' ? 'DCC' : assetName;
+  const short = (a: string) => (a.length > 16 ? `${a.slice(0, 8)}…${a.slice(-6)}` : a);
+  const parsedAmount = parseFloat(amount);
+  const finalRecipient = isAlias && resolvedAddress ? resolvedAddress : recipient;
+
+  const titleBar = (title: string, disabled = false) => (
+    <DialogTitle sx={{ alignItems: 'center', display: 'flex', justifyContent: 'space-between' }}>
+      {title}
+      <IconButton onClick={handleClose} size="small" aria-label="Close" disabled={disabled}>
+        <X size={18} />
+      </IconButton>
+    </DialogTitle>
+  );
+
   /**
    * Render success view
    */
   if (showSuccess && txId) {
     return (
-      <Dialog open={isOpen} onClose={handleClose} maxWidth="sm" fullWidth>
-        <DialogTitle>
-          <Box
-            sx={{
-              alignItems: 'center',
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Box
-              sx={{
-                alignItems: 'center',
-                display: 'flex',
-                gap: 1,
-              }}
-            >
-              <Box
-                sx={{
-                  alignItems: 'center',
-                  background: tokens('light').intent.success,
-                  borderRadius: '50%',
-                  display: 'flex',
-                  height: 40,
-                  justifyContent: 'center',
-                  width: 40,
-                }}
-              >
-                {/*
-                  Fixed badge — now a solid `tokens('light').intent.success`
-                  fill instead of the old cyan-to-emerald two-stop gradient,
-                  so no raw hex remains here. `white` missed the 3:1 icon
-                  floor against the original gradient's stops (2.43/2.54),
-                  mode-independent. Unlike the form-view badge below
-                  (indigo-to-cyan, the same stops the old Send button fill
-                  used — genuinely needs a new gradient stop, since neither
-                  black nor white clears both), this pair clears comfortably
-                  with the app's own fixed dark ink,
-                  `tokens('light').text.primary` (7.51/7.19 — fix round 1,
-                  task-6-report.md).
-                */}
-                <SendIcon sx={{ color: tokens('light').text.primary, fontSize: 20 }} />
-              </Box>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 600,
-                }}
-              >
-                Transaction Sent
-              </Typography>
-            </Box>
-            <IconButton onClick={handleClose} size="small">
-              <CloseIcon />
-            </IconButton>
-          </Box>
-        </DialogTitle>
+      <Dialog open={isOpen} onClose={handleClose} maxWidth="xs" fullWidth>
+        {titleBar('Sent')}
         <DialogContent>
-          <Stack spacing={3}>
-            <Alert severity="success">
-              Your transaction has been successfully broadcast to the network!
-            </Alert>
-            <Box>
-              <Typography
-                variant="subtitle2"
-                gutterBottom
-                sx={{
-                  color: 'text.secondary',
-                }}
-              >
-                Transaction ID
-              </Typography>
-              {/*
-                A well, so `surface.sunken` — mode-aware, because the ink on
-                it is. This was `bgcolor: 'grey.50'`: it reads like a theme
-                token and the raw-colour lint accepts it, but MUI's grey ramp
-                has no mode dimension (`grey.50` is `#fafafa` in both), so it
-                behaved as a fixed light fill. The txId `Typography` sets no
-                `color`, inheriting the paper's mode-aware `text.primary` —
-                1.04:1 in dark. The transaction ID is the whole point of this
-                view, and it was invisible. Same defect class as a hex
-                literal; see `ReceiveAssetModalModern`'s address well.
-              */}
-              <Card sx={{ bgcolor: t.surface.sunken, p: 2 }}>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    fontFamily: 'monospace',
-                    wordBreak: 'break-all',
-                  }}
-                >
-                  {txId}
-                </Typography>
-              </Card>
+          <Stack spacing={2.5} sx={{ alignItems: 'center', pt: 1, textAlign: 'center' }}>
+            <Box sx={{ color: 'success.main' }}>
+              <CircleCheck size={48} strokeWidth={1.75} aria-hidden />
+            </Box>
+            <Typography sx={{ color: 'text.secondary', fontSize: 15 }}>
+              Your transaction has been broadcast to the network.
+            </Typography>
+            <Box sx={{ width: '100%' }}>
+              <DetailGroup>
+                <DetailRow label="Transaction ID">
+                  <Box
+                    component="span"
+                    sx={{
+                      alignItems: 'center',
+                      display: 'inline-flex',
+                      fontFamily: 'var(--font-mono)',
+                      gap: 1,
+                    }}
+                  >
+                    {short(txId)}
+                    <ClipboardButton variant="icon" value={txId} label="Copy transaction ID" />
+                  </Box>
+                </DetailRow>
+              </DetailGroup>
             </Box>
           </Stack>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} variant="contained">
-            Close
+        <DialogActions sx={{ p: 3, pt: 1 }}>
+          <Button onClick={handleClose} variant="contained" fullWidth>
+            Done
           </Button>
         </DialogActions>
       </Dialog>
@@ -413,57 +367,34 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
    * Render form view
    */
   return (
-    <Dialog open={isOpen} onClose={handleClose} maxWidth="sm" fullWidth>
-      <DialogTitle>
-        <Box
-          sx={{
-            alignItems: 'center',
-            display: 'flex',
-            justifyContent: 'space-between',
-          }}
-        >
-          <Box
-            sx={{
-              alignItems: 'center',
-              display: 'flex',
-              gap: 1,
-            }}
-          >
-            <Box
-              sx={{
-                alignItems: 'center',
-                background: tokens('light').accent.primary,
-                borderRadius: '50%',
-                display: 'flex',
-                height: 40,
-                justifyContent: 'center',
-                width: 40,
-              }}
-            >
-              <SendIcon sx={{ color: tokens('light').accent.onPrimary, fontSize: 20 }} />
-            </Box>
-            <Typography
-              variant="h6"
-              sx={{
-                fontWeight: 600,
-              }}
-            >
-              Send {assetName}
-            </Typography>
-          </Box>
-          <IconButton onClick={handleClose} size="small">
-            <CloseIcon />
-          </IconButton>
-        </Box>
-      </DialogTitle>
+    <Dialog open={isOpen} onClose={handleClose} maxWidth="xs" fullWidth>
+      {titleBar(`Send ${symbol}`, sendMutation.isPending)}
       <DialogContent>
-        <Stack spacing={3} sx={{ mt: 2 }}>
+        <Stack spacing={2.5} sx={{ pt: 1 }}>
+          <AmountField
+            value={amount}
+            onChange={(value) => {
+              setAmount(value);
+              if (validationErrors.amount) {
+                setValidationErrors((prev) => ({ ...prev, amount: undefined }));
+              }
+            }}
+            symbol={symbol}
+            // Trailing zeros stripped: "12.5 DCC", not "12.50000000 DCC".
+            available={`${Number(availableBalance).toLocaleString('en-US', {
+              maximumFractionDigits: assetDecimals,
+            })} ${symbol}`}
+            onMax={handleMaxClick}
+            error={validationErrors.amount}
+            disabled={sendMutation.isPending}
+          />
+
           {/* Recipient Address or Alias */}
           <Box>
             <TextField
               fullWidth
-              label="Recipient Address or Alias"
-              placeholder="Enter address (3P...) or alias (e.g., myalias)"
+              label="To"
+              placeholder="Address (3P…) or alias"
               value={recipient}
               onChange={(e) => {
                 setRecipient(e.target.value);
@@ -473,19 +404,21 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
               }}
               error={!!validationErrors.recipient}
               helperText={
-                validationErrors.recipient || !recipient
-                  ? 'You can send to a DecentralChain address or an alias'
-                  : undefined
+                validationErrors.recipient ||
+                (!recipient ? 'A DecentralChain address or an alias' : undefined)
               }
+              disabled={sendMutation.isPending}
               slotProps={{
                 input: {
                   endAdornment: isResolvingAlias ? (
                     <InputAdornment position="end">
-                      <CircularProgress size={20} />
+                      <CircularProgress size={18} />
                     </InputAdornment>
                   ) : isAlias && resolvedAddress ? (
                     <InputAdornment position="end">
-                      <CheckCircle color="success" />
+                      <Box sx={{ color: 'success.main', display: 'flex' }}>
+                        <Check size={18} aria-label="Alias resolved" />
+                      </Box>
                     </InputAdornment>
                   ) : null,
                 },
@@ -493,129 +426,58 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
             />
             {/* Show resolved address for aliases */}
             {isAlias && resolvedAddress && (
-              <Alert severity="success" icon={<CheckCircle fontSize="small" />} sx={{ mt: 1 }}>
-                <Stack spacing={0.5}>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      fontWeight: 600,
-                    }}
-                  >
-                    Alias resolved to address:
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      fontFamily: 'monospace',
-                    }}
-                  >
-                    {resolvedAddress}
-                  </Typography>
-                </Stack>
-              </Alert>
+              <Typography
+                variant="caption"
+                sx={{ color: 'text.secondary', display: 'block', mt: 0.75, px: 1.5 }}
+              >
+                Resolves to{' '}
+                <Box
+                  component="span"
+                  sx={{ color: 'text.primary', fontFamily: 'var(--font-mono)' }}
+                >
+                  {resolvedAddress}
+                </Box>
+              </Typography>
             )}
             {/* Show alias resolution failure */}
             {isAlias && !resolvedAddress && !isResolvingAlias && recipient.length >= 4 && (
               <Alert severity="info" sx={{ mt: 1 }}>
-                <Typography variant="caption">
-                  Alias &quot;{recipient}&quot; not found. Make sure the alias exists on the
-                  blockchain.
-                </Typography>
+                Alias &quot;{recipient}&quot; not found. Make sure the alias exists on the
+                blockchain.
               </Alert>
             )}
-          </Box>
-
-          {/* Amount */}
-          <Box>
-            <TextField
-              fullWidth
-              label="Amount"
-              type="number"
-              placeholder="0.00"
-              value={amount}
-              onChange={(e) => {
-                setAmount(e.target.value);
-                if (validationErrors.amount) {
-                  setValidationErrors((prev) => ({ ...prev, amount: undefined }));
-                }
-              }}
-              error={!!validationErrors.amount}
-              helperText={validationErrors.amount}
-              slotProps={{
-                input: {
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Button size="small" onClick={handleMaxClick} sx={{ minWidth: 'auto' }}>
-                        MAX
-                      </Button>
-                    </InputAdornment>
-                  ),
-                },
-              }}
-            />
-            <Typography
-              variant="caption"
-              sx={{
-                color: 'text.secondary',
-                display: 'block',
-                mt: 0.5,
-              }}
-            >
-              Available:{' '}
-              {Number(availableBalance).toLocaleString('en-US', {
-                maximumFractionDigits: assetDecimals,
-              })}{' '}
-              {assetName}
-            </Typography>
           </Box>
 
           {/* Attachment (optional) */}
           <TextField
             fullWidth
-            label="Attachment (optional)"
-            placeholder="Optional message"
+            label="Note (optional)"
+            placeholder="Visible on the blockchain"
             value={attachment}
             onChange={(e) => setAttachment(e.target.value)}
             helperText={`${attachment.length}/140 characters`}
+            disabled={sendMutation.isPending}
             slotProps={{
               htmlInput: { maxLength: 140 },
             }}
           />
 
-          {/* Fee Display */}
-          <Card
-            sx={{
-              bgcolor: 'action.hover',
-              border: '1px solid',
-              borderColor: 'primary.light',
-              p: 2,
-            }}
-          >
-            <Box
-              sx={{
-                alignItems: 'center',
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Typography
-                variant="body2"
-                sx={{
-                  color: 'text.secondary',
-                }}
-              >
-                Transaction Fee
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  fontWeight: 600,
-                }}
-              >
-                {fee} DCC (≈ ${(fee * 0.5).toFixed(4)})
-              </Typography>
-            </Box>
-          </Card>
+          {/*
+            What will be signed. The fee is the network's, in DCC; there is no
+            price feed here, so no fiat estimate is invented beside it.
+          */}
+          <DetailGroup aria-label="Transaction summary">
+            <DetailRow label="To">{finalRecipient ? short(finalRecipient) : '—'}</DetailRow>
+            <DetailRow label="Amount">
+              {Number.isFinite(parsedAmount) && parsedAmount > 0 ? `${amount} ${symbol}` : '—'}
+            </DetailRow>
+            <DetailRow label="Network fee">{fee} DCC</DetailRow>
+            {assetId === 'DCC' && Number.isFinite(parsedAmount) && parsedAmount > 0 ? (
+              <DetailRow label="Total">
+                {(parsedAmount + fee).toLocaleString(undefined, { maximumFractionDigits: 8 })} DCC
+              </DetailRow>
+            ) : null}
+          </DetailGroup>
 
           {/* Error Message */}
           {sendMutation.isError && (
@@ -627,30 +489,25 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
           )}
         </Stack>
       </DialogContent>
-      <DialogActions sx={{ p: 3, pt: 2 }}>
-        <Button onClick={handleClose} disabled={sendMutation.isPending}>
-          Cancel
-        </Button>
-        {/*
-          No fixed gradient fill any more (task-6-report.md, fix round 1).
-          `primary.contrastText` is mode-aware; the gradient it used to sit
-          on was not, so once dark mode could actually reach this button the
-          ink and fill stopped agreeing — measured 2.90:1 against the
-          gradient's indigo stop (2.43:1 against the cyan stop even in light
-          mode). Neither white nor black clears both stops (checked: white
-          6.29/2.43, black 3.34/8.65), so — unlike the two decorative badges
-          fixed in the same round — this one can't be rescued with a pinned
-          ink; the identical fix as CreateToken's Next/Create buttons
-          applies: drop the custom fill and let `variant="contained"` derive
-          a verified-accessible solid fill+ink pair from the theme.
-        */}
-        <Button
-          variant="contained"
-          onClick={handleSend}
+      <DialogActions sx={{ flexDirection: 'column', gap: 1, p: 3, pt: 1 }}>
+        <HoldToConfirm
+          fullWidth
+          onConfirm={handleSend}
+          pending={sendMutation.isPending}
+          pendingLabel="Sending…"
+          confirmLabel="Signing"
           disabled={!recipient || !amount || sendMutation.isPending}
-          startIcon={<SendIcon />}
         >
-          {sendMutation.isPending ? 'Sending...' : 'Send'}
+          Hold to send
+        </HoldToConfirm>
+        <Button
+          onClick={handleClose}
+          disabled={sendMutation.isPending}
+          fullWidth
+          variant="text"
+          sx={{ ml: '0 !important' }}
+        >
+          Cancel
         </Button>
       </DialogActions>
     </Dialog>

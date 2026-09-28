@@ -8,7 +8,7 @@ import HeroSection from '@/components/landing/HeroSection';
 import IconBullets from '@/components/landing/IconBullets';
 import MarqueeBand from '@/components/landing/MarqueeBand';
 import SecurityStatement from '@/components/landing/SecurityStatement';
-import { tokens } from '@/theme/tokens/semantic';
+import { tokens } from '@/styles/legacy/semantic';
 
 /**
  * Marketing page.

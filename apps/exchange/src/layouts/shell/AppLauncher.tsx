@@ -2,7 +2,7 @@ import { Box, Dialog, Typography, useTheme } from '@mui/material';
 import { useNavigate } from 'react-router';
 import { AppTile } from '@/layouts/shell/AppTile';
 import { isCurrent, LAUNCHER_COLUMNS, LAUNCHER_TILES } from '@/layouts/shell/navigation';
-import { radii } from '@/styles/tokens';
+import { chrome, typeScale } from '@/styles/tokens';
 import { tokens } from '@/theme/tokens/semantic';
 
 /**
@@ -15,7 +15,9 @@ import { tokens } from '@/theme/tokens/semantic';
  *
  * It is a modal rather than a menu because it is a place, not a list: open it,
  * see the whole product, go somewhere. Escape and backdrop close it; picking a
- * destination navigates and closes.
+ * destination navigates and closes. It wears the system's sheet material — the
+ * dialog radius from the theme and the sheet's depth — over the blurred
+ * backdrop.
  *
  * ## Why the columns are pinned
  *
@@ -48,6 +50,7 @@ export function AppLauncher({
   const mode = useTheme().palette.mode;
   const isDark = mode === 'dark';
   const t = tokens(mode);
+  const material = chrome[mode];
 
   const go = (path: string) => {
     onClose();
@@ -64,9 +67,13 @@ export function AppLauncher({
       slotProps={{
         paper: {
           sx: {
+            backgroundImage: 'none',
             bgcolor: t.surface.base,
-            borderRadius: radii.shell,
-            boxShadow: 'none',
+            // Shadow does not read on black, so dark mode rings the sheet in a
+            // strong hairline as well.
+            boxShadow: isDark
+              ? `0 0 0 1px ${t.border.strong}, ${material.sheetShadow}`
+              : material.sheetShadow,
             overflow: 'hidden',
             position: 'relative',
           },
@@ -74,7 +81,7 @@ export function AppLauncher({
       }}
     >
       <Box sx={{ p: { sm: 4, xs: 3 } }}>
-        {/* The brand's front-door voice: mark, then the promise as a title. */}
+        {/* The mark, then the promise as a title. */}
         <Box sx={{ alignItems: 'center', display: 'flex', gap: 1.5, mb: 3 }}>
           <Box
             component="img"
@@ -90,10 +97,10 @@ export function AppLauncher({
             component="h1"
             sx={{
               color: 'text.primary',
-              fontSize: 22,
-              fontWeight: 700,
-              letterSpacing: '-0.02em',
-              textTransform: 'uppercase',
+              fontSize: typeScale.headingSm.size,
+              fontWeight: typeScale.headingSm.weight,
+              letterSpacing: typeScale.headingSm.tracking,
+              lineHeight: typeScale.headingSm.lineHeight,
             }}
           >
             Everything

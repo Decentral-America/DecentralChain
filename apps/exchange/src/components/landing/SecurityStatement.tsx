@@ -2,8 +2,8 @@ import { alpha, Box, Container, Typography, useTheme } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { BlueprintFrame, SectionLabel } from '@/components/landing/Blueprint';
 import Reveal from '@/components/landing/Reveal';
+import { tokens } from '@/styles/legacy/semantic';
 import { onCanvas } from '@/theme/landingTheme';
-import { tokens } from '@/theme/tokens/semantic';
 
 /**
  * The security statement.

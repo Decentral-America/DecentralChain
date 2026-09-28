@@ -12,8 +12,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import Logo from '@/components/atoms/Logo';
 import { config } from '@/config';
+import { tokens } from '@/styles/legacy/semantic';
 import { onCanvas } from '@/theme/landingTheme';
-import { tokens } from '@/theme/tokens/semantic';
 
 const footerLinks = {
   resources: [
