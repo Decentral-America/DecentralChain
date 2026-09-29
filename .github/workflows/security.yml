@@ -40,6 +40,8 @@ jobs:
           exit-code: '1'
           trivyignores: .trivyignore
           version: 'v0.74.0'
+          # Maven Central mirror config -- see the comment in .github/trivy.yaml.
+          trivy-config: .github/trivy.yaml
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2  # v4.38.2
