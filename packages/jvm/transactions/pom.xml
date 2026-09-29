@@ -68,65 +68,69 @@
     <!-- Dependency version properties — pinned and audited 2026-05 -->
     <!-- io.decentralchain:crypto 2.0.7 — DCC fork of Decentral-America/crypto v2.0.7 (DCC-264) -->
     <dcc-crypto.version>2.0.7</dcc-crypto.version>
-    <!-- protobuf-schemas 1.6.2 — DCC local build (io.decentralchain namespace) -->
-    <protobuf-schemas.version>1.6.2</protobuf-schemas.version>
-    <!-- jackson-databind 2.22.1 — 2.22.0 fixed CVE-2026-54512/54513/54514/54516/54517/54518;
+    <!-- protobuf-schemas 1.6.6 — DCC local build (io.decentralchain namespace) -->
+    <protobuf-schemas.version>1.6.6</protobuf-schemas.version>
+    <!-- jackson-databind 2.22.3 — 2.22.0 fixed CVE-2026-54512/54513/54514/54516/54517/54518;
          2.22.1 additionally fixes CVE-2026-54515 (medium), now published. -->
-    <jackson-databind.version>2.22.1</jackson-databind.version>
-    <!-- jackson-core 2.22.1 — fixes GHSA-r7wm-3cxj-wff9 (async parser maxNumberLength
+    <jackson-databind.version>2.22.3</jackson-databind.version>
+    <!-- jackson-core 2.22.3 — fixes GHSA-r7wm-3cxj-wff9 (async parser maxNumberLength
          bypass, HIGH — incomplete fix in 2.22.0), pulled in transitively by jackson-databind
          but pinned explicitly since it's flagged separately by security scanning. -->
-    <jackson-core.version>2.22.1</jackson-core.version>
-    <!-- web3j:crypto 5.0.2 — latest (Jan 21, 2026); MAJOR upgrade from 4.9.8.
+    <jackson-core.version>2.22.3</jackson-core.version>
+    <!-- Jackson 3 (tools.jackson.core) 3.2.3 — latest; transitive via web3j:crypto 6.x -->
+    <jackson3.version>3.2.3</jackson3.version>
+    <!-- web3j:crypto 6.0.0 — latest; MAJOR upgrade from 5.0.2 (5.0.2 was a MAJOR upgrade
+         from 4.9.8). 6.0.0 moves its own JSON handling to Jackson 3 (tools.jackson),
+         which coexists with the Jackson 2 (com.fasterxml) used here.
          TransactionEncoder.encode(RawTransaction,SignatureData) is now PUBLIC
          in 5.0.x — reflection hack in EthereumTransaction.java removed. -->
-    <web3j-crypto.version>5.0.2</web3j-crypto.version>
-    <!-- junit-jupiter 5.14.4 — latest; upgraded from 5.8.1 -->
-    <junit.version>5.14.4</junit.version>
+    <web3j-crypto.version>6.0.0</web3j-crypto.version>
+    <!-- junit-jupiter 6.1.3 — latest; upgraded from 5.8.1 -->
+    <junit.version>6.1.3</junit.version>
     <!-- assertj-core 3.27.7 — latest per upstream; unchanged -->
     <assertj.version>3.27.7</assertj.version>
 
     <!-- Plugin versions — pinned and audited 2026-05 -->
-    <!-- maven-enforcer-plugin 3.6.2 — same as upstream (released 2025) -->
-    <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
-    <!-- maven-compiler-plugin 3.15.0 — latest stable (Feb 01, 2026);
+    <!-- maven-enforcer-plugin 3.6.3 — same as upstream (released 2025) -->
+    <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
+    <!-- maven-compiler-plugin 3.16.0 — latest;
          upgraded from upstream 3.14.1 -->
-    <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
-    <!-- maven-surefire-plugin 3.5.5 — latest; upgraded from upstream's 3.5.4 -->
-    <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
+    <maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
+    <!-- maven-surefire-plugin 3.6.0 — latest; upgraded from upstream's 3.5.4 -->
+    <maven-surefire-plugin.version>3.6.0</maven-surefire-plugin.version>
     <!-- maven-source-plugin 3.3.1 — same as upstream -->
     <!-- maven-source-plugin 3.4.0 — latest -->
     <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
     <!-- maven-javadoc-plugin 3.12.0 — same as upstream -->
     <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
-    <!-- maven-jar-plugin 3.5.0 — same as upstream (Nov 15, 2025) -->
-    <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
+    <!-- maven-jar-plugin 3.5.1 — latest -->
+    <maven-jar-plugin.version>3.5.1</maven-jar-plugin.version>
     <!-- maven-gpg-plugin 3.2.8 — same as upstream -->
     <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
-    <!-- central-publishing-maven-plugin 0.10.0 — latest (Jan 07, 2026);
+    <!-- central-publishing-maven-plugin 0.11.0 — latest;
          upgraded from upstream 0.9.0 -->
-    <central-publishing-maven-plugin.version>0.10.0</central-publishing-maven-plugin.version>
-    <!-- dependency-check-maven 12.2.2 — same as curve25519 standard -->
-    <dependency-check-maven.version>12.2.2</dependency-check-maven.version>
-    <!-- spotbugs-maven-plugin 4.9.8.3 — latest (Mar 28, 2026); SpotBugs 4.9.8 -->
-    <spotbugs-maven-plugin.version>4.10.2.0</spotbugs-maven-plugin.version>
+    <central-publishing-maven-plugin.version>0.11.0</central-publishing-maven-plugin.version>
+    <!-- dependency-check-maven 13.0.0 — same as curve25519 standard -->
+    <dependency-check-maven.version>13.0.0</dependency-check-maven.version>
+    <!-- spotbugs-maven-plugin 4.10.4.1 -->
+    <spotbugs-maven-plugin.version>4.10.4.1</spotbugs-maven-plugin.version>
     <!-- findsecbugs-plugin 1.14.0 — latest (Jun 16, 2025; OWASP) -->
     <findsecbugs-plugin.version>1.14.0</findsecbugs-plugin.version>
-    <!-- jacoco-maven-plugin 0.8.14 — latest (Oct 11, 2025); Java 25 officially supported -->
-    <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
+    <!-- jacoco-maven-plugin 0.8.15 — latest; Java 25 officially supported -->
+    <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
     <!-- maven-pmd-plugin 3.28.0 — latest -->
     <maven-pmd-plugin.version>3.28.0</maven-pmd-plugin.version>
-    <!-- cyclonedx-maven-plugin 2.9.1 — latest; supply-chain SBOM (CycloneDX 1.6) -->
-    <cyclonedx-maven-plugin.version>2.9.1</cyclonedx-maven-plugin.version>
+    <!-- cyclonedx-maven-plugin 2.9.3 — latest; supply-chain SBOM (CycloneDX 1.6) -->
+    <cyclonedx-maven-plugin.version>2.9.3</cyclonedx-maven-plugin.version>
     <!-- Reproducible builds — set to release date on each release -->
     <project.build.outputTimestamp>2026-05-17T00:00:00Z</project.build.outputTimestamp>
-    <!-- protobuf-java 4.35.0 — latest stable (May 19, 2026); used in dependencyManagement
+    <!-- protobuf-java 4.36.2 — latest stable; used in dependencyManagement
          to override the 4.33.2 that protobuf-schemas:1.6.0 pulls transitively. -->
-    <protobuf-java.version>4.35.0</protobuf-java.version>
-    <!-- jna 5.18.1 — latest; used in dependencyManagement to override
+    <protobuf-java.version>4.36.2</protobuf-java.version>
+    <!-- jna 5.19.1 — latest; used in dependencyManagement to override
          the 5.13.0 that io.decentralchain:crypto:2.0.7 pulls transitively
          via curve25519. -->
-    <jna.version>5.18.1</jna.version>
+    <jna.version>5.19.1</jna.version>
     <!-- netty 4.2.16.Final — SECURITY OVERRIDE: web3j → tuweni → vertx pulls
          4.1.115.Final, which has 13 CVEs fixed in 4.1.133+ (HTTP smuggling,
          CONTINUATION flood DoS, DNS codec). Aligned to node-scala 4.2.x line.
@@ -138,11 +142,17 @@
          still carried CVE-2026-59901 (Bzip2Decoder infinite loop),
          CVE-2026-55831/55833 (HTTP codec), CVE-2026-56745 (SpdyHttpDecoder
          ByteBuf leak) — all fixed in 4.2.16.Final. -->
-    <netty.version>4.2.16.Final</netty.version>
-    <!-- vertx-core 4.5.27 — SECURITY OVERRIDE: web3j pulls vertx-core 4.5.11
+    <netty.version>4.2.18.Final</netty.version>
+    <!-- vertx-core 4.5.34 — SECURITY OVERRIDE: web3j pulls vertx-core 4.5.11
          CVE-2025-11965, CVE-2025-11966: fixed in 4.5.22+
          CVE-2026-6860 (SNI DoS, CVSS 7.5): fixed in 4.5.26+ -->
-    <vertx.version>4.5.27</vertx.version>
+    <!-- HOLD on the 4.5.x line (latest 4.5.34), NOT 5.x: tuweni-bytes 2.7.0 (the only
+         consumer, via web3j) is compiled against vertx-core 4.5.11 and calls
+         io.vertx.core.buffer.Buffer.buffer(io.netty.buffer.ByteBuf)
+         (ByteBufWrappingBytes.appendTo), a static factory that no longer exists in
+         vertx-core 5.x (verified with javap against vertx-core-5.2.0.jar) and would
+         fail with NoSuchMethodError. -->
+    <vertx.version>4.5.34</vertx.version>
   </properties>
 
   <!-- ── Dependency management (transitive version overrides) ────────── -->
@@ -151,7 +161,7 @@
   <dependencyManagement>
     <dependencies>
 
-      <!-- Netty BOM 4.2.14.Final — SECURITY OVERRIDE.
+      <!-- Netty BOM 4.2.18.Final — SECURITY OVERRIDE.
            web3j:crypto → tuweni-bytes → vertx-core pulls netty 4.1.115.Final
            which has 13 CVEs fixed in 4.1.133+ (HTTP smuggling, CONTINUATION
            flood DoS, DNS codec vulnerabilities). Aligned to node-scala 4.2.x line. -->
@@ -163,21 +173,21 @@
         <scope>import</scope>
       </dependency>
 
-      <!-- Force protobuf-java to 4.35.0 (protobuf-schemas:1.6.0 pulls 4.33.2) -->
+      <!-- Force protobuf-java to 4.36.2 (protobuf-schemas:1.6.0 pulls 4.33.2) -->
       <dependency>
         <groupId>com.google.protobuf</groupId>
         <artifactId>protobuf-java</artifactId>
         <version>${protobuf-java.version}</version>
       </dependency>
 
-      <!-- Force JNA to 5.18.1 (io.decentralchain:curve25519:1.0.0 pulls 5.13.0 transitively) -->
+      <!-- Force JNA to 5.19.1 (io.decentralchain:curve25519:1.0.0 pulls 5.13.0 transitively) -->
       <dependency>
         <groupId>net.java.dev.jna</groupId>
         <artifactId>jna</artifactId>
         <version>${jna.version}</version>
       </dependency>
 
-      <!-- Force vertx-core to 4.5.27 — SECURITY OVERRIDE.
+      <!-- Force vertx-core to 4.5.34 — SECURITY OVERRIDE.
            CVE-2025-11965/11966 fixed in 4.5.22+; CVE-2026-6860 (CVSS 7.5) fixed in 4.5.26+. -->
       <dependency>
         <groupId>io.vertx</groupId>
@@ -185,13 +195,27 @@
         <version>${vertx.version}</version>
       </dependency>
 
-      <!-- Force jackson-core to 2.22.1 — SECURITY OVERRIDE. jackson-databind pulls
+      <!-- Force jackson-core to 2.22.3 — SECURITY OVERRIDE. jackson-databind pulls
            jackson-core 2.22.0 transitively, which has GHSA-r7wm-3cxj-wff9 (async
            parser maxNumberLength bypass, HIGH — incomplete fix in 2.22.0). -->
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
         <version>${jackson-core.version}</version>
+      </dependency>
+
+      <!-- Jackson 3 (tools.jackson) is new with web3j:crypto 6.0.0, which pulls
+           jackson-databind/jackson-core 3.1.0. Pinned to the latest 3.x patch (3.2.3)
+           following the same latest-safe-transitive policy as the Jackson 2 pins. -->
+      <dependency>
+        <groupId>tools.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson3.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>tools.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson3.version}</version>
       </dependency>
 
     </dependencies>
@@ -298,7 +322,7 @@
         </configuration>
       </plugin>
 
-      <!-- Surefire 3.5.5: JUnit Platform auto-detected, no extra config -->
+      <!-- Surefire 3.6.0: JUnit Platform auto-detected, no extra config -->
       <!-- Surefire: JUnit Platform auto-detected -->
       <!-- enable-native-access: io.decentralchain:crypto uses JNA (System.load) and protobuf  -->
       <!-- uses Unsafe. Without ALL-UNNAMED, tests will fail in a future Java     -->
@@ -371,7 +395,7 @@
         </executions>
       </plugin>
 
-      <!-- JaCoCo 0.8.14: line/branch coverage; Java 25 officially supported (GitHub #1950) -->
+      <!-- JaCoCo 0.8.15: line/branch coverage; Java 25 officially supported (GitHub #1950) -->
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
@@ -472,10 +496,10 @@
     <!-- Activate with: ./mvnw verify -P audit                              -->
     <!--                                                                    -->
     <!-- Included tools:                                                    -->
-    <!--   1. OWASP dependency-check 12.2.2  — CVE scan (NVD)              -->
+    <!--   1. OWASP dependency-check 13.0.0  — CVE scan (NVD)              -->
     <!--      Requires NVD API key: -DnvdApiKey=$NVD_API_KEY                -->
     <!--      Without key: works but rate-limits to ~1 req/6 s              -->
-    <!--   2. SpotBugs 4.9.8.3 + FindSecBugs 1.14.0 (OWASP)               -->
+    <!--   2. SpotBugs 4.10.4.1 + FindSecBugs 1.14.0 (OWASP)               -->
     <!--      Bytecode security analysis (CWE-326, CWE-327, CWE-330, etc.) -->
     <!--   3. PMD 3.28.0 — source-level security + error-prone rules        -->
     <profile>
@@ -505,7 +529,7 @@
             </executions>
           </plugin>
 
-          <!-- SpotBugs 4.9.8.3 + FindSecBugs 1.14.0: security-focused bytecode analysis -->
+          <!-- SpotBugs 4.10.4.1 + FindSecBugs 1.14.0: security-focused bytecode analysis -->
           <!-- Detects: weak crypto, predictable random, hard-coded secrets, -->
           <!-- path traversal, injection, timing attacks, unsafe deserialization -->
           <plugin>
