@@ -128,6 +128,12 @@ jobs:
         # Java setup; each has a dedicated workflow (blst.yml, curve25519.yml, etc.)
         # ride: needs sbt; has a dedicated ride.yml
         run: pnpm nx affected -t build --exclude=blockchain-postgres-sync,blst,crypto,curve25519,groth16,java-sdk,ride,transactions
+        env:
+          # exchange's bridge-env-guard (vite.config.ts) fails any production build that
+          # lacks this. This build is verification only and is never deployed, so it uses
+          # the public endpoint that .env.testnet/.env.staging use. deploy-exchange.yml
+          # still supplies the real, domain-restricted key for builds that reach users.
+          VITE_SOLANA_RPC_URL: https://api.mainnet-beta.solana.com
 
       - name: Typecheck (affected)
         # Build runs first so node-api dist/ files are on disk before typecheck.
