@@ -7,7 +7,7 @@ import scalapb.compiler.Version.scalapbVersion
 // Only includes dependencies needed by lang/ and repl/ subprojects.
 object Dependencies {
 
-  val gProtoVersion = "4.35.0"
+  val gProtoVersion = "4.36.2"
   val gProto        = "com.google.protobuf" % "protobuf-java" % gProtoVersion
 
   val overrides = Def.setting(
@@ -18,15 +18,24 @@ object Dependencies {
   )
 
   lazy val protoSchemasLib =
-    ("io.decentralchain" % "protobuf-schemas" % "1.6.2").classifier("protobuf-src").intransitive()
+    ("io.decentralchain" % "protobuf-schemas" % "1.6.6").classifier("protobuf-src").intransitive()
 
-  private def web3jModule(module: String) = "org.web3j" % module % "5.0.2"
+  private def web3jModule(module: String) = "org.web3j" % module % "6.0.0"
 
+  // HOLD monix at 3.4.1 (3.5.0 is available). 3.5.0 changes the evaluation order of
+  // Coeval effects under LazyList.traverse, which changes how SerdeV1 decodes an
+  // E_CASE_OBJ: SerdeV1.serialize writes all CaseObj field names before the field
+  // values (eager Coeval.now inside the fold), and under 3.4.1 the decoder reads them
+  // in that same order. Under 3.5.0 the decoder reads name/value pairs interleaved, so
+  // bytes produced by the existing encoder no longer decode
+  // (SerdeTest "CaseObj if allowed / simple" -> "Invalid array size (838860800)").
+  // The encoder output is byte-identical under both versions; only decoding differs.
+  // This is a serialization-compatibility change and needs its own fix and review.
   def monixModule(module: String): Def.Initialize[ModuleID] =
     Def.setting("io.monix" %%% s"monix-$module" % "3.4.1")
 
-  val googleGuava = "com.google.guava"  % "guava"           % "33.6.0-jre"
-  val logback     = "ch.qos.logback"    % "logback-classic" % "1.5.32"
+  val googleGuava = "com.google.guava"  % "guava"           % "33.7.2-jre"
+  val logback     = "ch.qos.logback"    % "logback-classic" % "1.6.4"
   val curve25519  = "io.decentralchain" % "curve25519"      % "1.0.0"
 
   val scalaLogging: ModuleID = "com.typesafe.scala-logging" %% "scala-logging" % "3.9.6"
@@ -38,7 +47,7 @@ object Dependencies {
   val sttp3                               = sttp3Module("core")
 
   lazy val circe: Def.Initialize[Seq[ModuleID]] = Def.setting {
-    val circeVersion = "0.14.15"
+    val circeVersion = "0.14.16"
     Seq(
       "io.circe" %%% "circe-core",
       "io.circe" %%% "circe-parser"
@@ -49,9 +58,9 @@ object Dependencies {
     ("software.amazon.cryptools" % "AmazonCorrettoCryptoProvider" % "2.5.0").classifier(c)
 
   val cryptoProviders = Seq(
-    "org.conscrypt" % "conscrypt-openjdk-uber" % "2.5.2",
+    "org.conscrypt" % "conscrypt-openjdk-uber" % "2.7.0",
     amazonCorretto("osx-aarch_64"),
-    "org.bouncycastle" % "bcprov-jdk18on" % "1.84"
+    "org.bouncycastle" % "bcprov-jdk18on" % "1.86"
   )
 
   val lang = Def.setting(
@@ -59,7 +68,7 @@ object Dependencies {
       monixModule("eval").value,
       "org.typelevel" %%% "cats-core" % "2.13.0",
       "com.lihaoyi"   %%% "fastparse" % "3.1.1",
-      "org.typelevel" %%% "cats-mtl"  % "1.6.0",
+      "org.typelevel" %%% "cats-mtl"  % "1.7.0",
       "ch.obermuhlner"  % "big-math"  % "2.3.2",
       googleGuava,
       curve25519,
@@ -78,10 +87,10 @@ object Dependencies {
 
   lazy val test: Seq[ModuleID] = scalaTest +: Seq(
     logback,
-    "org.scalatestplus" %% "scalacheck-1-19" % "3.2.20.0",
-    "org.scalacheck"    %% "scalacheck"      % "1.19.0",
-    "org.mockito"        % "mockito-core"    % "5.23.0",
-    "org.scalamock"     %% "scalamock"       % "7.5.5"
+    "org.scalatestplus" %% "scalacheck-1-20" % "3.2.20.0",
+    "org.scalacheck"    %% "scalacheck"      % "1.20.0",
+    "org.mockito"        % "mockito-core"    % "5.24.0",
+    "org.scalamock"     %% "scalamock"       % "7.6.0"
   ).map(_ % Test)
 
   lazy val logDeps: Seq[ModuleID] = Seq(logback % Runtime)
