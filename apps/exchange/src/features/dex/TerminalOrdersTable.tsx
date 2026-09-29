@@ -155,29 +155,81 @@ export const TerminalOrdersTable: React.FC<TerminalOrdersTableProps> = ({ scope 
           >
             <Typography
               variant="body2"
-              sx={{ color: order.type === 'buy' ? 'info.main' : 'error.main', fontSize: 12 }}
+              sx={{
+                color: order.type === 'buy' ? 'var(--dir-up)' : 'var(--dir-down)',
+                fontSize: 12,
+                fontWeight: 600,
+              }}
             >
               {order.type === 'buy' ? 'Buy' : 'Sell'}
             </Typography>
             <Typography variant="body2" sx={{ fontSize: 12 }}>
               {new Date(order.timestamp).toLocaleString()}
             </Typography>
-            <Typography variant="body2" sx={{ fontSize: 12, textAlign: 'right' }}>
+            <Typography
+              variant="body2"
+              sx={{
+                fontFamily: 'var(--mono)',
+                fontSize: 12,
+                fontVariantNumeric: 'tabular-nums',
+                textAlign: 'right',
+              }}
+            >
               {order.amount}
             </Typography>
-            <Typography variant="body2" sx={{ fontSize: 12, textAlign: 'right' }}>
+            <Typography
+              variant="body2"
+              sx={{
+                fontFamily: 'var(--mono)',
+                fontSize: 12,
+                fontVariantNumeric: 'tabular-nums',
+                textAlign: 'right',
+              }}
+            >
               {order.price}
             </Typography>
-            <Typography variant="body2" sx={{ fontSize: 12, textAlign: 'right' }}>
+            <Typography
+              variant="body2"
+              sx={{
+                fontFamily: 'var(--mono)',
+                fontSize: 12,
+                fontVariantNumeric: 'tabular-nums',
+                textAlign: 'right',
+              }}
+            >
               —
             </Typography>
-            <Typography variant="body2" sx={{ fontSize: 12, textAlign: 'right' }}>
+            <Typography
+              variant="body2"
+              sx={{
+                fontFamily: 'var(--mono)',
+                fontSize: 12,
+                fontVariantNumeric: 'tabular-nums',
+                textAlign: 'right',
+              }}
+            >
               {Number(order.amount) * Number(order.price)}
             </Typography>
-            <Typography variant="body2" sx={{ fontSize: 12, textAlign: 'right' }}>
+            <Typography
+              variant="body2"
+              sx={{
+                fontFamily: 'var(--mono)',
+                fontSize: 12,
+                fontVariantNumeric: 'tabular-nums',
+                textAlign: 'right',
+              }}
+            >
               {order.filled ?? '—'}
             </Typography>
-            <Typography variant="body2" sx={{ fontSize: 12, textAlign: 'right' }}>
+            <Typography
+              variant="body2"
+              sx={{
+                fontFamily: 'var(--mono)',
+                fontSize: 12,
+                fontVariantNumeric: 'tabular-nums',
+                textAlign: 'right',
+              }}
+            >
               —
             </Typography>
             <Typography variant="body2" sx={{ fontSize: 12 }}>

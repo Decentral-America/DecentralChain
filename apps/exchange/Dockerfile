@@ -58,6 +58,16 @@ RUN pnpm --filter './packages/**' run build
 # ── Build the exchange ────────────────────────────────────────────────────────
 # tsc -b compiles TypeScript project references; vite build produces dist/.
 # --mode selects the .env.<mode> file that is baked into the bundle.
+#
+# The Solana bridge RPC is supplied here rather than committed: `.env.production`
+# leaves it blank on purpose and vite.config.ts fails the build without it. That
+# guard is what stops a fallback endpoint being compiled into a public bundle.
+#
+#   docker build --build-arg solana_rpc_url=https://... .
+#
+# Domain-restrict the key — whatever is set here ships in the browser bundle.
+ARG solana_rpc_url
+ENV VITE_SOLANA_RPC_URL=$solana_rpc_url
 RUN pnpm --filter ./apps/exchange exec tsc -b && \
     pnpm --filter ./apps/exchange exec vite build --mode "${BUILD_MODE}"
 

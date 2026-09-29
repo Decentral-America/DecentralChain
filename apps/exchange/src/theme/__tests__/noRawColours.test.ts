@@ -58,6 +58,20 @@ const ALLOWED = [
   // directly at the call site, and only the pre-existing, test-pinned
   // `usdt` tint remains a genuine per-asset literal, still here.)
   'styles/brandMarks.ts',
+  // The drawing layer's palette file, ported with the chart plugins from
+  // OpenCharts. It holds three things and nothing else: `DRAWING_COLORS` and
+  // `FIB_COLORS`, which are swatches a user picks from rather than app chrome —
+  // a categorical palette whose whole job is to be told apart, the same
+  // reasoning as `brandMarks.ts`; `chartChrome`, whose literals are only what
+  // paints in the frames before `applyChartTheme` overwrites them from
+  // `theme.palette` on mount; and the watermark's translucent black/white,
+  // which has no semantic token because it is not a colour, it is an opacity.
+  //
+  // Everything that was genuinely chrome now reads from the theme. OpenCharts
+  // shipped a 42-colour `CHART_COLORS` table — a second design system — and it
+  // is gone: `chartColors(theme)` derives the lot from `theme.palette`, so the
+  // chart follows the app into dark mode with no second table to maintain.
+  'features/dex/chart-plugins/constants.ts',
   // Dev-only: lazy-loaded behind `import.meta.env.DEV` in App.tsx and
   // dead-code-eliminated from the production bundle entirely. It never
   // reaches an end user, so it carries none of the app's design-system

@@ -11,6 +11,8 @@
  */
 
 // Type definitions for the dcc-transactions library
+import { NetworkConfig } from '@/config/networkConfig';
+
 interface SeedKeyPair {
   publicKey: string;
   privateKey: string;
@@ -96,7 +98,10 @@ export class Seed {
    * @param chainId - Network byte (default: from env or '?')
    */
   constructor(phrase: string, chainId?: string) {
-    const networkByte = chainId ?? import.meta.env.VITE_NETWORK_BYTE ?? '?';
+    // The configured network decides, not a second env var that can drift out of
+    // step with it — `.env.development` pairs testnet with `!`, so a mainnet run
+    // that overrode only VITE_NETWORK minted testnet addresses.
+    const networkByte = chainId ?? NetworkConfig.code;
     const chainCode = typeof networkByte === 'string' ? networkByte.charCodeAt(0) : networkByte;
     const seedInstance = new SeedClass(phrase, chainCode);
 
@@ -116,8 +121,7 @@ export class Seed {
    */
   static create(words: number = 15): Seed {
     const seedInstance = SeedClass.create(words);
-    const networkByte = import.meta.env.VITE_NETWORK_BYTE || '?';
-    return new Seed(seedInstance.phrase, networkByte);
+    return new Seed(seedInstance.phrase, NetworkConfig.code);
   }
 
   /**
@@ -127,8 +131,7 @@ export class Seed {
    * @returns Seed instance restored from phrase
    */
   static fromExistingPhrase(phrase: string): Seed {
-    const networkByte = import.meta.env.VITE_NETWORK_BYTE || '?';
-    return new Seed(phrase, networkByte);
+    return new Seed(phrase, NetworkConfig.code);
   }
 
   /**

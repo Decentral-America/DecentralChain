@@ -31,6 +31,14 @@ const SENSITIVE_KEY_PATTERNS = [
  */
 const sanitize = (args: unknown[]): unknown[] =>
   args.map((arg) => {
+    // Error/DOMException carry name, message and stack as non-enumerable own
+    // properties, so Object.entries below sees none of them and every error
+    // ever logged through here printed as `{}` — the exact fog that hid a real
+    // bug (a decrypt failure whose `.message` was '') behind a useless console
+    // line. Pull the three fields out explicitly first.
+    if (arg instanceof Error) {
+      return { message: arg.message, name: arg.name, stack: arg.stack };
+    }
     if (typeof arg === 'object' && arg !== null) {
       const obj = arg as Record<string, unknown>;
       return Object.fromEntries(

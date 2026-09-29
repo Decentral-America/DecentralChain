@@ -4,13 +4,21 @@ import {
   keyPair as buildKeyPair,
   randomSeed,
 } from '@decentralchain/ts-lib-crypto';
+import { NetworkConfig } from '@/config/networkConfig';
 
-// DCC mainnet network code byte (63 = '?'). Testnet = 33 ('!'), Stagenet = 83 ('S').
-// The Angular app read this from window.DCCApp.network.code at runtime, but since
-// network switching is handled by ConfigContext in the React app, we default to
-// mainnet and allow callers to override via Adapter.initOptions when the active
-// network changes.
-const networkCode = 63;
+/*
+ * The chain id, from the one place that knows it.
+ *
+ * This was `63` — mainnet — hardcoded, with a note saying network switching was
+ * ConfigContext's problem. It was not: `Seed.create()` then minted a mainnet
+ * address on a testnet build while `multiAccount` stored one derived from the
+ * configured byte, so the two disagreed about the same wallet. An address is
+ * the one value in this app that must never be guessed, and a second source of
+ * truth for the byte that produces it is a second chance to get it wrong.
+ *
+ * `?` (63) is mainnet, `!` (33) testnet, `S` (83) stagenet.
+ */
+const networkCode = NetworkConfig.networkByte;
 
 // CubensisConnectAdapter.initOptions calls Adapter.initOptions internally too,
 // so this single call covers both the base networkCode init every adapter

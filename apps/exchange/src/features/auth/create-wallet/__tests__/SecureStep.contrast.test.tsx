@@ -47,6 +47,7 @@ describe('SecureStep — light mode ink on GlassCard', () => {
         <SecureStep
           confirm=""
           error=""
+          hasExistingVault={false}
           isSubmitting={false}
           onConfirmChange={noop}
           onPasswordChange={noop}
@@ -86,6 +87,7 @@ describe('SecureStep — dark mode ink on GlassCard', () => {
         <SecureStep
           confirm=""
           error=""
+          hasExistingVault={false}
           isSubmitting={false}
           onConfirmChange={noop}
           onPasswordChange={noop}

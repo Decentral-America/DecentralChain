@@ -89,7 +89,10 @@
         "noConsole": {
           "level": "warn",
           "options": {
-            "allow": ["warn", "error"]
+            "allow": [
+              "warn",
+              "error"
+            ]
           }
         },
         "noControlCharactersInRegex": "off",
@@ -102,13 +105,20 @@
       "formatter": {
         "enabled": false
       },
-      "includes": ["public/trading-view/**"],
+      "includes": [
+        "public/trading-view/**"
+      ],
       "linter": {
         "enabled": false
       }
     },
     {
-      "includes": ["test/**", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"],
+      "includes": [
+        "test/**",
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "**/*.spec.ts"
+      ],
       "linter": {
         "rules": {
           "security": {
@@ -144,6 +154,24 @@
         "rules": {
           "nursery": {
             "noInlineStyles": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "src/features/dex/chart-plugins/**"
+      ],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "useHookAtTopLevel": "off"
+          },
+          "style": {
+            "noNonNullAssertion": "off"
+          },
+          "suspicious": {
+            "useIterableCallbackReturn": "off"
           }
         }
       }

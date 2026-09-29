@@ -9,7 +9,8 @@ import { NetworkConfig } from '@/config/networkConfig';
 import { logger } from '@/lib/logger';
 
 const POLL_DELAY = 800;
-const MAX_RESOLUTION = 1440;
+/** Bars per request. Exported so a caller can size a window in whole batches. */
+export const MAX_RESOLUTION = 1440;
 
 interface Candle {
   time: number;

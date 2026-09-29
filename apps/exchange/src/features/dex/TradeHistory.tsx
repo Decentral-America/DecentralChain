@@ -91,6 +91,8 @@ const TradesList = styled.div`
  * Trade row
  */
 const TradeRow = styled.div<{ $type: 'buy' | 'sell' }>`
+  font-family: var(--mono, ${(p) => p.theme.fonts.mono});
+  font-variant-numeric: tabular-nums;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   padding: ${(p) => p.theme.spacing.xs} ${(p) => p.theme.spacing.md};
@@ -113,7 +115,9 @@ const TradeCell = styled.div<{
   text-align: ${(p) => p.$align || 'left'};
   color: ${(p) => {
     if (!p.$type) return p.theme.colors.text;
-    return p.$type === 'buy' ? p.theme.colors.success : p.theme.colors.error;
+    return p.$type === 'buy'
+      ? `var(--dir-up, ${p.theme.colors.success})`
+      : `var(--dir-down, ${p.theme.colors.error})`;
   }};
   font-family: ${(p) => p.theme.fonts.mono};
 `;
@@ -175,7 +179,7 @@ interface Trade {
 /**
  * TradeHistory Component
  */
-export const TradeHistory: React.FC = () => {
+export const TradeHistory: React.FC<{ compact?: boolean }> = ({ compact = false }) => {
   const selectedPair = useDexStore(selectSelectedPair);
   const { i18n } = useTranslation();
 
@@ -229,9 +233,11 @@ export const TradeHistory: React.FC = () => {
   if (!selectedPair) {
     return (
       <TradeHistoryContainer>
-        <Header>
-          <Title>Trade History</Title>
-        </Header>
+        {!compact && (
+          <Header>
+            <Title>Trade History</Title>
+          </Header>
+        )}
         <EmptyState>Please select a trading pair</EmptyState>
       </TradeHistoryContainer>
     );
@@ -240,9 +246,11 @@ export const TradeHistory: React.FC = () => {
   if (isLoading) {
     return (
       <TradeHistoryContainer>
-        <Header>
-          <Title>Trade History</Title>
-        </Header>
+        {!compact && (
+          <Header>
+            <Title>Trade History</Title>
+          </Header>
+        )}
         <LoadingState>
           <Spinner size="md" />
         </LoadingState>
@@ -253,9 +261,11 @@ export const TradeHistory: React.FC = () => {
   if (error) {
     return (
       <TradeHistoryContainer>
-        <Header>
-          <Title>Trade History</Title>
-        </Header>
+        {!compact && (
+          <Header>
+            <Title>Trade History</Title>
+          </Header>
+        )}
         <ErrorState>Failed to load trade history</ErrorState>
       </TradeHistoryContainer>
     );
@@ -266,9 +276,11 @@ export const TradeHistory: React.FC = () => {
   return (
     <TradeHistoryContainer>
       {/* Header */}
-      <Header>
-        <Title>Trade History</Title>
-      </Header>
+      {!compact && (
+        <Header>
+          <Title>Trade History</Title>
+        </Header>
+      )}
 
       {/* Column Headers */}
       <ColumnHeaders>

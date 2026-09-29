@@ -25,6 +25,7 @@ import { config } from '@/config';
 import { useAuth } from '@/contexts/AuthContext';
 import { useClipboard } from '@/hooks/useClipboard';
 import { logger } from '@/lib/logger';
+import { LegacyVaultError } from '@/services/multiAccount';
 
 /**
  * Zero-based step indices. Exported so the wizard's navigation and this hook's
@@ -43,6 +44,15 @@ export interface CreateWalletApi {
   isLedgerAvailable: boolean;
   isCopied: boolean;
   isSubmitting: boolean;
+  /**
+   * Whether this device already holds an encrypted vault. This screen sets a
+   * password unconditionally, but a vault is one password for every account on
+   * the device — if one already exists, submitting here unlocks it rather than
+   * creating anything, and the password that works is the existing one.
+   */
+  hasExistingVault: boolean;
+  /** True only when the stored vault cannot be opened by any password. */
+  needsVaultReset: boolean;
   error: string;
   /** Set when Seed.create() threw; the phrase step shows this with a retry. */
   seedError: string;
@@ -70,6 +80,8 @@ export interface CreateWalletApi {
   setPassword: (value: string) => void;
   setConfirm: (value: string) => void;
   regenerateSeed: () => void;
+  /** Destroys unreadable local wallet data. Irreversible; confirm first. */
+  resetVault: () => void;
   /** Marks the phrase as revealed. Idempotent; safe to call more than once. */
   reveal: () => void;
   copyPhrase: () => Promise<void>;
@@ -132,6 +144,9 @@ export function useCreateWallet(): CreateWalletApi {
   const [seedState, setSeedState] = useState<SeedState>(generateSeedState);
   const seed = seedState.seed;
   const [error, setError] = useState('');
+  // Set only for a vault no password can open, which is the one failure the
+  // user cannot retry their way out of.
+  const [needsVaultReset, setNeedsVaultReset] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [isRevealed, setIsRevealed] = useState(false);
@@ -140,7 +155,11 @@ export function useCreateWallet(): CreateWalletApi {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
 
-  const { create, user, isAuthenticated, getActiveState } = useAuth();
+  const { create, user, isAuthenticated, getActiveState, hasLocalVault, resetLocalVault } =
+    useAuth();
+  // Read once per mount: a vault appearing or disappearing mid-flow is not a
+  // case this wizard needs to react to, only to describe correctly on arrival.
+  const [hasExistingVault] = useState(hasLocalVault);
   const { isCopied, copyToClipboard } = useClipboard();
   const navigate = useNavigate();
 
@@ -234,12 +253,26 @@ export function useCreateWallet(): CreateWalletApi {
       return true;
     } catch (err) {
       logger.error('[CreateWallet] creation failed:', err);
-      setError(err instanceof Error ? err.message : 'Failed to create account');
+      setNeedsVaultReset(err instanceof LegacyVaultError);
+      // A message-less Error (WebCrypto's OperationError leaves `.message` empty)
+      // must not render as a silently blank form — an Alert with '' inside it
+      // is indistinguishable from no Alert at all.
+      setError((err instanceof Error && err.message) || 'Failed to create account');
       setIsSubmitting(false);
       setIsCreating(false);
       return false;
     }
   }, [confirm, create, password, seed]);
+
+  /**
+   * Wipes the unreadable vault so the wizard can proceed. Destructive, and only
+   * ever reached from a button the user pressed after being told so.
+   */
+  const resetVault = useCallback(() => {
+    resetLocalVault();
+    setNeedsVaultReset(false);
+    setError('');
+  }, [resetLocalVault]);
 
   return {
     canGoBack,
@@ -248,13 +281,16 @@ export function useCreateWallet(): CreateWalletApi {
     error,
     goBack,
     goTo,
+    hasExistingVault,
     isCopied,
     isGoingBack,
     isLedgerAvailable,
     isRevealed,
     isSubmitting,
+    needsVaultReset,
     password,
     regenerateSeed,
+    resetVault,
     reveal,
     seedError: seedState.seedError,
     setConfirm,

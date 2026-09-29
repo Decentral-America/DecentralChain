@@ -83,6 +83,24 @@ export interface AuthContextType {
   ) => Promise<void>; // Create new account
   login: (userHash: string, password: string) => Promise<void>; // Login with password
   logout: () => Promise<void>;
+  /**
+   * Whether this device already holds an encrypted vault.
+   *
+   * The "Create wallet" wizard sets a password unconditionally, but a vault is
+   * one password for every account on the device: if one already exists, that
+   * screen is actually asking the visitor to unlock it, not to invent a fresh
+   * password. Lets the wizard say which one it is instead of failing opaquely
+   * when the two turn out to mean different things.
+   */
+  hasLocalVault: () => boolean;
+  /**
+   * Destroys every wallet record held on this device.
+   *
+   * Only escape from a vault this build cannot decrypt. Irreversible, and
+   * unrecoverable for any account whose seed the user has not written down,
+   * so nothing may call it without an explicit confirmation from them.
+   */
+  resetLocalVault: () => void;
   updateUser: (userData: Partial<User>) => void;
   switchAccount: (userHash: string, password?: string) => Promise<void>; // Switch account (needs password if signed out)
   addAccount: (seedPhrase: string, name: string) => Promise<User | undefined>; // Import account

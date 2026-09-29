@@ -54,6 +54,9 @@ catalogs:
     buffer:
       specifier: ^6.0.3
       version: 6.0.3
+    fancy-canvas:
+      specifier: 2.1.0
+      version: 2.1.0
     ioredis:
       specifier: 6.0.0
       version: 6.0.0
@@ -598,6 +601,9 @@ importers:
       date-fns:
         specifier: ^4.4.0
         version: 4.4.0
+      fancy-canvas:
+        specifier: 'catalog:'
+        version: 2.1.0
       i18next:
         specifier: ^26.3.4
         version: 26.3.4(typescript@6.0.3)

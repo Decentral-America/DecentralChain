@@ -132,9 +132,12 @@ export function CreateWalletWizard({ wallet }: { wallet: CreateWalletApi }) {
       <SecureStep
         confirm={wallet.confirm}
         error={wallet.error}
+        hasExistingVault={wallet.hasExistingVault}
         isSubmitting={wallet.isSubmitting}
+        needsVaultReset={wallet.needsVaultReset}
         onConfirmChange={wallet.setConfirm}
         onPasswordChange={wallet.setPassword}
+        onResetVault={wallet.resetVault}
         onSubmit={() => void wallet.submit()}
         password={wallet.password}
       />

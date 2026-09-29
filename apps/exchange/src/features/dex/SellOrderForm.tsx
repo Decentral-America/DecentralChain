@@ -52,7 +52,7 @@ const FormHeader = styled.div`
 const Title = styled.h3`
   font-size: ${(p) => p.theme.fontSizes.lg};
   font-weight: ${(p) => p.theme.fontWeights.semibold};
-  color: ${(p) => p.theme.colors.error};
+  color: ${(p) => `var(--dir-side, ${p.theme.colors.error})`};
   margin: 0;
 `;
 
@@ -174,16 +174,17 @@ const PercentageButton = styled.button<{ $isActive?: boolean }>`
   padding: ${(p) => p.theme.spacing.xs};
   font-size: ${(p) => p.theme.fontSizes.xs};
   font-weight: ${(p) => p.theme.fontWeights.medium};
-  color: ${(p) => (p.$isActive ? p.theme.colors.background : p.theme.colors.text)};
-  background: ${(p) => (p.$isActive ? p.theme.colors.error : p.theme.colors.secondary)};
-  border: 1px solid ${(p) => (p.$isActive ? p.theme.colors.error : p.theme.colors.border)};
+  color: ${(p) =>
+    p.$isActive ? `var(--dir-on, ${p.theme.colors.background})` : p.theme.colors.text};
+  background: ${(p) => (p.$isActive ? `var(--dir-side, ${p.theme.colors.error})` : p.theme.colors.secondary)};
+  border: 1px solid ${(p) => (p.$isActive ? `var(--dir-side, ${p.theme.colors.error})` : p.theme.colors.border)};
   border-radius: ${(p) => p.theme.radii.sm};
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    background: ${(p) => (p.$isActive ? p.theme.colors.error : `${p.theme.colors.error}20`)};
-    border-color: ${(p) => p.theme.colors.error};
+    background: ${(p) => (p.$isActive ? `var(--dir-side, ${p.theme.colors.error})` : `${`var(--dir-side, ${p.theme.colors.error})`}20`)};
+    border-color: ${(p) => `var(--dir-side, ${p.theme.colors.error})`};
   }
 
   &:disabled {
@@ -451,7 +452,7 @@ export const SellOrderForm: React.FC = () => {
   if (!selectedPair) {
     return (
       <FormContainer>
-        <FormHeader>
+        <FormHeader data-slot="header">
           <Title>Sell</Title>
         </FormHeader>
         <ErrorMessage>Please select a trading pair</ErrorMessage>
@@ -461,7 +462,7 @@ export const SellOrderForm: React.FC = () => {
 
   return (
     <FormContainer>
-      <FormHeader>
+      <FormHeader data-slot="header">
         <Title>Sell {amountAssetName}</Title>
       </FormHeader>
 
@@ -511,6 +512,7 @@ export const SellOrderForm: React.FC = () => {
             <BalanceLabel></BalanceLabel>
             <BalanceValue>
               <MaxButton
+                data-slot="max"
                 type="button"
                 onClick={handleMaxClick}
                 disabled={!availableBalance || sellMutation.isPending}
@@ -522,7 +524,7 @@ export const SellOrderForm: React.FC = () => {
         </div>
 
         {/* Percentage Buttons */}
-        <PercentageButtons>
+        <PercentageButtons data-slot="quick">
           {[25, 50, 75, 100].map((percentage) => (
             <PercentageButton
               key={percentage}
@@ -537,7 +539,7 @@ export const SellOrderForm: React.FC = () => {
         </PercentageButtons>
 
         {/* Total (what user receives) */}
-        <InfoRow>
+        <InfoRow data-slot="info">
           <InfoLabel>Total (Receive)</InfoLabel>
           <InfoValue>
             {formatAmount(total)} {priceAssetName}
@@ -549,6 +551,7 @@ export const SellOrderForm: React.FC = () => {
 
         {/* Submit Button */}
         <Button
+          data-slot="submit"
           type="submit"
           variant="secondary"
           size="large"

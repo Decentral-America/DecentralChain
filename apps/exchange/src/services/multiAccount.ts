@@ -70,23 +70,73 @@ async function encryptString(plaintext: string, password: string, rounds: number
   return btoa(Array.from(out, (c) => String.fromCharCode(c)).join(''));
 }
 
+/**
+ * Thrown when stored data predates DCC-176.
+ *
+ * A distinct type rather than a message the UI has to string-match: the caller
+ * has to be able to tell "this vault cannot be opened by any password" apart
+ * from "this password is wrong", because only the first one is escapable, and
+ * the only escape is destroying the vault.
+ */
+export class LegacyVaultError extends Error {
+  constructor() {
+    super(
+      'This device holds wallet data in a format this version can no longer read. ' +
+        'It cannot be unlocked with any password.',
+    );
+    this.name = 'LegacyVaultError';
+  }
+}
+
+/**
+ * Whether stored data is in the pre-DCC-176 format, without attempting to
+ * decrypt it. Lets a caller check before asking the user for a password it is
+ * never going to be able to use.
+ *
+ * Unparseable data counts as legacy: it is equally unopenable, and the caller
+ * wants the same answer either way.
+ */
+export function isLegacyEncryptedVault(encrypted: string): boolean {
+  if (!encrypted) return false;
+  try {
+    return Uint8Array.from(atob(encrypted), (c) => c.charCodeAt(0))[0] !== ENC_VERSION;
+  } catch {
+    return true;
+  }
+}
+
 async function decryptString(encrypted: string, password: string, rounds: number): Promise<string> {
   const bytes = Uint8Array.from(atob(encrypted), (c) => c.charCodeAt(0));
   if (bytes[0] !== ENC_VERSION) {
     // Old OpenSSL/MD5 format starts with bytes for "Salted__" (0x53, 0x61, …).
-    // That format was removed in DCC-176. Users with legacy encrypted data must
-    // reset their accounts — the old encryption scheme is no longer safe.
-    throw new Error(
-      'Legacy encrypted data format detected (pre-DCC-176). ' +
-        'Please reset your account: sign out and re-import your seed.',
-    );
+    // That format was removed in DCC-176. The old scheme is not safe to read,
+    // so the only way forward is destroying the vault, which is the caller's
+    // decision to put to the user rather than ours to take here.
+    throw new LegacyVaultError();
   }
   const salt = bytes.slice(1, 1 + SALT_LEN);
   const iv = bytes.slice(1 + SALT_LEN, 1 + SALT_LEN + IV_LEN);
   const ciphertext = bytes.slice(1 + SALT_LEN + IV_LEN);
   const key = await deriveKey(password, salt, rounds);
-  const plainBuf = await crypto.subtle.decrypt({ iv, name: 'AES-GCM' }, key, ciphertext);
-  return new TextDecoder().decode(plainBuf);
+  try {
+    const plainBuf = await crypto.subtle.decrypt({ iv, name: 'AES-GCM' }, key, ciphertext);
+    return new TextDecoder().decode(plainBuf);
+  } catch (err) {
+    /*
+     * A wrong password fails here as a WebCrypto `OperationError` — the AES-GCM
+     * auth tag does not verify against a key derived from the wrong password.
+     * That DOMException carries the reason in `.name`, not `.message`, which
+     * WebCrypto leaves empty ('') for this one. Every caller up the stack reads
+     * `.message`, so the failure reached the UI as a blank string: no alert, no
+     * text, just a form that silently did nothing when submitted — indistin-
+     * guishable from a broken button. Giving it a real message here is the fix
+     * for every caller at once, not just the one that surfaced it.
+     */
+    if (err instanceof DOMException && err.name === 'OperationError') {
+      throw new Error('Incorrect password.');
+    }
+    throw err;
+  }
 }
 
 interface UserData {

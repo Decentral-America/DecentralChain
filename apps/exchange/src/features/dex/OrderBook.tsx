@@ -5,7 +5,7 @@
  * Matches Angular implementation exactly
  */
 import type React from 'react';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Spinner } from '@/components/atoms/Spinner';
 import {
@@ -49,7 +49,7 @@ const TableHead = styled.div`
 const HeaderRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  padding: ${(p) => p.theme.spacing.sm} ${(p) => p.theme.spacing.md};
+  padding: 5px 12px;
   font-size: ${(p) => scaled(p.theme.fontSizes.xs)};
   font-weight: ${(p) => p.theme.fontWeights.medium};
   color: ${(p) => p.theme.colors.text};
@@ -73,6 +73,10 @@ const scaled = (size: string): string => `${(Number.parseFloat(size) * RAIL_SCAL
  * Header cell
  */
 const HeaderCell = styled.div<{ $align?: 'left' | 'center' | 'right' }>`
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.75;
   text-align: ${(p) => p.$align || 'right'};
 `;
 
@@ -154,12 +158,13 @@ const PriceInfo = styled.div`
   background: ${(p) => p.theme.colors.background};
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 8px;
   text-align: right;
   font-size: ${(p) => scaled(p.theme.fontSizes.xs)};
   width: 100%;
-  min-height: 43px;
-  padding: ${(p) => p.theme.spacing.sm} ${(p) => p.theme.spacing.md};
+  min-height: 30px;
+  padding: 4px 12px;
   text-transform: uppercase;
   flex-shrink: 0; /* Don't allow this to shrink */
 `;
@@ -177,23 +182,15 @@ const PriceInfoTitle = styled.div`
  * Last price display
  */
 const LastPrice = styled.div`
-  font-size: ${(p) => scaled(p.theme.fontSizes.md)};
+  font-size: ${(p) => scaled(p.theme.fontSizes.sm)};
   font-weight: ${(p) => p.theme.fontWeights.semibold};
-  color: ${(p) => p.theme.colors.warning};
+  color: ${(p) => p.theme.colors.text};
+  font-family: var(--mono, ${(p) => p.theme.fonts.mono});
+  font-variant-numeric: tabular-nums;
   margin: 0 ${(p) => p.theme.spacing.sm};
   display: flex;
   align-items: center;
   gap: 4px;
-`;
-
-/**
- * Spread display
- */
-const Spread = styled.span`
-  &::after {
-    content: '%';
-    display: inline-block;
-  }
 `;
 
 /**
@@ -203,7 +200,8 @@ const OrderRow = styled.div<{ $type: 'buy' | 'sell' }>`
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  padding: ${(p) => p.theme.spacing.xs} ${(p) => p.theme.spacing.md};
+  padding: 2px 12px;
+  line-height: 1.45;
   font-size: ${(p) => scaled(p.theme.fontSizes.sm)};
   cursor: pointer;
   transition: background 0.2s;
@@ -228,7 +226,9 @@ const OrderRow = styled.div<{ $type: 'buy' | 'sell' }>`
     bottom: 0;
     width: var(--depth, 0%);
     background: ${(p) =>
-      p.$type === 'buy' ? `${p.theme.colors.info}15` : `${p.theme.colors.error}15`};
+      p.$type === 'buy'
+        ? `color-mix(in srgb, var(--dir-up, ${p.theme.colors.info}) 12%, transparent)`
+        : `color-mix(in srgb, var(--dir-down, ${p.theme.colors.error}) 12%, transparent)`};
     z-index: 0;
   }
 `;
@@ -242,9 +242,12 @@ const OrderCell = styled.div<{ $type?: 'buy' | 'sell'; $align?: 'left' | 'center
   text-align: ${(p) => p.$align || 'left'};
   color: ${(p) => {
     if (!p.$type) return p.theme.colors.text;
-    return p.$type === 'buy' ? p.theme.colors.info : p.theme.colors.error;
+    return p.$type === 'buy'
+      ? `var(--dir-up, ${p.theme.colors.info})`
+      : `var(--dir-down, ${p.theme.colors.error})`;
   }};
-  font-family: ${(p) => p.theme.fonts.mono};
+  font-family: var(--mono, ${(p) => p.theme.fonts.mono});
+  font-variant-numeric: tabular-nums;
 `;
 
 /**
@@ -338,7 +341,8 @@ const EmptyRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: ${(p) => p.theme.spacing.sm};
-  padding: 2px ${(p) => p.theme.spacing.md};
+  padding: 2px 12px;
+  line-height: 1.45;
   color: ${(p) => p.theme.colors.disabled};
   font-size: ${(p) => scaled(p.theme.fontSizes.xs)};
   > span:first-child {
@@ -358,7 +362,13 @@ const EmptyRow = styled.div`
  * than the bottom. Each side scrolls independently, so an over-estimate costs
  * nothing on a shorter screen.
  */
-const FILLED_ROWS = 22;
+/**
+ * Blank rows keep the pivot centred when a side is short. Measured rather than
+ * fixed: at 19px a row, a 200px half-pane holds ten and a 420px one holds
+ * twenty-two, and a constant either leaves a gap or forces a scrollbar.
+ */
+const ROW_H = 19;
+const MIN_FILLER = 6;
 
 const Filler: React.FC<{ count: number; tone: 'buy' | 'sell' }> = ({ count, tone }) => (
   <>
@@ -439,6 +449,23 @@ export const OrderBook: React.FC = () => {
    * the rows that get rendered. `Math.max(...arr)` was also replaced with a
    * loop: spreading a large book into an argument list can overflow the stack.
    */
+  // How many rows each half can show, from the pane's real height.
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [fillerRows, setFillerRows] = useState(MIN_FILLER);
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const measure = () => {
+      // The head and the pivot are chrome; what is left is split between sides.
+      const half = (el.clientHeight - 26 - 30) / 2;
+      setFillerRows(Math.max(MIN_FILLER, Math.floor(half / ROW_H)));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const visibleAsks = useMemo(() => takeWithDepth(orderBook.asks, 'desc'), [orderBook.asks]);
 
   /** Bids with depth, highest price first (already sorted descending). */
@@ -459,16 +486,9 @@ export const OrderBook: React.FC = () => {
   const hasOrders = hasAsks || hasBids;
 
   // Calculate spread (difference between lowest ask and highest bid)
-  const spread =
-    hasAsks && hasBids
-      ? ((parseFloat(orderBook.asks[0]?.price ?? '0') -
-          parseFloat(orderBook.bids[0]?.price ?? '0')) /
-          parseFloat(orderBook.bids[0]?.price ?? '1')) *
-        100
-      : 0;
 
   return (
-    <OrderBookWrapper>
+    <OrderBookWrapper ref={wrapRef}>
       {/* Match Angular structure: table > thead + tbody > scroll-box */}
       <Table>
         {/* Table Header - OUTSIDE scroll box */}
@@ -500,17 +520,13 @@ export const OrderBook: React.FC = () => {
                       <OrderCell $align="right">{calculateTotal(ask.price, ask.amount)}</OrderCell>
                     </OrderRow>
                   ))}
-                <Filler count={FILLED_ROWS - visibleAsks.length} tone="sell" />
+                <Filler count={fillerRows - visibleAsks.length} tone="sell" />
               </AsksSection>
 
               {/* Price Info - FIXED in middle (not scrollable) */}
               <PriceInfo>
                 <PriceInfoTitle>Last Price</PriceInfoTitle>
                 <LastPrice>{formatPrice(String(marketData.currentPrice || 0))}</LastPrice>
-                <PriceInfoTitle>
-                  <span>Spread </span>
-                  <Spread>{spread.toFixed(2)}</Spread>
-                </PriceInfoTitle>
               </PriceInfo>
 
               {/* Bids Section (Buy Orders) - SCROLLABLE at bottom */}
@@ -529,7 +545,7 @@ export const OrderBook: React.FC = () => {
                       <OrderCell $align="right">{calculateTotal(bid.price, bid.amount)}</OrderCell>
                     </OrderRow>
                   ))}
-                <Filler count={FILLED_ROWS - visibleBids.length} tone="buy" />
+                <Filler count={fillerRows - visibleBids.length} tone="buy" />
               </BidsSection>
             </>
           ) : (

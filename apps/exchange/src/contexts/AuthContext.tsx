@@ -19,7 +19,7 @@ import { useScriptInfoPolling } from '@/hooks/useScriptInfoPolling';
 import { useStateSubscription } from '@/hooks/useStateSubscription';
 import { trackEvent } from '@/lib/analytics';
 import { logger } from '@/lib/logger';
-import { multiAccount } from '@/services/multiAccount';
+import { isLegacyEncryptedVault, LegacyVaultError, multiAccount } from '@/services/multiAccount';
 import tokenFilterService from '@/services/tokenFilters';
 import { type AuthContextType, type User } from '@/types/auth';
 
@@ -415,6 +415,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         if (!multiAccountData) {
           // First account - initialize multiAccount with password
           await multiAccount.signUp(password, DEFAULT_ROUNDS);
+        } else if (isLegacyEncryptedVault(multiAccountData)) {
+          /*
+           * Someone creating their first wallet on this device should never be
+           * stopped by a vault they cannot open, but that data is still somebody’s
+           * wallet and this is not the place to decide it is disposable. Refuse
+           * with the typed error and let the screen offer the reset.
+           *
+           * Checked before signIn rather than caught after: 600k PBKDF2 rounds to
+           * reach a verdict already legible in the first byte is a second of
+           * spinner for nothing.
+           */
+          throw new LegacyVaultError();
         } else {
           // Existing accounts - sign in to decrypt
           const hash = localStorage.getItem(STORAGE_KEYS.MULTI_ACCOUNT_HASH) ?? '';
@@ -1289,6 +1301,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }, []);
 
+  /**
+   * Destroys every wallet record on this device.
+   *
+   * The only way out of a vault this build cannot read. Irreversible: an account
+   * whose seed was never written down is gone with it. Callers confirm with the
+   * user first — nothing here asks.
+   */
+  const hasLocalVault = useCallback(
+    (): boolean => !!localStorage.getItem(STORAGE_KEYS.MULTI_ACCOUNT_DATA),
+    [],
+  );
+
+  const resetLocalVault = useCallback(() => {
+    for (const key of Object.values(STORAGE_KEYS)) localStorage.removeItem(key);
+    sessionStorage.removeItem(SESSION_STORAGE_KEY);
+    multiAccount.signOut();
+    setUser(null);
+    setAccounts([]);
+    setIsSignedIn(false);
+  }, []);
+
   const value: AuthContextType = {
     accounts,
     addAccount,
@@ -1299,6 +1332,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     getLastRoute,
     getTokenName,
     hasInArrayUserSetting,
+    hasLocalVault,
     isAuthenticated: !!user,
     isLoading,
     isScamAsset,
@@ -1306,6 +1340,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     logout,
     refreshTokenFilters,
     removeAccount,
+    resetLocalVault,
     saveLastRoute,
     scriptInfo,
     sessionRestored,

@@ -16,6 +16,7 @@ import { Stack } from '@/components/atoms/Stack';
 import { useAuth } from '@/contexts/AuthContext';
 import { logger } from '@/lib/logger';
 import { formatAmount } from '@/utils/formatters';
+import { TransactionDetailsDialog } from './TransactionDetailsDialog';
 
 const TransactionsContainer = styled.div`
   width: 100%;
@@ -78,6 +79,15 @@ const Table = styled.table`
 
     &:hover {
       background-color: ${(p) => p.theme.colors.hover};
+    }
+
+    /*
+     * The row has been reachable by keyboard since it became clickable; without
+     * this it was reachable and invisible, which is worse than not reachable.
+     */
+    &:focus-visible {
+      outline: 2px solid ${(p) => p.theme.colors.primary};
+      outline-offset: -2px;
     }
   }
 `;
@@ -286,6 +296,12 @@ export const Transactions = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(100);
   const [isExporting, setIsExporting] = useState(false);
+  /*
+   * The rows have carried `cursor: pointer` and a hover state since this table
+   * was written, with nothing behind them. The id of the row someone actually
+   * opened lives here; the dialog fetches the full record for it.
+   */
+  const [openTxId, setOpenTxId] = useState<string | null>(null);
 
   // Fetch transactions from blockchain with React Query
   const {
@@ -545,7 +561,18 @@ export const Transactions = () => {
               </thead>
               <tbody>
                 {paginatedTransactions?.map((tx) => (
-                  <tr key={tx.id}>
+                  <tr
+                    key={tx.id}
+                    tabIndex={0}
+                    aria-label={`Show details for this ${tx.type.replace(/_/g, ' ')} transaction`}
+                    onClick={() => setOpenTxId(tx.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setOpenTxId(tx.id);
+                      }
+                    }}
+                  >
                     <td>
                       <TransactionType $type={tx.type}>
                         {tx.type
@@ -600,6 +627,8 @@ export const Transactions = () => {
           )}
         </Card>
       </Stack>
+
+      {openTxId && <TransactionDetailsDialog txId={openTxId} onClose={() => setOpenTxId(null)} />}
     </TransactionsContainer>
   );
 };

@@ -1,124 +1,77 @@
-/**
- * DEX terminal.
- *
- * Four regions on one screen, no page chrome and no scrolling document:
- *
- *   markets │ chart      │ order book
- *   ────────┴────────────┤ ───────────
- *   orders / balances    │ buy · sell
- *
- * The panels are flat and share hairline borders rather than sitting as
- * separate cards, because a terminal is read as one surface. Nothing here
- * scrolls as a page — each region scrolls inside itself, so the market list
- * and the order book can be long without pushing the form off screen.
- */
-
-import { ChevronLeft, ChevronRight, ExpandLess, ExpandMore } from '@mui/icons-material';
-import { Box, Collapse, IconButton, Tab, Tabs, Typography } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useMarketStats24h, useOrderBook } from '@/api/services/matcherService';
-import { BuyOrderForm } from '@/features/dex/BuyOrderForm';
-import { MarketsPanel } from '@/features/dex/MarketsPanel';
-import { OrderBook } from '@/features/dex/OrderBook';
-import { SellOrderForm } from '@/features/dex/SellOrderForm';
-import { TerminalOrdersTable } from '@/features/dex/TerminalOrdersTable';
-import { TradeHistory } from '@/features/dex/TradeHistory';
 import { TradingViewChart } from '@/features/dex/TradingViewChart';
+import { BottomTabs } from '@/features/dex/terminal/BottomTabs';
+import { MarketSearchDialog } from '@/features/dex/terminal/MarketSearchDialog';
+import { OrderBookPanel } from '@/features/dex/terminal/OrderBookPanel';
+import { OrderPanel } from '@/features/dex/terminal/OrderPanel';
+import { PairStats } from '@/features/dex/terminal/PairStats';
+import { SymbolButton } from '@/features/dex/terminal/SymbolButton';
+import { BOTTOM_H, RIGHT_COL_W } from '@/features/dex/terminal/terminalTokens';
+import { DEFAULT_PAIR } from '@/features/dex/tradingPairs';
+import { useHotkey } from '@/hooks';
 import {
   selectSelectedPair,
+  selectSetSelectedPair,
   selectUpdateMarketData,
   selectUpdateOrderBook,
   useDexStore,
 } from '@/stores/dexStore';
+import { tokens } from '@/theme/tokens/semantic';
 
-/** One region of the terminal. Borders are shared, so only two edges are drawn. */
-const Panel: React.FC<{
-  children: React.ReactNode;
-  borderLeft?: boolean;
-  borderTop?: boolean;
-}> = ({ borderLeft = false, borderTop = false, children }) => (
-  <Box
-    sx={{
-      bgcolor: 'background.paper',
-      borderBottomWidth: 0,
-      borderColor: 'divider',
-      borderLeftWidth: borderLeft ? 1 : 0,
-      borderRightWidth: 0,
-      borderStyle: 'solid',
-      borderTopWidth: borderTop ? 1 : 0,
-      display: 'flex',
-      flexDirection: 'column',
-      minHeight: 0,
-      minWidth: 0,
-      overflow: 'hidden',
-    }}
-  >
-    {children}
-  </Box>
-);
-
-/** Panel title bar — the same 40px rule everywhere so the regions line up. */
-const PanelTitle: React.FC<{ children: React.ReactNode; actions?: React.ReactNode }> = ({
-  actions,
-  children,
-}) => (
-  <Box
-    sx={{
-      alignItems: 'center',
-      borderBottom: 1,
-      borderColor: 'divider',
-      display: 'flex',
-      flexShrink: 0,
-      justifyContent: 'space-between',
-      minHeight: 40,
-      px: 2,
-    }}
-  >
-    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-      {children}
-    </Typography>
-    {actions}
-  </Box>
-);
-
-const BOTTOM_ROW_HEIGHT = 368;
+const FORM_SHARE_KEY = 'dex.formShare';
 
 /**
- * How tall the trading region is.
+ * The trading terminal.
  *
- * The chart is the reason this screen exists, so it takes the viewport. The
- * orders rail sits underneath and is reached by scrolling — its tabs stay
- * visible at the bottom edge, which is what tells you there is more down
- * there. `main` in MainLayout is the app's one scroll container, so making
- * this page taller than it is what produces the scroll.
+ * Chart and history on the left, book and order entry on the right, the market
+ * picker as a palette rather than a rail — the chart gets the width, and ⌘K is
+ * the gesture people already have for "find a thing". Every region has a fixed
+ * chrome height, so nothing shifts as data arrives.
  */
-const TRADING_REGION_HEIGHT = 'calc(100dvh - 210px)';
-const SIDE_COLUMN_WIDTH = 356;
-const MARKETS_WIDTH = 340;
-
 export const Dex: React.FC = () => {
+  const t = tokens(useTheme().palette.mode);
   const selectedPair = useDexStore(selectSelectedPair);
+  const setSelectedPair = useDexStore(selectSetSelectedPair);
   const updateOrderBook = useDexStore(selectUpdateOrderBook);
   const updateMarketData = useDexStore(selectUpdateMarketData);
-  const [ordersTab, setOrdersTab] = useState(0);
-  const [side, setSide] = useState<'buy' | 'sell'>('buy');
-  const [depthOpen, setDepthOpen] = useState(false);
-  const [railsOpen, setRailsOpen] = useState(true);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  // Tenths of the right column given to the order ticket. Remembered, because a
+  // trader's preference here is a working habit, not a per-visit whim.
+  const [formShare, setFormShare] = useState<number>(() => {
+    const saved = Number(localStorage.getItem(FORM_SHARE_KEY));
+    if (saved >= 4 && saved <= 8) return saved;
+    // The ticket's content is a fixed height; the column's is not. On a laptop
+    // it needs a larger share of a shorter column to avoid a scrollbar.
+    return typeof window !== 'undefined' && window.innerHeight < 900 ? 7 : 6;
+  });
+  useEffect(() => {
+    try {
+      localStorage.setItem(FORM_SHARE_KEY, String(formShare));
+    } catch {
+      /* private mode */
+    }
+  }, [formShare]);
 
-  // 50 levels a side. The hook owns its own polling interval — overriding it
-  // here is what let this page drift to a 5s poll previously.
+  // Seed the store, and replace a pair carried over from another network — it
+  // arrives with empty asset ids and every panel downstream errors on it.
+  useEffect(() => {
+    const stale = selectedPair && (!selectedPair.amountAsset || !selectedPair.priceAsset);
+    if (stale || (!selectedPair && DEFAULT_PAIR)) setSelectedPair(DEFAULT_PAIR);
+  }, [selectedPair, setSelectedPair]);
+
+  useHotkey('k', () => setPickerOpen(true), { metaKey: true });
+  useHotkey('k', () => setPickerOpen(true), { ctrlKey: true });
+
   const { data: orderBookData } = useOrderBook(
     selectedPair?.amountAsset || '',
     selectedPair?.priceAsset || '',
     50,
     { enabled: !!selectedPair },
   );
-
-  // The matcher returns bare price/amount levels; the store holds Orders. The
-  // synthetic ids are positional and exist only to key the rows.
   useEffect(() => {
     if (!orderBookData) return;
-
     updateOrderBook({
       asks: orderBookData.asks.map((ask, idx) => ({
         amount: ask.amount.toString(),
@@ -137,27 +90,16 @@ export const Dex: React.FC = () => {
     });
   }, [orderBookData, updateOrderBook]);
 
-  // Real 24h aggregates, from data-service candles.
   const { data: stats24h } = useMarketStats24h(
     selectedPair?.amountAsset || '',
     selectedPair?.priceAsset || '',
     { enabled: !!selectedPair },
   );
-
-  /**
-   * "Last Price" is the close of the most recent traded candle, not the best
-   * bid — on a book with a wide spread the best bid can sit far from anything
-   * that ever changed hands. It falls back to the mid only when the pair has
-   * not traded in 24h, so the order book's header shows something meaningful
-   * instead of zero.
-   */
   useEffect(() => {
     if (!stats24h) return;
-
     const bestBid = orderBookData?.bids[0]?.price ?? 0;
     const bestAsk = orderBookData?.asks[0]?.price ?? 0;
     const mid = bestBid > 0 && bestAsk > 0 ? (bestBid + bestAsk) / 2 : bestBid || bestAsk || 0;
-
     updateMarketData({
       currentPrice: stats24h.hasTrades ? stats24h.lastPrice : mid,
       high24h: stats24h.high24h,
@@ -169,195 +111,85 @@ export const Dex: React.FC = () => {
     });
   }, [stats24h, orderBookData, updateMarketData]);
 
+  const base = selectedPair?.amountAssetName || selectedPair?.amountAsset || '—';
+  const quote = selectedPair?.priceAssetName || selectedPair?.priceAsset || '—';
+  const hairline = `1px solid ${t.border.subtle}`;
+
   return (
     <Box
       sx={{
-        bgcolor: 'background.default',
+        bgcolor: 'background.paper',
         display: 'grid',
-        gridTemplateColumns: { lg: `minmax(0, 1fr) ${SIDE_COLUMN_WIDTH}px`, xs: 'minmax(0, 1fr)' },
-        minHeight: 0,
+        gridTemplateColumns: { lg: `minmax(0, 1fr) ${RIGHT_COL_W}px`, xs: 'minmax(0, 1fr)' },
+        height: '100%',
+        minHeight: 600,
+        minWidth: 0,
       }}
     >
-      {/* Left: markets + chart above, orders below */}
       <Box
         sx={{
           display: 'grid',
-          gridTemplateRows: `${TRADING_REGION_HEIGHT} ${BOTTOM_ROW_HEIGHT}px`,
+          gridTemplateRows: `minmax(0, 1fr) ${BOTTOM_H}px`,
           minHeight: 0,
           minWidth: 0,
         }}
       >
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: {
-              md: railsOpen ? `${MARKETS_WIDTH}px minmax(0, 1fr)` : '0px minmax(0, 1fr)',
-              xs: 'minmax(0, 1fr)',
-            },
-            minHeight: 0,
-            minWidth: 0,
-            transition: 'grid-template-columns 160ms',
-          }}
-        >
-          <Box sx={{ display: { md: 'block', xs: 'none' }, minHeight: 0, overflow: 'hidden' }}>
-            <MarketsPanel />
-          </Box>
-
-          <Panel>
-            {/* The chart owns this region outright — no title bar competing
-                with it, which is what the extra 40px is worth here. The
-                handle on its edge collapses the markets rail rather than
-                being decoration. */}
-            <Box sx={{ display: 'flex', flex: 1, minHeight: 0, position: 'relative' }}>
-              <Box
-                onClick={() => setRailsOpen((open) => !open)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') setRailsOpen((open) => !open);
-                }}
-                aria-label={railsOpen ? 'Collapse markets list' : 'Expand markets list'}
-                sx={{
-                  '&:hover': { color: 'text.primary' },
-                  alignItems: 'center',
-                  bgcolor: 'background.paper',
-                  borderColor: 'divider',
-                  borderLeftWidth: 0,
-                  borderRadius: '0 4px 4px 0',
-                  borderStyle: 'solid',
-                  borderWidth: 1,
-                  color: 'text.secondary',
-                  cursor: 'pointer',
-                  display: { md: 'flex', xs: 'none' },
-                  height: 44,
-                  justifyContent: 'center',
-                  left: 0,
-                  position: 'absolute',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  width: 14,
-                  zIndex: 1,
-                }}
-              >
-                {railsOpen ? (
-                  <ChevronLeft sx={{ fontSize: 14 }} />
-                ) : (
-                  <ChevronRight sx={{ fontSize: 14 }} />
-                )}
-              </Box>
-              <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', minHeight: 0 }}>
-                <TradingViewChart />
-              </Box>
-            </Box>
-          </Panel>
+        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+          <TradingViewChart
+            leading={
+              <>
+                <SymbolButton base={base} quote={quote} onClick={() => setPickerOpen(true)} />
+                <PairStats />
+              </>
+            }
+          />
         </Box>
-
-        <Panel borderTop>
-          <Tabs
-            value={ordersTab}
-            onChange={(_e, v: number) => setOrdersTab(v)}
-            variant="scrollable"
-            scrollButtons={false}
-            sx={{
-              '& .MuiTab-root': { fontSize: 13, minHeight: 40, px: 2, textTransform: 'none' },
-              borderBottom: 1,
-              borderColor: 'divider',
-              flexShrink: 0,
-              minHeight: 40,
-            }}
-          >
-            <Tab label="My Open Orders" />
-            <Tab label="My Order History" />
-            <Tab label="My Trade History" />
-            <Tab label="Trade History" />
-            <Tab label="My Balance" />
-          </Tabs>
-          <Box sx={{ display: 'flex', flex: 1, flexDirection: 'column', minHeight: 0 }}>
-            {ordersTab === 3 && <TradeHistory />}
-            {ordersTab === 0 && <TerminalOrdersTable scope="open" />}
-            {(ordersTab === 1 || ordersTab === 2) && <TerminalOrdersTable scope="history" />}
-            {ordersTab === 4 && <TerminalOrdersTable scope="open" />}
-          </Box>
-        </Panel>
+        <Box sx={{ borderTop: hairline, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+          <BottomTabs />
+        </Box>
       </Box>
 
-      {/* Right: order book above, order form below */}
       <Box
         sx={{
-          display: { lg: 'grid', xs: 'none' },
-          gridTemplateRows: `${TRADING_REGION_HEIGHT} ${BOTTOM_ROW_HEIGHT}px`,
+          borderLeft: hairline,
+          display: { lg: 'flex', xs: 'none' },
+          flexDirection: 'column',
           minHeight: 0,
+          // Nothing here may bleed past the column; each region scrolls itself.
+          overflow: 'hidden',
         }}
       >
-        <Panel borderLeft>
-          <PanelTitle>Order Book</PanelTitle>
-          <Box sx={{ flex: 1, minHeight: 0 }}>
-            <OrderBook />
-          </Box>
-
-          {/*
-            Market depth collapses by default. It plots the same levels the
-            book above already lists, so on a shallow pair it earns none of
-            the height it would take from them.
-          */}
-          <Box sx={{ borderColor: 'divider', borderTop: 1, flexShrink: 0 }}>
-            <Box
-              onClick={() => setDepthOpen((open) => !open)}
-              sx={{
-                alignItems: 'center',
-                cursor: 'pointer',
-                display: 'flex',
-                justifyContent: 'space-between',
-                minHeight: 40,
-                px: 2,
-              }}
-            >
-              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                Market Depth
-              </Typography>
-              <IconButton
-                size="small"
-                aria-label={depthOpen ? 'Collapse market depth' : 'Expand market depth'}
-              >
-                {depthOpen ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}
-              </IconButton>
-            </Box>
-            <Collapse in={depthOpen}>
-              <Box sx={{ pb: 2, px: 2 }}>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  Depth is drawn from the levels listed above.
-                </Typography>
-              </Box>
-            </Collapse>
-          </Box>
-        </Panel>
-
-        <Panel borderLeft borderTop>
-          <Tabs
-            value={side}
-            onChange={(_e, v: 'buy' | 'sell') => setSide(v)}
-            variant="fullWidth"
-            sx={{
-              '& .MuiTab-root': {
-                fontSize: 13,
-                fontWeight: 600,
-                letterSpacing: '0.06em',
-                minHeight: 40,
-              },
-              borderBottom: 1,
-              borderColor: 'divider',
-              flexShrink: 0,
-              minHeight: 40,
-            }}
-          >
-            <Tab value="buy" label="BUY" />
-            <Tab value="sell" label="SELL" />
-          </Tabs>
-          <Box sx={{ flex: 1, minHeight: 0, overflow: 'auto', px: 1.5, py: 1 }}>
-            {side === 'buy' ? <BuyOrderForm /> : <SellOrderForm />}
-          </Box>
-        </Panel>
+        {/*
+          A flex ratio, not a percentage row: a percentage needs the column's
+          height to be definite and silently falls back to content height when
+          it is not — which is how the form used to run past the bottom. The
+          ratio is the reader's, kept across sessions: some people watch the
+          book, some live in the ticket.
+        */}
+        <Box
+          sx={{
+            display: 'flex',
+            flex: `${10 - formShare} 1 0`,
+            flexDirection: 'column',
+            minHeight: 96,
+          }}
+        >
+          <OrderBookPanel />
+        </Box>
+        <Box
+          sx={{
+            borderTop: hairline,
+            display: 'flex',
+            flex: `${formShare} 1 0`,
+            flexDirection: 'column',
+            minHeight: 0,
+          }}
+        >
+          <OrderPanel onResize={setFormShare} share={formShare} />
+        </Box>
       </Box>
+
+      <MarketSearchDialog open={pickerOpen} onClose={() => setPickerOpen(false)} />
     </Box>
   );
 };

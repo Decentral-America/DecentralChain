@@ -477,14 +477,14 @@ describe('Acceptance — the twelve pages render differently in each mode', () =
     expect(dark).toBe(tokens('dark').surface.base);
   });
 
-  it('Dex: the "Order Book" panel background differs, and matches surface.raised in each mode', () => {
+  it('Dex: the "Order book" panel background differs, and matches surface.raised in each mode', () => {
     const { unmount } = renderPage(<Dex />, 'light');
     // The terminal layout has no "Price Chart" header — the chart owns its
     // region without one. Order Book is the equivalent titled panel.
-    const light = rgbToHex(nearestBackground(screen.getByText('Order Book')));
+    const light = rgbToHex(nearestBackground(screen.getByText('Order book')));
     unmount();
     renderPage(<Dex />, 'dark');
-    const dark = rgbToHex(nearestBackground(screen.getByText('Order Book')));
+    const dark = rgbToHex(nearestBackground(screen.getByText('Order book')));
 
     expect(dark).not.toBe(light);
     expect(light).toBe(tokens('light').surface.raised);

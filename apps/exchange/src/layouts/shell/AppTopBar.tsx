@@ -59,6 +59,8 @@ export function TabRail({ onOpenLauncher }: { onOpenLauncher: () => void }) {
             key={tab.path}
             component={NavLink}
             to={tab.path}
+            onMouseEnter={tab.path === '/desktop/dex' ? preloadDex : undefined}
+            onFocus={tab.path === '/desktop/dex' ? preloadDex : undefined}
             aria-current={active ? 'page' : undefined}
             sx={{
               '&:hover': { color: 'text.primary' },
@@ -155,6 +157,15 @@ export function RoundAction({
     </Tooltip>
   );
 }
+
+/**
+ * Warm the terminal's chunk on intent. The Dex carries the charting stack and
+ * is the heaviest route; fetching it while the pointer is still travelling to
+ * the tab means the click lands on code that is already here.
+ */
+const preloadDex = () => {
+  void import('@/pages/Dex');
+};
 
 export function AppTopBar({
   actions,

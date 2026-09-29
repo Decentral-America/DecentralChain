@@ -41,6 +41,23 @@ RUN git init && pnpm install --frozen-lockfile --ignore-scripts
 # Build all three networks from the exchange directory
 WORKDIR /monorepo/apps/exchange
 
+# The Solana bridge RPC, supplied at build time rather than committed.
+#
+# `.env.production` deliberately leaves this blank and vite.config.ts fails the
+# build when it is missing — a fallback compiled into the bundle is exactly the
+# failure that guard exists to prevent (the reference bridge shipped
+# `http://127.0.0.1:8899` and every deposit failed for months). Vite inlines
+# `import.meta.env` at build time, so this has to be present for each of the
+# three builds below, not at run time.
+#
+#   docker build --build-arg solana_rpc_url=https://... -f Dockerfile.production .
+#
+# Domain-restrict the key in the Helius dashboard: the browser bundle publishes
+# whatever is set here. Without the arg the build stops with the guard's message,
+# which is the intended behaviour, not a regression.
+ARG solana_rpc_url
+ENV VITE_SOLANA_RPC_URL=$solana_rpc_url
+
 # Mainnet
 RUN VITE_NETWORK=mainnet \
     VITE_NODE_URL=https://mainnet-node.decentralchain.io \
