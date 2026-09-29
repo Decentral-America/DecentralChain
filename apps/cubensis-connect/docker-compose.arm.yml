@@ -1,8 +1,8 @@
 version: '3'
 services:
   chrome:
-    image: seleniarm/node-chromium
+    image: selenium/node-chromium:4.49.0-20260909@sha256:0a2e549fcd4f52393b1390b5282e09a8cefc68d6a8790de55fdf855b26c557cd
     platform: linux/arm64/v8
   hub:
-    image: seleniarm/hub
+    image: selenium/hub:4.49.0-20260909@sha256:178c2a330deb5c674c74ca63028737954106372ff66785244c16dfd66276654e
     platform: linux/arm64/v8
