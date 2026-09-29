@@ -38,8 +38,14 @@
     ["G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo", "DCC"],
     ["DCC", "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK"],
     ["CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb", "DCC"],
-    ["G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo", "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK"],
-    ["CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb", "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK"],
+    [
+      "G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo",
+      "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK"
+    ],
+    [
+      "CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb",
+      "25iPQ8zKBRR5q1UKUksCijiyb18EGupggjus6muEbuvK"
+    ],
     ["G9TVbwiiUZd5WxFxoY7Tb6ZPjGGLfynJK4a3aoC59cMo", "CCcUGv8eoyoF96c8HHbnbGsPdumr7jPpoRS6orPeg6Wb"]
   ]
 }
