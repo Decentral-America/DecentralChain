@@ -57,10 +57,13 @@ describe('min and max function', () => {
     [data.STDLIB_VERSION_3, maxForBigInt, random.getRandomInt(), data.negativeTestType],
     [data.STDLIB_VERSION_4, minForBigInt, random.getRandomInt(), data.negativeTestType],
     [data.STDLIB_VERSION_4, maxForBigInt, random.getRandomInt(), data.negativeTestType],
-  ])('check ride v%i function %s compiles with bigInt', (version, testFunction, testInt, testType) => {
-    const bigInt = `toBigInt(${testInt})`;
-    precondition.setData('BigInt');
-    const contract = precondition.generateOnlyMatcherContract(version, bigInt, testFunction);
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles with bigInt',
+    (version, testFunction, testInt, testType) => {
+      const bigInt = `toBigInt(${testInt})`;
+      precondition.setData('BigInt');
+      const contract = precondition.generateOnlyMatcherContract(version, bigInt, testFunction);
+      checkCompileResult(contract, testType);
+    },
+  );
 });

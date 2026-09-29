@@ -259,7 +259,7 @@ export const useBroadcast = (options: UseBroadcastOptions = {}): UseBroadcastRet
   const invalidateBalanceQueries = useCallback(
     (address: string | undefined) => {
       if (!address) return;
-      queryClient.invalidateQueries({ queryKey: ['addressBalance', address] });
+      void queryClient.invalidateQueries({ queryKey: ['addressBalance', address] });
       if (debug) logger.debug('[Broadcast] Balance queries invalidated for address:', address);
     },
     [queryClient, debug],

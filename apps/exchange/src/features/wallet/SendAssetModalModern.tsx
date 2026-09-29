@@ -189,7 +189,7 @@ export const SendAssetModalModern: React.FC<SendAssetModalModernProps> = ({
     onSuccess: (data) => {
       setTxId(data.id);
       setShowSuccess(true);
-      queryClient.invalidateQueries({ queryKey: ['wallet'] });
+      void queryClient.invalidateQueries({ queryKey: ['wallet'] });
 
       // Reset form after delay
       setTimeout(() => {

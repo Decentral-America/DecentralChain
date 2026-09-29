@@ -33,8 +33,11 @@ describe('valueOrElse functions', () => {
       random.getRandomStringArray(),
       data.negativeTestType,
     ],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, randomData, testType) => {
-    const contract = precondition.generateContract(version, randomData, randomData, testFunction);
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, randomData, testType) => {
+      const contract = precondition.generateContract(version, randomData, randomData, testFunction);
+      checkCompileResult(contract, testType);
+    },
+  );
 });

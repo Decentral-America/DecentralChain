@@ -167,6 +167,22 @@ export const initErrorMonitoring = (options: ErrorMonitoringConfig = {}): void =
         return event;
       },
 
+      // Sentry 11 replaced `sendDefaultPii` with `dataCollection`, whose defaults collect
+      // user info (IP inference), cookies, headers, bodies and query params. v10 sent none of
+      // that by default; keep it that way explicitly.
+      dataCollection: {
+        cookies: false,
+        databaseQueryData: false,
+        genAI: { inputs: false, outputs: false },
+        graphQL: { document: false, variables: false },
+        httpBodies: [],
+        httpHeaders: false,
+        queues: false,
+        stackFrameVariables: false,
+        urlQueryParams: false,
+        userInfo: false,
+      },
+
       // Ignore specific errors
       ignoreErrors: [
         // Browser extensions
@@ -183,9 +199,6 @@ export const initErrorMonitoring = (options: ErrorMonitoringConfig = {}): void =
         'ResizeObserver loop limit exceeded',
         'Non-Error promise rejection captured',
       ],
-
-      // Don't send PII
-      sendDefaultPii: false,
     });
 
     isInitialized = true;

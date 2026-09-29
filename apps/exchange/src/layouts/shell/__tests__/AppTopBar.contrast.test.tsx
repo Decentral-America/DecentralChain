@@ -245,29 +245,30 @@ describe.each(['light', 'dark'] as const)('AppTopBar — NetworkTag (%s mode)', 
 });
 
 describe.each(['light', 'dark'] as const)('AppTopBar — RoundAction (%s mode)', (mode) => {
-  it.each(
-    beneath(mode),
-  )('the unfilled variant clears AA against the bar over the %s, at rest and hovered', (_, under) => {
-    /*
-     * Replaces the outlined-variant case: the redesign dropped the outline
-     * (and with it the hairline that case checked), leaving an unfilled
-     * button whose icon ink sits straight on the translucent bar.
-     */
-    renderBar(
-      mode,
-      under,
-      <RoundAction label="Settings">
-        <span>icon</span>
-      </RoundAction>,
-    );
-    const button = screen.getByRole('button', { name: 'Settings' });
-    const ink = toHex(getComputedStyle(button).color);
-    const bar = toHex(paintedBackground(button));
-    expect(contrastRatio(ink, bar)).toBeGreaterThanOrEqual(4.5);
-    const hoverInk = toHex(hoverDeclaration(button, 'color'));
-    const hoverFill = toHex(hoverDeclaration(button, 'background-color'));
-    expect(contrastRatio(hoverInk, hoverFill)).toBeGreaterThanOrEqual(4.5);
-  });
+  it.each(beneath(mode))(
+    'the unfilled variant clears AA against the bar over the %s, at rest and hovered',
+    (_, under) => {
+      /*
+       * Replaces the outlined-variant case: the redesign dropped the outline
+       * (and with it the hairline that case checked), leaving an unfilled
+       * button whose icon ink sits straight on the translucent bar.
+       */
+      renderBar(
+        mode,
+        under,
+        <RoundAction label="Settings">
+          <span>icon</span>
+        </RoundAction>,
+      );
+      const button = screen.getByRole('button', { name: 'Settings' });
+      const ink = toHex(getComputedStyle(button).color);
+      const bar = toHex(paintedBackground(button));
+      expect(contrastRatio(ink, bar)).toBeGreaterThanOrEqual(4.5);
+      const hoverInk = toHex(hoverDeclaration(button, 'color'));
+      const hoverFill = toHex(hoverDeclaration(button, 'background-color'));
+      expect(contrastRatio(hoverInk, hoverFill)).toBeGreaterThanOrEqual(4.5);
+    },
+  );
 
   it('the filled variant clears AA at rest and on hover', () => {
     render(

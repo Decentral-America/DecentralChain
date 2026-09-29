@@ -62,7 +62,7 @@ export function DepositAssetModal({ isOpen, onClose, assetId, assetName }: Depos
 
   const handleCopy = () => {
     if (depositAddress) {
-      copyToClipboard(depositAddress);
+      void copyToClipboard(depositAddress);
     }
   };
 

@@ -78,19 +78,23 @@ describe('toString & toUtf8String', () => {
       random.getRandomByteVector(),
       data.negativeTestType,
     ],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, byteVector, testType) => {
-    const contract = precondition.generateOnlyMatcherContract(version, byteVector, testFunction);
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, byteVector, testType) => {
+      const contract = precondition.generateOnlyMatcherContract(version, byteVector, testFunction);
+      checkCompileResult(contract, testType);
+    },
+  );
 
-  test.each([
-    [data.STDLIB_VERSION_5, toStringFn, random.getRandomInt(), data.positiveTestType],
-  ])('check ride v%i function %s compiles with bigInt', (version, testFunction, testInt, testType) => {
-    const contract = precondition.generateOnlyMatcherContract(
-      version,
-      `toBigInt(${testInt})`,
-      testFunction,
-    );
-    checkCompileResult(contract, testType);
-  });
+  test.each([[data.STDLIB_VERSION_5, toStringFn, random.getRandomInt(), data.positiveTestType]])(
+    'check ride v%i function %s compiles with bigInt',
+    (version, testFunction, testInt, testType) => {
+      const contract = precondition.generateOnlyMatcherContract(
+        version,
+        `toBigInt(${testInt})`,
+        testFunction,
+      );
+      checkCompileResult(contract, testType);
+    },
+  );
 });

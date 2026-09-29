@@ -10,9 +10,9 @@
  * addresses. That way the seeds are checked against the live program instead
  * of being trusted.
  */
-import { getAssociatedTokenAddressSync } from '@solana/spl-token';
 import { PublicKey } from '@solana/web3.js';
 import { SOLANA_PROGRAM_ID } from '@/config/bridge';
+import { getAssociatedTokenAddressSync } from '@/services/bridge/splToken';
 
 const programId = new PublicKey(SOLANA_PROGRAM_ID);
 

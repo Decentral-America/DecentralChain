@@ -107,7 +107,7 @@ export const Header = () => {
   };
 
   const handleLogout = () => {
-    logout();
+    void logout();
     handleMenuClose();
   };
 

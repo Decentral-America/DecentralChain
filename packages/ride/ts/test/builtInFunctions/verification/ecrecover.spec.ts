@@ -23,8 +23,11 @@ describe('ecrecover functions', () => {
     [data.STDLIB_VERSION_5, invalidecrecover, random.getRandomStringArray(), data.negativeTestType],
     // can't find a function 'ecrecover'
     [data.STDLIB_VERSION_3, ecrecover, random.getRandomByteVector(), data.negativeTestType],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, randomData, testType) => {
-    const contract = precondition.generateOnlyMatcherContract(version, randomData, testFunction);
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, randomData, testType) => {
+      const contract = precondition.generateOnlyMatcherContract(version, randomData, testFunction);
+      checkCompileResult(contract, testType);
+    },
+  );
 });

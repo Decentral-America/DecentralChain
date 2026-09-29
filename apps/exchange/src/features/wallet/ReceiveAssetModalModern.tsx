@@ -51,7 +51,7 @@ export const ReceiveAssetModalModern: React.FC<ReceiveAssetModalModernProps> = (
    */
   const handleCopyAddress = () => {
     if (user?.address) {
-      copyToClipboard(user.address);
+      void copyToClipboard(user.address);
     }
   };
 

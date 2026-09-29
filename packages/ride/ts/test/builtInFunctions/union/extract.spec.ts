@@ -26,9 +26,12 @@ describe('extract functions', () => {
     [data.STDLIB_VERSION_3, extract, random.getRandomAlias(), data.negativeTestType, 'Int'],
     // invalid function extract
     [data.STDLIB_VERSION_3, invalidExtract, random.getRandomInt(), data.negativeTestType, 'Int'],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, randomData, testType, dataType) => {
-    precondition.setData(dataType);
-    const contract = precondition.generateOnlyMatcherContract(version, randomData, testFunction);
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, randomData, testType, dataType) => {
+      precondition.setData(dataType);
+      const contract = precondition.generateOnlyMatcherContract(version, randomData, testFunction);
+      checkCompileResult(contract, testType);
+    },
+  );
 });

@@ -62,11 +62,15 @@ describe('AES encryption edge cases', () => {
     const wrongKey = randomBytes(32);
     // Wrong key either causes a padding error (throw) or produces garbage output.
     // Both outcomes confirm the ciphertext is not silently decrypted to the original.
+    // @noble/ciphers >=2.3.0 reports padding failures as a generic 'aes: bad decrypt'
+    // (less padding-oracle signal) instead of 'aes/pkcs7: wrong padding'.
     try {
       const dec = aesDecrypt(enc, wrongKey, 'CBC', iv);
       expect(bytesToString(dec)).not.toEqual('A'.repeat(256));
     } catch (e) {
-      expect((e as Error).message).toMatch(/Failed to decrypt|wrong padding|invalid padding/i);
+      expect((e as Error).message).toMatch(
+        /Failed to decrypt|bad decrypt|wrong padding|invalid padding/i,
+      );
     }
   });
 

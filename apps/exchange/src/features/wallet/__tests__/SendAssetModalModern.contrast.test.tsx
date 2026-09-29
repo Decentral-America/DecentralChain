@@ -147,60 +147,60 @@ async function holdToSend() {
   );
 }
 
-describe.each([
-  'light',
-  'dark',
-] as const)('SendAssetModalModern — "Hold to send" control (%s mode)', (mode) => {
-  it('both faces clear AA against every stop of whatever they actually sit on, once enabled', async () => {
-    const user = userEvent.setup();
-    renderIn(mode);
-    // Disabled (exempt from AA, drawn at half opacity) until both fields are
-    // non-empty — fill them to reach the pair that is actually shown.
-    expect(sendControl()).toHaveAttribute('aria-disabled', 'true');
-    await fillForm(user);
-    const control = sendControl();
-    expect(control).not.toHaveAttribute('aria-disabled');
+describe.each(['light', 'dark'] as const)(
+  'SendAssetModalModern — "Hold to send" control (%s mode)',
+  (mode) => {
+    it('both faces clear AA against every stop of whatever they actually sit on, once enabled', async () => {
+      const user = userEvent.setup();
+      renderIn(mode);
+      // Disabled (exempt from AA, drawn at half opacity) until both fields are
+      // non-empty — fill them to reach the pair that is actually shown.
+      expect(sendControl()).toHaveAttribute('aria-disabled', 'true');
+      await fillForm(user);
+      const control = sendControl();
+      expect(control).not.toHaveAttribute('aria-disabled');
 
-    // The resting face: the control's own ink on its own tint.
-    const restInk = computedColor(control);
-    for (const bg of backgroundHexStops(control)) {
-      expect(contrastRatio(restInk, bg)).toBeGreaterThanOrEqual(4.5);
-    }
+      // The resting face: the control's own ink on its own tint.
+      const restInk = computedColor(control);
+      for (const bg of backgroundHexStops(control)) {
+        expect(contrastRatio(restInk, bg)).toBeGreaterThanOrEqual(4.5);
+      }
 
-    // The face that sweeps in while held: a solid layer with its own ink.
-    const sweep = control.querySelector(':scope > [aria-hidden="true"]') as HTMLElement;
-    expect(sweep).not.toBeNull();
-    expect(sweep).toHaveTextContent(/^Hold to send/);
-    const sweepInk = computedColor(sweep);
-    for (const bg of backgroundHexStops(sweep)) {
-      expect(contrastRatio(sweepInk, bg)).toBeGreaterThanOrEqual(4.5);
-    }
-  });
-});
+      // The face that sweeps in while held: a solid layer with its own ink.
+      const sweep = control.querySelector(':scope > [aria-hidden="true"]') as HTMLElement;
+      expect(sweep).not.toBeNull();
+      expect(sweep).toHaveTextContent(/^Hold to send/);
+      const sweepInk = computedColor(sweep);
+      for (const bg of backgroundHexStops(sweep)) {
+        expect(contrastRatio(sweepInk, bg)).toBeGreaterThanOrEqual(4.5);
+      }
+    });
+  },
+);
 
-describe.each([
-  'light',
-  'dark',
-] as const)('SendAssetModalModern — success-view check icon (%s mode)', (mode) => {
-  it('clears the 3:1 icon floor against the surface it is painted on', async () => {
-    const user = userEvent.setup();
-    renderIn(mode);
-    await fillForm(user);
-    await holdToSend();
+describe.each(['light', 'dark'] as const)(
+  'SendAssetModalModern — success-view check icon (%s mode)',
+  (mode) => {
+    it('clears the 3:1 icon floor against the surface it is painted on', async () => {
+      const user = userEvent.setup();
+      renderIn(mode);
+      await fillForm(user);
+      await holdToSend();
 
-    const icon = screen.getByRole('dialog').querySelector('svg.lucide-circle-check');
-    expect(icon).not.toBeNull();
-    // The glyph strokes `currentColor`, so its ink is whatever its wrapper
-    // declares — read from the wrapper's own rule.
-    expect(icon?.getAttribute('stroke')).toBe('currentColor');
-    const wrapper = icon?.parentElement as HTMLElement;
-    const ink = computedColor(wrapper);
-    expect(ink).toBe(tokens(mode).intent.success);
-    for (const bg of backgroundHexStops(wrapper)) {
-      expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(3);
-    }
-  });
-});
+      const icon = screen.getByRole('dialog').querySelector('svg.lucide-circle-check');
+      expect(icon).not.toBeNull();
+      // The glyph strokes `currentColor`, so its ink is whatever its wrapper
+      // declares — read from the wrapper's own rule.
+      expect(icon?.getAttribute('stroke')).toBe('currentColor');
+      const wrapper = icon?.parentElement as HTMLElement;
+      const ink = computedColor(wrapper);
+      expect(ink).toBe(tokens(mode).intent.success);
+      for (const bg of backgroundHexStops(wrapper)) {
+        expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(3);
+      }
+    });
+  },
+);
 
 /**
  * The transaction-ID well in the success view (final-review item 2).
@@ -216,26 +216,26 @@ describe.each([
  * what is actually painted behind it, and the well follows the theme mode
  * rather than a fixed literal.
  */
-describe.each([
-  'light',
-  'dark',
-] as const)('SendAssetModalModern — transaction-ID well (%s mode)', (mode) => {
-  it('the txId ink clears AA against the surface it is actually painted on', async () => {
-    const user = userEvent.setup();
-    renderIn(mode);
-    await fillForm(user);
-    await holdToSend();
+describe.each(['light', 'dark'] as const)(
+  'SendAssetModalModern — transaction-ID well (%s mode)',
+  (mode) => {
+    it('the txId ink clears AA against the surface it is actually painted on', async () => {
+      const user = userEvent.setup();
+      renderIn(mode);
+      await fillForm(user);
+      await holdToSend();
 
-    const txId = screen.getByText('fake-tx-id');
-    const well = txId.closest('dl') as HTMLElement;
-    expect(well).not.toBeNull();
-    const ink = computedColor(txId);
-    const [fill] = backgroundHexStops(txId);
-    expect(contrastRatio(ink, fill as string)).toBeGreaterThanOrEqual(4.5);
-    // Follows the mode: this mode's well material, on this mode's paper.
-    expect(getComputedStyle(well).backgroundColor).toBe(chrome[mode].fillSubtle);
-    expect(toHex(paintedBackground(well.parentElement as HTMLElement))).toBe(
-      tokens(mode).surface.raised,
-    );
-  });
-});
+      const txId = screen.getByText('fake-tx-id');
+      const well = txId.closest('dl') as HTMLElement;
+      expect(well).not.toBeNull();
+      const ink = computedColor(txId);
+      const [fill] = backgroundHexStops(txId);
+      expect(contrastRatio(ink, fill as string)).toBeGreaterThanOrEqual(4.5);
+      // Follows the mode: this mode's well material, on this mode's paper.
+      expect(getComputedStyle(well).backgroundColor).toBe(chrome[mode].fillSubtle);
+      expect(toHex(paintedBackground(well.parentElement as HTMLElement))).toBe(
+        tokens(mode).surface.raised,
+      );
+    });
+  },
+);

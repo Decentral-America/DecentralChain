@@ -247,17 +247,17 @@ describe('intent on-colors', () => {
     }
   });
 
-  it.each([
-    'light',
-    'dark',
-  ] as const)('MUI contrastText reads the same token in %s mode', (mode) => {
-    const t = tokens(mode);
-    const { palette } = createAppTheme(mode);
-    expect(palette.error.contrastText).toBe(t.intent.onDanger);
-    expect(palette.success.contrastText).toBe(t.intent.onSuccess);
-    expect(palette.warning.contrastText).toBe(t.intent.onWarning);
-    expect(palette.info.contrastText).toBe(t.intent.onInfo);
-  });
+  it.each(['light', 'dark'] as const)(
+    'MUI contrastText reads the same token in %s mode',
+    (mode) => {
+      const t = tokens(mode);
+      const { palette } = createAppTheme(mode);
+      expect(palette.error.contrastText).toBe(t.intent.onDanger);
+      expect(palette.success.contrastText).toBe(t.intent.onSuccess);
+      expect(palette.warning.contrastText).toBe(t.intent.onWarning);
+      expect(palette.info.contrastText).toBe(t.intent.onInfo);
+    },
+  );
 });
 
 describe('hover perceptibility (regression guard)', () => {

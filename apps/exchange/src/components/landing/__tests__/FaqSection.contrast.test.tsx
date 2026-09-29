@@ -55,41 +55,41 @@ describe.each(['light', 'dark'] as const)('FaqSection — heading ink (%s mode)'
   });
 });
 
-describe.each([
-  'light',
-  'dark',
-] as const)('FaqSection — question ink, on the panel’s own background (%s mode)', (mode) => {
-  it('clears AA against the accordion panel’s own (expanded) background, alpha composited', () => {
-    renderIn(mode);
-    const question = screen.getByText('app.landing.faq.questions.seed-storage.q');
-    const ink = rgbToHex(getComputedStyle(question).color);
-    const panel = question.closest('.MuiAccordion-root') as HTMLElement;
-    const canvas = tokens(mode).surface.base;
-    const bg = compositeOverCanvas(getComputedStyle(panel).backgroundColor, canvas);
-    expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
-  });
+describe.each(['light', 'dark'] as const)(
+  'FaqSection — question ink, on the panel’s own background (%s mode)',
+  (mode) => {
+    it('clears AA against the accordion panel’s own (expanded) background, alpha composited', () => {
+      renderIn(mode);
+      const question = screen.getByText('app.landing.faq.questions.seed-storage.q');
+      const ink = rgbToHex(getComputedStyle(question).color);
+      const panel = question.closest('.MuiAccordion-root') as HTMLElement;
+      const canvas = tokens(mode).surface.base;
+      const bg = compositeOverCanvas(getComputedStyle(panel).backgroundColor, canvas);
+      expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
+    });
 
-  it('answer clears AA against the accordion panel’s own (expanded) background, alpha composited', () => {
-    renderIn(mode);
-    const answer = screen.getByText('app.landing.faq.questions.seed-storage.a');
-    const ink = rgbToHex(getComputedStyle(answer).color);
-    const panel = answer.closest('.MuiAccordion-root') as HTMLElement;
-    const canvas = tokens(mode).surface.base;
-    const bg = compositeOverCanvas(getComputedStyle(panel).backgroundColor, canvas);
-    expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
-  });
-});
+    it('answer clears AA against the accordion panel’s own (expanded) background, alpha composited', () => {
+      renderIn(mode);
+      const answer = screen.getByText('app.landing.faq.questions.seed-storage.a');
+      const ink = rgbToHex(getComputedStyle(answer).color);
+      const panel = answer.closest('.MuiAccordion-root') as HTMLElement;
+      const canvas = tokens(mode).surface.base;
+      const bg = compositeOverCanvas(getComputedStyle(panel).backgroundColor, canvas);
+      expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
+    });
+  },
+);
 
-describe.each([
-  'light',
-  'dark',
-] as const)('FaqSection — collapsed panel ink, on the panel’s own (opaque) background (%s mode)', (mode) => {
-  it('clears AA against a collapsed panel’s own background', () => {
-    renderIn(mode);
-    const question = screen.getByText('app.landing.faq.questions.password-recovery.q');
-    const ink = rgbToHex(getComputedStyle(question).color);
-    const panel = question.closest('.MuiAccordion-root') as HTMLElement;
-    const bg = rgbToHex(getComputedStyle(panel).backgroundColor);
-    expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
-  });
-});
+describe.each(['light', 'dark'] as const)(
+  'FaqSection — collapsed panel ink, on the panel’s own (opaque) background (%s mode)',
+  (mode) => {
+    it('clears AA against a collapsed panel’s own background', () => {
+      renderIn(mode);
+      const question = screen.getByText('app.landing.faq.questions.password-recovery.q');
+      const ink = rgbToHex(getComputedStyle(question).color);
+      const panel = question.closest('.MuiAccordion-root') as HTMLElement;
+      const bg = rgbToHex(getComputedStyle(panel).backgroundColor);
+      expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
+    });
+  },
+);

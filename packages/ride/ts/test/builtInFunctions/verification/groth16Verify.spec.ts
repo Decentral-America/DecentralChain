@@ -619,8 +619,11 @@ describe('groth16Verify functions.', () => {
       random.getRandomByteVector(),
       data.negativeTestType,
     ],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, testString, testType) => {
-    const contract = precondition.generateOnlyMatcherContract(version, testString, testFunction);
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, testString, testType) => {
+      const contract = precondition.generateOnlyMatcherContract(version, testString, testFunction);
+      checkCompileResult(contract, testType);
+    },
+  );
 });

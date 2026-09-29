@@ -108,8 +108,11 @@ describe('indexOf and lastIndexOf functions', () => {
       data.stringList,
       data.negativeTestType,
     ],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, index, randomList, testType) => {
-    const contract = precondition.generateContract(version, index, randomList, testFunction);
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, index, randomList, testType) => {
+      const contract = precondition.generateContract(version, index, randomList, testFunction);
+      checkCompileResult(contract, testType);
+    },
+  );
 });

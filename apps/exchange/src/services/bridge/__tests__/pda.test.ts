@@ -27,6 +27,7 @@ import {
   vaultPda,
   vaultTokenAccount,
 } from '@/services/bridge/pda';
+import { TokenOwnerOffCurveError } from '@/services/bridge/splToken';
 
 const SOL_MINT = new PublicKey('So11111111111111111111111111111111111111112');
 const SENDER = new PublicKey('7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU');
@@ -82,6 +83,24 @@ describe('associated token accounts', () => {
 
   it('derives the sender ATA on-curve', () => {
     expect(senderTokenAccount(SOL_MINT, SENDER).toBase58()).toHaveLength(44);
+  });
+
+  // Golden values produced by @solana/spl-token's own getAssociatedTokenAddressSync
+  // before the local derivation replaced it; a seed or program-id slip changes them.
+  it('matches the spl-token derivation for the off-curve vault', () => {
+    expect(vaultTokenAccount(SOL_MINT).toBase58()).toBe(
+      'GhdG78L59d3UDPEG7pDgPUj132zQvhpaDxxTxvetWLNp',
+    );
+  });
+
+  it('matches the spl-token derivation for an on-curve sender', () => {
+    expect(senderTokenAccount(SOL_MINT, SENDER).toBase58()).toBe(
+      '82q1Nn1an7JxraeHwfi9rH2Shja1gCPXtxSTCCzDE6wM',
+    );
+  });
+
+  it('rejects an off-curve owner unless explicitly allowed', () => {
+    expect(() => senderTokenAccount(SOL_MINT, bridgeConfigPda())).toThrow(TokenOwnerOffCurveError);
   });
 
   it('gives the vault and the sender different accounts for one mint', () => {

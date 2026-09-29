@@ -54,23 +54,23 @@ vi.mock('../modals', () => ({
   ScriptModal: () => null,
 }));
 
-describe.each([
-  ['light', lightTheme] as const,
-  ['dark', darkTheme] as const,
-])('SecuritySettings ScriptButton ink — %s mode', (_mode, theme) => {
-  it('clears AA against its own solid success fill', async () => {
-    render(
-      <ThemeProvider theme={theme}>
-        <SecuritySettings />
-      </ThemeProvider>,
-    );
-    // `SecuritySettings` loads its secret data asynchronously on mount; wait
-    // for that state update to settle before reading computed style, so the
-    // assertion reflects the component's steady state, not a mid-render one.
-    const button = await screen.findByRole('button', { name: /set script/i });
-    const style = getComputedStyle(button);
-    const ink = rgbToHex(style.color);
-    const bg = rgbToHex(style.backgroundColor);
-    expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
-  });
-});
+describe.each([['light', lightTheme] as const, ['dark', darkTheme] as const])(
+  'SecuritySettings ScriptButton ink — %s mode',
+  (_mode, theme) => {
+    it('clears AA against its own solid success fill', async () => {
+      render(
+        <ThemeProvider theme={theme}>
+          <SecuritySettings />
+        </ThemeProvider>,
+      );
+      // `SecuritySettings` loads its secret data asynchronously on mount; wait
+      // for that state update to settle before reading computed style, so the
+      // assertion reflects the component's steady state, not a mid-render one.
+      const button = await screen.findByRole('button', { name: /set script/i });
+      const style = getComputedStyle(button);
+      const ink = rgbToHex(style.color);
+      const bg = rgbToHex(style.backgroundColor);
+      expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
+    });
+  },
+);

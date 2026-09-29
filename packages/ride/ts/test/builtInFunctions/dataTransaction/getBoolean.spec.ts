@@ -246,13 +246,16 @@ describe('dataTransaction - getBoolean / getBooleanValue', () => {
       random.getRandomAddress(),
       data.negativeTestType,
     ],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, caseForVersions, callerTestData, testType) => {
-    const contract = precondition.generateContractFromMatchingAndCase(
-      version,
-      caseForVersions,
-      callerTestData,
-      testFunction,
-    );
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, caseForVersions, callerTestData, testType) => {
+      const contract = precondition.generateContractFromMatchingAndCase(
+        version,
+        caseForVersions,
+        callerTestData,
+        testFunction,
+      );
+      checkCompileResult(contract, testType);
+    },
+  );
 });

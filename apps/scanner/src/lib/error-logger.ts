@@ -18,6 +18,21 @@ const SENTRY_DSN = import.meta.env?.VITE_SENTRY_DSN;
 
 if (SENTRY_DSN) {
   Sentry.init({
+    // Sentry 11 replaced `sendDefaultPii` with `dataCollection`, whose defaults collect
+    // user info (IP inference), cookies, headers, bodies and query params. v10 sent none of
+    // that by default; keep it that way explicitly.
+    dataCollection: {
+      cookies: false,
+      databaseQueryData: false,
+      genAI: { inputs: false, outputs: false },
+      graphQL: { document: false, variables: false },
+      httpBodies: [],
+      httpHeaders: false,
+      queues: false,
+      stackFrameVariables: false,
+      urlQueryParams: false,
+      userInfo: false,
+    },
     dsn: SENTRY_DSN,
     environment: import.meta.env?.MODE || 'production',
     // Injected at build time by CI (git tag) or .env.production for local builds.

@@ -68,25 +68,25 @@ const renderIn = (mode: ThemeMode) =>
     ),
   });
 
-describe.each([
-  'light',
-  'dark',
-] as const)('ImportAccount — "private location" InfoBox icon ink (%s mode)', (mode) => {
-  it('inherits currentColor from the InfoBox rather than a hardcoded literal, and clears AA', () => {
-    renderIn(mode);
-    const label = screen.getByText(/make sure you're in a private location/i);
-    const infoBox = label.parentElement;
-    if (!infoBox) throw new Error('InfoBox not found');
-    const icon = infoBox.querySelector('svg');
-    if (!icon) throw new Error('Icon svg not found');
+describe.each(['light', 'dark'] as const)(
+  'ImportAccount — "private location" InfoBox icon ink (%s mode)',
+  (mode) => {
+    it('inherits currentColor from the InfoBox rather than a hardcoded literal, and clears AA', () => {
+      renderIn(mode);
+      const label = screen.getByText(/make sure you're in a private location/i);
+      const infoBox = label.parentElement;
+      if (!infoBox) throw new Error('InfoBox not found');
+      const icon = infoBox.querySelector('svg');
+      if (!icon) throw new Error('Icon svg not found');
 
-    // The exact rule this plan removes: no hardcoded 'white' on a filled
-    // surface. The sibling Ledger InfoBox icon already inherits
-    // `currentColor` — this one must match.
-    expect(icon.getAttribute('stroke')).toBe('currentColor');
+      // The exact rule this plan removes: no hardcoded 'white' on a filled
+      // surface. The sibling Ledger InfoBox icon already inherits
+      // `currentColor` — this one must match.
+      expect(icon.getAttribute('stroke')).toBe('currentColor');
 
-    const bg = rgbToHex(getComputedStyle(infoBox).backgroundColor);
-    const ink = resolveStroke(icon);
-    expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
-  });
-});
+      const bg = rgbToHex(getComputedStyle(infoBox).backgroundColor);
+      const ink = resolveStroke(icon);
+      expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
+    });
+  },
+);

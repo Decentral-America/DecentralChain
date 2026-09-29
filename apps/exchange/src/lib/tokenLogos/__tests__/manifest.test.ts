@@ -56,15 +56,15 @@ describe('parseManifest', () => {
    * itself, so it would not catch one that was. A null-prototype `hot` makes
    * the lookup return `undefined` for anything that was not put there.
    */
-  it.each([
-    'toString',
-    'constructor',
-    'valueOf',
-    'hasOwnProperty',
-    '__proto__',
-  ])('returns undefined for the inherited key %s rather than a prototype member', (key) => {
-    const parsed = parseManifest({ hot: { [ID]: 'data:image/webp;base64,AAAA' }, sha: 'a1b2c3d' });
-    expect(parsed.hot[key]).toBeUndefined();
-    expect(EMPTY_MANIFEST.hot[key]).toBeUndefined();
-  });
+  it.each(['toString', 'constructor', 'valueOf', 'hasOwnProperty', '__proto__'])(
+    'returns undefined for the inherited key %s rather than a prototype member',
+    (key) => {
+      const parsed = parseManifest({
+        hot: { [ID]: 'data:image/webp;base64,AAAA' },
+        sha: 'a1b2c3d',
+      });
+      expect(parsed.hot[key]).toBeUndefined();
+      expect(EMPTY_MANIFEST.hot[key]).toBeUndefined();
+    },
+  );
 });

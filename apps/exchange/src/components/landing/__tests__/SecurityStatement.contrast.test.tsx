@@ -31,14 +31,14 @@ describe.each(['light', 'dark'] as const)('SecurityStatement — headline ink (%
   });
 });
 
-describe.each([
-  'light',
-  'dark',
-] as const)('SecurityStatement — point body ink (%s mode)', (mode) => {
-  it('clears AA against the page canvas', () => {
-    renderIn(mode);
-    const body = screen.getByText('app.landing.securityStatement.points.01.body');
-    const ink = rgbToHex(getComputedStyle(body).color);
-    expect(contrastRatio(ink, tokens(mode).surface.base)).toBeGreaterThanOrEqual(4.5);
-  });
-});
+describe.each(['light', 'dark'] as const)(
+  'SecurityStatement — point body ink (%s mode)',
+  (mode) => {
+    it('clears AA against the page canvas', () => {
+      renderIn(mode);
+      const body = screen.getByText('app.landing.securityStatement.points.01.body');
+      const ink = rgbToHex(getComputedStyle(body).color);
+      expect(contrastRatio(ink, tokens(mode).surface.base)).toBeGreaterThanOrEqual(4.5);
+    });
+  },
+);

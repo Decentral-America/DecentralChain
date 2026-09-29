@@ -118,8 +118,11 @@ describe('rsaVerify functions.', () => {
     [data.STDLIB_VERSION_3, rsaVerify_32Kb, random.getRandomByteVector(), data.negativeTestType],
     [data.STDLIB_VERSION_3, rsaVerify_64Kb, random.getRandomByteVector(), data.negativeTestType],
     [data.STDLIB_VERSION_3, rsaVerify_128Kb, random.getRandomByteVector(), data.negativeTestType],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, testString, testType) => {
-    const contract = precondition.generateOnlyMatcherContract(version, testString, testFunction);
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, testString, testType) => {
+      const contract = precondition.generateOnlyMatcherContract(version, testString, testFunction);
+      checkCompileResult(contract, testType);
+    },
+  );
 });

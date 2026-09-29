@@ -111,10 +111,13 @@ describe('math functions tests', () => {
     [data.STDLIB_VERSION_3, invalidPowInt, random.getRandomByteVector(), data.negativeTestType],
     [data.STDLIB_VERSION_4, invalidPowInt, random.getRandomByteVector(), data.negativeTestType],
     [data.STDLIB_VERSION_5, invalidPowInt, random.getRandomByteVector(), data.negativeTestType],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, testInt, testType) => {
-    const contract = precondition.generateOnlyMatcherContract(version, testInt, testFunction);
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, testInt, testType) => {
+      const contract = precondition.generateOnlyMatcherContract(version, testInt, testFunction);
+      checkCompileResult(contract, testType);
+    },
+  );
 
   test.each([
     // positive fractionBigInt tests
@@ -155,22 +158,28 @@ describe('math functions tests', () => {
     // compilation failed: Undefined type: `BigInt`
     [data.STDLIB_VERSION_3, powBigInt, random.getRandomInt(), data.negativeTestType],
     [data.STDLIB_VERSION_4, powBigInt, random.getRandomInt(), data.negativeTestType],
-  ])('check ride v%i function %s:BigInt compiles or failed', (version, testFunction, testInt, testType) => {
-    const bigInt = `toBigInt(${testInt})`;
-    precondition.setData('BigInt');
-    const contract = precondition.generateOnlyMatcherContract(version, bigInt, testFunction);
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s:BigInt compiles or failed',
+    (version, testFunction, testInt, testType) => {
+      const bigInt = `toBigInt(${testInt})`;
+      precondition.setData('BigInt');
+      const contract = precondition.generateOnlyMatcherContract(version, bigInt, testFunction);
+      checkCompileResult(contract, testType);
+    },
+  );
 
   test.each([
     // positive medianBigInt tests
     [data.STDLIB_VERSION_5, medianBigInt, random.getRandomInt(), data.positiveTestType],
     // compilation failed: Undefined type: `BigInt`
     [data.STDLIB_VERSION_4, medianBigInt, random.getRandomInt(), data.negativeTestType],
-  ])('check ride v%i function %s:BigInt compiles or failed', (version, testFunction, testInt, testType) => {
-    const bigInt = `[toBigInt(${testInt}), toBigInt(33), toBigInt(${random.getRandomInt()})]`;
-    precondition.setData('BigInt');
-    const contract = precondition.generateOnlyMatcherContract(version, bigInt, testFunction);
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s:BigInt compiles or failed',
+    (version, testFunction, testInt, testType) => {
+      const bigInt = `[toBigInt(${testInt}), toBigInt(33), toBigInt(${random.getRandomInt()})]`;
+      precondition.setData('BigInt');
+      const contract = precondition.generateOnlyMatcherContract(version, bigInt, testFunction);
+      checkCompileResult(contract, testType);
+    },
+  );
 });

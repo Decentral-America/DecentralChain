@@ -40,35 +40,35 @@ const expectClearsAA = (element: HTMLElement, bg: string) => {
   expect(contrastRatio(hex, bg)).toBeGreaterThanOrEqual(4.5);
 };
 
-describe.each([
-  ['light', lightTheme] as const,
-  ['dark', darkTheme] as const,
-])('BurnAssetModal ink — %s mode', (mode, theme) => {
-  const t = tokens(mode);
+describe.each([['light', lightTheme] as const, ['dark', darkTheme] as const])(
+  'BurnAssetModal ink — %s mode',
+  (mode, theme) => {
+    const t = tokens(mode);
 
-  const renderModal = () =>
-    render(
-      <ThemeProvider theme={theme}>
-        <BurnAssetModal
-          isOpen
-          onClose={() => {}}
-          assetId="asset-1"
-          assetName="TestToken"
-          availableBalance={1000}
-          decimals={2}
-        />
-      </ThemeProvider>,
-    );
+    const renderModal = () =>
+      render(
+        <ThemeProvider theme={theme}>
+          <BurnAssetModal
+            isOpen
+            onClose={() => {}}
+            assetId="asset-1"
+            assetName="TestToken"
+            availableBalance={1000}
+            decimals={2}
+          />
+        </ThemeProvider>,
+      );
 
-  it('WarningText clears AA against its own solid warning fill', () => {
-    renderModal();
-    const warningText = screen.getByText(/burning tokens permanently destroys them/i);
-    expectClearsAA(warningText, t.intent.warning);
-  });
+    it('WarningText clears AA against its own solid warning fill', () => {
+      renderModal();
+      const warningText = screen.getByText(/burning tokens permanently destroys them/i);
+      expectClearsAA(warningText, t.intent.warning);
+    });
 
-  it('BurnButton label clears AA against its own solid error fill', () => {
-    renderModal();
-    const burnButton = screen.getByRole('button', { name: /burn tokens/i });
-    expectClearsAA(burnButton, t.intent.danger);
-  });
-});
+    it('BurnButton label clears AA against its own solid error fill', () => {
+      renderModal();
+      const burnButton = screen.getByRole('button', { name: /burn tokens/i });
+      expectClearsAA(burnButton, t.intent.danger);
+    });
+  },
+);

@@ -56,13 +56,16 @@ describe('isDataStorageUntouched', () => {
       random.getRandomAddress(),
       data.negativeTestType,
     ],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, scriptResult, address, testType) => {
-    const contract = precondition.generateContractWithoutMatcher(
-      version,
-      scriptResult,
-      address,
-      testFunction,
-    );
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, scriptResult, address, testType) => {
+      const contract = precondition.generateContractWithoutMatcher(
+        version,
+        scriptResult,
+        address,
+        testFunction,
+      );
+      checkCompileResult(contract, testType);
+    },
+  );
 });

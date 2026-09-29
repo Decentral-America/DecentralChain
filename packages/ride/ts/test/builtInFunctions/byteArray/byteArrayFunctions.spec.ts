@@ -349,13 +349,16 @@ describe('byteArray functions', () => {
       random.getRandomByteVector(),
       data.negativeTestType,
     ],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, scriptResult, testString, testType) => {
-    const contract = precondition.generateContractWithoutMatcher(
-      version,
-      scriptResult,
-      testString,
-      testFunction,
-    );
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, scriptResult, testString, testType) => {
+      const contract = precondition.generateContractWithoutMatcher(
+        version,
+        scriptResult,
+        testString,
+        testFunction,
+      );
+      checkCompileResult(contract, testType);
+    },
+  );
 });

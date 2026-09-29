@@ -45,7 +45,7 @@ export function AssetInfoModal({ isOpen, onClose, assetId }: AssetInfoModalProps
   });
 
   const handleCopy = (text: string, label: string) => {
-    copyToClipboard(text);
+    void copyToClipboard(text);
     logger.debug(`Copied ${label}: ${text}`);
   };
 
