@@ -29,9 +29,9 @@ groth16_primitives = { path = "../groth16_primitives"}
 groth16_fastcrypto = { path = "../groth16_fastcrypto" }
 pairing = "0.14"
 pairing_ce = "0.28" # for bn256
-num = "0.2"
-base64 = "0.11.0"
-jni = "0.14.0"
+num = "0.4"
+base64 = "0.23.1"
+jni = "0.22.4"
 rand = "0.4"
 
 # for bn256
@@ -41,4 +41,4 @@ features = ["derive"]
 package = "ff_ce"
 
 [dev-dependencies]
-test-case = "3.2.1"
+test-case = "3.4.0"

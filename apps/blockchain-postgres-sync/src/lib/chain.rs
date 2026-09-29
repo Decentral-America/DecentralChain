@@ -190,6 +190,21 @@ mod tests {
         assert_eq!(result.len(), 32);
     }
 
+    /// Known-answer vectors (`BLAKE2b` with a 32-byte digest, cross-checked
+    /// against Python `hashlib.blake2b(digest_size=32)`). Guards address
+    /// derivation against behaviour changes across `blake2`/`digest` majors.
+    #[test]
+    fn blake2b256_known_answer_vectors() {
+        assert_eq!(
+            hex::encode(blake2b256(b"")),
+            "0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8"
+        );
+        assert_eq!(
+            hex::encode(blake2b256(b"hello")),
+            "324dcf027dd4a30a932c441f365a25e86b173defa4b8e58948253471b81b72cf"
+        );
+    }
+
     #[test]
     fn blake2b256_deterministic() {
         let a = blake2b256(b"test data");

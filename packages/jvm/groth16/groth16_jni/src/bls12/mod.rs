@@ -39,7 +39,11 @@ pub fn groth16_verify(vk: &[u8], proof: &[u8], inputs: &[u8]) -> io::Result<u8> 
 #[cfg(test)]
 mod local_tests {
     use super::*;
-    use base64::decode;
+    use base64::{engine::general_purpose::STANDARD, Engine as _};
+
+    fn decode(b64: &str) -> Result<Vec<u8>, base64::DecodeError> {
+        STANDARD.decode(b64)
+    }
     use test_case::test_case;
 
     #[test_case(

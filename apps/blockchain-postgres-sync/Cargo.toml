@@ -2,7 +2,7 @@
 name = "blockchain-postgres-sync"
 version = "2.0.0"
 edition = "2024"
-rust-version = "1.88"
+rust-version = "1.96"
 description = "Blockchain-to-PostgreSQL sync daemon for the DecentralChain network"
 license = "Apache-2.0"
 repository = "https://github.com/Decentral-America/blockchain-postgres-sync"
@@ -24,23 +24,23 @@ path = "src/bin/migration.rs"
 
 [dependencies]
 # Error handling
-anyhow = "1.0.103"
-thiserror = "2.0.18"
+anyhow = "1.0.104"
+thiserror = "2.0.21"
 
 # Async runtime
-tokio = { version = "1.52.3", features = ["macros", "rt-multi-thread", "signal", "sync", "time"] }
+tokio = { version = "1.53.1", features = ["macros", "rt-multi-thread", "signal", "sync", "time"] }
 
 # gRPC / Protobuf  (proto files bundled in proto/, compiled by build.rs)
 tonic = { version = "0.14.6", features = ["transport"] }
 tonic-prost = "0.14.6"
-prost = "0.14.3"
+prost = "0.14.4"
 
 # Database
-diesel = { version = "2.3.10", default-features = false, features = [
+diesel = { version = "2.3.13", default-features = false, features = [
     "chrono", "postgres", "r2d2", "32-column-tables", "serde_json", "numeric",
 ] }
-diesel_migrations = { version = "2.3.0", features = ["postgres"] }
-deadpool-diesel = { version = "0.6.1", features = ["postgres", "rt_tokio_1"] }
+diesel_migrations = { version = "2.3.2", features = ["postgres"] }
+deadpool-diesel = { version = "0.7.0", features = ["postgres", "rt_tokio_1"] }
 r2d2 = "0.8.10"
 
 # Configuration
@@ -49,16 +49,16 @@ envy = "0.4.2"
 # Serialization
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-bigdecimal = { version = "0.4.10", features = ["serde"] }
-base64 = "0.22.1"
+bigdecimal = { version = "0.4.11", features = ["serde"] }
+base64 = "0.23.1"
 
 # Cryptography / encoding
-blake2 = "0.10.6"
+blake2 = "0.11.0"
 sha3 = "0.12.0"
 bs58 = "0.5.1"
 hex = "0.4.3"
 # Pin bytes >= 1.11.1 — RUSTSEC-2026-0007: integer overflow in BytesMut::reserve
-bytes = "1.11.1"
+bytes = "1.12.1"
 regex = "1"
 
 # Utilities
@@ -153,9 +153,12 @@ significant_drop_tightening = "warn"
 # Property testing
 proptest = "1.11.0"
 # Tokio test runtime
-tokio = { version = "1.52.3", features = ["macros", "rt-multi-thread", "test-util"] }
+tokio = { version = "1.53.1", features = ["macros", "rt-multi-thread", "test-util"] }
 # Integration-test helpers: spin up a real PostgreSQL container for each test
-testcontainers = "0.27"
+# HELD at 0.27: testcontainers-modules 0.15.0 (latest) requires testcontainers ^0.27;
+# 0.28 would pull two incompatible copies (the Postgres image impls the 0.27 Image trait).
+# Bump together once testcontainers-modules publishes a 0.28-compatible release.
+testcontainers = "0.27.3"
 testcontainers-modules = { version = "0.15", features = ["postgres"] }
 
 # prost and tonic-prost are used in code generated via include!() in proto.rs

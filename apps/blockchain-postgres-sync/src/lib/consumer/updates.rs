@@ -219,7 +219,7 @@ impl TryFrom<BlockchainUpdatedPB> for BlockchainUpdate {
                     Some(BodyPB::Block(BlockAppendPB { block, .. })) => {
                         Ok(block.as_mut().map(|it| {
                             (
-                                it.transactions.drain(..).collect(),
+                                std::mem::take(&mut it.transactions),
                                 it.header.as_ref().map(|it| it.timestamp),
                             )
                         }))
@@ -228,7 +228,7 @@ impl TryFrom<BlockchainUpdatedPB> for BlockchainUpdate {
                         Ok(micro_block.as_mut().and_then(|it| {
                             it.micro_block
                                 .as_mut()
-                                .map(|it| (it.transactions.drain(..).collect(), None))
+                                .map(|it| (std::mem::take(&mut it.transactions), None))
                         }))
                     }
                     _ => Err(AppError::InvalidMessage(

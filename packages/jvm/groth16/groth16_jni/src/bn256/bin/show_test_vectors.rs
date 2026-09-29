@@ -4,6 +4,7 @@ use std::io::Cursor;
 
 use ff::Field;
 use pairing_ce::{bn256::*, CurveAffine, CurveProjective};
+use base64::{engine::general_purpose::STANDARD, Engine as _};
 use rand::{Rand, SeedableRng, XorShiftRng};
 use groth16_jni::bn256::{
     serialization::write_fr_iter,
@@ -77,9 +78,9 @@ fn main() {
             //assert!(res, "groth16_verify should be true");
 
             (
-                base64::encode(vk_buff.get_ref()),
-                base64::encode(proof_buff.get_ref()),
-                base64::encode(&inputs_buff),
+                STANDARD.encode(vk_buff.get_ref()),
+                STANDARD.encode(proof_buff.get_ref()),
+                STANDARD.encode(&inputs_buff),
             )
         })
         .collect::<Vec<_>>();
