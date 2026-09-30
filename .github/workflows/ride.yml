@@ -122,10 +122,13 @@ jobs:
         working-directory: packages/ride
         run: sbt --no-colors test
 
-      # Produces packages/ride/lang/js/dist/lang.js + packages/ride/repl/js/dist/repl.js
+      # Produces packages/ride/lang/js/dist/lang.js + packages/ride/repl/js/dist/repl.js.
+      # fullOptJS, not fullLinkJS: only fullOptJS honours the artifactPath in lang/js and
+      # repl/js build.sbt, and it is the exact step publish-ride.yml runs for a release.
+      # fullLinkJS wrote to target/*-opt, so the upload below silently found nothing.
       - name: Build Scala.js full-link bundles
         working-directory: packages/ride
-        run: sbt --no-colors 'project langJS; fullLinkJS; project replJS; fullLinkJS'
+        run: sbt --no-colors 'project langJS; fullOptJS; project replJS; fullOptJS'
 
       # ── TypeScript wrapper (@decentralchain/ride) ─────────────────────
 
@@ -139,6 +142,7 @@ jobs:
           path: |
             packages/ride/lang/js/dist/
             packages/ride/repl/js/dist/
+          if-no-files-found: error
           retention-days: 7
 
   quality:
