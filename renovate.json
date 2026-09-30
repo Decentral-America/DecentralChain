@@ -17,7 +17,7 @@
   "lockFileMaintenance": {
     "automerge": true,
     "enabled": true,
-    "schedule": ["before 6am on monday"]
+    "schedule": ["* * * * 1"]
   },
   "osvVulnerabilityAlerts": true,
   "packageRules": [
@@ -176,7 +176,7 @@
   "prConcurrentLimit": 10,
   "prCreation": "not-pending",
   "prHourlyLimit": 5,
-  "schedule": ["before 4am on monday"],
+  "schedule": ["* * * * 1"],
   "timezone": "America/Costa_Rica",
   "vulnerabilityAlerts": {
     "automerge": true,
