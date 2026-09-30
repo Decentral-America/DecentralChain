@@ -22,17 +22,8 @@ object Dependencies {
 
   private def web3jModule(module: String) = "org.web3j" % module % "6.0.0"
 
-  // HOLD monix at 3.4.1 (3.5.0 is available). 3.5.0 changes the evaluation order of
-  // Coeval effects under LazyList.traverse, which changes how SerdeV1 decodes an
-  // E_CASE_OBJ: SerdeV1.serialize writes all CaseObj field names before the field
-  // values (eager Coeval.now inside the fold), and under 3.4.1 the decoder reads them
-  // in that same order. Under 3.5.0 the decoder reads name/value pairs interleaved, so
-  // bytes produced by the existing encoder no longer decode
-  // (SerdeTest "CaseObj if allowed / simple" -> "Invalid array size (838860800)").
-  // The encoder output is byte-identical under both versions; only decoding differs.
-  // This is a serialization-compatibility change and needs its own fix and review.
   def monixModule(module: String): Def.Initialize[ModuleID] =
-    Def.setting("io.monix" %%% s"monix-$module" % "3.4.1")
+    Def.setting("io.monix" %%% s"monix-$module" % "3.5.0")
 
   val googleGuava = "com.google.guava"  % "guava"           % "33.7.2-jre"
   val logback     = "ch.qos.logback"    % "logback-classic" % "1.6.4"

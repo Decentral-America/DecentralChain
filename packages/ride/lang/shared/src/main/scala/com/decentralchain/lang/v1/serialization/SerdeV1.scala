@@ -111,17 +111,19 @@ object SerdeV1 extends Serde[ByteBuffer, ByteArrayOutputStream] {
               tooBigArray(bb)
           )
       case E_CASE_OBJ if allowObjects =>
+        // CaseObj wire format: header, then ALL field names, then ALL field values (same order).
+        // That is what serAux writes, and these bytes are persisted (InvokeScriptResult stores
+        // CaseObj args/results via SerdeV1), so it must never change. Read the names explicitly
+        // first: the old code got this order only as a side effect of cats' LazyList traverse
+        // forcing every `f(i)` (and so every eager `Coeval.now(read name)`) before running any of
+        // them. monix-eval 3.5.0 is compiled against cats 2.13, so CatsSyncForCoeval.map2Eval now
+        // binds to the lazy FlatMap.map2Eval (3.4.1 bound Apply.map2Eval), the traverse interleaves
+        // name/value reads, and decoding broke ("Invalid array size", SerdeTest).
         for {
           (typeName, fieldsNumber) <- Coeval((bb.getString, bb.getInt))
-          fields                   <- (1 to fieldsNumber)
-            .to(LazyList)
-            .traverse(_ =>
-              for {
-                fieldName  <- Coeval.now(bb.getString)
-                fieldValue <- evaluatedOnly(desAuxR(bb, allowObjects, acc))
-              } yield (fieldName, fieldValue)
-            )
-        } yield CaseObj(CASETYPEREF(typeName, Nil), fields.toMap)
+          fieldNames               <- Coeval((1 to fieldsNumber).map(_ => bb.getString).toList)
+          fieldValues <- fieldNames.to(LazyList).traverse(_ => evaluatedOnly(desAuxR(bb, allowObjects, acc)))
+        } yield CaseObj(CASETYPEREF(typeName, Nil), fieldNames.zip(fieldValues).toMap)
     }
   }
 
@@ -224,17 +226,16 @@ object SerdeV1 extends Serde[ByteBuffer, ByteArrayOutputStream] {
           elements.foldLeft(dataInfo)((acc, element) => serAux(out, acc, element, allowObjects))
 
         case CaseObj(caseType, fields) if allowObjects =>
-          val dataInfo = Coeval.now[Unit] {
+          // Header, then all field names, then all field values -- see the E_CASE_OBJ decoder.
+          // Byte-identical to the previous fold, which wrote every name eagerly (Coeval.now)
+          // before any value; spelled out here so the format no longer hides in evaluation order.
+          val header = Coeval.now[Unit] {
             out.write(E_CASE_OBJ)
             out.writeString(caseType.name)
             out.writeInt(fields.size)
+            fields.keys.foreach(out.writeString)
           }
-          fields.foldLeft(dataInfo) { case (acc, (fieldName, fieldValue)) =>
-            for {
-              _ <- Coeval.now(out.writeString(fieldName))
-              r <- serAux(out, acc, fieldValue, allowObjects)
-            } yield r
-          }
+          fields.values.foldLeft(header)((acc, fieldValue) => serAux(out, acc, fieldValue, allowObjects))
 
         case x =>
           Coeval.raiseError(new Exception(s"Serialization of value $x is unsupported"))

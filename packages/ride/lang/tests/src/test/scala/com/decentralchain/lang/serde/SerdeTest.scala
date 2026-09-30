@@ -90,6 +90,20 @@ class SerdeTest extends FreeSpec {
 
     "CaseObj if allowed" - {
       "simple" in roundTripTest(caseObj, allowObjects = true)
+
+      // Pins the persisted CaseObj layout (header, all field names, then all field values).
+      // monix-eval 3.5.0 silently changed the traverse evaluation order the decoder relied on.
+      "wire format is header, all names, then all values" in {
+        def hex(bs: Array[Byte]) = bs.map(b => f"$b%02x").mkString
+        val v1                   = "0c0000000b4f626a656374207479706500000004" +
+          "000000066669656c6431000000066669656c6432000000066669656c6433000000066669656c6434" +
+          "0100000003010203" + "0200000003737472" + "000000000000000005" + "06"
+        val v2 = "0c0b4f626a6563742074797065" + "04" +
+          "066669656c6431066669656c6432066669656c6433066669656c6434" +
+          "0103010203" + "0203737472" + "0005" + "06"
+        hex(SerdeV1.serialize(caseObj, allowObjects = true)) shouldBe v1
+        hex(SerdeV2.serialize(caseObj, allowObjects = true)) shouldBe v2
+      }
     }
 
     "general" in forAll(BOOLgen(10)) { case (untypedExpr, _) =>
