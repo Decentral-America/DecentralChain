@@ -12,7 +12,7 @@ services:
     ports:
       - '6869:6869'
   hub:
-    image: selenium/hub
+    image: selenium/hub:4.49.0-20260909@sha256:178c2a330deb5c674c74ca63028737954106372ff66785244c16dfd66276654e
     platform: linux/amd64
     ports:
       - '4442:4442'
@@ -23,7 +23,7 @@ services:
       interval: 3s
       retries: 10
   chrome:
-    image: selenium/node-chrome:112.0
+    image: selenium/node-chrome:4.49.0-20260909@sha256:4aa889737f48621278192ea09e9c83b96c8beb8a865d8daa8dfabff4c9c068cc
     shm_size: 2gb
     depends_on:
       - hub
@@ -42,7 +42,7 @@ services:
     environment:
       - DISPLAY_CONTAINER_NAME=chrome
       - FILE_NAME=chrome_video.mp4
-    image: selenium/video:ffmpeg-4.3.1-20221202
+    image: selenium/video:ffmpeg-8.1-20260909@sha256:6058515f9d815f6378ec5f9342bd58dcfb8640a3e397e15292582d695b817d4f
     platform: linux/amd64
     volumes:
       - ./test/videos:/videos

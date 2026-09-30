@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1
 
 # ─── Stage 1: build ──────────────────────────────────────────────────────────
-# renovate: image=rust tag=1.96
-FROM rust:1.96@sha256:19dfb952582d0e17841fdb8cd70febfb6cb0761c4e0cd84f3cb1f07bb3281a8d AS builder
+# renovate: image=rust tag=1.98
+FROM rust:1.98@sha256:a8a5f0a1e5fe7dfe1d352591e4a1c7dd2c08fd70475cae872cf3458ba0df0546 AS builder
 WORKDIR /app
 
 # Install build-time system deps (protoc for tonic-prost-build, libpq for diesel)
@@ -32,7 +32,7 @@ RUN touch src/lib/lib.rs src/bin/consumer.rs src/bin/migration.rs && \
 
 # ─── Stage 2: runtime ────────────────────────────────────────────────────────
 # renovate: image=debian tag=13-slim
-FROM debian:13-slim@sha256:28de0877c2189802884ccd20f15ee41c203573bd87bb6b883f5f46362d24c5c2 AS runtime
+FROM debian:13-slim@sha256:a99cfc517144bc59b1978475ec53b46ecabec7e43635402ee5b77cc54cd1b20a AS runtime
 WORKDIR /app
 
 LABEL org.opencontainers.image.source="https://github.com/Decentral-America/blockchain-postgres-sync" \

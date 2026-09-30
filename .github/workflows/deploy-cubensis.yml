@@ -87,13 +87,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
 
       - name: Setup Node.js
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           cache: pnpm
           node-version-file: .node-version
@@ -103,13 +103,13 @@ jobs:
 
       # ── Rust / WASM toolchain (required by packages/sdk/crypto wasm-pack build) ──
       - name: Setup Rust stable
-        uses: dtolnay/rust-toolchain@29eef336d9b2848a0b548edc03f92a220660cdb8 # stable
+        uses: dtolnay/rust-toolchain@6bed0761d98439e5a578e2877258200ad565ba87 # stable
         with:
           toolchain: stable
           targets: wasm32-unknown-unknown
 
       - name: Cache Rust build artifacts
-        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
         with:
           workspaces: packages/sdk/crypto
           cache-on-failure: true
@@ -174,7 +174,7 @@ jobs:
           retention-days: 7
 
   # ── Publish to Chrome Web Store ───────────────────────────────────────────────
-  # Uses mnao305/chrome-extension-upload@v6.0.0 (verified Mar 2026, Node 24).
+  # Uses mnao305/chrome-extension-upload@v7.0.0 (Chrome Web Store API v2; needs publisher-id).
   # Replaces the dead nicowillis action (404) and archived trmcnvn action.
   # ─────────────────────────────────────────────────────────────────────────────
   publish-chrome:
@@ -191,10 +191,11 @@ jobs:
           path: dist/
 
       - name: Publish to Chrome Web Store
-        uses: mnao305/chrome-extension-upload@fdfe79400af990f5145a319e834aee64907ccff4 # v6.0.0
+        uses: mnao305/chrome-extension-upload@f549d5d654694a7722d6abfa64c97409ad5e64c1 # v7.0.0
         with:
           file-path: dist/cubensis-connect-${{ needs.resolve.outputs.version }}-chrome.zip
           extension-id:   ${{ secrets.CHROME_EXTENSION_ID }}
+          publisher-id:   ${{ secrets.CHROME_PUBLISHER_ID }}
           client-id:      ${{ secrets.CHROME_CLIENT_ID }}
           client-secret:  ${{ secrets.CHROME_CLIENT_SECRET }}
           refresh-token:  ${{ secrets.CHROME_REFRESH_TOKEN }}
@@ -206,7 +207,7 @@ jobs:
             >> "$GITHUB_STEP_SUMMARY"
 
   # ── Publish to Firefox AMO ────────────────────────────────────────────────────
-  # Uses wdzeng/firefox-addon@v1.2.0 (verified Apr 2025). AMO API v5, JWT auth.
+  # Uses wdzeng/firefox-addon@v1.2.1 (verified Apr 2025). AMO API v5, JWT auth.
   # ─────────────────────────────────────────────────────────────────────────────
   publish-firefox:
     name: Publish → Firefox AMO
@@ -222,7 +223,7 @@ jobs:
           path: dist/
 
       - name: Publish to Firefox AMO
-        uses: wdzeng/firefox-addon@b78a4d0148897b072ef18aff65a6bd793e8109be # v1.2.0
+        uses: wdzeng/firefox-addon@3184ee491b500e080885e046051366a4228c6e5d # v1.2.1
         with:
           addon-guid: ${{ secrets.FIREFOX_ADDON_GUID }}
           xpi-path:   dist/cubensis-connect-${{ needs.resolve.outputs.version }}-firefox.zip
@@ -236,7 +237,7 @@ jobs:
             >> "$GITHUB_STEP_SUMMARY"
 
   # ── Publish to Microsoft Edge Add-ons ────────────────────────────────────────
-  # Uses wdzeng/edge-addon@v2.1.0 (verified Nov 2024). MS Edge Add-ons API v1.1.
+  # Uses wdzeng/edge-addon@v2.1.1 (verified Nov 2024). MS Edge Add-ons API v1.1.
   # ─────────────────────────────────────────────────────────────────────────────
   publish-edge:
     name: Publish → Microsoft Edge Add-ons
@@ -252,7 +253,7 @@ jobs:
           path: dist/
 
       - name: Publish to Edge Add-ons
-        uses: wdzeng/edge-addon@d4db1eea77297a24d799394dec87e8912e0902f9 # v2.1.0
+        uses: wdzeng/edge-addon@9881f57720358040d079eaa06a4596dc9c273eb6 # v2.1.1
         with:
           product-id: ${{ secrets.EDGE_PRODUCT_ID }}
           zip-path:   dist/cubensis-connect-${{ needs.resolve.outputs.version }}-edge.zip

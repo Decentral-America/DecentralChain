@@ -23,7 +23,7 @@
 
 # ── Stage 1: build ────────────────────────────────────────────────────────────
 # renovate: image=node tag=24-alpine
-FROM node:24-alpine@sha256:156b55f92e98ccd5ef49578a8cea0df4679826564bad1c9d4ef04462b9f0ded6 AS builder
+FROM node:24-alpine@sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1 AS builder
 ARG BUILD_MODE=production
 
 WORKDIR /app
@@ -75,7 +75,7 @@ RUN pnpm --filter ./apps/exchange exec tsc -b && \
 # Minimal nginx:stable-alpine — no build tools, no source code, no secrets.
 # Runs as the non-root nginx user on port 8080.
 # renovate: image=nginx tag=stable-alpine
-FROM nginx:stable-alpine@sha256:5f979dcfed4ce6461873f087e8c980d6e29b084b9e8776d9704a7e989b5f4898 AS production
+FROM nginx:stable-alpine@sha256:0985e772fb9f729e6fa0980da05fca5d9c468e870eed43071545afa9d2e27d94 AS production
 ARG NETWORK=mainnet
 
 # ── nginx configuration ───────────────────────────────────────────────────────
