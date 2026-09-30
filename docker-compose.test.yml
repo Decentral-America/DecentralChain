@@ -56,7 +56,7 @@ services:
 
   # ── PostgreSQL ───────────────────────────────────────────────────────────────
   dcc-postgres:
-    image: postgres:17-alpine
+    image: postgres:18-alpine@sha256:77f585114c32fbca283dc835b0596f4e52b51b4c6662d7810b2f4084f60a1873
     container_name: dcc-test-postgres
     environment:
       POSTGRES_DB: dcc
@@ -70,13 +70,13 @@ services:
       timeout: 2s
       retries: 10
     tmpfs:
-      - /var/lib/postgresql/data
+      - /var/lib/postgresql
     networks:
       - dcc-test
 
   # ── Blockchain Postgres Sync (BPS) ──────────────────────────────────────────
   dcc-bps:
-    image: ghcr.io/decentral-america/blockchain-postgres-sync:latest@sha256:78e1f1920bcf007cab5c80a7b46913de61bfb11e84f414c1b67f87c559c9db71
+    image: ghcr.io/decentral-america/blockchain-postgres-sync:latest@sha256:0c41de82ee0a9efc3e4231c1f5cca9267ee99782277d7af0e95b5d9d212055a9
     container_name: dcc-test-bps
     depends_on:
       dcc-node:

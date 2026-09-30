@@ -48,7 +48,7 @@ async fn main() -> anyhow::Result<()> {
     // ── List senders mode: print derived addresses and exit ───────────────────
     if args.list_senders {
         println!("Sender accounts derived from seed (fund these before high-TPS runs):");
-        println!("{:<5} {}", "Nonce", "Address");
+        println!("{:<5} Address", "Nonce");
         println!("{}", "-".repeat(60));
         for nonce in 0..args.sender_count {
             // Re-derive using same algorithm as tx::presign_batch
@@ -134,7 +134,7 @@ async fn main() -> anyhow::Result<()> {
         if args.json {
             collector.emit_json_phase_end(phase.name());
         } else {
-            collector.print_phase_report(&phase.name());
+            collector.print_phase_report(phase.name());
         }
 
         // Reset between phases so each phase reports its own TPS and latency.

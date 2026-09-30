@@ -73,42 +73,42 @@ const renderSignIn = (mode: ThemeMode) =>
     ),
   });
 
-describe.each([
-  'light',
-  'dark',
-] as const)('SignIn — text painted directly on the AuthScene canvas (%s mode)', (mode) => {
-  it('subtitle clears AA against the canvas', () => {
-    renderSignIn(mode);
-    expectClearsAA(screen.getByText(/Sign in to access your account/i), mode);
-  });
+describe.each(['light', 'dark'] as const)(
+  'SignIn — text painted directly on the AuthScene canvas (%s mode)',
+  (mode) => {
+    it('subtitle clears AA against the canvas', () => {
+      renderSignIn(mode);
+      expectClearsAA(screen.getByText(/Sign in to access your account/i), mode);
+    });
 
-  it('feature title clears AA against the canvas', () => {
-    renderSignIn(mode);
-    expectClearsAA(screen.getByText('Bank-grade security'), mode);
-  });
+    it('feature title clears AA against the canvas', () => {
+      renderSignIn(mode);
+      expectClearsAA(screen.getByText('Bank-grade security'), mode);
+    });
 
-  it('feature description clears AA against the canvas', () => {
-    renderSignIn(mode);
-    expectClearsAA(screen.getByText(/Your keys, your crypto/i), mode);
-  });
+    it('feature description clears AA against the canvas', () => {
+      renderSignIn(mode);
+      expectClearsAA(screen.getByText(/Your keys, your crypto/i), mode);
+    });
 
-  it('the logo wordmark accent clears AA against the canvas', () => {
-    renderSignIn(mode);
-    expectClearsAA(screen.getByText('.Exchange'), mode);
-  });
+    it('the logo wordmark accent clears AA against the canvas', () => {
+      renderSignIn(mode);
+      expectClearsAA(screen.getByText('.Exchange'), mode);
+    });
 
-  it('"Import existing wallet" clears AA against the canvas', () => {
-    renderSignIn(mode);
-    // Exact, case-sensitive: `LoginForm` also mounts a hidden `NoAccountModal`
-    // with an "Import Existing Wallet" button — a loose match would collide.
-    expectClearsAA(screen.getByRole('button', { name: 'Import existing wallet ›' }), mode);
-  });
+    it('"Import existing wallet" clears AA against the canvas', () => {
+      renderSignIn(mode);
+      // Exact, case-sensitive: `LoginForm` also mounts a hidden `NoAccountModal`
+      // with an "Import Existing Wallet" button — a loose match would collide.
+      expectClearsAA(screen.getByRole('button', { name: 'Import existing wallet ›' }), mode);
+    });
 
-  it('"Create a new wallet" clears AA against the canvas', () => {
-    renderSignIn(mode);
-    expectClearsAA(screen.getByRole('button', { name: /create a new wallet/i }), mode);
-  });
-});
+    it('"Create a new wallet" clears AA against the canvas', () => {
+      renderSignIn(mode);
+      expectClearsAA(screen.getByRole('button', { name: /create a new wallet/i }), mode);
+    });
+  },
+);
 
 describe('SignIn — mode responsiveness', () => {
   it('renders the dark aurora canvas when the app theme is dark', () => {

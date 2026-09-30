@@ -49,12 +49,15 @@ describe('scriptHash', () => {
       random.getRandomInt(),
       data.negativeTestType,
     ],
-  ])('check ride v%i scriptHash function compile', (version, scriptResult, addressOrAlias, testType) => {
-    const contract = precondition.generateContractFromMatchingAndCase(
-      version,
-      scriptResult,
-      addressOrAlias,
-    );
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i scriptHash function compile',
+    (version, scriptResult, addressOrAlias, testType) => {
+      const contract = precondition.generateContractFromMatchingAndCase(
+        version,
+        scriptResult,
+        addressOrAlias,
+      );
+      checkCompileResult(contract, testType);
+    },
+  );
 });

@@ -52,17 +52,20 @@ describe('assetBalance', () => {
       random.getRandomByteVector(),
       data.positiveTestType,
     ],
-  ])('positive: Checking the address in a transfer transaction', (version, scriptResult, addressOrAlias, byteVector, testType) => {
-    defaultFunction = `assetBalance(${addressOrAlias}, ${byteVector})`;
-    precondition = new GenerateContractForBuiltInFunctions(defaultFunction);
-    const contract = precondition.generateContractWithoutMatcher(
-      version,
-      scriptResult,
-      addressOrAlias,
-      defaultFunction,
-    );
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'positive: Checking the address in a transfer transaction',
+    (version, scriptResult, addressOrAlias, byteVector, testType) => {
+      defaultFunction = `assetBalance(${addressOrAlias}, ${byteVector})`;
+      precondition = new GenerateContractForBuiltInFunctions(defaultFunction);
+      const contract = precondition.generateContractWithoutMatcher(
+        version,
+        scriptResult,
+        addressOrAlias,
+        defaultFunction,
+      );
+      checkCompileResult(contract, testType);
+    },
+  );
 
   test.each([
     [data.STDLIB_VERSION_3, data.RideV3Result, random.getRandomAddress(), data.negativeTestType],
@@ -91,13 +94,16 @@ describe('assetBalance', () => {
       random.getRandomAlias(),
       data.negativeTestType,
     ],
-  ])('negative: incorrect function args assetBalance', (version, scriptResult, addressOrAlias, testType) => {
-    const contract = precondition.generateContractWithoutMatcher(
-      version,
-      scriptResult,
-      addressOrAlias,
-      incorrectFunction,
-    );
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'negative: incorrect function args assetBalance',
+    (version, scriptResult, addressOrAlias, testType) => {
+      const contract = precondition.generateContractWithoutMatcher(
+        version,
+        scriptResult,
+        addressOrAlias,
+        incorrectFunction,
+      );
+      checkCompileResult(contract, testType);
+    },
+  );
 });

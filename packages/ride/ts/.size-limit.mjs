@@ -1,6 +1,5 @@
-// .size-limit.mjs — separate from package.json so modifyEsbuildConfig (a function)
-// can override the tsconfig-auto-discovered "ES2025" esbuild target, which
-// esbuild 0.27.x does not recognise.  es2024 is the latest esbuild supports.
+// .size-limit.mjs — separate from package.json so modifyRolldownConfig (a function)
+// can bundle for the node platform.
 //
 // Keep in sync with the 'size-limit' entries in package.json devDependencies.
 export default [
@@ -11,13 +10,8 @@ export default [
       '@decentralchain/ts-lib-crypto',
     ],
     limit: '10 kB',
-    modifyEsbuildConfig(config) {
-      return {
-        ...config,
-        platform: 'node',
-        // biome-ignore lint/security/noSecrets: tsconfigRaw is not a secret
-        tsconfigRaw: '{"compilerOptions":{"target":"ES2024"}}',
-      };
+    modifyRolldownConfig(config) {
+      return { ...config, platform: 'node' };
     },
     path: './dist/index.mjs',
   },

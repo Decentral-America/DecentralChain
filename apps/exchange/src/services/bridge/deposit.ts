@@ -12,7 +12,6 @@
  * an account fails the suite rather than the mint.
  */
 import { BN, BorshInstructionCoder, type Idl } from '@coral-xyz/anchor';
-import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { PublicKey, SystemProgram, TransactionInstruction } from '@solana/web3.js';
 import { SOLANA_PROGRAM_ID } from '@/config/bridge';
 import {
@@ -25,6 +24,7 @@ import {
   vaultTokenAccount,
 } from './pda';
 import idlJson from './sol_bridge_lock.json';
+import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from './splToken';
 
 const idl = idlJson as Idl;
 const coder = new BorshInstructionCoder(idl);

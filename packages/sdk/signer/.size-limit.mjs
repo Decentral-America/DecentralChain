@@ -1,6 +1,4 @@
-// .size-limit.mjs — separate from package.json so modifyEsbuildConfig (a function)
-// can override the tsconfig-auto-discovered "ES2025" esbuild target, which
-// esbuild 0.27.x does not recognise.  es2024 is the latest esbuild supports.
+// .size-limit.mjs
 //
 // Keep in sync with the 'size-limit' entries in package.json devDependencies.
 export default [
@@ -12,10 +10,6 @@ export default [
     // BLS support was added. 56kB leaves ~0.7kB of headroom over the actual
     // 55.3kB measured size, not a blank check for unrelated growth.
     limit: '56 kB',
-    modifyEsbuildConfig(config) {
-      // biome-ignore lint/security/noSecrets: tsconfigRaw is not a secret
-      return { ...config, tsconfigRaw: '{"compilerOptions":{"target":"ES2024"}}' };
-    },
     path: './dist/index.mjs',
   },
 ];

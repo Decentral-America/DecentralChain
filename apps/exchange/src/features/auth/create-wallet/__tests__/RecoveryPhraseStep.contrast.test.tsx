@@ -179,18 +179,18 @@ describe('RecoveryPhraseStep — dark mode ink on GlassCard', () => {
  * surfaces* (`overlaySurface`'s card edge, the landing diagrams); the defect
  * is using it where a control's identity depends on it.
  */
-describe.each([
-  'light',
-  'dark',
-] as const)('RecoveryPhraseStep — the Copy button outline (%s mode)', (mode) => {
-  it("clears WCAG 1.4.11's 3:1 non-text floor against the card behind it", () => {
-    render(
-      <ThemeProvider theme={createAppTheme(mode)}>
-        <RecoveryPhraseStep {...baseProps()} />
-      </ThemeProvider>,
-    );
-    const button = screen.getByRole('button', { name: /^copy$/i });
-    const border = rgbToHex(getComputedStyle(button).borderTopColor);
-    expect(contrastRatio(border, tokens(mode).surface.overlay)).toBeGreaterThanOrEqual(3);
-  });
-});
+describe.each(['light', 'dark'] as const)(
+  'RecoveryPhraseStep — the Copy button outline (%s mode)',
+  (mode) => {
+    it("clears WCAG 1.4.11's 3:1 non-text floor against the card behind it", () => {
+      render(
+        <ThemeProvider theme={createAppTheme(mode)}>
+          <RecoveryPhraseStep {...baseProps()} />
+        </ThemeProvider>,
+      );
+      const button = screen.getByRole('button', { name: /^copy$/i });
+      const border = rgbToHex(getComputedStyle(button).borderTopColor);
+      expect(contrastRatio(border, tokens(mode).surface.overlay)).toBeGreaterThanOrEqual(3);
+    });
+  },
+);

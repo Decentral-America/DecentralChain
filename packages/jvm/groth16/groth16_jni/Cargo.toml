@@ -13,25 +13,26 @@ name = "groth16_jni"
 path = "src/bn256/bin/show_test_vectors.rs"
 name="show_test_vectors"
 
-# Audited 2026-07-04: bellman/pairing/num/base64/jni/rand are all far behind
-# upstream latest (e.g. bellman 0.1.0 vs 0.14.0 — a 13-minor-version gap
-# spanning zkcrypto's full curve-abstraction rewrite; base64 0.11.0 vs 0.22.1
-# changed its entire Engine-based API; jni 0.14.0 vs 0.22.4 changed JNIEnv
-# lifetime handling). This is zk-SNARK proving/verification glue code —
-# bumping bellman requires re-deriving/re-validating proving/verification
-# key compatibility, not just fixing compile errors. Deliberately not bumped
-# without dedicated crypto-domain review; same reasoning as DEX-488
-# (matcher/dex AddressActor) — no changes to live financial/crypto code
-# without full domain understanding.
+# HELD (re-audited 2026-09-29, all other deps bumped to latest):
+# - bellman 0.1 / pairing 0.14: encode the consensus byte-format and validation
+#   behaviour of the legacy BLS12 verifier that all historical blocks were
+#   validated against (see deny.toml, KNOWN_ISSUES.md). Upstream bellman 0.15 /
+#   pairing 0.24 are a different curve stack (bls12_381 + group/ff 0.13), so a
+#   bump is a height-gated consensus change, not a dependency update; the modern
+#   path is groth16_fastcrypto (BlockchainFeature 28). bellman is also patched
+#   to vendor/bellman, which only matches the 0.1.x requirement.
+# - rand 0.4: required by pairing_ce/ff_ce's `Rand` trait (rand 0.4 API), used
+#   by show_test_vectors to generate curve points; a newer rand would not
+#   implement the trait those crates expect.
 [dependencies]
 bellman = { version = "0.1.0" }
 groth16_primitives = { path = "../groth16_primitives"}
 groth16_fastcrypto = { path = "../groth16_fastcrypto" }
 pairing = "0.14"
 pairing_ce = "0.28" # for bn256
-num = "0.2"
-base64 = "0.11.0"
-jni = "0.14.0"
+num = "0.4"
+base64 = "0.23.1"
+jni = "0.22.4"
 rand = "0.4"
 
 # for bn256
@@ -41,4 +42,4 @@ features = ["derive"]
 package = "ff_ce"
 
 [dev-dependencies]
-test-case = "3.2.1"
+test-case = "3.4.0"

@@ -36,19 +36,19 @@ const renderIn = (mode: 'light' | 'dark') =>
     </ThemeProvider>,
   );
 
-describe.each([
-  'light',
-  'dark',
-] as const)('BigCTA — "Create your wallet" pill ink (%s mode)', (mode) => {
-  it('clears AA against its own white background in both modes', () => {
-    renderIn(mode);
-    const button = screen.getByRole('button', { name: 'app.landing.bigCta.ctaCreate' });
-    const ink = rgbToHex(getComputedStyle(button).color);
-    const bg = rgbToHex(getComputedStyle(button).backgroundColor);
-    expect(bg).toBe('#ffffff');
-    expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
-  });
-});
+describe.each(['light', 'dark'] as const)(
+  'BigCTA — "Create your wallet" pill ink (%s mode)',
+  (mode) => {
+    it('clears AA against its own white background in both modes', () => {
+      renderIn(mode);
+      const button = screen.getByRole('button', { name: 'app.landing.bigCta.ctaCreate' });
+      const ink = rgbToHex(getComputedStyle(button).color);
+      const bg = rgbToHex(getComputedStyle(button).backgroundColor);
+      expect(bg).toBe('#ffffff');
+      expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
+    });
+  },
+);
 
 /** The lightest stop of `brandGradient.band` — the hardest point for light-on-dark ink. */
 const CTA_GRADIENT_LIGHTEST_STOP = '#5e2ca5';

@@ -24,17 +24,17 @@ const renderIn = (mode: ThemeMode) =>
     </ThemeProvider>,
   );
 
-describe.each([
-  'light',
-  'dark',
-] as const)('FeatureBento — section heading ink (%s mode)', (mode) => {
-  it('clears AA against the page canvas', () => {
-    renderIn(mode);
-    const heading = screen.getByText('app.landing.featureBento.headingLine1');
-    const ink = rgbToHex(getComputedStyle(heading).color);
-    expect(contrastRatio(ink, tokens(mode).surface.base)).toBeGreaterThanOrEqual(4.5);
-  });
-});
+describe.each(['light', 'dark'] as const)(
+  'FeatureBento — section heading ink (%s mode)',
+  (mode) => {
+    it('clears AA against the page canvas', () => {
+      renderIn(mode);
+      const heading = screen.getByText('app.landing.featureBento.headingLine1');
+      const ink = rgbToHex(getComputedStyle(heading).color);
+      expect(contrastRatio(ink, tokens(mode).surface.base)).toBeGreaterThanOrEqual(4.5);
+    });
+  },
+);
 
 describe.each(['light', 'dark'] as const)('FeatureBento — feature card ink (%s mode)', (mode) => {
   it('title clears AA against the card’s own background', () => {

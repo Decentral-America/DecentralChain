@@ -175,7 +175,7 @@ export const AssetDetailsDialog: React.FC<AssetDetailsDialogProps> = ({ asset, o
   const ticker = asset.isBaseAsset ? 'DCC' : asset.name;
 
   const copy = (field: string, value: string) => {
-    copyToClipboard(value);
+    void copyToClipboard(value);
     setCopiedField(field);
   };
 

@@ -1,6 +1,6 @@
 # Use Node.js 24 LTS on Debian Trixie (glibc 2.41 for smart-tree compatibility)
 # renovate: image=node tag=24-trixie
-FROM node:24-trixie@sha256:f072159a6b98a624e09f2c4815fe473217fc019a97524fd593059c8a4ad5a05d
+FROM node:24-trixie@sha256:be40f6a87b9b22215ddb20da0a2320a5c6d583fe3ee3b0024d9fa4f05b40c8fd
 
 # Install additional tools
 RUN apt-get update && apt-get install -y --no-install-recommends \

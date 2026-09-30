@@ -54,15 +54,19 @@ describe('toBytes', () => {
     [data.STDLIB_VERSION_3, invalidToBytes, true, data.negativeTestType],
     [data.STDLIB_VERSION_4, invalidToBytes, random.getRandomStringArray(), data.negativeTestType],
     [data.STDLIB_VERSION_5, invalidToBytes, random.getRandomIssuesArray(), data.negativeTestType],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, testData, testType) => {
-    const contract = precondition.generateOnlyMatcherContract(version, testData, testFunction);
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, testData, testType) => {
+      const contract = precondition.generateOnlyMatcherContract(version, testData, testFunction);
+      checkCompileResult(contract, testType);
+    },
+  );
 
-  test.each([
-    [data.STDLIB_VERSION_5, random.getRandomInt(), data.positiveTestType],
-  ])('positive: toBytes func compiles for ride v%i at bigInt', (version, bigInt, testType) => {
-    const contract = precondition.generateOnlyMatcherContract(version, `toBigInt(${bigInt})`);
-    checkCompileResult(contract, testType);
-  });
+  test.each([[data.STDLIB_VERSION_5, random.getRandomInt(), data.positiveTestType]])(
+    'positive: toBytes func compiles for ride v%i at bigInt',
+    (version, bigInt, testType) => {
+      const contract = precondition.generateOnlyMatcherContract(version, `toBigInt(${bigInt})`);
+      checkCompileResult(contract, testType);
+    },
+  );
 });

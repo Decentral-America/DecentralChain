@@ -77,8 +77,11 @@ describe('String take functions', () => {
       random.getRandomInt(),
       data.negativeTestType,
     ],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, randomData, randomList, testType) => {
-    const contract = precondition.generateContract(version, randomData, randomList, testFunction);
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, randomData, randomList, testType) => {
+      const contract = precondition.generateContract(version, randomData, randomList, testFunction);
+      checkCompileResult(contract, testType);
+    },
+  );
 });

@@ -33,8 +33,11 @@ describe('createMerkleRoot functions', () => {
     ],
     // can't find a function 'createMerkleRoot'
     [data.STDLIB_VERSION_3, createMerkleRoot, random.getRandomByteVector(), data.negativeTestType],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, randomData, testType) => {
-    const contract = precondition.generateOnlyMatcherContract(version, randomData, testFunction);
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, randomData, testType) => {
+      const contract = precondition.generateOnlyMatcherContract(version, randomData, testFunction);
+      checkCompileResult(contract, testType);
+    },
+  );
 });

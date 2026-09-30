@@ -53,8 +53,11 @@ describe('addressFromPublicKey', () => {
       random.getRandomByteVector(),
       data.negativeTestType,
     ],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, byteVector, testType) => {
-    const contract = precondition.generateOnlyMatcherContract(version, byteVector, testFunction);
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, byteVector, testType) => {
+      const contract = precondition.generateOnlyMatcherContract(version, byteVector, testFunction);
+      checkCompileResult(contract, testType);
+    },
+  );
 });

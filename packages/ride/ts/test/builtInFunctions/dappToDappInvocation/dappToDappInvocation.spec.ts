@@ -56,13 +56,16 @@ describe('dappToDappInvocation functions', () => {
       random.getRandomInt(),
       data.negativeTestType,
     ],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, byteVector, payment, testType) => {
-    const contract = precondition.generateContractForDAppInvocation(
-      version,
-      byteVector,
-      payment,
-      testFunction,
-    );
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, byteVector, payment, testType) => {
+      const contract = precondition.generateContractForDAppInvocation(
+        version,
+        byteVector,
+        payment,
+        testFunction,
+      );
+      checkCompileResult(contract, testType);
+    },
+  );
 });

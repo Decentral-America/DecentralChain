@@ -1,5 +1,5 @@
 import { Buffer } from 'node:buffer';
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 
 /**
  * `@solana/web3.js` reaches for a global `Buffer` while deriving program

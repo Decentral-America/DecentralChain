@@ -205,25 +205,25 @@ describe.each(['light', 'dark'] as const)('CreateToken — step 0 (%s mode)', (m
   });
 });
 
-describe.each([
-  'light',
-  'dark',
-] as const)('CreateToken — step 2, no-script state (%s mode)', (mode) => {
-  it('the "No script required" copy clears AA against the step card', async () => {
-    // Was a tinted "No Script Required" panel; it is now an `EmptyState`
-    // drawn straight onto the step card.
-    const user = userEvent.setup({ delay: null });
-    renderIn(mode);
-    await toSmartAssetStep(user);
+describe.each(['light', 'dark'] as const)(
+  'CreateToken — step 2, no-script state (%s mode)',
+  (mode) => {
+    it('the "No script required" copy clears AA against the step card', async () => {
+      // Was a tinted "No Script Required" panel; it is now an `EmptyState`
+      // drawn straight onto the step card.
+      const user = userEvent.setup({ delay: null });
+      renderIn(mode);
+      await toSmartAssetStep(user);
 
-    for (const text of [
-      screen.getByText('No script required'),
-      screen.getByText(/Your token will be created as a standard asset/),
-    ]) {
-      expectLegibleOn(text, tokens(mode).surface.raised);
-    }
-  });
-});
+      for (const text of [
+        screen.getByText('No script required'),
+        screen.getByText(/Your token will be created as a standard asset/),
+      ]) {
+        expectLegibleOn(text, tokens(mode).surface.raised);
+      }
+    });
+  },
+);
 
 describe.each(['light', 'dark'] as const)('CreateToken — step 3, review (%s mode)', (mode) => {
   it('the token preview name and quantity clear AA against the step card', async () => {
@@ -341,50 +341,50 @@ describe.each(['light', 'dark'] as const)('CreateToken — step 3, review (%s mo
  * asserted below rather than assumed — a transparent bar would mean this
  * test measured nothing.
  */
-describe.each([
-  'light',
-  'dark',
-] as const)('CreateToken — pinned mobile step bar (%s mode)', (mode) => {
-  it('the pinned bar paints a mode-aware surface, and its labels clear AA on it', () => {
-    render(
-      <Providers mode={mode}>
-        <SurfaceProvider compact>
-          <CreateToken />
-        </SurfaceProvider>
-      </Providers>,
-    );
+describe.each(['light', 'dark'] as const)(
+  'CreateToken — pinned mobile step bar (%s mode)',
+  (mode) => {
+    it('the pinned bar paints a mode-aware surface, and its labels clear AA on it', () => {
+      render(
+        <Providers mode={mode}>
+          <SurfaceProvider compact>
+            <CreateToken />
+          </SurfaceProvider>
+        </Providers>,
+      );
 
-    const rail = screen.getByRole('list', { name: 'Token creation steps' });
-    let bar: HTMLElement | null = rail;
-    while (bar && getComputedStyle(bar).position !== 'sticky') bar = bar.parentElement;
-    // The bar is genuinely in its pinned state — otherwise it is not sticky,
-    // its fill is `transparent`, and the contrast below proves nothing.
-    expect(bar).not.toBeNull();
-    expect(getComputedStyle(bar!).backgroundColor).not.toMatch(/transparent|rgba\(0, 0, 0, 0\)/);
-    const fill = rgbToHex(paintedBackground(bar!, mode));
+      const rail = screen.getByRole('list', { name: 'Token creation steps' });
+      let bar: HTMLElement | null = rail;
+      while (bar && getComputedStyle(bar).position !== 'sticky') bar = bar.parentElement;
+      // The bar is genuinely in its pinned state — otherwise it is not sticky,
+      // its fill is `transparent`, and the contrast below proves nothing.
+      expect(bar).not.toBeNull();
+      expect(getComputedStyle(bar!).backgroundColor).not.toMatch(/transparent|rgba\(0, 0, 0, 0\)/);
+      const fill = rgbToHex(paintedBackground(bar!, mode));
 
-    // The rail names the current step above it in `colors.text`, with its
-    // "· 1 of 4" count in `colors.textSecondary`: the two inks the fill has
-    // to carry. A not-yet-reached step is its numbered chip, on the chip's
-    // own surface. Asserted before the token identity below, so a run
-    // against a broken source reports the ratio that actually breaks the
-    // screen rather than a colour mismatch.
-    const current = screen.getByText('Basic Info');
-    expect(getComputedStyle(current).opacity).toBe('1');
-    const count = current.lastElementChild as HTMLElement;
-    expect(count).toHaveTextContent('· 1 of 4');
-    for (const text of [current, count]) {
-      const ink = rgbToHex(getComputedStyle(text).color);
-      expect(rgbToHex(paintedBackground(text, mode))).toBe(fill);
-      expect(contrastRatio(ink, fill)).toBeGreaterThanOrEqual(4.5);
-    }
+      // The rail names the current step above it in `colors.text`, with its
+      // "· 1 of 4" count in `colors.textSecondary`: the two inks the fill has
+      // to carry. A not-yet-reached step is its numbered chip, on the chip's
+      // own surface. Asserted before the token identity below, so a run
+      // against a broken source reports the ratio that actually breaks the
+      // screen rather than a colour mismatch.
+      const current = screen.getByText('Basic Info');
+      expect(getComputedStyle(current).opacity).toBe('1');
+      const count = current.lastElementChild as HTMLElement;
+      expect(count).toHaveTextContent('· 1 of 4');
+      for (const text of [current, count]) {
+        const ink = rgbToHex(getComputedStyle(text).color);
+        expect(rgbToHex(paintedBackground(text, mode))).toBe(fill);
+        expect(contrastRatio(ink, fill)).toBeGreaterThanOrEqual(4.5);
+      }
 
-    const reviewChip = screen.getByText('Step 4 of 4: Review').nextElementSibling as HTMLElement;
-    expect(reviewChip).toHaveTextContent(/^4$/);
-    const chipInk = rgbToHex(getComputedStyle(reviewChip).color);
-    const chipFill = rgbToHex(paintedBackground(reviewChip, mode));
-    expect(contrastRatio(chipInk, chipFill)).toBeGreaterThanOrEqual(4.5);
+      const reviewChip = screen.getByText('Step 4 of 4: Review').nextElementSibling as HTMLElement;
+      expect(reviewChip).toHaveTextContent(/^4$/);
+      const chipInk = rgbToHex(getComputedStyle(reviewChip).color);
+      const chipFill = rgbToHex(paintedBackground(reviewChip, mode));
+      expect(contrastRatio(chipInk, chipFill)).toBeGreaterThanOrEqual(4.5);
 
-    expect(fill).toBe(tokens(mode).surface.raised);
-  });
-});
+      expect(fill).toBe(tokens(mode).surface.raised);
+    });
+  },
+);

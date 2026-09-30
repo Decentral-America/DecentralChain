@@ -9,33 +9,32 @@ packages:
   - 'e2e'
 
 catalog:
-  '@arethetypeswrong/cli': 0.18.4
-  '@babel/core': 7.29.7
+  '@arethetypeswrong/cli': 0.18.5
+  '@babel/core': 8.0.6
   '@coral-xyz/anchor': 0.32.1
   '@fontsource-variable/inter': 5.3.0
   '@number-flow/react': 0.6.2
-  '@rolldown/plugin-babel': 0.2.3
-  '@size-limit/preset-small-lib': 12.1.0
-  '@solana/spl-token': 0.4.15
-  '@solana/wallet-adapter-base': 0.9.27
-  '@solana/wallet-adapter-phantom': 0.9.29
-  '@solana/wallet-adapter-react': 0.15.39
-  '@solana/wallet-adapter-solflare': 0.6.33
-  '@solana/web3.js': 1.98.4
+  '@rolldown/plugin-babel': 0.2.4
+  '@size-limit/preset-small-lib': 14.1.0
+  '@solana/wallet-adapter-base': 0.9.28
+  '@solana/wallet-adapter-phantom': 0.9.30
+  '@solana/wallet-adapter-react': 0.15.40
+  '@solana/wallet-adapter-solflare': 0.6.34
+  '@solana/web3.js': 1.99.0
   '@types/babel__core': 7.20.5
-  '@types/node': 26.1.0
-  '@vitest/coverage-v8': 4.1.9
+  '@types/node': 26.6.3
+  '@vitest/coverage-v8': 4.1.11
   babel-plugin-react-compiler: ^1.0.0
   bs58: ^6.0.0
   buffer: ^6.0.3
   fancy-canvas: 2.1.0
   ioredis: 6.0.0
-  js-yaml: 5.2.2
-  jsdom: 29.1.1
-  publint: 0.3.21
-  size-limit: 12.1.0
-  tsdown: 0.22.3
-  vitest: 4.1.9
+  js-yaml: 5.4.2
+  jsdom: 30.1.1
+  publint: 0.3.24
+  size-limit: 14.1.0
+  tsdown: 0.23.0
+  vitest: 4.1.11
 
 # pnpm v11: non-auth .npmrc settings are ignored; declare them here instead.
 engineStrict: true
@@ -92,8 +91,9 @@ overrides:
   tmp: '>=0.2.7'
   # form-data@<4.0.6 has CRLF injection (GHSA-hmw2-7cc7-3qxx)
   form-data: '>=4.0.6'
-  # morgan@<=1.10.1 has log forging via unneutralized control chars in :remote-user (GHSA-4vj7-5mj6-jm8m)
-  morgan: '>=1.11.0'
+  # morgan <1.12.1: log forging via unneutralized control chars (GHSA-4vj7-5mj6-jm8m),
+  # unescaped Unicode line separators (<1.12.0) and unescaped double quotes (<1.12.1).
+  morgan: '>=1.12.1'
   # @babel/core<=7.29.0 arbitrary file read via sourceMappingURL (GHSA-4x5r-pxfx-6jf8)
   '@babel/core': '>=7.29.6'
   basic-ftp: '>=5.3.1'
@@ -118,8 +118,20 @@ overrides:
   # postcss <=8.5.17: path traversal in previous sourceMappingURL auto-loading leaks
   # arbitrary .map file contents (GHSA advisory); 8.5.18 patches it.
   postcss: '>=8.5.18'
-  qs: '>=6.15.2'
-  typescript: '6.0.3'
+  # qs <6.16.0: array-limit bypass via bracket-key comma parsing, and DoS via
+  # attacker-controlled isBuffer. The 6.15.2 floor predates both fixes.
+  qs: '>=6.16.0'
+  # jayson 4.x (via @solana/web3.js ^4.3.0) pins uuid@8 (buffer bounds check, fixed
+  # 11.1.1) and stream-json@1 (O(depth^2) filters, fixed 3.5.0). jayson 5 drops both
+  # deps; web3.js only uses jayson/lib/client/browser, which 5.x keeps unchanged.
+  '@solana/web3.js>jayson': '^5.0.0'
+  # @coral-xyz/anchor 0.32.1 (latest) pins toml@^3 (prototype pollution + uncontrolled
+  # recursion, fixed 4.2.0). toml 5 keeps the same single parse() export anchor calls.
+  '@coral-xyz/anchor>toml': '^5.0.0'
+  # @solflare-wallet/sdk 1.4.2 (latest, unmaintained since 2024-01) pins uuid@^9 (missing
+  # buffer bounds check in v3/v5/v6, fixed 11.1.1). It only calls v4(); ^14 matches the
+  # uuid rpc-websockets already resolves, and Node >=24 require()s its ESM build.
+  '@solflare-wallet/sdk>uuid': '^14.0.2'
   # valibot <=1.4.1: record() issue paths can make flatten() throw for inherited
   # Object property names (GHSA advisory); 1.4.2 patches it.
   valibot: '>=1.4.2'
@@ -132,22 +144,3 @@ overrides:
 # node-api lists transactions in devDependencies for test fixtures only.
 # This is intentional – the cycle is test-only and causes no runtime issues.
 ignoreWorkspaceCycles: true
-
-# pnpm supply-chain policy: packages published within ~1 day fail the
-# minimumReleaseAge lockfile check. List only entries that are genuinely
-# within the cutoff window; remove them once the package has aged past it.
-minimumReleaseAgeExclude:
-  - '@sentry-internal/browser-utils@10.56.0'
-  - '@sentry-internal/feedback@10.56.0'
-  - '@sentry-internal/replay-canvas@10.56.0'
-  - '@sentry-internal/replay@10.56.0'
-  - '@sentry/browser@10.56.0'
-  - '@sentry/core@10.56.0'
-  - '@sentry/react@10.56.0'
-  - cytoscape@3.34.0
-  - '@mui/core-downloads-tracker@9.2.0'
-  - '@mui/icons-material@9.2.0'
-  - '@mui/material@9.2.0'
-  - '@mui/private-theming@9.2.0'
-  - '@mui/system@9.2.0'
-  - '@mui/utils@9.2.0'

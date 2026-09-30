@@ -72,18 +72,22 @@ export class AssetStorage {
       list.forEach((id) => {
         this._promiseHash[id] = data;
       });
-      data.then((asset) => {
-        const assetList = toArray(asset);
-        assetList.forEach((asset) => {
-          delete this._promiseHash[asset.id];
-          this._hash[asset.id] = asset;
-        });
-      });
-      data.catch(() => {
-        list.forEach((id) => {
-          delete this._promiseHash[id];
-        });
-      });
+      // One then() with both handlers: a separate data.catch() would not cover the
+      // promise then() returns, so a rejection there went unhandled.
+      void data.then(
+        (asset) => {
+          const assetList = toArray(asset);
+          assetList.forEach((asset) => {
+            delete this._promiseHash[asset.id];
+            this._hash[asset.id] = asset;
+          });
+        },
+        () => {
+          list.forEach((id) => {
+            delete this._promiseHash[id];
+          });
+        },
+      );
     } else {
       const list = toArray(data);
       list.forEach((asset) => {

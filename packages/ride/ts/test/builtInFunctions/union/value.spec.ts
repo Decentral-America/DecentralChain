@@ -41,9 +41,12 @@ describe('value functions', () => {
       data.negativeTestType,
       'String',
     ],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, randomData, testType, dataType) => {
-    precondition.setData(dataType);
-    const contract = precondition.generateOnlyMatcherContract(version, randomData, testFunction);
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, randomData, testType, dataType) => {
+      precondition.setData(dataType);
+      const contract = precondition.generateOnlyMatcherContract(version, randomData, testFunction);
+      checkCompileResult(contract, testType);
+    },
+  );
 });

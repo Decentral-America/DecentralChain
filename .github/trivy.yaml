@@ -1,0 +1,21 @@
+# Trivy config for the repository filesystem scans: the vulnerability scan in
+# .github/workflows/security.yml and the secret scan in .github/workflows/ci.yml. Both
+# resolve Maven POMs.
+#
+# Trivy resolves transitive Maven dependencies by fetching POMs from Maven Central.
+# Since Trivy v0.71.0 (aquasecurity/trivy#10693) a 429 from a remote Maven repository
+# is FATAL instead of silently dropping the transitive tree, and GitHub-hosted runner
+# IPs are routinely rate-limited by repo.maven.apache.org (Retry-After: 1800). Route
+# Maven Central lookups through Google's official Maven Central mirror first, falling
+# back to Maven Central itself (config-file mirrors: Trivy >= v0.73.0).
+scan:
+  maven:
+    mirrors:
+      - source: https://repo.maven.apache.org/maven2/
+        targets:
+          - https://maven-central.storage-download.googleapis.com/maven2/
+          - https://repo.maven.apache.org/maven2/
+      - source: https://repo1.maven.org/maven2/
+        targets:
+          - https://maven-central.storage-download.googleapis.com/maven2/
+          - https://repo1.maven.org/maven2/

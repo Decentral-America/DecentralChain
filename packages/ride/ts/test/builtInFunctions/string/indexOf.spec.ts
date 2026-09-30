@@ -118,13 +118,16 @@ describe('String indexOf and lastIndexOf functions', () => {
       random.getRandomStringArray(),
       data.negativeTestType,
     ],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, randomIndexInt, randomString, testType) => {
-    const contract = precondition.generateContract(
-      version,
-      randomIndexInt,
-      randomString,
-      testFunction,
-    );
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, randomIndexInt, randomString, testType) => {
+      const contract = precondition.generateContract(
+        version,
+        randomIndexInt,
+        randomString,
+        testFunction,
+      );
+      checkCompileResult(contract, testType);
+    },
+  );
 });

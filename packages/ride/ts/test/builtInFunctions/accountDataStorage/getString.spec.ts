@@ -168,15 +168,18 @@ describe('getString', () => {
       random.getRandomAlias(),
       data.negativeTestType,
     ],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, scriptResult, testString, testType) => {
-    const contract = precondition.generateContractFromMatchingAndCase(
-      version,
-      scriptResult,
-      testString,
-      testFunction,
-    );
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, scriptResult, testString, testType) => {
+      const contract = precondition.generateContractFromMatchingAndCase(
+        version,
+        scriptResult,
+        testString,
+        testFunction,
+      );
+      checkCompileResult(contract, testType);
+    },
+  );
 
   test.each([
     [data.STDLIB_VERSION_5, data.GreaterV3ResultStringEntry, data.positiveTestType],

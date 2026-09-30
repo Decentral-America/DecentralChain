@@ -18,7 +18,6 @@
     "@mui/icons-material",
     "@mui/material",
     "@sentry/react",
-    "@solana/spl-token",
     "@solana/wallet-adapter-base",
     "@solana/wallet-adapter-phantom",
     "@solana/wallet-adapter-react",

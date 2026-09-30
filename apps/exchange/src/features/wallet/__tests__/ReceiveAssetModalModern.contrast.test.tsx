@@ -56,25 +56,25 @@ function renderIn(mode: ThemeMode) {
  * below measures behaviour (ink vs the fill actually painted) rather than
  * syntax.
  */
-describe.each([
-  'light',
-  'dark',
-] as const)('ReceiveAssetModalModern — address well (%s mode)', (mode) => {
-  it('the address ink clears AA against the surface it is actually painted on', () => {
-    renderIn(mode);
-    const address = screen.getByText('3P123');
-    const well = address.closest('.MuiCard-root') as HTMLElement;
-    expect(well).not.toBeNull();
-    const ink = toHex(getComputedStyle(address).color);
-    const fill = toHex(getComputedStyle(well).backgroundColor);
-    expect(contrastRatio(ink, fill)).toBeGreaterThanOrEqual(4.5);
-  });
+describe.each(['light', 'dark'] as const)(
+  'ReceiveAssetModalModern — address well (%s mode)',
+  (mode) => {
+    it('the address ink clears AA against the surface it is actually painted on', () => {
+      renderIn(mode);
+      const address = screen.getByText('3P123');
+      const well = address.closest('.MuiCard-root') as HTMLElement;
+      expect(well).not.toBeNull();
+      const ink = toHex(getComputedStyle(address).color);
+      const fill = toHex(getComputedStyle(well).backgroundColor);
+      expect(contrastRatio(ink, fill)).toBeGreaterThanOrEqual(4.5);
+    });
 
-  it('the well and its border move with the mode instead of pinning a fixed grey', () => {
-    renderIn(mode);
-    const well = screen.getByText('3P123').closest('.MuiCard-root') as HTMLElement;
-    const style = getComputedStyle(well);
-    expect(toHex(style.backgroundColor)).toBe(tokens(mode).surface.sunken);
-    expect(toHex(style.borderTopColor)).toBe(tokens(mode).border.subtle);
-  });
-});
+    it('the well and its border move with the mode instead of pinning a fixed grey', () => {
+      renderIn(mode);
+      const well = screen.getByText('3P123').closest('.MuiCard-root') as HTMLElement;
+      const style = getComputedStyle(well);
+      expect(toHex(style.backgroundColor)).toBe(tokens(mode).surface.sunken);
+      expect(toHex(style.borderTopColor)).toBe(tokens(mode).border.subtle);
+    });
+  },
+);

@@ -60,10 +60,13 @@ describe('addressFromRecipient', () => {
       random.getRandomAddress(),
       data.negativeTestType,
     ],
-  ])('check ride v%i addressFromRecipient function compiles or failed', (version, addressOrAlias, address, testType) => {
-    const contract = generateContract(version, addressOrAlias, address);
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i addressFromRecipient function compiles or failed',
+    (version, addressOrAlias, address, testType) => {
+      const contract = generateContract(version, addressOrAlias, address);
+      checkCompileResult(contract, testType);
+    },
+  );
 
   const generateContract = (libVersion, addressOrAlias, address) => {
     return `

@@ -37,32 +37,32 @@ vi.mock('@/contexts/SettingsContext', () => ({
   }),
 }));
 
-describe.each([
-  ['light', lightTheme] as const,
-  ['dark', darkTheme] as const,
-])('NetworkSettings ink — %s mode', (_mode, theme) => {
-  const renderIt = () =>
-    render(
-      <ThemeProvider theme={theme}>
-        <NetworkSettings />
-      </ThemeProvider>,
-    );
+describe.each([['light', lightTheme] as const, ['dark', darkTheme] as const])(
+  'NetworkSettings ink — %s mode',
+  (_mode, theme) => {
+    const renderIt = () =>
+      render(
+        <ThemeProvider theme={theme}>
+          <NetworkSettings />
+        </ThemeProvider>,
+      );
 
-  it('the node-address input ink clears AA against its own background', () => {
-    renderIt();
-    const input = screen.getByDisplayValue('https://node.example');
-    const style = getComputedStyle(input);
-    const ink = rgbToHex(style.color);
-    const bg = rgbToHex(style.backgroundColor);
-    expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
-  });
+    it('the node-address input ink clears AA against its own background', () => {
+      renderIt();
+      const input = screen.getByDisplayValue('https://node.example');
+      const style = getComputedStyle(input);
+      const ink = rgbToHex(style.color);
+      const bg = rgbToHex(style.backgroundColor);
+      expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
+    });
 
-  it('the reset button ink clears AA against its own background', () => {
-    renderIt();
-    const button = screen.getByRole('button', { name: /reset to default settings/i });
-    const style = getComputedStyle(button);
-    const ink = rgbToHex(style.color);
-    const bg = rgbToHex(style.backgroundColor);
-    expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
-  });
-});
+    it('the reset button ink clears AA against its own background', () => {
+      renderIt();
+      const button = screen.getByRole('button', { name: /reset to default settings/i });
+      const style = getComputedStyle(button);
+      const ink = rgbToHex(style.color);
+      const bg = rgbToHex(style.backgroundColor);
+      expect(contrastRatio(ink, bg)).toBeGreaterThanOrEqual(4.5);
+    });
+  },
+);

@@ -368,9 +368,9 @@ describe('ProviderCubensis', () => {
       await provider.sign([{ call: { args: [], function: 'f' }, dApp: '3Napp', type: 16 }]);
 
       // Should have used user's publicKey in the fetch body
-      const fetchBody = JSON.parse(
-        (fetchSpy.mock.calls[0]?.[1] as RequestInit).body as string,
-      ) as Record<string, unknown>;
+      const init = fetchSpy.mock.calls[0]?.[1] as RequestInit | undefined;
+      expect(init).toBeDefined();
+      const fetchBody = JSON.parse(init?.body as string) as Record<string, unknown>;
       expect(fetchBody).toHaveProperty('senderPublicKey', 'userPK');
 
       fetchSpy.mockRestore();

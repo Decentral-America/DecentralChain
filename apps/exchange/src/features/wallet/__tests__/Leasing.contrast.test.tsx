@@ -249,56 +249,56 @@ function renderLeasing(mode: ThemeMode) {
   );
 }
 
-describe.each([
-  'light',
-  'dark',
-] as const)('Leasing — status chip and Cancel button, row hovered or not (%s mode)', (mode) => {
-  it('the pending-status chip is filled with its own intent fill, not a neutral wash', () => {
-    renderLeasing(mode);
-    const chip = screen.getByText('Pending').closest('.MuiChip-root') as HTMLElement;
-    expect(ownBackground(chip)).toBe(tokens(mode).intent.warning);
-    expect(ink(chip)).toBe(tokens(mode).intent.onWarning);
-  });
+describe.each(['light', 'dark'] as const)(
+  'Leasing — status chip and Cancel button, row hovered or not (%s mode)',
+  (mode) => {
+    it('the pending-status chip is filled with its own intent fill, not a neutral wash', () => {
+      renderLeasing(mode);
+      const chip = screen.getByText('Pending').closest('.MuiChip-root') as HTMLElement;
+      expect(ownBackground(chip)).toBe(tokens(mode).intent.warning);
+      expect(ink(chip)).toBe(tokens(mode).intent.onWarning);
+    });
 
-  it('the active-status chip is filled with its own intent fill, not a neutral wash', () => {
-    renderLeasing(mode);
-    const chip = screen.getByText('Active').closest('.MuiChip-root') as HTMLElement;
-    expect(ownBackground(chip)).toBe(tokens(mode).intent.success);
-    expect(ink(chip)).toBe(tokens(mode).intent.onSuccess);
-  });
+    it('the active-status chip is filled with its own intent fill, not a neutral wash', () => {
+      renderLeasing(mode);
+      const chip = screen.getByText('Active').closest('.MuiChip-root') as HTMLElement;
+      expect(ownBackground(chip)).toBe(tokens(mode).intent.success);
+      expect(ink(chip)).toBe(tokens(mode).intent.onSuccess);
+    });
 
-  it('the pending chip clears AA against whatever is actually visible behind it, row hovered or not', () => {
-    renderLeasing(mode);
-    const chip = screen.getByText('Pending').closest('.MuiChip-root') as HTMLElement;
-    // The row is found structurally and carries a generated class, so "no
-    // hover fill declared" is a real absence, not a lookup that missed.
-    expect(generatedClass(historyRow(chip))).toBeDefined();
-    expect(contrastRatio(ink(chip), toHex(paintedBackground(chip)))).toBeGreaterThanOrEqual(4.5);
-    expect(contrastRatio(ink(chip), paintedUnderPointer(chip))).toBeGreaterThanOrEqual(4.5);
-  });
+    it('the pending chip clears AA against whatever is actually visible behind it, row hovered or not', () => {
+      renderLeasing(mode);
+      const chip = screen.getByText('Pending').closest('.MuiChip-root') as HTMLElement;
+      // The row is found structurally and carries a generated class, so "no
+      // hover fill declared" is a real absence, not a lookup that missed.
+      expect(generatedClass(historyRow(chip))).toBeDefined();
+      expect(contrastRatio(ink(chip), toHex(paintedBackground(chip)))).toBeGreaterThanOrEqual(4.5);
+      expect(contrastRatio(ink(chip), paintedUnderPointer(chip))).toBeGreaterThanOrEqual(4.5);
+    });
 
-  it('the active chip clears AA against whatever is actually visible behind it, row hovered or not', () => {
-    renderLeasing(mode);
-    const chip = screen.getByText('Active').closest('.MuiChip-root') as HTMLElement;
-    expect(generatedClass(historyRow(chip))).toBeDefined();
-    expect(contrastRatio(ink(chip), toHex(paintedBackground(chip)))).toBeGreaterThanOrEqual(4.5);
-    expect(contrastRatio(ink(chip), paintedUnderPointer(chip))).toBeGreaterThanOrEqual(4.5);
-  });
+    it('the active chip clears AA against whatever is actually visible behind it, row hovered or not', () => {
+      renderLeasing(mode);
+      const chip = screen.getByText('Active').closest('.MuiChip-root') as HTMLElement;
+      expect(generatedClass(historyRow(chip))).toBeDefined();
+      expect(contrastRatio(ink(chip), toHex(paintedBackground(chip)))).toBeGreaterThanOrEqual(4.5);
+      expect(contrastRatio(ink(chip), paintedUnderPointer(chip))).toBeGreaterThanOrEqual(4.5);
+    });
 
-  it("the Cancel button's error ink clears AA on its own translucent fill, at rest and under the pointer", () => {
-    renderLeasing(mode);
-    const button = screen.getByRole('button', { name: 'Cancel' });
-    expect(generatedClass(historyRow(button))).toBeDefined();
-    // Not outlined-on-the-row any more: the theme gives outlined buttons a
-    // translucent fill of their own, and a different one on hover. The
-    // hover lookup must find it in this mode's render, or the pointer
-    // measurement below would silently repeat the rest state.
-    expect(ownBackground(button)).toMatch(/^rgba\(/);
-    expect(declaredHover(button)).toMatch(/^rgba\(/);
-    expect(declaredHover(button)).not.toBe(ownBackground(button));
-    expect(contrastRatio(ink(button), toHex(paintedBackground(button)))).toBeGreaterThanOrEqual(
-      4.5,
-    );
-    expect(contrastRatio(ink(button), paintedUnderPointer(button))).toBeGreaterThanOrEqual(4.5);
-  });
-});
+    it("the Cancel button's error ink clears AA on its own translucent fill, at rest and under the pointer", () => {
+      renderLeasing(mode);
+      const button = screen.getByRole('button', { name: 'Cancel' });
+      expect(generatedClass(historyRow(button))).toBeDefined();
+      // Not outlined-on-the-row any more: the theme gives outlined buttons a
+      // translucent fill of their own, and a different one on hover. The
+      // hover lookup must find it in this mode's render, or the pointer
+      // measurement below would silently repeat the rest state.
+      expect(ownBackground(button)).toMatch(/^rgba\(/);
+      expect(declaredHover(button)).toMatch(/^rgba\(/);
+      expect(declaredHover(button)).not.toBe(ownBackground(button));
+      expect(contrastRatio(ink(button), toHex(paintedBackground(button)))).toBeGreaterThanOrEqual(
+        4.5,
+      );
+      expect(contrastRatio(ink(button), paintedUnderPointer(button))).toBeGreaterThanOrEqual(4.5);
+    });
+  },
+);

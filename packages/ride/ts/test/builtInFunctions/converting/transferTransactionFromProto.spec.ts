@@ -50,8 +50,11 @@ describe('transferTransactionFromProto', () => {
     // invalid function
     [data.STDLIB_VERSION_4, incorrectFunction, random.getRandomByteVector(), data.negativeTestType],
     [data.STDLIB_VERSION_5, incorrectFunction, random.getRandomByteVector(), data.negativeTestType],
-  ])('check ride v%i function %s compiles or failed', (version, testFunction, byteVector, testType) => {
-    const contract = precondition.generateOnlyMatcherContract(version, byteVector, testFunction);
-    checkCompileResult(contract, testType);
-  });
+  ])(
+    'check ride v%i function %s compiles or failed',
+    (version, testFunction, byteVector, testType) => {
+      const contract = precondition.generateOnlyMatcherContract(version, byteVector, testFunction);
+      checkCompileResult(contract, testType);
+    },
+  );
 });

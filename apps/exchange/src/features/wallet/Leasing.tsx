@@ -258,9 +258,9 @@ export const Leasing = () => {
       setRecipientError(null);
       setAmountError(null);
 
-      queryClient.invalidateQueries({ queryKey: ['balances', user?.address] });
-      queryClient.invalidateQueries({ queryKey: ['active-leases', user?.address] });
-      queryClient.invalidateQueries({ queryKey: ['lease-transactions', user?.address] });
+      void queryClient.invalidateQueries({ queryKey: ['balances', user?.address] });
+      void queryClient.invalidateQueries({ queryKey: ['active-leases', user?.address] });
+      void queryClient.invalidateQueries({ queryKey: ['lease-transactions', user?.address] });
     },
   });
 
@@ -275,9 +275,9 @@ export const Leasing = () => {
       alert(`Cancel lease failed: ${error.message}`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['balances', user?.address] });
-      queryClient.invalidateQueries({ queryKey: ['active-leases', user?.address] });
-      queryClient.invalidateQueries({ queryKey: ['lease-transactions', user?.address] });
+      void queryClient.invalidateQueries({ queryKey: ['balances', user?.address] });
+      void queryClient.invalidateQueries({ queryKey: ['active-leases', user?.address] });
+      void queryClient.invalidateQueries({ queryKey: ['lease-transactions', user?.address] });
     },
   });
 

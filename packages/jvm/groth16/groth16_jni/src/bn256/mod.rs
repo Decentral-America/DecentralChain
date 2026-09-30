@@ -37,7 +37,11 @@ pub fn groth16_verify(vk: &[u8], proof: &[u8], inputs: &[u8]) -> io::Result<u8> 
 
 #[cfg(test)]
 mod local_tests {
-    use base64::decode;
+    use base64::{engine::general_purpose::STANDARD, Engine as _};
+
+    fn decode(b64: &str) -> Result<Vec<u8>, base64::DecodeError> {
+        STANDARD.decode(b64)
+    }
 
     use super::*;
     use test_case::test_case;
@@ -106,8 +110,8 @@ mod local_tests {
         "768 byte vk"
     )]
     fn groth16_verify_fail_test(vk: Vec<u8>, proof_b64: &str, inputs_b64: &str) {
-        let proof = base64::decode(proof_b64).expect("Invalid base64 in proof");
-        let inputs = base64::decode(inputs_b64).expect("Invalid base64 in inputs");
+        let proof = decode(proof_b64).expect("Invalid base64 in proof");
+        let inputs = decode(inputs_b64).expect("Invalid base64 in inputs");
 
         let res = groth16_verify(&vk, &proof, &inputs).unwrap_or(0) != 0;
         assert!(!res, "groth16_verify should return false");

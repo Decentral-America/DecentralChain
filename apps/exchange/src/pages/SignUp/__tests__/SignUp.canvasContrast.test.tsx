@@ -96,38 +96,38 @@ const renderSignUp = (mode: ThemeMode) =>
     ),
   });
 
-describe.each([
-  'light',
-  'dark',
-] as const)('SignUp — text painted directly on the AuthScene canvas (%s mode)', (mode) => {
-  it('subtitle clears AA against the canvas', () => {
-    renderSignUp(mode);
-    expectClearsAA(screen.getByText(/Create your wallet and get instant access/i), mode);
-  });
+describe.each(['light', 'dark'] as const)(
+  'SignUp — text painted directly on the AuthScene canvas (%s mode)',
+  (mode) => {
+    it('subtitle clears AA against the canvas', () => {
+      renderSignUp(mode);
+      expectClearsAA(screen.getByText(/Create your wallet and get instant access/i), mode);
+    });
 
-  it('feature title clears AA against the canvas', () => {
-    renderSignUp(mode);
-    expectClearsAA(screen.getByText('Non-custodial security'), mode);
-  });
+    it('feature title clears AA against the canvas', () => {
+      renderSignUp(mode);
+      expectClearsAA(screen.getByText('Non-custodial security'), mode);
+    });
 
-  it('feature description clears AA against the canvas', () => {
-    renderSignUp(mode);
-    expectClearsAA(screen.getByText(/You control your private keys/i), mode);
-  });
+    it('feature description clears AA against the canvas', () => {
+      renderSignUp(mode);
+      expectClearsAA(screen.getByText(/You control your private keys/i), mode);
+    });
 
-  it('the logo wordmark accent clears AA against the canvas', () => {
-    renderSignUp(mode);
-    expectClearsAA(screen.getByText('.Exchange'), mode);
-  });
+    it('the logo wordmark accent clears AA against the canvas', () => {
+      renderSignUp(mode);
+      expectClearsAA(screen.getByText('.Exchange'), mode);
+    });
 
-  it('"Already have an account? Sign in" clears AA against the canvas', () => {
-    renderSignUp(mode);
-    expectClearsAA(
-      screen.getByRole('button', { name: /already have an account\? sign in/i }),
-      mode,
-    );
-  });
-});
+    it('"Already have an account? Sign in" clears AA against the canvas', () => {
+      renderSignUp(mode);
+      expectClearsAA(
+        screen.getByRole('button', { name: /already have an account\? sign in/i }),
+        mode,
+      );
+    });
+  },
+);
 
 describe('SignUp — mode responsiveness', () => {
   it('renders the dark aurora canvas when the app theme is dark', () => {
