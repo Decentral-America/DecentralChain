@@ -1,4 +1,6 @@
-# Trivy config for the repository filesystem scan (.github/workflows/security.yml).
+# Trivy config for the repository filesystem scans: the vulnerability scan in
+# .github/workflows/security.yml and the secret scan in .github/workflows/ci.yml. Both
+# resolve Maven POMs.
 #
 # Trivy resolves transitive Maven dependencies by fetching POMs from Maven Central.
 # Since Trivy v0.71.0 (aquasecurity/trivy#10693) a 429 from a remote Maven repository

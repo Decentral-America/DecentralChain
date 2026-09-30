@@ -94,6 +94,9 @@ jobs:
           severity: CRITICAL,HIGH
           scanners: secret
           version: 'v0.74.0'
+          # Even a secret-only fs scan resolves Maven POMs, and a Maven Central 429 is fatal
+          # since Trivy v0.71.0, so this step needs the same mirror config as security.yml.
+          trivy-config: .github/trivy.yaml
           # Disable cache to avoid trivy-action's internal setup-trivy calling
           # Secret scanning is fast and does not benefit from DB caching.
           cache: 'false'

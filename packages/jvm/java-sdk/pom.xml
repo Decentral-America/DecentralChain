@@ -429,6 +429,15 @@
                 <artifactId>logback-core</artifactId>
                 <version>1.6.4</version>
             </dependency>
+            <!-- bcprov-jdk18on 1.86 — SECURITY OVERRIDE. io.decentralchain:crypto:2.0.7 as
+                 published on Maven Central declares Bouncy Castle 1.84 (CVE-2026-8763 CRITICAL,
+                 CVE-2026-13506 HIGH, both fixed in 1.85). The in-repo crypto module is already on
+                 1.86 but not yet re-released, so pin it here for every transitive path. -->
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>1.86</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

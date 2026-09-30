@@ -131,6 +131,7 @@
          the 5.13.0 that io.decentralchain:crypto:2.0.7 pulls transitively
          via curve25519. -->
     <jna.version>5.19.1</jna.version>
+    <bouncycastle.version>1.86</bouncycastle.version>
     <!-- netty 4.2.16.Final — SECURITY OVERRIDE: web3j → tuweni → vertx pulls
          4.1.115.Final, which has 13 CVEs fixed in 4.1.133+ (HTTP smuggling,
          CONTINUATION flood DoS, DNS codec). Aligned to node-scala 4.2.x line.
@@ -160,6 +161,16 @@
   <!-- adding them to the compile classpath.                                -->
   <dependencyManagement>
     <dependencies>
+
+      <!-- bcprov-jdk18on 1.86 — SECURITY OVERRIDE. io.decentralchain:crypto:2.0.7 as
+           published on Maven Central declares Bouncy Castle 1.84 (CVE-2026-8763 CRITICAL,
+           CVE-2026-13506 HIGH, both fixed in 1.85). The in-repo crypto module is already on
+           1.86 but not yet re-released, so pin it here for every transitive path. -->
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcprov-jdk18on</artifactId>
+        <version>${bouncycastle.version}</version>
+      </dependency>
 
       <!-- Netty BOM 4.2.18.Final — SECURITY OVERRIDE.
            web3j:crypto → tuweni-bytes → vertx-core pulls netty 4.1.115.Final
