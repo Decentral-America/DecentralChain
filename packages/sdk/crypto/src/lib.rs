@@ -60,8 +60,8 @@ pub fn sign_bytes(private_key: Vec<u8>, message: Vec<u8>, random: Vec<u8>) -> Ve
     );
 
     m[..64]
-        .to_owned()
-        .into_iter()
+        .iter()
+        .copied()
         .map(|n| n as u8)
         .collect::<Vec<u8>>()
 }

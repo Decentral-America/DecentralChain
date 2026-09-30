@@ -17,7 +17,7 @@ fastcrypto-zkp = "0.1.4"
 
 [dev-dependencies]
 hex = "0.4"
-test-case = "3.2.1"
+test-case = "3.4.0"
 # Test vectors are hardcoded bytes in lib.rs — no ark dev-deps needed.
 # Single-input vectors: generated with ark-groth16 0.4.0, StdRng::seed_from_u64(0).
 # Two-input vectors:    generated with ark-groth16 0.4.0, StdRng::seed_from_u64(1).
