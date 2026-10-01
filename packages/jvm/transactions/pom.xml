@@ -144,16 +144,15 @@
          CVE-2026-55831/55833 (HTTP codec), CVE-2026-56745 (SpdyHttpDecoder
          ByteBuf leak) — all fixed in 4.2.16.Final. -->
     <netty.version>4.2.18.Final</netty.version>
-    <!-- vertx-core 4.5.34 — SECURITY OVERRIDE: web3j pulls vertx-core 4.5.11
-         CVE-2025-11965, CVE-2025-11966: fixed in 4.5.22+
-         CVE-2026-6860 (SNI DoS, CVSS 7.5): fixed in 4.5.26+ -->
-    <!-- HOLD on the 4.5.x line (latest 4.5.34), NOT 5.x: tuweni-bytes 2.7.0 (the only
-         consumer, via web3j) is compiled against vertx-core 4.5.11 and calls
-         io.vertx.core.buffer.Buffer.buffer(io.netty.buffer.ByteBuf)
-         (ByteBufWrappingBytes.appendTo), a static factory that no longer exists in
-         vertx-core 5.x (verified with javap against vertx-core-5.2.0.jar) and would
-         fail with NoSuchMethodError. -->
-    <vertx.version>4.5.34</vertx.version>
+    <!-- vertx-core 5.2.0 + tuweni 2.8.0 — SECURITY OVERRIDE. web3j 6.0.0 pulls
+         tuweni-bytes/units 2.7.0 -> vertx-core 4.5.11 (CVE-2025-11965/11966, CVE-2026-6860).
+         tuweni-bytes 2.7.0 calls Buffer.buffer(ByteBuf), which vertx 5 removed, so vertx
+         used to be held on 4.5.x. tuweni 2.8.0 is built against vertx-core 5.1.6 and calls
+         BufferInternal.buffer(ByteBuf) instead. Verified with javap: all 14 vertx methods
+         tuweni 2.8.0 calls exist in vertx-core 5.2.0, and all 4 tuweni methods web3j 6.0.0
+         calls exist in tuweni 2.8.0. -->
+    <vertx.version>5.2.0</vertx.version>
+    <tuweni.version>2.8.0</tuweni.version>
   </properties>
 
   <!-- ── Dependency management (transitive version overrides) ────────── -->
@@ -198,12 +197,21 @@
         <version>${jna.version}</version>
       </dependency>
 
-      <!-- Force vertx-core to 4.5.34 — SECURITY OVERRIDE.
-           CVE-2025-11965/11966 fixed in 4.5.22+; CVE-2026-6860 (CVSS 7.5) fixed in 4.5.26+. -->
+      <!-- vertx-core 5.2.0 + tuweni 2.8.0 — SECURITY OVERRIDE; see vertx.version above. -->
       <dependency>
         <groupId>io.vertx</groupId>
         <artifactId>vertx-core</artifactId>
         <version>${vertx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.consensys.tuweni</groupId>
+        <artifactId>tuweni-bytes</artifactId>
+        <version>${tuweni.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.consensys.tuweni</groupId>
+        <artifactId>tuweni-units</artifactId>
+        <version>${tuweni.version}</version>
       </dependency>
 
       <!-- Force jackson-core to 2.22.3 — SECURITY OVERRIDE. jackson-databind pulls
