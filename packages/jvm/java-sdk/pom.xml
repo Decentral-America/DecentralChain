@@ -411,15 +411,24 @@
                 <version>3.2.3</version>
             </dependency>
             <!-- vertx-core transitive via org.web3j:crypto -> tuweni-bytes -> vertx-core.
-                 4.5.11 is vulnerable to CVE-2026-1002 (fixed 4.5.24/5.0.7) and
-                 CVE-2026-6860 (fixed 4.5.27/5.0.12). Pinned to latest 4.x patch (4.5.34).
-                 HOLD on 4.5.x, NOT 5.x: tuweni-bytes 2.7.0 calls
-                 Buffer.buffer(io.netty.buffer.ByteBuf), removed in vertx-core 5.x (javap-verified
-                 against 5.2.0) -> NoSuchMethodError. See transactions/pom.xml. -->
+                 web3j 6.0.0 pulls tuweni 2.7.0 -> vertx 4.5.11 (CVE-2026-1002, CVE-2026-6860).
+                 tuweni 2.8.0 dropped the Buffer.buffer(ByteBuf) call that kept vertx on
+                 4.5.x, so pin tuweni 2.8.0 + vertx 5.2.0 (javap-verified; see
+                 transactions/pom.xml). -->
             <dependency>
                 <groupId>io.vertx</groupId>
                 <artifactId>vertx-core</artifactId>
-                <version>4.5.34</version>
+                <version>5.2.0</version>
+            </dependency>
+            <dependency>
+                <groupId>io.consensys.tuweni</groupId>
+                <artifactId>tuweni-bytes</artifactId>
+                <version>2.8.0</version>
+            </dependency>
+            <dependency>
+                <groupId>io.consensys.tuweni</groupId>
+                <artifactId>tuweni-units</artifactId>
+                <version>2.8.0</version>
             </dependency>
             <!-- logback-core transitive via logback-classic. Pinned explicitly (not
                  just via logback-classic's own version) so static analysis tools
