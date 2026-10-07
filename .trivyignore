@@ -7,3 +7,4 @@
 # braces <=3.0.3 stack-exhaustion DoS (GHSA-vfj7-8cjw-p6xm): no patched release exists yet. Only reachable through
 # react-native's metro bundler CLI (metro-file-map -> micromatch), which the web apps never run. Remove when fixed.
 GHSA-vfj7-8cjw-p6xm
+CVE-2026-93687
