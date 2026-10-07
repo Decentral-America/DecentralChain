@@ -69,6 +69,13 @@ allowBuilds:
   workerd: false
 
 overrides:
+  # GHSA-jqcg-44mw-7w3h (critical): IP spoofing via IPv4-mapped IPv6 trust subnet; fixed in 2.0.8.
+  # Pulled by @react-router/serve -> express (scanner, admin-dashboard).
+  proxy-addr: '>=2.0.8'
+  # GHSA-vc2v-76pw-4v95 (high): memory-leak DoS on premature response close; fixed in 1.8.2.
+  compression: '>=1.8.2'
+  # GHSA-pqg4-j6r4-53mv (critical): quote() command injection; fixed in 1.11.0.
+  shell-quote: '>=1.11.0'
   # jsdom@29 requires undici@^7 internal paths (wrap-handler.js, etc.) which were
   # removed in undici v8. Stay on ^7.x until jsdom@30+ ships with undici v8 support.
   # admin-dashboard removed its direct undici dep (Node 24 native fetch covers all usage).
@@ -144,3 +151,10 @@ overrides:
 # node-api lists transactions in devDependencies for test fixtures only.
 # This is intentional – the cycle is test-only and causes no runtime issues.
 ignoreWorkspaceCycles: true
+
+auditConfig:
+  ignoreGhsas:
+    # braces <=3.0.3 stack-exhaustion DoS: NO patched release exists (3.0.3 is the latest). Only reachable via
+    # react-native -> @react-native/community-cli-plugin -> metro -> metro-file-map -> micromatch (the RN
+    # bundler CLI), a transitive dependency the web apps never execute. Remove when braces ships a fix.
+    - GHSA-vfj7-8cjw-p6xm
