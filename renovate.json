@@ -2,6 +2,28 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "abandonmentThreshold": "2 years",
   "baseBranchPatterns": ["main"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "datasourceTemplate": "maven",
+      "depNameTemplate": "org.web3j:core",
+      "description": "packages/ride/project/Dependencies.scala builds web3j and sttp3 coordinates through helper functions (web3jModule/sttp3Module). Renovate's sbt parser cannot resolve the module name and looks up `org.web3j:undefined` / `com.softwaremill.sttp.client3:undefined_3`, so the shared version string is tracked here instead.",
+      "managerFilePatterns": ["/^packages/ride/project/Dependencies\\.scala$/"],
+      "matchStrings": ["\"org\\.web3j\" % module % \"(?<currentValue>[^\"]+)\""],
+      "versioningTemplate": "maven"
+    },
+    {
+      "customType": "regex",
+      "datasourceTemplate": "maven",
+      "depNameTemplate": "com.softwaremill.sttp.client3:core_3",
+      "description": "See the web3j entry above: sttp3Module(module) shares one version for every sttp client3 module.",
+      "managerFilePatterns": ["/^packages/ride/project/Dependencies\\.scala$/"],
+      "matchStrings": [
+        "\"com\\.softwaremill\\.sttp\\.client3\" %% module % \"(?<currentValue>[^\"]+)\""
+      ],
+      "versioningTemplate": "maven"
+    }
+  ],
   "extends": ["config:best-practices", ":semanticCommitTypeAll(chore)"],
   "ignoreDeps": [
     "@testing-library/webdriverio",
@@ -24,13 +46,13 @@
     {
       "automerge": false,
       "dependencyDashboardApproval": true,
-      "description": "Group Nx ecosystem — review manually, dashboard approval required",
+      "description": "Group Nx ecosystem \u2014 review manually, dashboard approval required",
       "groupName": "Nx",
       "matchPackageNames": ["nx", "@nx/**", "@nrwl/**"]
     },
     {
       "automerge": false,
-      "description": "Group Biome — review manually (affects all 25 projects)",
+      "description": "Group Biome \u2014 review manually (affects all 25 projects)",
       "groupName": "Biome",
       "matchPackageNames": ["@biomejs/biome"]
     },
@@ -38,7 +60,7 @@
       "allowedVersions": ">=6.0.0 <7.0.0",
       "automerge": false,
       "dependencyDashboardApproval": true,
-      "description": "Group TypeScript — keep within v6.x; v7 is a future major and must be manually adopted after evaluation",
+      "description": "Group TypeScript \u2014 keep within v6.x; v7 is a future major and must be manually adopted after evaluation",
       "groupName": "TypeScript",
       "matchPackageNames": ["typescript"]
     },
@@ -127,7 +149,7 @@
     {
       "automerge": true,
       "automergeType": "pr",
-      "description": "Automerge GitHub Actions minor/patch SHA updates — Renovate keeps digests current, CI gates the merge",
+      "description": "Automerge GitHub Actions minor/patch SHA updates \u2014 Renovate keeps digests current, CI gates the merge",
       "matchManagers": ["github-actions"],
       "matchUpdateTypes": ["minor", "patch"]
     },
@@ -151,24 +173,30 @@
       "matchUpdateTypes": ["major"]
     },
     {
-      "description": "Pin GitHub Actions to full SHA for supply chain security — Renovate keeps them current",
+      "description": "Pin GitHub Actions to full SHA for supply chain security \u2014 Renovate keeps them current",
       "matchManagers": ["github-actions"],
       "pinDigests": true
     },
     {
-      "description": "Pin Dockerfile and Docker Compose base images to SHA256 digests — Renovate keeps them current",
+      "description": "Pin Dockerfile and Docker Compose base images to SHA256 digests \u2014 Renovate keeps them current",
       "matchManagers": ["dockerfile", "docker-compose"],
       "pinDigests": true
     },
     {
-      "description": "ed25519-axolotl is a Rust crate (packages/sdk/crypto/Cargo.toml) compiled into WASM — it is not an npm package. Update manually via Cargo.lock when the crypto package needs a rebuild.",
+      "description": "ed25519-axolotl is a Rust crate (packages/sdk/crypto/Cargo.toml) compiled into WASM \u2014 it is not an npm package. Update manually via Cargo.lock when the crypto package needs a rebuild.",
       "enabled": false,
       "matchPackageNames": ["ed25519-axolotl"]
     },
     {
-      "description": "@decentralchain/ride-lang and ride-repl are Scala.js-compiled binaries published by our own packages/ride sbt build pipeline. They must not be auto-updated by Renovate — bump them manually after a successful sbt fullLinkJS build and npm publish.",
+      "description": "@decentralchain/ride-lang and ride-repl are Scala.js-compiled binaries published by our own packages/ride sbt build pipeline. They must not be auto-updated by Renovate \u2014 bump them manually after a successful sbt fullLinkJS build and npm publish.",
       "enabled": false,
       "matchPackageNames": ["@decentralchain/ride-lang", "@decentralchain/ride-repl"]
+    },
+    {
+      "description": "The sbt parser's unresolvable helper-function entries (module name unknown); tracked by the regex customManagers instead.",
+      "enabled": false,
+      "matchManagers": ["sbt"],
+      "matchPackageNames": ["org.web3j:undefined", "com.softwaremill.sttp.client3:undefined_3"]
     }
   ],
   "platformAutomerge": true,
@@ -180,7 +208,7 @@
   "timezone": "America/Costa_Rica",
   "vulnerabilityAlerts": {
     "automerge": true,
-    "description": "Security vulnerability fixes — automerge immediately after CI passes",
+    "description": "Security vulnerability fixes \u2014 automerge immediately after CI passes",
     "enabled": true,
     "labels": ["security", "dependencies"],
     "prCreation": "immediate"
