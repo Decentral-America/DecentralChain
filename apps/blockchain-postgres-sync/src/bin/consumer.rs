@@ -100,12 +100,21 @@ async fn main() -> Result<()> {
         }
     });
 
-    let consumer = consumer::start(
-        updates_src,
-        pg_repo,
-        config.consumer,
-        redis_publisher,
-        last_synced_height,
+    // A node restart drops the updates stream; resubscribe in-process instead of
+    // exiting (see consumer::resubscribe). Each attempt resumes from the height
+    // recorded in Postgres, exactly like a fresh process would.
+    let consumer_config = config.consumer;
+    let consumer = consumer::resubscribe::run_with_resubscribe(
+        move || {
+            consumer::start(
+                updates_src.clone(),
+                pg_repo.clone(),
+                consumer_config.clone(),
+                redis_publisher.clone(),
+                last_synced_height.clone(),
+            )
+        },
+        shutdown_signal(),
     );
 
     select! {
@@ -132,4 +141,23 @@ async fn main() -> Result<()> {
         }
     };
     Ok(())
+}
+
+/// Resolves on SIGTERM or SIGINT. Used to stop waiting between resubscribe
+/// attempts; while a sync attempt is running, `consumer::start` handles the same
+/// signals itself so the in-flight batch commits first.
+async fn shutdown_signal() {
+    let mut sigterm = match tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())
+    {
+        Ok(s) => s,
+        Err(err) => {
+            error!(error = %err, "failed to install SIGTERM handler");
+            std::future::pending::<()>().await;
+            return;
+        }
+    };
+    tokio::select! {
+        _ = sigterm.recv() => {}
+        _ = tokio::signal::ctrl_c() => {}
+    }
 }

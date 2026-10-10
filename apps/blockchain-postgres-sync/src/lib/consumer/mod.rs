@@ -1,5 +1,6 @@
 pub mod models;
 pub mod repo;
+pub mod resubscribe;
 pub mod updates;
 
 use crate::proto::dcc::{
