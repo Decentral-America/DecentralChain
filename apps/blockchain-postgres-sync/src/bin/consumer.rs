@@ -10,9 +10,13 @@ use tracing_subscriber::{EnvFilter, fmt};
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    // Initialise structured logging from RUST_LOG (default: info)
+    // Initialise structured logging from RUST_LOG (default: info). `from_default_env` falls back
+    // to ERROR-only when RUST_LOG is unset, which hid every info/warn line on testnet, including
+    // the stream-resubscribe warnings.
     fmt()
-        .with_env_filter(EnvFilter::from_default_env())
+        .with_env_filter(
+            EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info")),
+        )
         .json()
         .init();
 
