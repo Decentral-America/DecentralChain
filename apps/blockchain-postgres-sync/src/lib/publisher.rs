@@ -43,6 +43,8 @@ pub struct TxEvent {
 ///
 /// `Client` (not `Pool`) is used because PUBLISH and SET are stateless
 /// and fred's `Pool` does not implement `PubsubInterface`.
+/// Cloning shares the same underlying connection (fred clients are `Arc`-backed).
+#[derive(Clone)]
 pub struct Publisher {
     client: Client,
 }
