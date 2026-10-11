@@ -22,6 +22,7 @@ import {
   waitForTx,
 } from '@decentralchain/transactions';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
+import { waitForFinalized } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED, MATCHER_URL } from '../setup/env';
 
 const TIMEOUT = 300_000;
@@ -155,7 +156,10 @@ describe('Exchange (type 7, matcher)', () => {
     );
     await broadcast(xferTx, API_BASE);
     await waitForTx(xferTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
-  }, TIMEOUT);
+    // The settlement test snapshots balances and diffs them; a setup transfer that is only in the
+    // liquid state could still be orphaned and re-mined between those reads.
+    await waitForFinalized(xferTx.id, API_BASE);
+  }, TIMEOUT + 300_000);
 
   // ── matcher health ────────────────────────────────────────────────────────
 
