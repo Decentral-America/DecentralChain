@@ -35,6 +35,7 @@
     "tiny-invariant",
     "webextension-polyfill"
   ],
+  "ignorePresets": [":pinDevDependencies"],
   "labels": ["dependencies"],
   "lockFileMaintenance": {
     "automerge": true,
@@ -197,6 +198,11 @@
       "enabled": false,
       "matchManagers": ["sbt"],
       "matchPackageNames": ["org.web3j:undefined", "com.softwaremill.sttp.client3:undefined_3"]
+    },
+    {
+      "description": "aquasecurity/trivy is detected from the trivy-action `version:` input, which takes a release tag and cannot hold a digest. Pinning it fails the edit ('Digest is not updated') and that failure sinks the whole pin-dependencies branch, so nothing in it ever opened.",
+      "matchDepNames": ["aquasecurity/trivy"],
+      "pinDigests": false
     }
   ],
   "platformAutomerge": true,
