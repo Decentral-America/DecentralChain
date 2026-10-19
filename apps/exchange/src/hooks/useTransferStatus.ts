@@ -63,7 +63,9 @@ export const useTransferStatus = (transferId: string | null): TransferProgress =
 
   if (!looksUnknown) {
     firstUnknownAt.current = null;
-  } else firstUnknownAt.current ??= Date.now();
+  } else if (firstUnknownAt.current === null) {
+    firstUnknownAt.current = Date.now();
+  }
 
   const isStranded =
     looksUnknown &&
