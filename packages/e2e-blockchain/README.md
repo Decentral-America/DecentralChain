@@ -1,35 +1,34 @@
 # @decentralchain/e2e-blockchain
 
-Enterprise-grade end-to-end tests for all DecentralChain transaction types against a real node.
+Enterprise-grade end-to-end tests for all DecentralChain transaction types against a live network (the public testnet by default).
 
 ## Prerequisites
 
-- Node.js >= 24
-- pnpm >= 9
-- Docker (for running the private node locally)
+- Node.js >= 24, pnpm (version from the root `packageManager` field)
+- Network access to the public DecentralChain testnet
 
 ## Setup
 
-### 1. Start the private node
+The suite runs against a live network — by default the public testnet, the same target the
+`admin-e2e` workflow in the infra repository uses.
 
 ```bash
-docker compose -f packages/e2e-blockchain/docker-compose.yml up -d
-# Wait for the node to be healthy (polls /blocks/height every 5 s)
-docker compose -f packages/e2e-blockchain/docker-compose.yml ps
+cp packages/e2e-blockchain/.env.testnet packages/e2e-blockchain/.env
+pnpm --filter "@decentralchain/e2e-blockchain..." build
 ```
 
-### 2. Configure environment variables
+| Variable | Default | Description |
+| --- | --- | --- |
+| `DCC_TEST_NODE_URL` | `https://testnet-node.decentralchain.io` | Node REST URL (no trailing slash) |
+| `DCC_TEST_CHAIN_ID` | `!` | Chain id character |
+| `DCC_TEST_MINER_SEED` | — (required) | Funded account that pays for test transactions |
+| `DCC_TEST_DS_URL` | `https://testnet-data-service.decentralchain.io` | Data-service base URL |
+| `DCC_TEST_MATCHER_URL` | `https://testnet-matcher.decentralchain.io` | Matcher URL |
+| `DCC_TEST_WS_URL` | `wss://testnet-ws.decentralchain.io/ws` | websocket-api URL |
+| `DCC_TEST_GRPC_UPDATES_URL` | empty (gRPC tests skipped) | Blockchain-updates gRPC, e.g. `http://127.0.0.1:6881` via an SSH tunnel |
+| `DCC_TEST_API_KEY` | empty | Node API key, only for nodes without an edge-injected key |
 
-Copy `.env.example` at the repo root to `.env` and set the relevant variables:
-
-| Variable              | Default                                    | Description                          |
-| --------------------- | ------------------------------------------ | ------------------------------------ |
-| `DCC_TEST_NODE_URL`   | `http://localhost:6869`                    | Node REST URL (no trailing slash)    |
-| `DCC_TEST_CHAIN_ID`   | `R`                                        | Chain ID character                   |
-| `DCC_TEST_MINER_SEED` | `dcc private node seed with dcc tokens`    | Rich seed with DCC tokens            |
-| `DCC_TEST_DS_URL`     | `https://testnet-data-service.decentralchain.io` | Data-service base URL          |
-
-The setup file (`src/setup/env.ts`) automatically loads `.env` from the repo root, so no extra setup is required for local development with the private node.
+To run against a different network, override every URL and the chain id together.
 
 ## Running tests
 
@@ -80,10 +79,4 @@ All spec files import directly from the SDK:
 import { address, randomSeed } from '@decentralchain/ts-lib-crypto';
 import { transfer, massTransfer, ... } from '@decentralchain/transactions';
 import { broadcast, waitForTx } from '@decentralchain/transactions';
-```
-
-## Stopping the node
-
-```bash
-docker compose -f packages/e2e-blockchain/docker-compose.yml down
 ```

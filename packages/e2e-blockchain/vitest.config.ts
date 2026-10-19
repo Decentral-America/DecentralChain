@@ -2,12 +2,8 @@ import { mergeConfig } from 'vitest/config';
 import baseConfig from '../../vitest.base.config';
 
 /**
- * E2E blockchain test config.
- * All tests require a running DCC private node (docker-compose up).
- *
- * Usage:
- *   pnpm --filter @decentralchain/e2e-blockchain test
- *   docker compose -f packages/e2e-blockchain/docker-compose.yml up -d
+ * E2E blockchain test config. Runs against a live network (default: public testnet);
+ * see packages/e2e-blockchain/README.md for the required environment.
  */
 export default mergeConfig(baseConfig, {
   test: {

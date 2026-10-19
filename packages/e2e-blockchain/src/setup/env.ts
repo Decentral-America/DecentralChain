@@ -6,15 +6,27 @@ import { config } from 'dotenv';
 config({ path: resolve(process.cwd(), '../../.env'), quiet: true });
 config({ path: resolve(process.cwd(), '.env'), quiet: true });
 
-/** Node REST URL without trailing slash, e.g. http://localhost:6869 */
-export const NODE_URL = process.env.DCC_TEST_NODE_URL ?? 'http://localhost:6869';
+/**
+ * The suite runs against a live network. Every default points at the public DecentralChain
+ * testnet — the same endpoints admin-e2e uses. To target another network, override all of
+ * DCC_TEST_NODE_URL, DCC_TEST_CHAIN_ID, DCC_TEST_DS_URL, DCC_TEST_MATCHER_URL and DCC_TEST_WS_URL.
+ */
 
-/** Chain ID character, e.g. R */
-export const CHAIN_ID = process.env.DCC_TEST_CHAIN_ID ?? 'R';
+/** Node REST URL without trailing slash */
+export const NODE_URL = process.env.DCC_TEST_NODE_URL ?? 'https://testnet-node.decentralchain.io';
 
-/** Rich-seed account that has DCC tokens on the private node */
-export const MASTER_SEED =
-  process.env.DCC_TEST_MINER_SEED ?? 'dcc private node seed with dcc tokens';
+/** Chain ID character ('!' = testnet) */
+export const CHAIN_ID = process.env.DCC_TEST_CHAIN_ID ?? '!';
+
+const masterSeed = process.env.DCC_TEST_MINER_SEED;
+if (!masterSeed) {
+  throw new Error(
+    'DCC_TEST_MINER_SEED is not set. The E2E suite needs a funded account on the target network: ' +
+      'cp packages/e2e-blockchain/.env.testnet packages/e2e-blockchain/.env (see the package README).',
+  );
+}
+/** Funded account that pays for every test transaction */
+export const MASTER_SEED: string = masterSeed;
 
 /** Node REST base URL with trailing slash — used by nodeInteraction helpers */
 export const API_BASE = NODE_URL.endsWith('/') ? NODE_URL : `${NODE_URL}/`;

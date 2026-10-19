@@ -3,7 +3,7 @@
     "test": {
       "command": "vitest run",
       "metadata": {
-        "description": "Run E2E blockchain tests (requires DCC private node)",
+        "description": "Run E2E blockchain tests against a live network (default: public testnet)",
         "technologies": ["vitest"]
       },
       "options": {
