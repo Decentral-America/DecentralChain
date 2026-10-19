@@ -36,6 +36,7 @@ coverage/
 # Playwright test output
 test-results/
 playwright-report/
+playwright-report-live/
 
 # OS
 .DS_Store
