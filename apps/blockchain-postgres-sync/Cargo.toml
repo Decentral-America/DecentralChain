@@ -71,7 +71,7 @@ axum = { version = "0.8.9", features = ["tokio"] }
 # Redis pub/sub publisher — fire-and-forget after each committed PG transaction.
 # Only i-pubsub and i-keys are needed: PUBLISH + SET.
 # Optional: disabled when REDIS_URL env var is absent.
-fred = { version = "10", features = ["i-pubsub", "i-keys"] }
+fred = { version = "10", features = ["i-pubsub", "i-keys", "i-sets"] }
 
 # Observability
 tracing = "0.1.44"
