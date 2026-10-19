@@ -80,6 +80,12 @@ WORKDIR /app
 
 COPY --from=build /prod/admin-dashboard ./
 
+# The TypeScript 7 native compiler (a Go binary) arrives through the workspace file: packages.
+# It is a build-time tool that never runs here, and its bundled Go stdlib carries unpatched
+# advisories, so drop it from the runtime image.
+RUN find /app/node_modules -path '*@typescript/typescript-linux-*' -prune -exec rm -rf {} + \
+    && find /app/node_modules/.pnpm -maxdepth 1 -name '@typescript+typescript-linux-*' -exec rm -rf {} +
+
 RUN chown -R admindash:admindash /app
 USER admindash
 
