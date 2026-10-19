@@ -1,5 +1,10 @@
 {
   "app": {
+    "accountManager": {
+      "currentAccount": "現在のアカウント",
+      "manageAccounts": "アカウントを管理",
+      "switchAccount": "アカウントを切り替え"
+    },
     "back": "戻る",
     "button": {
       "cancel": "キャンセル",
@@ -368,6 +373,8 @@
           "tooltipText": "{{amountAsset}} を{{price}} {{priceAsset}}で売却する"
         }
       },
+      "orderHistory": "注文履歴",
+      "sortOrder": "並べ替え",
       "tabs": {
         "title": {
           "all": "すべて",
@@ -461,6 +468,176 @@
     "inputs": {
       "errors": {
         "required": "この項目は必須です！"
+      }
+    },
+    "landing": {
+      "bigCta": {
+        "ctaCreate": "ウォレットを作成",
+        "ctaSignIn": "サインイン",
+        "heading": "DecentralExchangeで取引を始めましょう",
+        "sub": "安全なスワップ、高度なトレードツール、そして資産の完全なコントロール。"
+      },
+      "faq": {
+        "heading": "よくある質問",
+        "label": "回答",
+        "questions": {
+          "create-token": {
+            "a": "4つのステップ、コードは不要です。アセットに名前を付け、発行量と小数桁数を設定し、必要に応じて送金ルールを強制するスクリプトを添付して、署名します。発行にはDCCでネットワーク手数料がかかります。",
+            "q": "トークンを作成するには何が必要ですか？"
+          },
+          "hardware-wallet": {
+            "a": "はい。Ledgerを接続すれば、秘密鍵がブラウザに入ることはありません。トランザクションはデバイス上で署名され、署名済みの状態でここに届きます。",
+            "q": "ハードウェアウォレットは使えますか？"
+          },
+          "leasing": {
+            "a": "リースは、コンセンサスのために残高をノードに委任し、ノードの報酬の一部をお支払いする仕組みです。残高がウォレットから出ることはなく、引き続き使用でき、リースはいつでもキャンセルできます。",
+            "q": "リースとは何ですか？残高はロックされますか？"
+          },
+          "password-recovery": {
+            "a": "いいえ。これは鍵を自分で管理することの代償です。誰もあなたに代わってリセットすることはできません。シードフレーズが唯一の復元手段であるため、ウォレットはセットアップを完了する前に、書き留めたことの確認を求めます。",
+            "q": "パスワードを紛失した場合、復元できますか？"
+          },
+          "seed-storage": {
+            "a": "どのサーバーにも保存されません。シードフレーズはパスワードでPBKDF2により暗号化され、このブラウザに保存されます。どこにも送信されず、ここにはそれを読み取れるサーバーもありません。",
+            "q": "シードフレーズはどこに保存されますか？"
+          },
+          "trading": {
+            "a": "注文はネットワークのマッチャーに対して行われ、オンチェーンで決済されます。利用可能なペアはこのデプロイで設定されているもので、取引所を開くとすぐに表示されます。",
+            "q": "ここでの取引はどのように行われますか？"
+          }
+        },
+        "sub": "ウォレットに鍵を預ける前に、人々が尋ねること。"
+      },
+      "featureBento": {
+        "features": {
+          "1.0": {
+            "body": "残高を保有する企業はありません。シードはパスワードで暗号化されてこのデバイスに保存され、すべてのトランザクションはブロードキャストされる前にここで署名されます。",
+            "title": "ノンカストディアル、仲介者なし"
+          },
+          "2.0": {
+            "body": "DecentralChain上のアセットを4つのステップで発行：名前を付け、発行量と小数桁数を設定し、必要に応じてスクリプトを添付して、署名します。コントラクトを書く必要はありません。",
+            "title": "独自のトークンを作成"
+          },
+          "3.0": {
+            "body": "指値注文と成行注文に対応した完全なオーダーブック。マッチングはオンチェーンで行われます。",
+            "title": "オーダーブックで取引"
+          },
+          "4.0": {
+            "body": "残高をノードにリースしても、引き続き使用でき、いつでもキャンセルできます。",
+            "title": "リースして稼ぐ"
+          },
+          "5.0": {
+            "body": "Ledgerを使えば、秘密鍵がブラウザに触れることは一切ありません。",
+            "title": "ハードウェアウォレット対応"
+          },
+          "6.0": {
+            "body": "ピア同士のオープンなネットワーク。どのピアも欠かせない存在ではありません。",
+            "title": "設計から分散型"
+          }
+        },
+        "headingLine1": "ネットワークにできることはすべて、",
+        "headingLine2": "できないことは何もなし。",
+        "label": "主な機能"
+      },
+      "footer": {
+        "categories": {
+          "resources": "リソース",
+          "support": "サポート",
+          "trading": "トレード",
+          "wallet": "ウォレット"
+        },
+        "copyright": "© 2025 Decentral Exchange. DecentralChain上に構築。",
+        "links": {
+          "blockExplorer": "ブロックエクスプローラー",
+          "createWallet": "ウォレットを作成",
+          "decentralchain": "DecentralChain",
+          "dexTrading": "DEXトレード",
+          "docs": "Docs",
+          "documentation": "ドキュメント",
+          "helpCenter": "ヘルプセンター",
+          "importAccount": "アカウントをインポート",
+          "ledgerSupport": "Ledgerサポート",
+          "portfolio": "ポートフォリオ",
+          "privacy": "プライバシー",
+          "reportIssue": "問題を報告",
+          "staking": "ステーキング",
+          "terms": "利用規約"
+        },
+        "tagline": "DecentralChainブロックチェーン向けのノンカストディアルウォレットとDEXプラットフォーム。DCCトークンを安全に取引、ステーキング、管理できます。"
+      },
+      "header": {
+        "openMenu": "ナビゲーションメニューを開く",
+        "signIn": "サインイン",
+        "signUp": "新規登録"
+      },
+      "hero": {
+        "connectedTo": "接続先",
+        "ctaAddWallet": "ウォレットを追加",
+        "ctaCreate": "ウォレットを作成",
+        "ctaHaveOne": "すでに持っています",
+        "ctaOpen": "ウォレットを開く",
+        "eyebrow": "DecentralChain上に構築",
+        "headline": "分散型金融の未来のすべて",
+        "subhead": "DecentralChain向けのノンカストディアルウォレットと取引所。鍵がこのデバイスの外に出ることなく、取引、ステーキング、リースができます。",
+        "trust": {
+          "dataService": "Data Service",
+          "decentralchain": "DecentralChain",
+          "ledger": "Ledger",
+          "matcher": "Matcher"
+        }
+      },
+      "iconBullets": {
+        "heading": "記録のためのチェックリスト",
+        "label": "仕様",
+        "specs": {
+          "A1": {
+            "desc": "DCC、BTC、CRCなどのDecentralChainアセットを取引",
+            "title": "DEXの取引ペア"
+          },
+          "A2": {
+            "desc": "カスタム価格でオーダーブックに完全アクセス",
+            "title": "指値注文と成行注文"
+          },
+          "A3": {
+            "desc": "マスターパスワード保護付きのPBKDF2暗号化",
+            "title": "暗号化ストレージ"
+          },
+          "A4": {
+            "desc": "すべてのウォレットアクティビティの完全な記録",
+            "title": "トランザクション履歴"
+          },
+          "A5": {
+            "desc": "ハードウェアデバイスでトランザクションに署名",
+            "title": "Ledger連携"
+          },
+          "A6": {
+            "desc": "decentral.exchangeで利用可能",
+            "title": "WebとDesktop"
+          }
+        }
+      },
+      "marquee": {
+        "ariaLabel": "取引、ステーキング、リース、作成 — 鍵は自分で守る",
+        "words": ["取引", "ステーキング", "リース", "作成", "鍵は自分で守る"]
+      },
+      "securityStatement": {
+        "headingLine1": "あなたの鍵。",
+        "headingLine2": "あなたのコイン。",
+        "label": "セキュリティ",
+        "points": {
+          "01": {
+            "body": "シードはパスワードで暗号化され、このデバイスに保存されます。送信されることはなく、ここのどのサーバーも読み取ることはできません。",
+            "title": "鍵は外に出ない"
+          },
+          "02": {
+            "body": "すべてのトランザクションはローカルで署名され、署名済みの状態でブロードキャストされます。パスワードなしでは何も動かせません。",
+            "title": "デバイス上で署名"
+          },
+          "03": {
+            "body": "Ledgerを使えば、秘密鍵がブラウザに触れることは一切ありません。署名はデバイス上で行われます。",
+            "title": "ハードウェア対応"
+          }
+        }
       }
     },
     "ledger": {
@@ -773,6 +950,7 @@
     },
     "Suspicious": "注意",
     "saveSeed": {
+      "authenticationFailed": "認証に失敗しました",
       "continue": "次へ",
       "copy": "コピー",
       "copySeed": "シードをコピー",
@@ -783,6 +961,7 @@
       "password": {
         "error": "パスワードが間違っています！"
       },
+      "securityWarning": "セキュリティ警告",
       "userList": {
         "address": "アドレス / アカウント名",
         "buttons": {
@@ -1554,6 +1733,9 @@
           },
           "copyAndShare": "アドレスをコピーして共有",
           "currency": "通貨",
+          "depositInstructionsText": "DecentralChainウォレット用に別の{{assetTicker}}入金アドレスを受け取る前に、最初の{{assetTicker}}入金がDecentralChain上で承認されるのをお待ちください。同じ入金アドレスに複数回{{assetTicker}}を入金すると、それらの入金は失われます。",
+          "depositInstructionsTitle": "重要：このアドレスは1回限りの使用で、1件の入金のみ受け付けられます。",
+          "disclaimer": "このサービスを利用することで、[免責事項]({{disclaimerLink}})に同意したものとみなされます。",
           "gatewayBNT": {
             "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of Bancor to a token in your DecentralChain account.",
             "helpDescrTitle": "Enter this address into your client or wallet",
@@ -1605,10 +1787,20 @@
             "warningMinAmountTitle": "最小デポジット額は{{minAmount, BigNumber}} {{assetTicker}}、最大デポジット額は{{maxAmount}} {{assetTicker}}です"
           },
           "gatewayWEST:warningMinAmountTitle_copy": "最小デポジット額は{{minAmount, BigNumber}} {{assetTicker}}、最大デポジット額は{{maxAmount}} {{assetTicker}}です",
+          "helpDescrText": "トランザクションが承認されると、ゲートウェイが{{assetTicker}}の転送を処理し、DCCアカウント内のトークンに変換します。",
+          "helpDescrTitle": "このアドレスを{{assetTicker}}のクライアントまたはウォレットに入力してください",
+          "operator": "このゲートウェイは{{operator}}によって運営されています。",
           "or": "または",
           "pleaseNote": "ゲートウェイはこの作業のために如何なる手数料も徴収しません。",
+          "recoveryStatement": "バックアップフレーズ（SEED）を保存しないと入金が失われることを理解しました。",
           "scanQrCode": "QRコードをスキャン",
-          "title": "デポジット {{assetName}}"
+          "support": "サポートが必要な場合は、メール[{{supportEmail}}](mailto:{{supportEmail}})までご連絡ください",
+          "title": "デポジット {{assetName}}",
+          "totalFee": "{span.error-500}[入金手数料：{{totalFee}} {{assetTicker}}]",
+          "warningMinAmountText": "{{minAmount, BigNumber}} {{assetTicker}}未満を送信すると、その資金は失われます。",
+          "warningMinAmountTitle": "最小入金額は{{minAmount, BigNumber}} {{assetTicker}}、最大入金額は{{maxAmount}} {{assetTicker}}です",
+          "warningText": "{{assetTicker}}以外の通貨をこのアドレスに送信すると、入金が失われる可能性があります。",
+          "warningTitle": "この入金アドレスには{{assetTicker}}のみを送信してください。"
         },
         "dexScriptedPair": {
           "body": "スマートアセットはトークンの流通に対して条件を設定できるスクリプトを含むアセットです。{div}[もし、あなたが十分な知識を有していない場合、スマートアセットを利用することは推奨しません。トランザクションを作成する前に、アセットとスクリプトに関する情報を慎重に読んでください。]",

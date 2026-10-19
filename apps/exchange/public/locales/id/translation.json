@@ -1,5 +1,10 @@
 {
   "app": {
+    "accountManager": {
+      "currentAccount": "Akun Saat Ini",
+      "manageAccounts": "Kelola Akun",
+      "switchAccount": "Ganti Akun"
+    },
     "back": "Kembali ke halaman utama",
     "button": {
       "cancel": "Batalkan",
@@ -355,6 +360,8 @@
           "tooltipText": "Jual {{amountAsset}} untuk {{price}} {{priceAsset}}"
         }
       },
+      "orderHistory": "Riwayat Order",
+      "sortOrder": "Urutan Pengurutan",
       "tabs": {
         "title": {
           "all": "Semua",
@@ -448,6 +455,176 @@
     "inputs": {
       "errors": {
         "required": "Bagian ini diperlukan!"
+      }
+    },
+    "landing": {
+      "bigCta": {
+        "ctaCreate": "Buat dompet Anda",
+        "ctaSignIn": "Masuk",
+        "heading": "Mulai berdagang di DecentralExchange",
+        "sub": "Swap yang aman, alat trading canggih, dan kendali penuh atas aset Anda."
+      },
+      "faq": {
+        "heading": "Pertanyaan yang sering diajukan",
+        "label": "Jawaban",
+        "questions": {
+          "create-token": {
+            "a": "Empat langkah, tanpa kode: beri nama aset, atur suplai dan desimalnya, lampirkan skrip secara opsional untuk menerapkan aturan transfer, lalu tanda tangani. Penerbitan dikenai biaya jaringan dalam DCC.",
+            "q": "Apa yang dibutuhkan untuk membuat token?"
+          },
+          "hardware-wallet": {
+            "a": "Ya. Hubungkan Ledger dan kunci privat tidak pernah masuk ke browser: transaksi ditandatangani di perangkat itu sendiri dan tiba di sini dalam keadaan sudah ditandatangani.",
+            "q": "Bisakah saya menggunakan dompet perangkat keras?"
+          },
+          "leasing": {
+            "a": "Leasing mendelegasikan saldo Anda ke sebuah node untuk konsensus dan membayar Anda sebagian dari penghasilan node. Saldo tidak pernah meninggalkan dompet Anda, tetap bisa dibelanjakan, dan Anda dapat membatalkan leasing kapan saja.",
+            "q": "Apa itu leasing, dan apakah saldo saya terkunci?"
+          },
+          "password-recovery": {
+            "a": "Tidak, dan itulah konsekuensi menyimpan kunci Anda sendiri. Tidak ada yang dapat meresetnya untuk Anda. Frasa seed Anda adalah satu-satunya jalur pemulihan, itulah sebabnya dompet meminta Anda memastikan sudah mencatatnya sebelum menyelesaikan pengaturan.",
+            "q": "Bisakah kalian memulihkan kata sandi saya jika hilang?"
+          },
+          "seed-storage": {
+            "a": "Bukan di server mana pun. Frasa seed Anda dienkripsi dengan kata sandi Anda menggunakan PBKDF2 dan disimpan di browser ini. Frasa itu tidak pernah dikirim ke mana pun, dan di sini tidak ada server yang dapat membacanya.",
+            "q": "Di mana frasa seed saya disimpan?"
+          },
+          "trading": {
+            "a": "Order ditempatkan pada matcher jaringan dan diselesaikan on-chain. Pasangan yang tersedia adalah yang dikonfigurasi untuk instalasi ini, dan exchange menampilkannya begitu Anda membukanya.",
+            "q": "Bagaimana cara kerja trading di sini?"
+          }
+        },
+        "sub": "Yang ditanyakan orang sebelum menyerahkan kunci mereka kepada sebuah dompet."
+      },
+      "featureBento": {
+        "features": {
+          "1.0": {
+            "body": "Tidak ada perusahaan yang menyimpan saldo Anda. Seed Anda dienkripsi dengan kata sandi Anda dan disimpan di perangkat ini, dan setiap transaksi ditandatangani di sini sebelum disiarkan.",
+            "title": "Non-custodial, tanpa perantara"
+          },
+          "2.0": {
+            "body": "Terbitkan aset di DecentralChain dalam empat langkah: beri nama, atur suplai dan desimalnya, lampirkan skrip secara opsional, lalu tanda tangani. Tanpa kontrak yang perlu ditulis.",
+            "title": "Buat token Anda sendiri"
+          },
+          "3.0": {
+            "body": "Order book lengkap dengan order limit dan market, dicocokkan on-chain.",
+            "title": "Trading di order book"
+          },
+          "4.0": {
+            "body": "Lease saldo Anda ke sebuah node, tetap bisa dibelanjakan, dan batalkan kapan saja.",
+            "title": "Lease dan dapatkan hasil"
+          },
+          "5.0": {
+            "body": "Gunakan Ledger dan kunci privat tidak pernah menyentuh browser.",
+            "title": "Dukungan dompet perangkat keras"
+          },
+          "6.0": {
+            "body": "Jaringan terbuka berisi peer, tidak ada satu pun yang tak tergantikan.",
+            "title": "Terdesentralisasi sejak dirancang"
+          }
+        },
+        "headingLine1": "Semua yang bisa dilakukan jaringan,",
+        "headingLine2": "dan tidak lebih dari itu.",
+        "label": "Fitur utama"
+      },
+      "footer": {
+        "categories": {
+          "resources": "Sumber Daya",
+          "support": "Dukungan",
+          "trading": "Trading",
+          "wallet": "Dompet"
+        },
+        "copyright": "© 2025 Decentral Exchange. Dibangun di atas DecentralChain.",
+        "links": {
+          "blockExplorer": "Block Explorer",
+          "createWallet": "Buat Dompet",
+          "decentralchain": "DecentralChain",
+          "dexTrading": "Trading DEX",
+          "docs": "Docs",
+          "documentation": "Dokumentasi",
+          "helpCenter": "Pusat Bantuan",
+          "importAccount": "Impor Akun",
+          "ledgerSupport": "Dukungan Ledger",
+          "portfolio": "Portofolio",
+          "privacy": "Privasi",
+          "reportIssue": "Laporkan Masalah",
+          "staking": "Staking",
+          "terms": "Ketentuan"
+        },
+        "tagline": "Dompet non-custodial dan platform DEX untuk blockchain DecentralChain. Trading, staking, dan kelola token DCC Anda dengan aman."
+      },
+      "header": {
+        "openMenu": "Buka menu navigasi",
+        "signIn": "Masuk",
+        "signUp": "Daftar"
+      },
+      "hero": {
+        "connectedTo": "Terhubung ke",
+        "ctaAddWallet": "Tambahkan dompet",
+        "ctaCreate": "Buat dompet Anda",
+        "ctaHaveOne": "Saya sudah punya",
+        "ctaOpen": "Buka dompet Anda",
+        "eyebrow": "Dibangun di atas DecentralChain",
+        "headline": "Seluruh masa depan keuangan terdesentralisasi",
+        "subhead": "Dompet dan exchange non-custodial untuk DecentralChain. Trading, staking, dan leasing tanpa kunci Anda pernah meninggalkan perangkat ini.",
+        "trust": {
+          "dataService": "Data Service",
+          "decentralchain": "DecentralChain",
+          "ledger": "Ledger",
+          "matcher": "Matcher"
+        }
+      },
+      "iconBullets": {
+        "heading": "Daftar periksa, sebagai catatan",
+        "label": "Spesifikasi",
+        "specs": {
+          "A1": {
+            "desc": "Perdagangkan DCC, BTC, CRC, dan aset DecentralChain lainnya",
+            "title": "Pasangan trading DEX"
+          },
+          "A2": {
+            "desc": "Akses penuh ke order book dengan harga kustom",
+            "title": "Order limit dan market"
+          },
+          "A3": {
+            "desc": "Enkripsi PBKDF2 dengan perlindungan kata sandi utama",
+            "title": "Penyimpanan terenkripsi"
+          },
+          "A4": {
+            "desc": "Catatan lengkap seluruh aktivitas dompet",
+            "title": "Riwayat transaksi"
+          },
+          "A5": {
+            "desc": "Tandatangani transaksi dengan perangkat keras",
+            "title": "Integrasi Ledger"
+          },
+          "A6": {
+            "desc": "Tersedia di decentral.exchange",
+            "title": "Web dan desktop"
+          }
+        }
+      },
+      "marquee": {
+        "ariaLabel": "Trading, staking, leasing, buat — kunci tetap di tangan Anda",
+        "words": ["Trading", "Staking", "Leasing", "Buat", "Kunci tetap di tangan Anda"]
+      },
+      "securityStatement": {
+        "headingLine1": "Kunci Anda.",
+        "headingLine2": "Koin Anda.",
+        "label": "Keamanan",
+        "points": {
+          "01": {
+            "body": "Seed Anda dienkripsi dengan kata sandi Anda dan disimpan di perangkat ini. Seed tidak pernah dikirim, dan tidak ada server di sini yang dapat membacanya.",
+            "title": "Kunci tidak pernah keluar"
+          },
+          "02": {
+            "body": "Setiap transaksi ditandatangani secara lokal dan disiarkan dalam keadaan sudah ditandatangani. Tidak ada yang bisa bergerak tanpa kata sandi Anda.",
+            "title": "Ditandatangani di perangkat"
+          },
+          "03": {
+            "body": "Gunakan Ledger dan kunci privat tidak pernah menyentuh browser — penandatanganan terjadi di perangkat itu sendiri.",
+            "title": "Mendukung perangkat keras"
+          }
+        }
       }
     },
     "ledger": {
@@ -760,6 +937,7 @@
     },
     "Suspicious": "Mencurigakan",
     "saveSeed": {
+      "authenticationFailed": "Autentikasi Gagal",
       "continue": "Lanjutkan",
       "copy": "Salin",
       "copySeed": "Salin frasa SEED",
@@ -770,6 +948,7 @@
       "password": {
         "error": "Kata sandi salah!"
       },
+      "securityWarning": "Peringatan Keamanan",
       "userList": {
         "address": "Alamat / Nama akun",
         "buttons": {
@@ -1541,6 +1720,9 @@
           },
           "copyAndShare": "Salin &amp; Bagikan Alamat",
           "currency": "Mata uang",
+          "depositInstructionsText": "Anda harus menunggu deposit {{assetTicker}} pertama Anda dikonfirmasi di DecentralChain sebelum menerima alamat deposit {{assetTicker}} lainnya untuk dompet DecentralChain Anda. Jika Anda melakukan lebih dari satu deposit {{assetTicker}} ke alamat deposit yang sama, Anda akan kehilangan deposit tersebut.",
+          "depositInstructionsTitle": "Penting: Alamat ini hanya untuk sekali pakai dan hanya dapat menerima satu deposit!",
+          "disclaimer": "Dengan menggunakan layanan ini, Anda menyetujui [sanggahan]({{disclaimerLink}}).",
           "gatewayBNT": {
             "helpDescrText": "Setelah transaksi dikonfirmasi, gateway akan memproses transfer Bancor ke token di akun DecentralChain Anda.",
             "helpDescrTitle": "Masukkan alamat ini ke klien atau dompet Anda",
@@ -1592,10 +1774,20 @@
             "warningMinAmountTitle": "Jumlah minimum deposit adalah {{minAmount, BigNumber}} {{assetTicker}}, jumlah deposit maksimum adalah {{maxAmount}} {{assetTicker}}"
           },
           "gatewayWEST:warningMinAmountTitle_copy": "Jumlah minimum deposit adalah {{minAmount, BigNumber}} {{assetTicker}}, jumlah deposit maksimum adalah {{maxAmount}} {{assetTicker}}",
+          "helpDescrText": "Setelah transaksi dikonfirmasi, gateway akan memproses transfer {{assetTicker}} menjadi token di akun DCC Anda.",
+          "helpDescrTitle": "Masukkan alamat ini ke klien atau dompet {{assetTicker}} Anda",
+          "operator": "Gateway ini dioperasikan oleh {{operator}}.",
           "or": "ATAU",
           "pleaseNote": "Harap dicatat bahwa gateway tidak menerapkan biaya apa pun untuk operasi ini.",
+          "recoveryStatement": "Saya memahami bahwa saya akan kehilangan deposit saya jika tidak menyimpan frasa cadangan (SEED).",
           "scanQrCode": "Pindai kode QR",
-          "title": "Setoran {{assetName}}"
+          "support": "Untuk dukungan, hubungi email [{{supportEmail}}](mailto:{{supportEmail}})",
+          "title": "Setoran {{assetName}}",
+          "totalFee": "{span.error-500}[Biaya Deposit: {{totalFee}} {{assetTicker}}]",
+          "warningMinAmountText": "Jika Anda mengirim kurang dari {{minAmount, BigNumber}} {{assetTicker}}, Anda akan kehilangan uang tersebut.",
+          "warningMinAmountTitle": "Deposit minimum adalah {{minAmount, BigNumber}} {{assetTicker}}, deposit maksimum adalah {{maxAmount}} {{assetTicker}}",
+          "warningText": "Mengirim mata uang selain {{assetTicker}} ke alamat ini dapat mengakibatkan hilangnya deposit Anda.",
+          "warningTitle": "Kirim hanya {{assetTicker}} ke alamat deposit ini."
         },
         "dexScriptedPair": {
           "body": "Aset pintar adalah aset yang menyertakan skrip yang menetapkan kondisi untuk sirkulasi token. {div} [Kami tidak menyarankan Anda melakukan operasi dengan aset pintar jika Anda adalah pengguna yang tidak berpengalaman. Sebelum melakukan transaksi, harap baca informasi tentang aset dan skripnya dengan cermat.]",

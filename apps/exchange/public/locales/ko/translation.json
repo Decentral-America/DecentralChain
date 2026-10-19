@@ -1,5 +1,10 @@
 {
   "app": {
+    "accountManager": {
+      "currentAccount": "현재 계정",
+      "manageAccounts": "계정 관리",
+      "switchAccount": "계정 전환"
+    },
     "back": "메인 페이지로 돌아가기",
     "button": {
       "cancel": "취소",
@@ -368,6 +373,8 @@
           "tooltipText": "{{price}} {{priceAsset}} 로 {{amountAsset}} 매도"
         }
       },
+      "orderHistory": "주문 내역",
+      "sortOrder": "정렬 순서",
       "tabs": {
         "title": {
           "all": "모두",
@@ -461,6 +468,176 @@
     "inputs": {
       "errors": {
         "required": "필수 입력 항목입니다!"
+      }
+    },
+    "landing": {
+      "bigCta": {
+        "ctaCreate": "지갑 만들기",
+        "ctaSignIn": "로그인",
+        "heading": "DecentralExchange에서 거래를 시작하세요",
+        "sub": "안전한 스왑, 고급 트레이딩 도구, 그리고 자산에 대한 완전한 통제권."
+      },
+      "faq": {
+        "heading": "자주 묻는 질문",
+        "label": "답변",
+        "questions": {
+          "create-token": {
+            "a": "네 단계, 코드 없이: 자산 이름을 정하고, 발행량과 소수 자릿수를 설정하고, 필요하면 전송 규칙을 적용하는 스크립트를 첨부한 뒤 서명하세요. 발행에는 DCC로 네트워크 수수료가 듭니다.",
+            "q": "토큰을 만들려면 무엇이 필요한가요?"
+          },
+          "hardware-wallet": {
+            "a": "네. Ledger를 연결하면 개인 키가 브라우저에 들어오지 않습니다. 트랜잭션은 기기에서 직접 서명되어 이미 서명된 상태로 이곳에 도착합니다.",
+            "q": "하드웨어 지갑을 사용할 수 있나요?"
+          },
+          "leasing": {
+            "a": "Lease는 합의를 위해 잔액을 노드에 위임하고 노드 수익의 일부를 지급받는 방식입니다. 잔액은 지갑을 떠나지 않으며 계속 사용할 수 있고, Lease는 언제든지 취소할 수 있습니다.",
+            "q": "Lease란 무엇이며 잔액이 잠기나요?"
+          },
+          "password-recovery": {
+            "a": "아니요. 이는 직접 키를 보관하는 데 따른 대가입니다. 누구도 대신 재설정해 줄 수 없습니다. Seed 문구가 유일한 복구 수단이므로, 지갑은 설정을 마치기 전에 이를 기록했는지 확인하도록 요구합니다.",
+            "q": "비밀번호를 잃어버리면 복구해 줄 수 있나요?"
+          },
+          "seed-storage": {
+            "a": "어떤 서버에도 저장되지 않습니다. Seed 문구는 비밀번호로 PBKDF2를 사용해 암호화되어 이 브라우저에 저장됩니다. 어디로도 전송되지 않으며, 이를 읽을 수 있는 서버도 여기에는 없습니다.",
+            "q": "Seed 문구는 어디에 저장되나요?"
+          },
+          "trading": {
+            "a": "주문은 네트워크 matcher에 접수되고 온체인에서 체결됩니다. 사용 가능한 페어는 이 배포에 설정된 페어이며, 거래소를 열면 바로 표시됩니다.",
+            "q": "여기서 거래는 어떻게 이루어지나요?"
+          }
+        },
+        "sub": "지갑에 키를 맡기기 전에 사람들이 묻는 질문입니다."
+      },
+      "featureBento": {
+        "features": {
+          "1.0": {
+            "body": "어떤 회사도 잔액을 보관하지 않습니다. Seed는 비밀번호로 암호화되어 이 기기에 저장되며, 모든 트랜잭션은 전송되기 전에 이곳에서 서명됩니다.",
+            "title": "논커스터디얼, 중개자 없음"
+          },
+          "2.0": {
+            "body": "네 단계로 DecentralChain에서 자산을 발행하세요: 이름을 정하고, 발행량과 소수 자릿수를 설정하고, 필요하면 스크립트를 첨부한 뒤 서명합니다. 작성할 컨트랙트는 없습니다.",
+            "title": "나만의 토큰 만들기"
+          },
+          "3.0": {
+            "body": "지정가 주문과 시장가 주문을 지원하는 완전한 오더북. 온체인에서 매칭됩니다.",
+            "title": "오더북에서 거래하기"
+          },
+          "4.0": {
+            "body": "잔액을 노드에 Lease하더라도 계속 사용할 수 있으며, 언제든지 취소할 수 있습니다.",
+            "title": "Lease하고 수익 얻기"
+          },
+          "5.0": {
+            "body": "Ledger를 사용하면 개인 키가 브라우저에 전혀 닿지 않습니다.",
+            "title": "하드웨어 지갑 지원"
+          },
+          "6.0": {
+            "body": "피어로 이루어진 열린 네트워크로, 어느 피어도 필수적이지 않습니다.",
+            "title": "설계부터 탈중앙화"
+          }
+        },
+        "headingLine1": "네트워크가 할 수 있는 모든 것,",
+        "headingLine2": "그리고 할 수 없는 것은 없습니다.",
+        "label": "주요 기능"
+      },
+      "footer": {
+        "categories": {
+          "resources": "리소스",
+          "support": "지원",
+          "trading": "트레이딩",
+          "wallet": "지갑"
+        },
+        "copyright": "© 2025 Decentral Exchange. DecentralChain 기반으로 구축되었습니다.",
+        "links": {
+          "blockExplorer": "블록 탐색기",
+          "createWallet": "지갑 만들기",
+          "decentralchain": "DecentralChain",
+          "dexTrading": "DEX 트레이딩",
+          "docs": "Docs",
+          "documentation": "문서",
+          "helpCenter": "도움말 센터",
+          "importAccount": "계정 가져오기",
+          "ledgerSupport": "Ledger 지원",
+          "portfolio": "포트폴리오",
+          "privacy": "개인정보 처리방침",
+          "reportIssue": "문제 신고",
+          "staking": "스테이킹",
+          "terms": "약관"
+        },
+        "tagline": "DecentralChain 블록체인을 위한 논커스터디얼 지갑 및 DEX 플랫폼입니다. DCC 토큰을 안전하게 거래하고, 스테이킹하고, 관리하세요."
+      },
+      "header": {
+        "openMenu": "탐색 메뉴 열기",
+        "signIn": "로그인",
+        "signUp": "회원가입"
+      },
+      "hero": {
+        "connectedTo": "연결됨:",
+        "ctaAddWallet": "지갑 추가",
+        "ctaCreate": "지갑 만들기",
+        "ctaHaveOne": "이미 있습니다",
+        "ctaOpen": "지갑 열기",
+        "eyebrow": "DecentralChain 기반으로 구축",
+        "headline": "탈중앙화 금융의 모든 미래",
+        "subhead": "DecentralChain을 위한 논커스터디얼 지갑과 거래소입니다. 키가 이 기기를 벗어나지 않은 채로 거래하고, 스테이킹하고, Lease하세요.",
+        "trust": {
+          "dataService": "Data Service",
+          "decentralchain": "DecentralChain",
+          "ledger": "Ledger",
+          "matcher": "Matcher"
+        }
+      },
+      "iconBullets": {
+        "heading": "기록을 위한 체크리스트",
+        "label": "사양",
+        "specs": {
+          "A1": {
+            "desc": "DCC, BTC, CRC 및 기타 DecentralChain 자산 거래",
+            "title": "DEX 거래 페어"
+          },
+          "A2": {
+            "desc": "맞춤 가격으로 오더북에 완전하게 접근",
+            "title": "지정가 및 시장가 주문"
+          },
+          "A3": {
+            "desc": "마스터 비밀번호 보호가 적용된 PBKDF2 암호화",
+            "title": "암호화된 저장소"
+          },
+          "A4": {
+            "desc": "모든 지갑 활동의 전체 기록",
+            "title": "트랜잭션 내역"
+          },
+          "A5": {
+            "desc": "하드웨어 기기로 트랜잭션 서명",
+            "title": "Ledger 연동"
+          },
+          "A6": {
+            "desc": "decentral.exchange에서 이용 가능",
+            "title": "웹 및 데스크톱"
+          }
+        }
+      },
+      "marquee": {
+        "ariaLabel": "거래하고, 스테이킹하고, Lease하고, 만드세요 — 키는 직접 보관하세요",
+        "words": ["거래", "스테이킹", "Lease", "만들기", "키는 직접 보관하세요"]
+      },
+      "securityStatement": {
+        "headingLine1": "당신의 키.",
+        "headingLine2": "당신의 코인.",
+        "label": "보안",
+        "points": {
+          "01": {
+            "body": "Seed는 비밀번호로 암호화되어 이 기기에 저장됩니다. 전송되지 않으며, 이곳의 어떤 서버도 읽을 수 없습니다.",
+            "title": "키는 절대 떠나지 않습니다"
+          },
+          "02": {
+            "body": "모든 트랜잭션은 로컬에서 서명되어 이미 서명된 상태로 전송됩니다. 비밀번호 없이는 아무것도 움직일 수 없습니다.",
+            "title": "기기에서 서명"
+          },
+          "03": {
+            "body": "Ledger를 사용하면 개인 키가 브라우저에 전혀 닿지 않습니다. 서명은 기기에서 직접 이루어집니다.",
+            "title": "하드웨어 지원"
+          }
+        }
       }
     },
     "ledger": {
@@ -773,6 +950,7 @@
     },
     "Suspicious": "의심되는 토큰",
     "saveSeed": {
+      "authenticationFailed": "인증 실패",
       "continue": "계속하기",
       "copy": "복사",
       "copySeed": "SEED 구절 복사",
@@ -783,6 +961,7 @@
       "password": {
         "error": "비밀번호를 다시 입력하세요!"
       },
+      "securityWarning": "보안 경고",
       "userList": {
         "address": "주소 / 계정 아이디",
         "buttons": {
@@ -1554,6 +1733,9 @@
           },
           "copyAndShare": "주소 복사 및 공유",
           "currency": "화폐",
+          "depositInstructionsText": "DecentralChain 지갑에 대해 다른 {{assetTicker}} 입금 주소를 받으려면, 먼저 첫 {{assetTicker}} 입금이 DecentralChain에서 확인될 때까지 기다려야 합니다. 같은 입금 주소로 {{assetTicker}}를 두 번 이상 입금하면 해당 입금액을 잃게 됩니다.",
+          "depositInstructionsTitle": "중요: 이 주소는 일회용이며 한 번의 입금만 받을 수 있습니다!",
+          "disclaimer": "이 서비스를 이용하면 [면책 조항]({{disclaimerLink}})에 동의하는 것으로 간주됩니다.",
           "gatewayBNT": {
             "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of Bancor to a token in your DecentralChain account.",
             "helpDescrTitle": "Enter this address into your client or wallet",
@@ -1605,10 +1787,20 @@
             "warningMinAmountTitle": "최소 입금액은 {{minAmount, BigNumber}} {{assetTicker}} 이며 최대 입금액은 {{maxAmount}} {{assetTicker}} 입니다."
           },
           "gatewayWEST:warningMinAmountTitle_copy": "최소 입금액은 {{minAmount, BigNumber}} {{assetTicker}} 이며 최대 입금액은 {{maxAmount}} {{assetTicker}} 입니다.",
+          "helpDescrText": "트랜잭션이 확인되면 게이트웨이가 {{assetTicker}}를 DCC 계정의 토큰으로 전환하는 전송을 처리합니다.",
+          "helpDescrTitle": "이 주소를 {{assetTicker}} 클라이언트 또는 지갑에 입력하세요",
+          "operator": "이 게이트웨이는 {{operator}}에서 운영합니다.",
           "or": "또는",
           "pleaseNote": "게이트웨이는 본 작업을 위해 수수료를 적용하지 않습니다.",
+          "recoveryStatement": "백업 문구(SEED)를 저장하지 않으면 입금액을 잃게 된다는 점을 이해합니다.",
           "scanQrCode": "QR 코드 스캔",
-          "title": "{{assetName}} 입금"
+          "support": "지원이 필요하시면 이메일 [{{supportEmail}}](mailto:{{supportEmail}})로 문의하세요",
+          "title": "{{assetName}} 입금",
+          "totalFee": "{span.error-500}[입금 수수료: {{totalFee}} {{assetTicker}}]",
+          "warningMinAmountText": "{{minAmount, BigNumber}} {{assetTicker}}보다 적게 보내면 해당 금액을 잃게 됩니다.",
+          "warningMinAmountTitle": "최소 입금액은 {{minAmount, BigNumber}} {{assetTicker}}, 최대 입금액은 {{maxAmount}} {{assetTicker}}입니다",
+          "warningText": "이 주소로 {{assetTicker}} 이외의 통화를 보내면 입금액을 잃을 수 있습니다.",
+          "warningTitle": "이 입금 주소로는 {{assetTicker}}만 보내세요."
         },
         "dexScriptedPair": {
           "body": "스마트 자산은 토큰의 순한을 위한 조건을 설정하는 스크립트가 포함된 자산입니다.{div}[숙련된 사용자가 아니라면 스마트 자산을 사용하는 작업을 수행하는 것을 권장하지 않습니다. 트랜잭션 전 해당 자산과 스크립트에 대한 정보를 반드시 확인하시기 바랍니다.]",

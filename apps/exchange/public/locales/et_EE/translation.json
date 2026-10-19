@@ -1,5 +1,10 @@
 {
   "app": {
+    "accountManager": {
+      "currentAccount": "Praegune konto",
+      "manageAccounts": "Halda kontosid",
+      "switchAccount": "Vaheta kontot"
+    },
     "back": "Mine tagasi",
     "button": {
       "cancel": "Tühista",
@@ -368,6 +373,8 @@
           "tooltipText": "Müü {{amountAsset}}  {{price}} {{priceAsset}} eest"
         }
       },
+      "orderHistory": "Orderite ajalugu",
+      "sortOrder": "Sorteerimisjärjestus",
       "tabs": {
         "title": {
           "all": "Kõik",
@@ -461,6 +468,176 @@
     "inputs": {
       "errors": {
         "required": "Selle välja täitmine on kohustuslik!"
+      }
+    },
+    "landing": {
+      "bigCta": {
+        "ctaCreate": "Looge oma rahakott",
+        "ctaSignIn": "Logi sisse",
+        "heading": "Alustage kauplemist DecentralExchange'is",
+        "sub": "Turvalised vahetused, täiustatud kauplemisvahendid ja täielik kontroll teie varade üle."
+      },
+      "faq": {
+        "heading": "Korduma kippuvad küsimused",
+        "label": "Vastused",
+        "questions": {
+          "create-token": {
+            "a": "Neli sammu, ilma koodita: andke varale nimi, määrake väljastatav kogus ja kümnendkohad, lisage soovi korral skript, mis kehtestab ülekannetele reeglid, ning allkirjastage. Väljastamine maksab võrgutasu DCC-des.",
+            "q": "Mida on vaja tokeni loomiseks?"
+          },
+          "hardware-wallet": {
+            "a": "Jah. Ühendage Ledger ja privaatvõti ei satu kunagi brauserisse: tehingud allkirjastatakse seadmes endas ja jõuavad siia juba allkirjastatuna.",
+            "q": "Kas ma saan kasutada riistvararahakotti?"
+          },
+          "leasing": {
+            "a": "Liisimine delegeerib teie saldo sõlmele konsensuse jaoks ja maksab teile osa sõlme tulust. Saldo ei lahku kunagi teie rahakotist, jääb kulutatavaks ning liisingu saab igal ajal tühistada.",
+            "q": "Mis on liisimine ja kas minu saldo lukustub?"
+          },
+          "password-recovery": {
+            "a": "Ei, ja see on oma võtmete ise hoidmise hind. Keegi ei saa seda teie eest lähtestada. Teie seemnefraas on ainus taastamisviis, mistõttu palub rahakott enne seadistuse lõpetamist kinnitada, et olete selle üles kirjutanud.",
+            "q": "Kas te saate minu parooli taastada, kui ma selle kaotan?"
+          },
+          "seed-storage": {
+            "a": "Üheski serveris. Teie seemnefraas krüpteeritakse teie parooliga PBKDF2 abil ja salvestatakse selles brauseris. Seda ei saadeta kuhugi ning siin pole serverit, mis seda lugeda saaks.",
+            "q": "Kus mu seemnefraasi hoitakse?"
+          },
+          "trading": {
+            "a": "Orderid esitatakse võrgu matcherile ja arveldatakse on-chain. Saadaval olevad paarid on need, mille jaoks see paigaldus on seadistatud, ning börs kuvab need kohe, kui selle avate.",
+            "q": "Kuidas siin kauplemine töötab?"
+          }
+        },
+        "sub": "Mida inimesed küsivad enne, kui nad oma võtmed rahakotile usaldavad."
+      },
+      "featureBento": {
+        "features": {
+          "1.0": {
+            "body": "Ükski ettevõte ei hoia teie saldot. Teie seeme krüpteeritakse teie parooliga ja salvestatakse sellesse seadmesse ning iga tehing allkirjastatakse siin enne edastamist.",
+            "title": "Ilma hoidjata ja vahendajateta"
+          },
+          "2.0": {
+            "body": "Väljastage vara DecentralChainis nelja sammuga: andke nimi, määrake kogus ja kümnendkohad, lisage soovi korral skript ning allkirjastage. Lepingut pole vaja kirjutada.",
+            "title": "Looge oma token"
+          },
+          "3.0": {
+            "body": "Täielik orderiraamat limiit- ja turuorderitega, mis sobitatakse on-chain.",
+            "title": "Kauplege orderiraamatus"
+          },
+          "4.0": {
+            "body": "Liisige oma saldo sõlmele, hoidke see kulutatav ja tühistage millal tahes.",
+            "title": "Liisige ja teenige"
+          },
+          "5.0": {
+            "body": "Kasutage Ledgerit ja privaatvõti ei puutu brauserit kunagi.",
+            "title": "Riistvararahakoti tugi"
+          },
+          "6.0": {
+            "body": "Avatud sõlmede võrk, milles ükski pole asendamatu.",
+            "title": "Disainilt detsentraliseeritud"
+          }
+        },
+        "headingLine1": "Kõik, mida võrk suudab,",
+        "headingLine2": "ja mitte midagi, mida ta ei suuda.",
+        "label": "Põhifunktsioonid"
+      },
+      "footer": {
+        "categories": {
+          "resources": "Ressursid",
+          "support": "Tugi",
+          "trading": "Kauplemine",
+          "wallet": "Rahakott"
+        },
+        "copyright": "© 2025 Decentral Exchange. Ehitatud DecentralChaini peale.",
+        "links": {
+          "blockExplorer": "Plokiuurija",
+          "createWallet": "Loo rahakott",
+          "decentralchain": "DecentralChain",
+          "dexTrading": "DEX-kauplemine",
+          "docs": "Docs",
+          "documentation": "Dokumentatsioon",
+          "helpCenter": "Abikeskus",
+          "importAccount": "Impordi konto",
+          "ledgerSupport": "Ledgeri tugi",
+          "portfolio": "Portfell",
+          "privacy": "Privaatsus",
+          "reportIssue": "Teata probleemist",
+          "staking": "Panustamine (staking)",
+          "terms": "Tingimused"
+        },
+        "tagline": "Hoidjavaba rahakott ja DEX-platvorm DecentralChaini plokiahelale. Kaubelge, panustage ja hallake oma DCC tokeneid turvaliselt."
+      },
+      "header": {
+        "openMenu": "Ava navigeerimismenüü",
+        "signIn": "Logi sisse",
+        "signUp": "Registreeru"
+      },
+      "hero": {
+        "connectedTo": "Ühendatud:",
+        "ctaAddWallet": "Lisa rahakott",
+        "ctaCreate": "Looge oma rahakott",
+        "ctaHaveOne": "Mul on juba olemas",
+        "ctaOpen": "Avage oma rahakott",
+        "eyebrow": "Ehitatud DecentralChaini peale",
+        "headline": "Detsentraliseeritud rahanduse kogu tulevik",
+        "subhead": "Hoidjavaba rahakott ja börs DecentralChainile. Kaubelge, panustage ja liisige, ilma et teie võtmed seda seadet kunagi maha jätaksid.",
+        "trust": {
+          "dataService": "Data Service",
+          "decentralchain": "DecentralChain",
+          "ledger": "Ledger",
+          "matcher": "Matcher"
+        }
+      },
+      "iconBullets": {
+        "heading": "Kontrollnimekiri, ülevaatlikkuse huvides",
+        "label": "Tehnilised andmed",
+        "specs": {
+          "A1": {
+            "desc": "Kaubelge DCC, BTC, CRC ja teiste DecentralChaini varadega",
+            "title": "DEX-i kauplemispaarid"
+          },
+          "A2": {
+            "desc": "Täielik juurdepääs orderiraamatule kohandatud hindadega",
+            "title": "Limiit- ja turuorderid"
+          },
+          "A3": {
+            "desc": "PBKDF2-krüpteerimine peaparooliga kaitstult",
+            "title": "Krüpteeritud salvestus"
+          },
+          "A4": {
+            "desc": "Kogu rahakoti tegevuse täielik logi",
+            "title": "Tehingute ajalugu"
+          },
+          "A5": {
+            "desc": "Allkirjastage tehinguid riistvaraseadmega",
+            "title": "Ledgeri integratsioon"
+          },
+          "A6": {
+            "desc": "Saadaval aadressil decentral.exchange",
+            "title": "Veeb ja töölaud"
+          }
+        }
+      },
+      "marquee": {
+        "ariaLabel": "Kaubelge, panustage, liisige, looge — hoidke oma võtmeid",
+        "words": ["Kauple", "Panusta", "Liisi", "Loo", "Hoia oma võtmeid"]
+      },
+      "securityStatement": {
+        "headingLine1": "Teie võtmed.",
+        "headingLine2": "Teie mündid.",
+        "label": "Turvalisus",
+        "points": {
+          "01": {
+            "body": "Teie seeme krüpteeritakse teie parooliga ja salvestatakse sellesse seadmesse. Seda ei edastata kunagi ja ükski server siin ei saa seda lugeda.",
+            "title": "Võtmed ei lahku kunagi"
+          },
+          "02": {
+            "body": "Iga tehing allkirjastatakse lokaalselt ja edastatakse juba allkirjastatuna. Midagi ei liigu ilma teie paroolita.",
+            "title": "Allkirjastatud seadmes"
+          },
+          "03": {
+            "body": "Kasutage Ledgerit ja privaatvõti ei puutu brauserit kunagi — allkirjastamine toimub seadmes endas.",
+            "title": "Riistvara tugi"
+          }
+        }
       }
     },
     "ledger": {
@@ -773,6 +950,7 @@
     },
     "Suspicious": "Kahtlane",
     "saveSeed": {
+      "authenticationFailed": "Autentimine ebaõnnestus",
       "continue": "Jätka",
       "copy": "Copy",
       "copySeed": "Copy Seed phrase",
@@ -783,6 +961,7 @@
       "password": {
         "error": "Vale parool!"
       },
+      "securityWarning": "Turvahoiatus",
       "userList": {
         "address": "Aadress / konto nimi",
         "buttons": {
@@ -1554,6 +1733,9 @@
           },
           "copyAndShare": "Kopeeri ja Jaga Aadressi",
           "currency": "Valuuta",
+          "depositInstructionsText": "Peate ootama, kuni teie esimene {{assetTicker}} sissemakse on DecentralChainis kinnitatud, enne kui saate oma DecentralChaini rahakoti jaoks uue {{assetTicker}} sissemaksete aadressi. Kui teete samale sissemaksete aadressile rohkem kui ühe {{assetTicker}} sissemakse, kaotate need sissemaksed.",
+          "depositInstructionsTitle": "Oluline: see aadress on mõeldud ainult ühekordseks kasutamiseks ja suudab vastu võtta ainult ühe sissemakse!",
+          "disclaimer": "Seda teenust kasutades nõustute [vastutusest loobumisega]({{disclaimerLink}}).",
           "gatewayBNT": {
             "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of Bancor to a token in your DecentralChain account.",
             "helpDescrTitle": "Enter this address into your client or wallet",
@@ -1605,10 +1787,20 @@
             "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}"
           },
           "gatewayWEST:warningMinAmountTitle_copy": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "helpDescrText": "Kui tehing on kinnitatud, töötleb lüüs {{assetTicker}} ülekande tokeniks teie DCC kontol.",
+          "helpDescrTitle": "Sisestage see aadress oma {{assetTicker}} kliendis või rahakotis",
+          "operator": "Seda lüüsi haldab {{operator}}.",
           "or": "VÕI",
           "pleaseNote": "Pange tähele, et gateway ei võta selle toimingu eest mingeid tasusid.",
+          "recoveryStatement": "Saan aru, et kaotan oma sissemakse, kui ma varufraasi (SEED) ei salvesta.",
           "scanQrCode": "Skaneeri QR-koodi",
-          "title": "Sissemaksta {{assetName}}"
+          "support": "Toe saamiseks võtke ühendust e-posti teel [{{supportEmail}}](mailto:{{supportEmail}})",
+          "title": "Sissemaksta {{assetName}}",
+          "totalFee": "{span.error-500}[Sissemakse tasu: {{totalFee}} {{assetTicker}}]",
+          "warningMinAmountText": "Kui saadate vähem kui {{minAmount, BigNumber}} {{assetTicker}}, kaotate selle raha.",
+          "warningMinAmountTitle": "Minimaalne sissemakse on {{minAmount, BigNumber}} {{assetTicker}}, maksimaalne sissemakse on {{maxAmount}} {{assetTicker}}",
+          "warningText": "Mõne muu valuuta kui {{assetTicker}} saatmine sellele aadressile võib kaasa tuua teie sissemakse kaotsimineku.",
+          "warningTitle": "Saatke sellele sissemaksete aadressile ainult {{assetTicker}}."
         },
         "dexScriptedPair": {
           "body": "Smart assets are assets that include a script that sets the conditions for the circulation of the token.{div}[We do not recommend you perform operations with smart assets if you are an inexperienced user. Before making a transaction, please read the information about the asset and its script carefully.]",

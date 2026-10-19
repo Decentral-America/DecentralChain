@@ -1,5 +1,10 @@
 {
   "app": {
+    "accountManager": {
+      "currentAccount": "Bieżące konto",
+      "manageAccounts": "Zarządzaj kontami",
+      "switchAccount": "Przełącz konto"
+    },
     "back": "Powrót do strony głównej",
     "button": {
       "cancel": "Anuluj",
@@ -368,6 +373,8 @@
           "tooltipText": "Sprzedaj {{amountAsset}} za {{price}} {{priceAsset}}"
         }
       },
+      "orderHistory": "Historia zleceń",
+      "sortOrder": "Kolejność sortowania",
       "tabs": {
         "title": {
           "all": "Wszystko",
@@ -461,6 +468,176 @@
     "inputs": {
       "errors": {
         "required": "To pole jest wymagane!"
+      }
+    },
+    "landing": {
+      "bigCta": {
+        "ctaCreate": "Utwórz swój portfel",
+        "ctaSignIn": "Zaloguj się",
+        "heading": "Zacznij handlować na DecentralExchange",
+        "sub": "Bezpieczne wymiany, zaawansowane narzędzia handlowe i pełna kontrola nad Twoimi aktywami."
+      },
+      "faq": {
+        "heading": "Najczęściej zadawane pytania",
+        "label": "Odpowiedzi",
+        "questions": {
+          "create-token": {
+            "a": "Cztery kroki, bez kodu: nadaj aktywu nazwę, ustaw emisję i liczbę miejsc dziesiętnych, opcjonalnie dołącz skrypt wymuszający reguły transferów, a następnie podpisz. Emisja kosztuje opłatę sieciową w DCC.",
+            "q": "Co jest potrzebne, aby utworzyć token?"
+          },
+          "hardware-wallet": {
+            "a": "Tak. Podłącz Ledger, a klucz prywatny nigdy nie trafia do przeglądarki — transakcje są podpisywane na samym urządzeniu i docierają tu już podpisane.",
+            "q": "Czy mogę używać portfela sprzętowego?"
+          },
+          "leasing": {
+            "a": "Leasing deleguje Twoje saldo do węzła na potrzeby konsensusu i wypłaca Ci część jego zarobków. Saldo nigdy nie opuszcza Twojego portfela, pozostaje dostępne do wydania, a leasing możesz anulować w dowolnym momencie.",
+            "q": "Czym jest leasing i czy moje saldo jest zablokowane?"
+          },
+          "password-recovery": {
+            "a": "Nie — to cena za samodzielne przechowywanie kluczy. Nikt nie może go dla Ciebie zresetować. Twoja fraza seed to jedyna droga odzyskiwania, dlatego portfel każe potwierdzić, że ją zapisano, zanim zakończy konfigurację.",
+            "q": "Czy możecie odzyskać moje hasło, jeśli je zgubię?"
+          },
+          "seed-storage": {
+            "a": "Na żadnym serwerze. Twoja fraza seed jest szyfrowana hasłem przy użyciu PBKDF2 i przechowywana w tej przeglądarce. Nigdy nie jest nigdzie wysyłana, a tutaj nie ma serwera, który mógłby ją odczytać.",
+            "q": "Gdzie jest przechowywana moja fraza seed?"
+          },
+          "trading": {
+            "a": "Zlecenia są składane w matcherze sieci i rozliczane on-chain. Dostępne pary to te, dla których skonfigurowano to wdrożenie, a giełda wyświetla je od razu po otwarciu.",
+            "q": "Jak tu działa handel?"
+          }
+        },
+        "sub": "O co ludzie pytają, zanim powierzą portfelowi swoje klucze."
+      },
+      "featureBento": {
+        "features": {
+          "1.0": {
+            "body": "Żadna firma nie przechowuje Twojego salda. Twój seed jest szyfrowany hasłem i zapisany na tym urządzeniu, a każda transakcja jest podpisywana tutaj, zanim zostanie rozesłana.",
+            "title": "Non-custodial, bez pośredników"
+          },
+          "2.0": {
+            "body": "Wyemituj aktywo w DecentralChain w czterech krokach: nadaj nazwę, ustaw emisję i liczbę miejsc dziesiętnych, opcjonalnie dołącz skrypt i podpisz. Bez pisania kontraktu.",
+            "title": "Utwórz własny token"
+          },
+          "3.0": {
+            "body": "Pełna księga zleceń ze zleceniami z limitem i rynkowymi, dopasowywanymi on-chain.",
+            "title": "Handluj w księdze zleceń"
+          },
+          "4.0": {
+            "body": "Przekaż saldo węzłowi w leasing, zachowaj je do dyspozycji i anuluj, kiedy zechcesz.",
+            "title": "Leasinguj i zarabiaj"
+          },
+          "5.0": {
+            "body": "Użyj Ledgera, a klucz prywatny nigdy nie dotyka przeglądarki.",
+            "title": "Obsługa portfeli sprzętowych"
+          },
+          "6.0": {
+            "body": "Otwarta sieć węzłów równorzędnych, z których żaden nie jest niezbędny.",
+            "title": "Zdecentralizowane z założenia"
+          }
+        },
+        "headingLine1": "Wszystko, co sieć potrafi,",
+        "headingLine2": "i nic, czego nie potrafi.",
+        "label": "Kluczowe funkcje"
+      },
+      "footer": {
+        "categories": {
+          "resources": "Zasoby",
+          "support": "Wsparcie",
+          "trading": "Handel",
+          "wallet": "Portfel"
+        },
+        "copyright": "© 2025 Decentral Exchange. Zbudowane na DecentralChain.",
+        "links": {
+          "blockExplorer": "Eksplorator bloków",
+          "createWallet": "Utwórz portfel",
+          "decentralchain": "DecentralChain",
+          "dexTrading": "Handel na DEX",
+          "docs": "Docs",
+          "documentation": "Dokumentacja",
+          "helpCenter": "Centrum pomocy",
+          "importAccount": "Importuj konto",
+          "ledgerSupport": "Wsparcie dla Ledgera",
+          "portfolio": "Portfolio",
+          "privacy": "Prywatność",
+          "reportIssue": "Zgłoś problem",
+          "staking": "Staking",
+          "terms": "Warunki"
+        },
+        "tagline": "Portfel non-custodial i platforma DEX dla blockchaina DecentralChain. Handluj, stakuj i bezpiecznie zarządzaj swoimi tokenami DCC."
+      },
+      "header": {
+        "openMenu": "Otwórz menu nawigacji",
+        "signIn": "Zaloguj się",
+        "signUp": "Zarejestruj się"
+      },
+      "hero": {
+        "connectedTo": "Połączono z",
+        "ctaAddWallet": "Dodaj portfel",
+        "ctaCreate": "Utwórz swój portfel",
+        "ctaHaveOne": "Już go mam",
+        "ctaOpen": "Otwórz swój portfel",
+        "eyebrow": "Zbudowane na DecentralChain",
+        "headline": "Cała przyszłość zdecentralizowanych finansów",
+        "subhead": "Portfel i giełda non-custodial dla DecentralChain. Handluj, stakuj i leasinguj, a Twoje klucze nigdy nie opuszczą tego urządzenia.",
+        "trust": {
+          "dataService": "Data Service",
+          "decentralchain": "DecentralChain",
+          "ledger": "Ledger",
+          "matcher": "Matcher"
+        }
+      },
+      "iconBullets": {
+        "heading": "Lista kontrolna, dla porządku",
+        "label": "Specyfikacja",
+        "specs": {
+          "A1": {
+            "desc": "Handluj DCC, BTC, CRC i innymi aktywami DecentralChain",
+            "title": "Pary handlowe DEX"
+          },
+          "A2": {
+            "desc": "Pełny dostęp do księgi zleceń z własnymi cenami",
+            "title": "Zlecenia z limitem i rynkowe"
+          },
+          "A3": {
+            "desc": "Szyfrowanie PBKDF2 z ochroną hasłem głównym",
+            "title": "Szyfrowane przechowywanie"
+          },
+          "A4": {
+            "desc": "Pełny rejestr całej aktywności portfela",
+            "title": "Historia transakcji"
+          },
+          "A5": {
+            "desc": "Podpisuj transakcje urządzeniem sprzętowym",
+            "title": "Integracja z Ledgerem"
+          },
+          "A6": {
+            "desc": "Dostępne na decentral.exchange",
+            "title": "Web i desktop"
+          }
+        }
+      },
+      "marquee": {
+        "ariaLabel": "Handluj, stakuj, leasinguj, twórz — zachowaj swoje klucze",
+        "words": ["Handluj", "Stakuj", "Leasinguj", "Twórz", "Zachowaj swoje klucze"]
+      },
+      "securityStatement": {
+        "headingLine1": "Twoje klucze.",
+        "headingLine2": "Twoje monety.",
+        "label": "Bezpieczeństwo",
+        "points": {
+          "01": {
+            "body": "Twój seed jest szyfrowany hasłem i zapisany na tym urządzeniu. Nigdy nie jest przesyłany, a żaden serwer tutaj nie może go odczytać.",
+            "title": "Klucze nigdy nie wychodzą"
+          },
+          "02": {
+            "body": "Każda transakcja jest podpisywana lokalnie i rozsyłana już podpisana. Nic nie może się ruszyć bez Twojego hasła.",
+            "title": "Podpisane na urządzeniu"
+          },
+          "03": {
+            "body": "Użyj Ledgera, a klucz prywatny nigdy nie dotyka przeglądarki — podpisywanie odbywa się na samym urządzeniu.",
+            "title": "Obsługa sprzętu"
+          }
+        }
       }
     },
     "ledger": {
@@ -773,6 +950,7 @@
     },
     "Suspicious": "Podejrzany",
     "saveSeed": {
+      "authenticationFailed": "Uwierzytelnianie nie powiodło się",
       "continue": "Kontynuuj",
       "copy": "Kopiuj",
       "copySeed": "Skopiuj wyrażenie Seed",
@@ -783,6 +961,7 @@
       "password": {
         "error": "Złe hasło!"
       },
+      "securityWarning": "Ostrzeżenie dotyczące bezpieczeństwa",
       "userList": {
         "address": "Adres / Nazwa konta",
         "buttons": {
@@ -1554,6 +1733,9 @@
           },
           "copyAndShare": "Kopiuj & Udostępnij Adres",
           "currency": "Waluta",
+          "depositInstructionsText": "Musisz poczekać na potwierdzenie pierwszej wpłaty {{assetTicker}} w DecentralChain, zanim otrzymasz kolejny adres wpłat {{assetTicker}} dla swojego portfela DecentralChain. Jeśli dokonasz więcej niż jednej wpłaty {{assetTicker}} na ten sam adres wpłat, stracisz te wpłaty.",
+          "depositInstructionsTitle": "Ważne: ten adres jest jednorazowy i może przyjąć tylko jedną wpłatę!",
+          "disclaimer": "Korzystając z tej usługi, akceptujesz [zastrzeżenie prawne]({{disclaimerLink}}).",
           "gatewayBNT": {
             "helpDescrText": "Jeżeli transakcja zostanie potwierdzona, system wymieni Bancor na tokeny na Twoim koncie DecentralChain.",
             "helpDescrTitle": "Wpisz ten adres w swoim kliencie lub portfelu",
@@ -1605,10 +1787,20 @@
             "warningMinAmountTitle": "Minimalna kwota depozytu to {{minAmount, BigNumber}} {{assetTicker}}, maksymalna kwota depozytu to {{maxAmount}} {{assetTicker}}"
           },
           "gatewayWEST:warningMinAmountTitle_copy": "Minimalna kwota depozytu to {{minAmount, BigNumber}} {{assetTicker}}, maksymalna kwota depozytu to {{maxAmount}} {{assetTicker}}",
+          "helpDescrText": "Po potwierdzeniu transakcji brama przetworzy przelew {{assetTicker}} na token na Twoim koncie DCC.",
+          "helpDescrTitle": "Wprowadź ten adres w swoim kliencie lub portfelu {{assetTicker}}",
+          "operator": "Tę bramę obsługuje {{operator}}.",
           "or": "ALBO",
           "pleaseNote": "Proszę zwróć uwagę, że brama sieciowa nie pobiera żadnych opłat za tę operację.",
+          "recoveryStatement": "Rozumiem, że stracę wpłatę, jeśli nie zapiszę frazy zapasowej (SEED).",
           "scanQrCode": "Skanuj QR kod",
-          "title": "Deponuj {{assetName}}"
+          "support": "Aby uzyskać wsparcie, napisz na adres e-mail [{{supportEmail}}](mailto:{{supportEmail}})",
+          "title": "Deponuj {{assetName}}",
+          "totalFee": "{span.error-500}[Opłata za wpłatę: {{totalFee}} {{assetTicker}}]",
+          "warningMinAmountText": "Jeśli wyślesz mniej niż {{minAmount, BigNumber}} {{assetTicker}}, stracisz te pieniądze.",
+          "warningMinAmountTitle": "Minimalna wpłata to {{minAmount, BigNumber}} {{assetTicker}}, maksymalna wpłata to {{maxAmount}} {{assetTicker}}",
+          "warningText": "Wysłanie na ten adres innej waluty niż {{assetTicker}} może skutkować utratą wpłaty.",
+          "warningTitle": "Wyślij na ten adres wpłat wyłącznie {{assetTicker}}."
         },
         "dexScriptedPair": {
           "body": "Smart Assets (zasoby inteligentne) to aktywa, które zawierają skrypt określający warunki obiegu tokena. {div} [Nie zalecamy wykonywania operacji za pomocą inteligentnych zasobów, jeśli jesteś niedoświadczonym użytkownikiem. Przed dokonaniem transakcji przeczytaj uważnie informacje o takim aktywie i jego skrypcie.]",

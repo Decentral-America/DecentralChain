@@ -1,5 +1,10 @@
 {
   "app": {
+    "accountManager": {
+      "currentAccount": "Geçerli Hesap",
+      "manageAccounts": "Hesapları Yönet",
+      "switchAccount": "Hesap Değiştir"
+    },
     "back": "Ana sayfaya dön",
     "button": {
       "cancel": "İptal",
@@ -368,6 +373,8 @@
           "tooltipText": "{{price}} {{priceAsset}} için {{amountAsset}} sat"
         }
       },
+      "orderHistory": "Emir Geçmişi",
+      "sortOrder": "Sıralama",
       "tabs": {
         "title": {
           "all": "Hepsi",
@@ -461,6 +468,176 @@
     "inputs": {
       "errors": {
         "required": "Bu alanın doldurulması zorunludur!"
+      }
+    },
+    "landing": {
+      "bigCta": {
+        "ctaCreate": "Cüzdanınızı oluşturun",
+        "ctaSignIn": "Giriş yap",
+        "heading": "DecentralExchange'de işlem yapmaya başlayın",
+        "sub": "Güvenli takaslar, gelişmiş işlem araçları ve varlıklarınız üzerinde tam kontrol."
+      },
+      "faq": {
+        "heading": "Sıkça sorulan sorular",
+        "label": "Cevaplar",
+        "questions": {
+          "create-token": {
+            "a": "Dört adım, kod yok: varlığa bir ad verin, arzını ve ondalık basamaklarını belirleyin, isterseniz transferlere kurallar getiren bir betik ekleyin ve imzalayın. İhraç, DCC cinsinden bir ağ ücretine mal olur.",
+            "q": "Bir token oluşturmak için ne gerekir?"
+          },
+          "hardware-wallet": {
+            "a": "Evet. Bir Ledger bağlayın; özel anahtar tarayıcıya asla girmez. İşlemler cihazın kendisinde imzalanır ve buraya zaten imzalı gelir.",
+            "q": "Donanım cüzdanı kullanabilir miyim?"
+          },
+          "leasing": {
+            "a": "Leasing, bakiyenizi konsensüs için bir node'a devreder ve node'un kazancından size pay öder. Bakiye cüzdanınızdan hiçbir zaman ayrılmaz, harcanabilir kalır ve leasing'i istediğiniz zaman iptal edebilirsiniz.",
+            "q": "Leasing nedir ve bakiyem kilitlenir mi?"
+          },
+          "password-recovery": {
+            "a": "Hayır, ve bu, anahtarlarınızı kendiniz saklamanın bedelidir. Kimse onu sizin için sıfırlayamaz. Tek kurtarma yolu seed ifadenizdir; bu yüzden cüzdan, kurulumu bitirmeden önce onu not ettiğinizi onaylamanızı ister.",
+            "q": "Şifremi kaybedersem kurtarabilir misiniz?"
+          },
+          "seed-storage": {
+            "a": "Hiçbir sunucuda. Seed ifadeniz, şifrenizle PBKDF2 kullanılarak şifrelenir ve bu tarayıcıda saklanır. Hiçbir yere gönderilmez ve burada onu okuyabilecek bir sunucu yoktur.",
+            "q": "Seed ifadem nerede saklanır?"
+          },
+          "trading": {
+            "a": "Emirler ağın matcher'ına verilir ve zincir üzerinde (on-chain) kesinleşir. Kullanılabilir pariteler bu kurulumun yapılandırıldığı paritelerdir ve borsa, açtığınız anda bunları listeler.",
+            "q": "Burada işlem nasıl çalışır?"
+          }
+        },
+        "sub": "İnsanların bir cüzdana anahtarlarını emanet etmeden önce sorduğu sorular."
+      },
+      "featureBento": {
+        "features": {
+          "1.0": {
+            "body": "Hiçbir şirket bakiyenizi tutmaz. Seed'iniz şifrenizle şifrelenir ve bu cihazda saklanır; her işlem yayınlanmadan önce burada imzalanır.",
+            "title": "Emanetsiz (non-custodial), aracısız"
+          },
+          "2.0": {
+            "body": "DecentralChain üzerinde dört adımda bir varlık ihraç edin: adlandırın, arzını ve ondalıklarını belirleyin, isterseniz bir betik ekleyin ve imzalayın. Yazılacak sözleşme yok.",
+            "title": "Kendi token'ınızı oluşturun"
+          },
+          "3.0": {
+            "body": "Limit ve piyasa emirleriyle, zincir üzerinde eşleşen tam bir emir defteri.",
+            "title": "Emir defterinde işlem yapın"
+          },
+          "4.0": {
+            "body": "Bakiyenizi bir node'a kiralayın, harcanabilir tutun ve istediğiniz zaman iptal edin.",
+            "title": "Kiralayın ve kazanın"
+          },
+          "5.0": {
+            "body": "Bir Ledger kullanın; özel anahtar tarayıcıya asla dokunmaz.",
+            "title": "Donanım cüzdanı desteği"
+          },
+          "6.0": {
+            "body": "Hiçbiri vazgeçilmez olmayan eşler arası açık bir ağ.",
+            "title": "Tasarımı gereği merkeziyetsiz"
+          }
+        },
+        "headingLine1": "Ağın yapabildiği her şey,",
+        "headingLine2": "ve yapamadığı hiçbir şey.",
+        "label": "Temel özellikler"
+      },
+      "footer": {
+        "categories": {
+          "resources": "Kaynaklar",
+          "support": "Destek",
+          "trading": "İşlem",
+          "wallet": "Cüzdan"
+        },
+        "copyright": "© 2025 Decentral Exchange. DecentralChain üzerine kuruldu.",
+        "links": {
+          "blockExplorer": "Blok Gezgini",
+          "createWallet": "Cüzdan Oluştur",
+          "decentralchain": "DecentralChain",
+          "dexTrading": "DEX İşlemleri",
+          "docs": "Docs",
+          "documentation": "Dokümantasyon",
+          "helpCenter": "Yardım Merkezi",
+          "importAccount": "Hesap İçe Aktar",
+          "ledgerSupport": "Ledger Desteği",
+          "portfolio": "Portföy",
+          "privacy": "Gizlilik",
+          "reportIssue": "Sorun Bildir",
+          "staking": "Staking",
+          "terms": "Şartlar"
+        },
+        "tagline": "DecentralChain blokzinciri için emanetsiz cüzdan ve DEX platformu. DCC token'larınızla güvenle işlem yapın, staking yapın ve yönetin."
+      },
+      "header": {
+        "openMenu": "Gezinme menüsünü aç",
+        "signIn": "Giriş yap",
+        "signUp": "Kaydol"
+      },
+      "hero": {
+        "connectedTo": "Bağlı:",
+        "ctaAddWallet": "Cüzdan ekle",
+        "ctaCreate": "Cüzdanınızı oluşturun",
+        "ctaHaveOne": "Zaten bir cüzdanım var",
+        "ctaOpen": "Cüzdanınızı açın",
+        "eyebrow": "DecentralChain üzerine kuruldu",
+        "headline": "Merkeziyetsiz finansın tüm geleceği",
+        "subhead": "DecentralChain için emanetsiz bir cüzdan ve borsa. Anahtarlarınız bu cihazdan hiç çıkmadan işlem yapın, staking yapın ve leasing kullanın.",
+        "trust": {
+          "dataService": "Data Service",
+          "decentralchain": "DecentralChain",
+          "ledger": "Ledger",
+          "matcher": "Matcher"
+        }
+      },
+      "iconBullets": {
+        "heading": "Kayıt için kontrol listesi",
+        "label": "Teknik özellikler",
+        "specs": {
+          "A1": {
+            "desc": "DCC, BTC, CRC ve diğer DecentralChain varlıklarıyla işlem yapın",
+            "title": "DEX işlem pariteleri"
+          },
+          "A2": {
+            "desc": "Özel fiyatlarla emir defterine tam erişim",
+            "title": "Limit ve piyasa emirleri"
+          },
+          "A3": {
+            "desc": "Ana şifre korumalı PBKDF2 şifreleme",
+            "title": "Şifreli depolama"
+          },
+          "A4": {
+            "desc": "Tüm cüzdan etkinliğinin eksiksiz kaydı",
+            "title": "İşlem geçmişi"
+          },
+          "A5": {
+            "desc": "İşlemleri bir donanım cihazıyla imzalayın",
+            "title": "Ledger entegrasyonu"
+          },
+          "A6": {
+            "desc": "decentral.exchange adresinde mevcut",
+            "title": "Web ve masaüstü"
+          }
+        }
+      },
+      "marquee": {
+        "ariaLabel": "İşlem yapın, staking yapın, kiralayın, oluşturun — anahtarlarınız sizde kalsın",
+        "words": ["İşlem yapın", "Staking", "Leasing", "Oluşturun", "Anahtarlarınız sizde kalsın"]
+      },
+      "securityStatement": {
+        "headingLine1": "Anahtarlarınız.",
+        "headingLine2": "Paralarınız.",
+        "label": "Güvenlik",
+        "points": {
+          "01": {
+            "body": "Seed'iniz şifrenizle şifrelenir ve bu cihazda saklanır. Asla iletilmez ve buradaki hiçbir sunucu onu okuyamaz.",
+            "title": "Anahtarlar asla ayrılmaz"
+          },
+          "02": {
+            "body": "Her işlem yerel olarak imzalanır ve zaten imzalı olarak yayınlanır. Şifreniz olmadan hiçbir şey hareket edemez.",
+            "title": "Cihaz üzerinde imzalı"
+          },
+          "03": {
+            "body": "Bir Ledger kullanın; özel anahtar tarayıcıya asla dokunmaz — imzalama cihazın kendisinde gerçekleşir.",
+            "title": "Donanım destekli"
+          }
+        }
       }
     },
     "ledger": {
@@ -773,6 +950,7 @@
     },
     "Suspicious": "Şüpheli",
     "saveSeed": {
+      "authenticationFailed": "Kimlik doğrulama başarısız",
       "continue": "Devam",
       "copy": "Kopyala",
       "copySeed": "Anahtar Kelimeleri Kopyala",
@@ -783,6 +961,7 @@
       "password": {
         "error": "Hatalı Parola!"
       },
+      "securityWarning": "Güvenlik Uyarısı",
       "userList": {
         "address": "Adres / hesap adı",
         "buttons": {
@@ -1554,6 +1733,9 @@
           },
           "copyAndShare": "Adresi kopyala ve paylaş",
           "currency": "para birimi",
+          "depositInstructionsText": "DecentralChain cüzdanınız için başka bir {{assetTicker}} yatırma adresi almadan önce, ilk {{assetTicker}} yatırımınızın DecentralChain üzerinde onaylanmasını beklemelisiniz. Aynı yatırma adresine birden fazla {{assetTicker}} yatırımı yaparsanız bu yatırımları kaybedersiniz.",
+          "depositInstructionsTitle": "Önemli: Bu adres yalnızca tek kullanımlıktır ve yalnızca bir yatırım kabul edebilir!",
+          "disclaimer": "Bu hizmeti kullanarak [sorumluluk reddini]({{disclaimerLink}}) kabul etmiş olursunuz.",
           "gatewayBNT": {
             "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of Bancor to a token in your DecentralChain account.",
             "helpDescrTitle": "Enter this address into your client or wallet",
@@ -1605,10 +1787,20 @@
             "warningMinAmountTitle": "Minimum yatırma tutarı {{minAmount, BigNumber}} {{assetTicker}}'dir. Maksimum yatırma tutarı ise {{maxAmount}} {{assetTicker}}'dir."
           },
           "gatewayWEST:warningMinAmountTitle_copy": "Minimum yatırma tutarı {{minAmount, BigNumber}} {{assetTicker}}'dir. Maksimum yatırma tutarı ise {{maxAmount}} {{assetTicker}}'dir.",
+          "helpDescrText": "İşlem onaylandığında ağ geçidi, {{assetTicker}} transferini DCC hesabınızdaki bir token'a işleyecektir.",
+          "helpDescrTitle": "Bu adresi {{assetTicker}} istemcinize veya cüzdanınıza girin",
+          "operator": "Bu ağ geçidi {{operator}} tarafından işletilmektedir.",
           "or": "VEYA",
           "pleaseNote": "Bu işlem için geçit herhangi bir komisyon almamaktadır.",
+          "recoveryStatement": "Bir yedek ifade (SEED) kaydetmezsem yatırımımı kaybedeceğimi anlıyorum.",
           "scanQrCode": "QR kodu tara",
-          "title": "Yatır {{assetName}}"
+          "support": "Destek için lütfen e-posta ile iletişime geçin: [{{supportEmail}}](mailto:{{supportEmail}})",
+          "title": "Yatır {{assetName}}",
+          "totalFee": "{span.error-500}[Yatırma Ücreti: {{totalFee}} {{assetTicker}}]",
+          "warningMinAmountText": "{{minAmount, BigNumber}} {{assetTicker}} değerinden azını gönderirseniz bu parayı kaybedersiniz.",
+          "warningMinAmountTitle": "Minimum yatırım {{minAmount, BigNumber}} {{assetTicker}}, maksimum yatırım {{maxAmount}} {{assetTicker}}",
+          "warningText": "Bu adrese {{assetTicker}} dışında herhangi bir para birimi göndermek yatırımınızın kaybedilmesine yol açabilir.",
+          "warningTitle": "Bu yatırma adresine yalnızca {{assetTicker}} gönderin."
         },
         "dexScriptedPair": {
           "body": "Akıllı kripto paralar, kripto paraların dolaşım standartlarını belirleryen scriptlerden oluşur. {div}[Deneyimsiz bir kullanıcı iseniz akıllı kripto paralar ile işlem yapmanızı önermiyoruz. Bir işlem yapmadan önce akıllı kripto paralar ve Script'ler ile ilgili bilgileri dikkatlice okuyunuz.]",

@@ -1,5 +1,10 @@
 {
   "app": {
+    "accountManager": {
+      "currentAccount": "Huidig account",
+      "manageAccounts": "Accounts beheren",
+      "switchAccount": "Van account wisselen"
+    },
     "back": "Terug naar de hoofdpagina",
     "button": {
       "cancel": "Annuleer",
@@ -355,6 +360,8 @@
           "tooltipText": "Verkoop {{amountAsset}} voor {{price}} {{priceAsset}}"
         }
       },
+      "orderHistory": "Orderhistorie",
+      "sortOrder": "Sorteervolgorde",
       "tabs": {
         "title": {
           "all": "Alles",
@@ -448,6 +455,176 @@
     "inputs": {
       "errors": {
         "required": "Verplicht veld!"
+      }
+    },
+    "landing": {
+      "bigCta": {
+        "ctaCreate": "Maak uw wallet aan",
+        "ctaSignIn": "Inloggen",
+        "heading": "Begin met handelen op DecentralExchange",
+        "sub": "Veilige swaps, geavanceerde handelstools en volledige controle over uw assets."
+      },
+      "faq": {
+        "heading": "Veelgestelde vragen",
+        "label": "Antwoorden",
+        "questions": {
+          "create-token": {
+            "a": "Vier stappen, geen code: geef de asset een naam, bepaal de uitgifte en het aantal decimalen, voeg eventueel een script toe dat regels afdwingt voor overboekingen en onderteken. Uitgifte kost een netwerkvergoeding in DCC.",
+            "q": "Wat is er nodig om een token te maken?"
+          },
+          "hardware-wallet": {
+            "a": "Ja. Koppel een Ledger en de private key komt nooit in de browser: transacties worden op het apparaat zelf ondertekend en komen hier al ondertekend aan.",
+            "q": "Kan ik een hardware wallet gebruiken?"
+          },
+          "leasing": {
+            "a": "Bij leasing delegeert u uw saldo aan een node voor de consensus en ontvangt u een deel van wat de node verdient. Het saldo verlaat uw wallet nooit, blijft beschikbaar en u kunt de lease op elk moment annuleren.",
+            "q": "Wat is leasing, en wordt mijn saldo vergrendeld?"
+          },
+          "password-recovery": {
+            "a": "Nee, en dat is de prijs van het zelf beheren van uw sleutels. Niemand kan het voor u resetten. Uw seed phrase is de enige herstelmogelijkheid; daarom vraagt de wallet u te bevestigen dat u deze hebt opgeschreven voordat de installatie wordt voltooid.",
+            "q": "Kunnen jullie mijn wachtwoord herstellen als ik het kwijtraak?"
+          },
+          "seed-storage": {
+            "a": "Op geen enkele server. Uw seed phrase wordt met uw wachtwoord versleuteld via PBKDF2 en in deze browser opgeslagen. Hij wordt nergens naartoe verzonden en er is hier geen server die hem kan lezen.",
+            "q": "Waar wordt mijn seed phrase opgeslagen?"
+          },
+          "trading": {
+            "a": "Orders worden geplaatst bij de matcher van het netwerk en on-chain afgewikkeld. De beschikbare paren zijn die waarvoor deze installatie is geconfigureerd, en de exchange toont ze zodra u hem opent.",
+            "q": "Hoe werkt handelen hier?"
+          }
+        },
+        "sub": "Wat mensen vragen voordat ze een wallet hun sleutels toevertrouwen."
+      },
+      "featureBento": {
+        "features": {
+          "1.0": {
+            "body": "Geen enkel bedrijf beheert uw saldo. Uw seed wordt met uw wachtwoord versleuteld en op dit apparaat opgeslagen, en elke transactie wordt hier ondertekend voordat ze wordt verzonden.",
+            "title": "Non-custodial, zonder tussenpartij"
+          },
+          "2.0": {
+            "body": "Geef een asset uit op DecentralChain in vier stappen: geef hem een naam, bepaal de uitgifte en decimalen, voeg eventueel een script toe en onderteken. Geen contract om te schrijven.",
+            "title": "Maak uw eigen token"
+          },
+          "3.0": {
+            "body": "Een volledig orderboek met limiet- en marktorders, on-chain gematcht.",
+            "title": "Handel in het orderboek"
+          },
+          "4.0": {
+            "body": "Leas uw saldo aan een node, houd het beschikbaar en annuleer wanneer u wilt.",
+            "title": "Lease en verdien"
+          },
+          "5.0": {
+            "body": "Gebruik een Ledger en de private key raakt de browser nooit aan.",
+            "title": "Ondersteuning voor hardware wallets"
+          },
+          "6.0": {
+            "body": "Een open netwerk van peers, waarvan geen enkele onmisbaar is.",
+            "title": "Gedecentraliseerd door ontwerp"
+          }
+        },
+        "headingLine1": "Alles wat het netwerk kan,",
+        "headingLine2": "en niets wat het niet kan.",
+        "label": "Belangrijkste functies"
+      },
+      "footer": {
+        "categories": {
+          "resources": "Bronnen",
+          "support": "Ondersteuning",
+          "trading": "Handelen",
+          "wallet": "Wallet"
+        },
+        "copyright": "© 2025 Decentral Exchange. Gebouwd op DecentralChain.",
+        "links": {
+          "blockExplorer": "Blockexplorer",
+          "createWallet": "Wallet aanmaken",
+          "decentralchain": "DecentralChain",
+          "dexTrading": "DEX-handel",
+          "docs": "Docs",
+          "documentation": "Documentatie",
+          "helpCenter": "Helpcentrum",
+          "importAccount": "Account importeren",
+          "ledgerSupport": "Ledger-ondersteuning",
+          "portfolio": "Portfolio",
+          "privacy": "Privacy",
+          "reportIssue": "Probleem melden",
+          "staking": "Staking",
+          "terms": "Voorwaarden"
+        },
+        "tagline": "Non-custodial wallet en DEX-platform voor de DecentralChain-blockchain. Handel, stake en beheer uw DCC-tokens veilig."
+      },
+      "header": {
+        "openMenu": "Navigatiemenu openen",
+        "signIn": "Inloggen",
+        "signUp": "Registreren"
+      },
+      "hero": {
+        "connectedTo": "Verbonden met",
+        "ctaAddWallet": "Een wallet toevoegen",
+        "ctaCreate": "Maak uw wallet aan",
+        "ctaHaveOne": "Ik heb er al een",
+        "ctaOpen": "Open uw wallet",
+        "eyebrow": "Gebouwd op DecentralChain",
+        "headline": "De volledige toekomst van gedecentraliseerde financiën",
+        "subhead": "Een non-custodial wallet en exchange voor DecentralChain. Handel, stake en lease zonder dat uw sleutels dit apparaat ooit verlaten.",
+        "trust": {
+          "dataService": "Data Service",
+          "decentralchain": "DecentralChain",
+          "ledger": "Ledger",
+          "matcher": "Matcher"
+        }
+      },
+      "iconBullets": {
+        "heading": "De checklist, voor de goede orde",
+        "label": "Specificaties",
+        "specs": {
+          "A1": {
+            "desc": "Handel in DCC, BTC, CRC en andere DecentralChain-assets",
+            "title": "DEX-handelsparen"
+          },
+          "A2": {
+            "desc": "Volledige toegang tot het orderboek met eigen prijzen",
+            "title": "Limiet- en marktorders"
+          },
+          "A3": {
+            "desc": "PBKDF2-versleuteling met beveiliging via hoofdwachtwoord",
+            "title": "Versleutelde opslag"
+          },
+          "A4": {
+            "desc": "Volledig logboek van alle wallet-activiteit",
+            "title": "Transactiegeschiedenis"
+          },
+          "A5": {
+            "desc": "Onderteken transacties met een hardwareapparaat",
+            "title": "Ledger-integratie"
+          },
+          "A6": {
+            "desc": "Beschikbaar op decentral.exchange",
+            "title": "Web en desktop"
+          }
+        }
+      },
+      "marquee": {
+        "ariaLabel": "Handelen, staken, leasen, creëren: houd uw sleutels",
+        "words": ["Handelen", "Staken", "Leasen", "Creëren", "Houd uw sleutels"]
+      },
+      "securityStatement": {
+        "headingLine1": "Uw sleutels.",
+        "headingLine2": "Uw coins.",
+        "label": "Beveiliging",
+        "points": {
+          "01": {
+            "body": "Uw seed wordt met uw wachtwoord versleuteld en op dit apparaat opgeslagen. Hij wordt nooit verzonden en geen enkele server hier kan hem lezen.",
+            "title": "Sleutels verlaten het apparaat nooit"
+          },
+          "02": {
+            "body": "Elke transactie wordt lokaal ondertekend en al ondertekend verzonden. Zonder uw wachtwoord kan niets bewegen.",
+            "title": "Ondertekend op het apparaat"
+          },
+          "03": {
+            "body": "Gebruik een Ledger en de private key raakt de browser nooit aan: het ondertekenen gebeurt op het apparaat zelf.",
+            "title": "Hardware ondersteund"
+          }
+        }
       }
     },
     "ledger": {
@@ -760,6 +937,7 @@
     },
     "Suspicious": "Verdacht",
     "saveSeed": {
+      "authenticationFailed": "Authenticatie mislukt",
       "continue": "Ga door",
       "copy": "Kopieer",
       "copySeed": "Kopieer backup regel",
@@ -770,6 +948,7 @@
       "password": {
         "error": "Onjuist wachtwoord!"
       },
+      "securityWarning": "Beveiligingswaarschuwing",
       "userList": {
         "address": "Adres / Accountnaam",
         "buttons": {
@@ -1541,6 +1720,9 @@
           },
           "copyAndShare": "Kopieer & deel Adres",
           "currency": "Geld",
+          "depositInstructionsText": "U moet wachten tot uw eerste {{assetTicker}}-storting op DecentralChain is bevestigd voordat u een ander {{assetTicker}}-stortingsadres voor uw DecentralChain-wallet ontvangt. Als u meer dan één {{assetTicker}}-storting doet op hetzelfde stortingsadres, verliest u die stortingen.",
+          "depositInstructionsTitle": "Belangrijk: dit adres is eenmalig te gebruiken en kan slechts één storting accepteren!",
+          "disclaimer": "Door deze dienst te gebruiken gaat u akkoord met de [disclaimer]({{disclaimerLink}}).",
           "gatewayBNT": {
             "helpDescrText": "Zodra de transactie is bevestigd, verwerkt de gateway de overdracht van Bancor naar een token in uw DecentralChain-account.",
             "helpDescrTitle": "Voer dit adres in uw client of wallet",
@@ -1592,10 +1774,20 @@
             "warningMinAmountTitle": "Het minimale stortingsbedrag is {{minAmount, BigNumber}} {{assetTicker}}, het maximale stortingsbedrag is {{maxAmount}} {{assetTicker}}"
           },
           "gatewayWEST:warningMinAmountTitle_copy": "Het minimale stortingsbedrag is {{minAmount, BigNumber}} {{assetTicker}}, het maximale stortingsbedrag is {{maxAmount}} {{assetTicker}}",
+          "helpDescrText": "Zodra de transactie is bevestigd, verwerkt de gateway de overdracht van {{assetTicker}} naar een token op uw DCC-account.",
+          "helpDescrTitle": "Voer dit adres in bij uw {{assetTicker}}-client of -wallet",
+          "operator": "Deze gateway wordt beheerd door {{operator}}.",
           "or": "OF",
           "pleaseNote": "Let op: de gateway brengt geen transactiekosten in rekening voor deze actie.",
+          "recoveryStatement": "Ik begrijp dat ik mijn storting verlies als ik geen back-upfrase (SEED) opsla.",
           "scanQrCode": "QR-code scan",
-          "title": "Storten {{assetName}}"
+          "support": "Neem voor ondersteuning contact op via e-mail [{{supportEmail}}](mailto:{{supportEmail}})",
+          "title": "Storten {{assetName}}",
+          "totalFee": "{span.error-500}[Stortingskosten: {{totalFee}} {{assetTicker}}]",
+          "warningMinAmountText": "Als u minder dan {{minAmount, BigNumber}} {{assetTicker}} verstuurt, verliest u dat geld.",
+          "warningMinAmountTitle": "De minimale storting is {{minAmount, BigNumber}} {{assetTicker}}, de maximale storting is {{maxAmount}} {{assetTicker}}",
+          "warningText": "Het versturen van een andere valuta dan {{assetTicker}} naar dit adres kan leiden tot verlies van uw storting.",
+          "warningTitle": "Verstuur alleen {{assetTicker}} naar dit stortingsadres."
         },
         "dexScriptedPair": {
           "body": "Smart assets zijn assets die een script bevatten dat die voorwaarden van het token bepalen.{div}[We raden u niet aan om smart assets te gebruiken als u een onervaren gebruiker bent. Lees de informatie over het asset en het script zorgvuldig voordat u een transactie uitvoert.]",

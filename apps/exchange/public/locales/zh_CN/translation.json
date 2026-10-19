@@ -1,5 +1,10 @@
 {
   "app": {
+    "accountManager": {
+      "currentAccount": "当前账户",
+      "manageAccounts": "管理账户",
+      "switchAccount": "切换账户"
+    },
     "back": "返回主页",
     "button": {
       "cancel": "取消",
@@ -368,6 +373,8 @@
           "tooltipText": "卖{{amountAsset}}为{{price}} {{priceAsset}}"
         }
       },
+      "orderHistory": "订单历史",
+      "sortOrder": "排序方式",
       "tabs": {
         "title": {
           "all": "所有",
@@ -461,6 +468,176 @@
     "inputs": {
       "errors": {
         "required": "必填栏位"
+      }
+    },
+    "landing": {
+      "bigCta": {
+        "ctaCreate": "创建您的钱包",
+        "ctaSignIn": "登录",
+        "heading": "开始在 DecentralExchange 上交易",
+        "sub": "安全的兑换、先进的交易工具，以及对您资产的完全掌控。"
+      },
+      "faq": {
+        "heading": "常见问题",
+        "label": "解答",
+        "questions": {
+          "create-token": {
+            "a": "四个步骤，无需代码：为资产命名，设置发行量和小数位数，可选择附加一个对转账强制执行规则的脚本，然后签名。发行需要以 DCC 支付网络手续费。",
+            "q": "创建代币需要什么？"
+          },
+          "hardware-wallet": {
+            "a": "可以。连接 Ledger 后，私钥永远不会进入浏览器：交易在设备本身上签名，到达这里时已是签名完成的状态。",
+            "q": "我可以使用硬件钱包吗？"
+          },
+          "leasing": {
+            "a": "租赁（Leasing）会将您的余额委托给节点参与共识，并将节点收益的一部分支付给您。余额始终不会离开您的钱包，仍可使用，您也可以随时取消租赁。",
+            "q": "什么是租赁？我的余额会被锁定吗？"
+          },
+          "password-recovery": {
+            "a": "不能，这是自己保管密钥的代价。没有人能替您重置它。您的助记词（seed）是唯一的恢复途径，因此钱包会要求您在完成设置前确认已将其记下。",
+            "q": "如果我丢失密码，你们能帮我找回吗？"
+          },
+          "seed-storage": {
+            "a": "不存储在任何服务器上。您的助记词（seed）使用您的密码通过 PBKDF2 加密，并存储在此浏览器中。它不会被发送到任何地方，这里也没有可以读取它的服务器。",
+            "q": "我的助记词（seed）存储在哪里？"
+          },
+          "trading": {
+            "a": "订单提交至网络的撮合器（matcher），并在链上结算。可用的交易对是此部署所配置的交易对，打开交易所后会立即列出。",
+            "q": "这里的交易是如何运作的？"
+          }
+        },
+        "sub": "在把密钥交给钱包之前，人们会问的问题。"
+      },
+      "featureBento": {
+        "features": {
+          "1.0": {
+            "body": "没有任何公司持有您的余额。您的 seed 使用您的密码加密并存储在此设备上，每笔交易在广播之前都在此处签名。",
+            "title": "非托管，无中间人"
+          },
+          "2.0": {
+            "body": "只需四个步骤即可在 DecentralChain 上发行资产：命名，设置发行量和小数位数，可选择附加脚本，然后签名。无需编写合约。",
+            "title": "创建您自己的代币"
+          },
+          "3.0": {
+            "body": "完整的订单簿，支持限价单和市价单，在链上撮合。",
+            "title": "在订单簿上交易"
+          },
+          "4.0": {
+            "body": "将余额租赁给节点，仍可使用，并可随时取消。",
+            "title": "租赁并获得收益"
+          },
+          "5.0": {
+            "body": "使用 Ledger，私钥完全不会接触浏览器。",
+            "title": "支持硬件钱包"
+          },
+          "6.0": {
+            "body": "一个开放的对等网络，其中没有任何一个节点是不可或缺的。",
+            "title": "从设计上就是去中心化"
+          }
+        },
+        "headingLine1": "网络能做的一切，",
+        "headingLine2": "而不承诺它做不到的事。",
+        "label": "核心功能"
+      },
+      "footer": {
+        "categories": {
+          "resources": "资源",
+          "support": "支持",
+          "trading": "交易",
+          "wallet": "钱包"
+        },
+        "copyright": "© 2025 Decentral Exchange。构建于 DecentralChain 之上。",
+        "links": {
+          "blockExplorer": "区块浏览器",
+          "createWallet": "创建钱包",
+          "decentralchain": "DecentralChain",
+          "dexTrading": "DEX 交易",
+          "docs": "文档",
+          "documentation": "说明文档",
+          "helpCenter": "帮助中心",
+          "importAccount": "导入账户",
+          "ledgerSupport": "Ledger 支持",
+          "portfolio": "投资组合",
+          "privacy": "隐私",
+          "reportIssue": "报告问题",
+          "staking": "质押",
+          "terms": "条款"
+        },
+        "tagline": "适用于 DecentralChain 区块链的非托管钱包和 DEX 平台。安全地交易、质押和管理您的 DCC 代币。"
+      },
+      "header": {
+        "openMenu": "打开导航菜单",
+        "signIn": "登录",
+        "signUp": "注册"
+      },
+      "hero": {
+        "connectedTo": "已连接到",
+        "ctaAddWallet": "添加钱包",
+        "ctaCreate": "创建您的钱包",
+        "ctaHaveOne": "我已有钱包",
+        "ctaOpen": "打开您的钱包",
+        "eyebrow": "构建于 DecentralChain 之上",
+        "headline": "去中心化金融的整个未来",
+        "subhead": "适用于 DecentralChain 的非托管钱包和交易所。交易、质押和租赁，您的密钥永远不会离开此设备。",
+        "trust": {
+          "dataService": "Data Service",
+          "decentralchain": "DecentralChain",
+          "ledger": "Ledger",
+          "matcher": "Matcher"
+        }
+      },
+      "iconBullets": {
+        "heading": "备案用的核对清单",
+        "label": "规格",
+        "specs": {
+          "A1": {
+            "desc": "交易 DCC、BTC、CRC 及其他 DecentralChain 资产",
+            "title": "DEX 交易对"
+          },
+          "A2": {
+            "desc": "完整访问订单簿，支持自定义价格",
+            "title": "限价单和市价单"
+          },
+          "A3": {
+            "desc": "PBKDF2 加密，配有主密码保护",
+            "title": "加密存储"
+          },
+          "A4": {
+            "desc": "完整记录所有钱包活动",
+            "title": "交易历史"
+          },
+          "A5": {
+            "desc": "使用硬件设备签名交易",
+            "title": "Ledger 集成"
+          },
+          "A6": {
+            "desc": "可在 decentral.exchange 使用",
+            "title": "网页和桌面端"
+          }
+        }
+      },
+      "marquee": {
+        "ariaLabel": "交易、质押、租赁、创建——掌握您的密钥",
+        "words": ["交易", "质押", "租赁", "创建", "掌握您的密钥"]
+      },
+      "securityStatement": {
+        "headingLine1": "您的密钥。",
+        "headingLine2": "您的币。",
+        "label": "安全",
+        "points": {
+          "01": {
+            "body": "您的 seed 使用您的密码加密并存储在此设备上。它从不传输，这里的任何服务器都无法读取它。",
+            "title": "密钥永不离开"
+          },
+          "02": {
+            "body": "每笔交易都在本地签名，并以已签名状态广播。没有您的密码，任何资产都无法移动。",
+            "title": "在设备上签名"
+          },
+          "03": {
+            "body": "使用 Ledger，私钥完全不会接触浏览器——签名在设备本身上完成。",
+            "title": "支持硬件"
+          }
+        }
       }
     },
     "ledger": {
@@ -773,6 +950,7 @@
     },
     "Suspicious": "可疑",
     "saveSeed": {
+      "authenticationFailed": "身份验证失败",
       "continue": "继续",
       "copy": "复制",
       "copySeed": "复制种子短语",
@@ -783,6 +961,7 @@
       "password": {
         "error": "密码不正确"
       },
+      "securityWarning": "安全警告",
       "userList": {
         "address": "地址 / 用户名",
         "buttons": {
@@ -1554,6 +1733,9 @@
           },
           "copyAndShare": "复制和分享钱包地址",
           "currency": "货币",
+          "depositInstructionsText": "在为您的 DecentralChain 钱包获取另一个 {{assetTicker}} 充值地址之前，您必须等待首笔 {{assetTicker}} 充值在 DecentralChain 上确认。如果您向同一个充值地址进行多次 {{assetTicker}} 充值，这些充值将会丢失。",
+          "depositInstructionsTitle": "重要提示：此地址仅限一次性使用，只能接收一笔充值！",
+          "disclaimer": "使用本服务即表示您同意[免责声明]({{disclaimerLink}})。",
           "gatewayBNT": {
             "helpDescrText": "确认交易后，网关将处理将Bancor转移到DecentralChain帐户中的代币。",
             "helpDescrTitle": "在您的客户或钱包中输入此地址",
@@ -1605,10 +1787,20 @@
             "warningMinAmountTitle": "最低存款金额为{{minAmount, BigNumber}} {{assetTicker}}，最高存款金额为{{maxAmount}} {{assetTicker}}"
           },
           "gatewayWEST:warningMinAmountTitle_copy": "最低存款金额为{{minAmount, BigNumber}} {{assetTicker}}，最高存款金额为{{maxAmount}} {{assetTicker}}",
+          "helpDescrText": "交易确认后，网关将处理 {{assetTicker}} 的转账，并将其转换为您 DCC 账户中的代币。",
+          "helpDescrTitle": "请在您的 {{assetTicker}} 客户端或钱包中输入此地址",
+          "operator": "此网关由 {{operator}} 运营。",
           "or": "或",
           "pleaseNote": "请注意，网关对此操作不收取费用。",
+          "recoveryStatement": "我明白，如果不保存备份助记词（SEED），我将丢失我的充值。",
           "scanQrCode": "扫描二维码",
-          "title": "存款{{assetName}}"
+          "support": "如需支持，请通过电子邮件联系 [{{supportEmail}}](mailto:{{supportEmail}})",
+          "title": "存款{{assetName}}",
+          "totalFee": "{span.error-500}[充值手续费：{{totalFee}} {{assetTicker}}]",
+          "warningMinAmountText": "如果您发送的金额少于 {{minAmount, BigNumber}} {{assetTicker}}，您将损失这笔资金。",
+          "warningMinAmountTitle": "最低充值额为 {{minAmount, BigNumber}} {{assetTicker}}，最高充值额为 {{maxAmount}} {{assetTicker}}",
+          "warningText": "向此地址发送 {{assetTicker}} 以外的任何币种，可能导致您的充值丢失。",
+          "warningTitle": "请仅向此充值地址发送 {{assetTicker}}。"
         },
         "dexScriptedPair": {
           "body": "智能资产是包含脚本的资产，该脚本设置令牌流通的条件。 {div}[如果您是没有经验的用户，我们不建议您使用智能资产执行操作。在进行交易之前，请仔细阅读有关资产及其脚本的信息。]",

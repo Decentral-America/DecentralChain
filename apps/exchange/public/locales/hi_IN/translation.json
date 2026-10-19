@@ -1,5 +1,10 @@
 {
   "app": {
+    "accountManager": {
+      "currentAccount": "मौजूदा अकाउंट",
+      "manageAccounts": "अकाउंट प्रबंधित करें",
+      "switchAccount": "अकाउंट बदलें"
+    },
     "back": "मुख्य पेज पर वापस जाएं",
     "button": {
       "cancel": "रद्द करें",
@@ -355,6 +360,8 @@
           "tooltipText": "{{amountAsset}} के लिए {{price}}{{priceAsset}} बेचें"
         }
       },
+      "orderHistory": "ऑर्डर इतिहास",
+      "sortOrder": "क्रम चुनें",
       "tabs": {
         "title": {
           "all": "सभी",
@@ -448,6 +455,176 @@
     "inputs": {
       "errors": {
         "required": "यह क्षेत्र जरूरी है!"
+      }
+    },
+    "landing": {
+      "bigCta": {
+        "ctaCreate": "अपना वॉलेट बनाएं",
+        "ctaSignIn": "साइन इन करें",
+        "heading": "DecentralExchange पर ट्रेडिंग शुरू करें",
+        "sub": "सुरक्षित स्वैप, उन्नत ट्रेडिंग टूल और आपकी संपत्तियों पर पूरा नियंत्रण।"
+      },
+      "faq": {
+        "heading": "अक्सर पूछे जाने वाले प्रश्न",
+        "label": "उत्तर",
+        "questions": {
+          "create-token": {
+            "a": "चार चरण, बिना कोड के: एसेट का नाम रखें, उसकी सप्लाई और दशमलव तय करें, चाहें तो ट्रांसफर पर नियम लागू करने वाली स्क्रिप्ट जोड़ें, और साइन करें। जारी करने पर DCC में नेटवर्क शुल्क लगता है।",
+            "q": "टोकन बनाने के लिए क्या चाहिए?"
+          },
+          "hardware-wallet": {
+            "a": "हाँ। Ledger कनेक्ट करें और प्राइवेट की कभी ब्राउज़र में नहीं आती — ट्रांज़ैक्शन डिवाइस पर ही साइन होते हैं और यहाँ पहले से साइन होकर पहुँचते हैं।",
+            "q": "क्या मैं हार्डवेयर वॉलेट इस्तेमाल कर सकता/सकती हूँ?"
+          },
+          "leasing": {
+            "a": "लीज़िंग आपका बैलेंस कंसेंसस के लिए एक नोड को सौंपती है और नोड की कमाई का एक हिस्सा आपको देती है। बैलेंस आपके वॉलेट से कभी बाहर नहीं जाता, खर्च करने योग्य रहता है, और आप लीज़ को कभी भी रद्द कर सकते हैं।",
+            "q": "लीज़िंग क्या है, और क्या मेरा बैलेंस लॉक हो जाता है?"
+          },
+          "password-recovery": {
+            "a": "नहीं, और अपनी चाबियाँ खुद रखने की यही कीमत है। कोई भी इसे आपके लिए रीसेट नहीं कर सकता। आपका सीड फ़्रेज़ ही रिकवरी का एकमात्र तरीका है, इसीलिए वॉलेट सेटअप पूरा करने से पहले आपसे पुष्टि करवाता है कि आपने उसे लिख लिया है।",
+            "q": "अगर मैं अपना पासवर्ड खो दूँ तो क्या आप उसे रिकवर कर सकते हैं?"
+          },
+          "seed-storage": {
+            "a": "किसी भी सर्वर पर नहीं। आपका सीड फ़्रेज़ आपके पासवर्ड से PBKDF2 द्वारा एन्क्रिप्ट होकर इसी ब्राउज़र में सहेजा जाता है। इसे कहीं नहीं भेजा जाता, और यहाँ ऐसा कोई सर्वर नहीं है जो इसे पढ़ सके।",
+            "q": "मेरा सीड फ़्रेज़ कहाँ सहेजा जाता है?"
+          },
+          "trading": {
+            "a": "ऑर्डर नेटवर्क के मैचर पर लगाए जाते हैं और ऑन-चेन सेटल होते हैं। उपलब्ध पेयर वही हैं जिनके लिए यह डिप्लॉयमेंट कॉन्फ़िगर है, और एक्सचेंज खोलते ही उन्हें दिखा देता है।",
+            "q": "यहाँ ट्रेडिंग कैसे काम करती है?"
+          }
+        },
+        "sub": "वॉलेट को अपनी चाबियाँ सौंपने से पहले लोग जो पूछते हैं।"
+      },
+      "featureBento": {
+        "features": {
+          "1.0": {
+            "body": "कोई कंपनी आपका बैलेंस नहीं रखती। आपका सीड आपके पासवर्ड से एन्क्रिप्ट होकर इसी डिवाइस पर सहेजा जाता है, और हर ट्रांज़ैक्शन ब्रॉडकास्ट होने से पहले यहीं साइन होता है।",
+            "title": "नॉन-कस्टोडियल, बीच में कोई नहीं"
+          },
+          "2.0": {
+            "body": "DecentralChain पर चार चरणों में एसेट जारी करें: नाम दें, सप्लाई और दशमलव तय करें, चाहें तो स्क्रिप्ट जोड़ें और साइन करें। कोई कॉन्ट्रैक्ट लिखने की ज़रूरत नहीं।",
+            "title": "अपना खुद का टोकन बनाएं"
+          },
+          "3.0": {
+            "body": "लिमिट और मार्केट ऑर्डर वाली पूरी ऑर्डर बुक, जिसमें मैचिंग ऑन-चेन होती है।",
+            "title": "ऑर्डर बुक पर ट्रेड करें"
+          },
+          "4.0": {
+            "body": "अपना बैलेंस किसी नोड को लीज़ पर दें, उसे खर्च करने योग्य रखें, और जब चाहें रद्द करें।",
+            "title": "लीज़ करें और कमाएं"
+          },
+          "5.0": {
+            "body": "Ledger का उपयोग करें और प्राइवेट की ब्राउज़र को कभी छूती तक नहीं।",
+            "title": "हार्डवेयर वॉलेट सपोर्ट"
+          },
+          "6.0": {
+            "body": "पीयर्स का एक खुला नेटवर्क, जिसमें कोई भी अपरिहार्य नहीं है।",
+            "title": "डिज़ाइन से विकेंद्रीकृत"
+          }
+        },
+        "headingLine1": "वह सब कुछ जो नेटवर्क कर सकता है,",
+        "headingLine2": "और वह कुछ भी नहीं जो वह नहीं कर सकता।",
+        "label": "मुख्य सुविधाएँ"
+      },
+      "footer": {
+        "categories": {
+          "resources": "संसाधन",
+          "support": "सपोर्ट",
+          "trading": "ट्रेडिंग",
+          "wallet": "वॉलेट"
+        },
+        "copyright": "© 2025 Decentral Exchange। DecentralChain पर निर्मित।",
+        "links": {
+          "blockExplorer": "ब्लॉक एक्सप्लोरर",
+          "createWallet": "वॉलेट बनाएं",
+          "decentralchain": "DecentralChain",
+          "dexTrading": "DEX ट्रेडिंग",
+          "docs": "डॉक्स",
+          "documentation": "डॉक्यूमेंटेशन",
+          "helpCenter": "सहायता केंद्र",
+          "importAccount": "अकाउंट इम्पोर्ट करें",
+          "ledgerSupport": "Ledger सपोर्ट",
+          "portfolio": "पोर्टफोलियो",
+          "privacy": "गोपनीयता",
+          "reportIssue": "समस्या रिपोर्ट करें",
+          "staking": "स्टेकिंग",
+          "terms": "शर्तें"
+        },
+        "tagline": "DecentralChain ब्लॉकचेन के लिए नॉन-कस्टोडियल वॉलेट और DEX प्लेटफ़ॉर्म। अपने DCC टोकन को सुरक्षित रूप से ट्रेड करें, स्टेक करें और प्रबंधित करें।"
+      },
+      "header": {
+        "openMenu": "नेविगेशन मेनू खोलें",
+        "signIn": "साइन इन करें",
+        "signUp": "साइन अप करें"
+      },
+      "hero": {
+        "connectedTo": "कनेक्टेड:",
+        "ctaAddWallet": "वॉलेट जोड़ें",
+        "ctaCreate": "अपना वॉलेट बनाएं",
+        "ctaHaveOne": "मेरे पास पहले से है",
+        "ctaOpen": "अपना वॉलेट खोलें",
+        "eyebrow": "DecentralChain पर निर्मित",
+        "headline": "विकेंद्रीकृत वित्त का पूरा भविष्य",
+        "subhead": "DecentralChain के लिए नॉन-कस्टोडियल वॉलेट और एक्सचेंज। ट्रेड, स्टेक और लीज़ करें, और आपकी चाबियाँ इस डिवाइस से कभी बाहर नहीं जातीं।",
+        "trust": {
+          "dataService": "Data Service",
+          "decentralchain": "DecentralChain",
+          "ledger": "Ledger",
+          "matcher": "Matcher"
+        }
+      },
+      "iconBullets": {
+        "heading": "रिकॉर्ड के लिए चेकलिस्ट",
+        "label": "विशिष्टताएँ",
+        "specs": {
+          "A1": {
+            "desc": "DCC, BTC, CRC और अन्य DecentralChain एसेट ट्रेड करें",
+            "title": "DEX ट्रेडिंग पेयर"
+          },
+          "A2": {
+            "desc": "कस्टम कीमतों के साथ ऑर्डर बुक तक पूरी पहुँच",
+            "title": "लिमिट और मार्केट ऑर्डर"
+          },
+          "A3": {
+            "desc": "मास्टर पासवर्ड सुरक्षा के साथ PBKDF2 एन्क्रिप्शन",
+            "title": "एन्क्रिप्टेड स्टोरेज"
+          },
+          "A4": {
+            "desc": "वॉलेट की सारी गतिविधि का पूरा रिकॉर्ड",
+            "title": "ट्रांज़ैक्शन इतिहास"
+          },
+          "A5": {
+            "desc": "हार्डवेयर डिवाइस से ट्रांज़ैक्शन साइन करें",
+            "title": "Ledger इंटीग्रेशन"
+          },
+          "A6": {
+            "desc": "decentral.exchange पर उपलब्ध",
+            "title": "वेब और डेस्कटॉप"
+          }
+        }
+      },
+      "marquee": {
+        "ariaLabel": "ट्रेड, स्टेक, लीज़, बनाएं — अपनी चाबियाँ अपने पास रखें",
+        "words": ["ट्रेड करें", "स्टेक करें", "लीज़ करें", "बनाएं", "अपनी चाबियाँ अपने पास रखें"]
+      },
+      "securityStatement": {
+        "headingLine1": "आपकी चाबियाँ।",
+        "headingLine2": "आपके सिक्के।",
+        "label": "सुरक्षा",
+        "points": {
+          "01": {
+            "body": "आपका सीड आपके पासवर्ड से एन्क्रिप्ट होकर इसी डिवाइस पर सहेजा जाता है। इसे कभी प्रसारित नहीं किया जाता, और यहाँ कोई भी सर्वर इसे पढ़ नहीं सकता।",
+            "title": "चाबियाँ कभी बाहर नहीं जातीं"
+          },
+          "02": {
+            "body": "हर ट्रांज़ैक्शन स्थानीय रूप से साइन होता है और पहले से साइन होकर ब्रॉडकास्ट किया जाता है। आपके पासवर्ड के बिना कुछ भी हिल नहीं सकता।",
+            "title": "डिवाइस पर साइन किया गया"
+          },
+          "03": {
+            "body": "Ledger का उपयोग करें और प्राइवेट की ब्राउज़र को कभी छूती तक नहीं — साइनिंग डिवाइस पर ही होती है।",
+            "title": "हार्डवेयर सपोर्टेड"
+          }
+        }
       }
     },
     "ledger": {
@@ -760,6 +937,7 @@
     },
     "Suspicious": "संदेहजनक",
     "saveSeed": {
+      "authenticationFailed": "प्रमाणीकरण विफल रहा",
       "continue": "जारी रहना",
       "copy": "Copy",
       "copySeed": "Copy Seed phrase",
@@ -770,6 +948,7 @@
       "password": {
         "error": "गलत पासवर्ड!"
       },
+      "securityWarning": "सुरक्षा चेतावनी",
       "userList": {
         "address": "एड्रेस/खाता नाम",
         "buttons": {
@@ -1541,6 +1720,9 @@
           },
           "copyAndShare": "पते को कॉपी व साझा करें",
           "currency": "करेंसी",
+          "depositInstructionsText": "अपने DecentralChain वॉलेट के लिए दूसरा {{assetTicker}} डिपॉज़िट पता प्राप्त करने से पहले आपको अपने पहले {{assetTicker}} डिपॉज़िट की DecentralChain पर पुष्टि होने तक प्रतीक्षा करनी होगी। यदि आप एक ही डिपॉज़िट पते पर एक से अधिक {{assetTicker}} डिपॉज़िट करते हैं, तो वे डिपॉज़िट खो जाएँगे।",
+          "depositInstructionsTitle": "महत्वपूर्ण: यह पता केवल एक बार उपयोग के लिए है और केवल एक डिपॉज़िट स्वीकार कर सकता है!",
+          "disclaimer": "इस सेवा का उपयोग करके आप [अस्वीकरण]({{disclaimerLink}}) से सहमत होते हैं।",
           "gatewayBNT": {
             "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of Bancor to a token in your DecentralChain account.",
             "helpDescrTitle": "Enter this address into your client or wallet",
@@ -1592,10 +1774,20 @@
             "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}"
           },
           "gatewayWEST:warningMinAmountTitle_copy": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "helpDescrText": "ट्रांज़ैक्शन की पुष्टि होते ही गेटवे {{assetTicker}} का ट्रांसफ़र आपके DCC अकाउंट में एक टोकन के रूप में प्रोसेस करेगा।",
+          "helpDescrTitle": "यह पता अपने {{assetTicker}} क्लाइंट या वॉलेट में दर्ज करें",
+          "operator": "यह गेटवे {{operator}} द्वारा संचालित है।",
           "or": "या",
           "pleaseNote": "कृपया नोट करें कि यह गेटवे इस ऑपरेशन के लिए कोई फीस नहीं लगाता है।",
+          "recoveryStatement": "मैं समझता/समझती हूँ कि यदि मैं बैकअप फ़्रेज़ (SEED) सहेज कर नहीं रखता/रखती तो मेरा डिपॉज़िट खो जाएगा।",
           "scanQrCode": "QR कोड स्कैन करें",
-          "title": "{{assetName}} जमा करें"
+          "support": "सहायता के लिए कृपया ईमेल [{{supportEmail}}](mailto:{{supportEmail}}) पर संपर्क करें",
+          "title": "{{assetName}} जमा करें",
+          "totalFee": "{span.error-500}[डिपॉज़िट शुल्क: {{totalFee}} {{assetTicker}}]",
+          "warningMinAmountText": "यदि आप {{minAmount, BigNumber}} {{assetTicker}} से कम भेजते हैं, तो वह राशि खो जाएगी।",
+          "warningMinAmountTitle": "न्यूनतम डिपॉज़िट {{minAmount, BigNumber}} {{assetTicker}} है, अधिकतम डिपॉज़िट {{maxAmount}} {{assetTicker}} है",
+          "warningText": "इस पते पर {{assetTicker}} के अलावा कोई भी मुद्रा भेजने से आपका डिपॉज़िट खो सकता है।",
+          "warningTitle": "इस डिपॉज़िट पते पर केवल {{assetTicker}} भेजें।"
         },
         "dexScriptedPair": {
           "body": "Smart assets are assets that include a script that sets the conditions for the circulation of the token.{div}[We do not recommend you perform operations with smart assets if you are an inexperienced user. Before making a transaction, please read the information about the asset and its script carefully.]",

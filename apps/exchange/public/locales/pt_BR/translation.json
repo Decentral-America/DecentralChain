@@ -1,5 +1,10 @@
 {
   "app": {
+    "accountManager": {
+      "currentAccount": "Conta atual",
+      "manageAccounts": "Gerenciar contas",
+      "switchAccount": "Trocar de conta"
+    },
     "back": "Voltar para a página principal",
     "button": {
       "cancel": "Cancelar",
@@ -355,6 +360,8 @@
           "tooltipText": "Vender {{amountAsset}} por {{price}} {{priceAsset}}"
         }
       },
+      "orderHistory": "Histórico de ordens",
+      "sortOrder": "Ordenação",
       "tabs": {
         "title": {
           "all": "Tudo",
@@ -448,6 +455,176 @@
     "inputs": {
       "errors": {
         "required": "Este campo é obrigatório!"
+      }
+    },
+    "landing": {
+      "bigCta": {
+        "ctaCreate": "Crie sua carteira",
+        "ctaSignIn": "Entrar",
+        "heading": "Comece a negociar na DecentralExchange",
+        "sub": "Trocas seguras, ferramentas avançadas de trading e controle total sobre seus ativos."
+      },
+      "faq": {
+        "heading": "Perguntas frequentes",
+        "label": "Respostas",
+        "questions": {
+          "create-token": {
+            "a": "Quatro passos, sem código: dê um nome ao ativo, defina a emissão e as casas decimais, anexe opcionalmente um script que imponha regras às transferências e assine. A emissão custa uma taxa de rede em DCC.",
+            "q": "O que é preciso para criar um token?"
+          },
+          "hardware-wallet": {
+            "a": "Sim. Conecte uma Ledger e a chave privada nunca entra no navegador: as transações são assinadas no próprio dispositivo e chegam aqui já assinadas.",
+            "q": "Posso usar uma carteira de hardware?"
+          },
+          "leasing": {
+            "a": "O leasing delega seu saldo a um nó para o consenso e paga a você uma parte do que o nó ganha. O saldo nunca sai da sua carteira, continua disponível para uso e você pode cancelar o leasing a qualquer momento.",
+            "q": "O que é leasing, e meu saldo fica bloqueado?"
+          },
+          "password-recovery": {
+            "a": "Não, e esse é o preço de guardar as próprias chaves. Ninguém pode redefini-la por você. Sua frase seed é a única forma de recuperação; por isso a carteira pede que você confirme que a anotou antes de concluir a configuração.",
+            "q": "Vocês conseguem recuperar minha senha se eu a perder?"
+          },
+          "seed-storage": {
+            "a": "Em nenhum servidor. Sua frase seed é criptografada com sua senha usando PBKDF2 e armazenada neste navegador. Ela nunca é enviada a lugar nenhum, e não há aqui nenhum servidor que possa lê-la.",
+            "q": "Onde minha frase seed é armazenada?"
+          },
+          "trading": {
+            "a": "As ordens são colocadas no matcher da rede e liquidadas on-chain. Os pares disponíveis são os configurados para esta instalação, e a exchange os lista assim que você a abre.",
+            "q": "Como funciona a negociação aqui?"
+          }
+        },
+        "sub": "O que as pessoas perguntam antes de confiar suas chaves a uma carteira."
+      },
+      "featureBento": {
+        "features": {
+          "1.0": {
+            "body": "Nenhuma empresa guarda seu saldo. Sua seed é criptografada com sua senha e armazenada neste dispositivo, e cada transação é assinada aqui antes de ser transmitida.",
+            "title": "Sem custódia e sem intermediários"
+          },
+          "2.0": {
+            "body": "Emita um ativo na DecentralChain em quatro passos: dê um nome, defina a emissão e as casas decimais, anexe opcionalmente um script e assine. Sem contrato para escrever.",
+            "title": "Crie seu próprio token"
+          },
+          "3.0": {
+            "body": "Um order book completo com ordens limitadas e a mercado, casadas on-chain.",
+            "title": "Negocie no order book"
+          },
+          "4.0": {
+            "body": "Faça leasing do seu saldo a um nó, mantenha-o disponível e cancele quando quiser.",
+            "title": "Faça leasing e ganhe"
+          },
+          "5.0": {
+            "body": "Use uma Ledger e a chave privada nunca toca o navegador.",
+            "title": "Compatível com carteiras de hardware"
+          },
+          "6.0": {
+            "body": "Uma rede aberta de pares, nenhum dos quais é indispensável.",
+            "title": "Descentralizada por construção"
+          }
+        },
+        "headingLine1": "Tudo o que a rede pode fazer,",
+        "headingLine2": "e nada que ela não possa.",
+        "label": "Principais recursos"
+      },
+      "footer": {
+        "categories": {
+          "resources": "Recursos",
+          "support": "Suporte",
+          "trading": "Negociação",
+          "wallet": "Carteira"
+        },
+        "copyright": "© 2025 Decentral Exchange. Construída sobre a DecentralChain.",
+        "links": {
+          "blockExplorer": "Explorador de blocos",
+          "createWallet": "Criar carteira",
+          "decentralchain": "DecentralChain",
+          "dexTrading": "Negociação na DEX",
+          "docs": "Docs",
+          "documentation": "Documentação",
+          "helpCenter": "Central de ajuda",
+          "importAccount": "Importar conta",
+          "ledgerSupport": "Suporte Ledger",
+          "portfolio": "Portfólio",
+          "privacy": "Privacidade",
+          "reportIssue": "Relatar um problema",
+          "staking": "Staking",
+          "terms": "Termos"
+        },
+        "tagline": "Carteira sem custódia e plataforma DEX para a blockchain DecentralChain. Negocie, faça staking e gerencie seus tokens DCC com segurança."
+      },
+      "header": {
+        "openMenu": "Abrir menu de navegação",
+        "signIn": "Entrar",
+        "signUp": "Cadastrar-se"
+      },
+      "hero": {
+        "connectedTo": "Conectado a",
+        "ctaAddWallet": "Adicionar uma carteira",
+        "ctaCreate": "Crie sua carteira",
+        "ctaHaveOne": "Já tenho uma",
+        "ctaOpen": "Abra sua carteira",
+        "eyebrow": "Construída sobre a DecentralChain",
+        "headline": "Todo o futuro das finanças descentralizadas",
+        "subhead": "Uma carteira e exchange sem custódia para a DecentralChain. Negocie, faça staking e leasing sem que suas chaves saiam deste dispositivo.",
+        "trust": {
+          "dataService": "Data Service",
+          "decentralchain": "DecentralChain",
+          "ledger": "Ledger",
+          "matcher": "Matcher"
+        }
+      },
+      "iconBullets": {
+        "heading": "O checklist, para registro",
+        "label": "Especificações",
+        "specs": {
+          "A1": {
+            "desc": "Negocie DCC, BTC, CRC e outros ativos da DecentralChain",
+            "title": "Pares de negociação na DEX"
+          },
+          "A2": {
+            "desc": "Acesso completo ao order book com preços personalizados",
+            "title": "Ordens limitadas e a mercado"
+          },
+          "A3": {
+            "desc": "Criptografia PBKDF2 com proteção por senha mestra",
+            "title": "Armazenamento criptografado"
+          },
+          "A4": {
+            "desc": "Registro completo de toda a atividade da carteira",
+            "title": "Histórico de transações"
+          },
+          "A5": {
+            "desc": "Assine transações com um dispositivo de hardware",
+            "title": "Integração com Ledger"
+          },
+          "A6": {
+            "desc": "Disponível em decentral.exchange",
+            "title": "Web e desktop"
+          }
+        }
+      },
+      "marquee": {
+        "ariaLabel": "Negocie, faça staking, leasing, crie: mantenha suas chaves",
+        "words": ["Negocie", "Staking", "Leasing", "Crie", "Mantenha suas chaves"]
+      },
+      "securityStatement": {
+        "headingLine1": "Suas chaves.",
+        "headingLine2": "Suas moedas.",
+        "label": "Segurança",
+        "points": {
+          "01": {
+            "body": "Sua seed é criptografada com sua senha e armazenada neste dispositivo. Ela nunca é transmitida, e nenhum servidor aqui pode lê-la.",
+            "title": "As chaves nunca saem"
+          },
+          "02": {
+            "body": "Cada transação é assinada localmente e transmitida já assinada. Nada pode se mover sem a sua senha.",
+            "title": "Assinada no dispositivo"
+          },
+          "03": {
+            "body": "Use uma Ledger e a chave privada nunca toca o navegador: a assinatura acontece no próprio dispositivo.",
+            "title": "Compatível com hardware"
+          }
+        }
       }
     },
     "ledger": {
@@ -760,6 +937,7 @@
     },
     "Suspicious": "Suspeito",
     "saveSeed": {
+      "authenticationFailed": "Falha na autenticação",
       "continue": "Continuar",
       "copy": "Copiar",
       "copySeed": "Copy Seed phrase",
@@ -770,6 +948,7 @@
       "password": {
         "error": "Senha incorreta!"
       },
+      "securityWarning": "Aviso de segurança",
       "userList": {
         "address": "Endereço / Nome da conta",
         "buttons": {
@@ -1541,6 +1720,9 @@
           },
           "copyAndShare": "Copiar & Compartilhar Endereço",
           "currency": "Moeda",
+          "depositInstructionsText": "Você precisa aguardar a confirmação do seu primeiro depósito de {{assetTicker}} na DecentralChain antes de receber outro endereço de depósito de {{assetTicker}} para sua carteira DecentralChain. Se você fizer mais de um depósito de {{assetTicker}} no mesmo endereço de depósito, perderá esses depósitos.",
+          "depositInstructionsTitle": "Importante: este endereço é de uso único e só pode receber um depósito!",
+          "disclaimer": "Ao usar este serviço, você concorda com o [aviso legal]({{disclaimerLink}}).",
           "gatewayBNT": {
             "helpDescrText": "Once the transaction is confirmed, the gateway will process the transfer of Bancor to a token in your DecentralChain account.",
             "helpDescrTitle": "Enter this address into your client or wallet",
@@ -1592,10 +1774,20 @@
             "warningMinAmountTitle": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}"
           },
           "gatewayWEST:warningMinAmountTitle_copy": "The minimum amount of deposit is {{minAmount, BigNumber}} {{assetTicker}}, the maximum amount of deposit is {{maxAmount}} {{assetTicker}}",
+          "helpDescrText": "Assim que a transação for confirmada, o gateway processará a transferência de {{assetTicker}} para um token na sua conta DCC.",
+          "helpDescrTitle": "Insira este endereço no seu cliente ou carteira {{assetTicker}}",
+          "operator": "Este gateway é operado por {{operator}}.",
           "or": "OU",
           "pleaseNote": "Por favor, note que o gateway não cobra taxas para esta operação.",
+          "recoveryStatement": "Entendo que perderei meu depósito se não salvar uma frase de backup (SEED).",
           "scanQrCode": "Capturar QR Code",
-          "title": "Depositar {{assetName}}"
+          "support": "Para suporte, entre em contato pelo e-mail [{{supportEmail}}](mailto:{{supportEmail}})",
+          "title": "Depositar {{assetName}}",
+          "totalFee": "{span.error-500}[Taxa de depósito: {{totalFee}} {{assetTicker}}]",
+          "warningMinAmountText": "Se você enviar menos de {{minAmount, BigNumber}} {{assetTicker}}, perderá esse dinheiro.",
+          "warningMinAmountTitle": "O depósito mínimo é de {{minAmount, BigNumber}} {{assetTicker}} e o máximo é de {{maxAmount}} {{assetTicker}}",
+          "warningText": "Enviar qualquer moeda diferente de {{assetTicker}} para este endereço pode resultar na perda do seu depósito.",
+          "warningTitle": "Envie apenas {{assetTicker}} para este endereço de depósito."
         },
         "dexScriptedPair": {
           "body": "Smart assets are assets that include a script that sets the conditions for the circulation of the token.{div}[We do not recommend you perform operations with smart assets if you are an inexperienced user. Before making a transaction, please read the information about the asset and its script carefully.]",
