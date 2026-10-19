@@ -7,7 +7,7 @@
  */
 import { ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createAppTheme } from '@/theme/mui-theme';
 import { ImportPage } from '../ImportPage';
 
@@ -59,6 +59,10 @@ describe('ImportPage — Ledger tile', () => {
 });
 
 describe('ImportPage — Cubensis Connect tile', () => {
+  beforeEach(() => {
+    cubensisFlag.enabled = false;
+  });
+
   it('is hidden while the extension has no store listing', () => {
     cubensisFlag.enabled = false;
     renderImportPage();
