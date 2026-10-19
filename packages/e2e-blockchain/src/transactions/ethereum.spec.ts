@@ -17,14 +17,17 @@
 
 import { ethTxId2dcc } from '@decentralchain/node-api';
 import {
+  broadcast,
   broadcastEthereum,
   ethereumAddress,
   ethereumTransfer,
+  setScript,
   waitForTx,
 } from '@decentralchain/transactions';
-import { ethereumKeyPair, ethereumSign } from '@decentralchain/ts-lib-crypto';
+import { base58Decode, ethereumKeyPair, ethereumSign, keccak } from '@decentralchain/ts-lib-crypto';
 import { RLP } from '@ethereumjs/rlp';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
+import { compileScript } from '../helpers/compile';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const TIMEOUT = 120_000;
@@ -63,11 +66,12 @@ function signRawEthTx(params: {
   gasLimit?: bigint;
   gasPrice?: bigint;
   legacy?: boolean;
+  data?: Uint8Array;
 }): string {
   const gasPrice = params.gasPrice ?? GAS_PRICE_WEI;
   const gasLimit = params.gasLimit ?? 100_000n;
   const nonce = BigInt(Date.now());
-  const data = new Uint8Array(0);
+  const data = params.data ?? new Uint8Array(0);
 
   const unsignedFields = params.legacy
     ? [nonce, gasPrice, gasLimit, params.to, params.value, data]
@@ -208,5 +212,62 @@ describe('Ethereum compatibility layer (Type 18, EIP-155)', () => {
     // literal text wasn't confirmed against source the way the two checks
     // above were.
     await expect(broadcastEthereum(signed.raw, API_BASE)).rejects.toThrow();
+  });
+
+  // ── dApp invocation (non-empty data) ──────────────────────────────────────
+
+  it('invokes a dApp callable through an EIP-155 transaction with ABI-encoded data', async () => {
+    const dapp = randomTestAccount(CHAIN_ID);
+    await fundAccount(dapp.address, 2_000_000, MASTER_SEED, API_BASE, CHAIN_ID);
+    const script = await compileScript(
+      [
+        '{-# STDLIB_VERSION 5 #-}',
+        '{-# CONTENT_TYPE DAPP #-}',
+        '{-# SCRIPT_TYPE ACCOUNT #-}',
+        '',
+        '@Callable(i)',
+        'func setCalled() = [IntegerEntry("called", 1)]',
+      ].join('\n'),
+      API_BASE,
+    );
+    const setTx = setScript({ chainId: CHAIN_ID, fee: 1_000_000, script }, dapp.seed);
+    await broadcast(setTx, API_BASE);
+    await waitForTx(setTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+
+    // The node exposes the callable's Ethereum ABI; RIDE adds a trailing payments argument.
+    const abiRes = await fetch(`${API_BASE}eth/abi/${dapp.address}`);
+    expect(abiRes.status).toBe(200);
+    const abi = (await abiRes.json()) as Array<{ name: string }>;
+    expect(abi.map((f) => f.name)).toContain('setCalled');
+
+    const { ethPrivateKey, ethPublicKey } = ethereumKeyPair();
+    const sender = ethereumAddress(ethPublicKey, CHAIN_ID);
+    await fundAccount(sender, 1_000_000, MASTER_SEED, API_BASE, CHAIN_ID);
+
+    // calldata = selector("setCalled((bytes32,int64)[])") ++ offset(0x20) ++ length(0): no payments.
+    const selector = keccak(new TextEncoder().encode('setCalled((bytes32,int64)[])')).slice(0, 4);
+    const word = (n: number) => {
+      const w = new Uint8Array(32);
+      w[31] = n;
+      return w;
+    };
+    const callData = Uint8Array.from([...selector, ...word(0x20), ...word(0)]);
+    const to = base58Decode(dapp.address).slice(2, 22); // the 20-byte public-key hash of the dApp address
+
+    const raw = signRawEthTx({
+      chainId: CHAIN_ID.charCodeAt(0),
+      data: callData,
+      ethPrivateKey,
+      gasLimit: 500_000n, // the DCC invoke fee, charged verbatim
+      to,
+      value: 0n,
+    });
+    const { txId } = await broadcastEthereum(raw, API_BASE);
+    await waitForTx(ethTxId2dcc(txId), { apiBase: API_BASE, timeout: TIMEOUT });
+
+    const entryRes = await fetch(`${API_BASE}addresses/data/${dapp.address}/called`);
+    expect(entryRes.status).toBe(200);
+    expect(((await entryRes.json()) as { value: number }).value).toBe(1);
+    expect(await dccBalance(sender)).toBe(1_000_000 - 500_000);
   });
 });

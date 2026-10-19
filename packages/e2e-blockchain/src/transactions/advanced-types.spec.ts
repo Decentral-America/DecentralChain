@@ -10,7 +10,13 @@
  * rejected by the activation check and by nothing earlier.
  */
 
-import { broadcast, invokeExpression, setScript, waitForTx } from '@decentralchain/transactions';
+import {
+  broadcast,
+  commitToGeneration,
+  invokeExpression,
+  setScript,
+  waitForTx,
+} from '@decentralchain/transactions';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
 import { compileScript } from '../helpers/compile';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
@@ -82,6 +88,54 @@ describe('CommitToGeneration (type 19)', () => {
       method: 'POST',
     });
     expect(res.status).toBe(400);
+  });
+
+  it('a CTG built with the SDK passes the period and BLS proof-of-possession checks and is refused only for generating balance', async () => {
+    const [generator] = await committedGenerators(await currentHeight());
+    if (!generator) throw new Error('no committed generators at the tip');
+    const current = await txInfo<CtgInfo>(generator.transactionId);
+    const statusRes = await fetch(`${API_BASE}node/status`);
+    const { generationPeriodLength } = (await statusRes.json()) as {
+      generationPeriodLength: number;
+    };
+    const next = current.generationPeriodStart + generationPeriodLength;
+
+    const account = randomTestAccount(CHAIN_ID);
+    await fundAccount(account.address, 20_000_000, MASTER_SEED, API_BASE, CHAIN_ID);
+
+    const post = async (tx: unknown) => {
+      const res = await fetch(`${API_BASE}transactions/broadcast`, {
+        body: JSON.stringify(tx),
+        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
+      });
+      return { body: (await res.json()) as { message: string }, status: res.status };
+    };
+
+    // Wrong period: the node names the period it expects.
+    const wrong = await post(
+      commitToGeneration(
+        { chainId: CHAIN_ID, generationPeriodStart: next + generationPeriodLength },
+        account.seed,
+      ),
+    );
+    expect(wrong.status).toBe(400);
+    const expected = Number(
+      /Expected the next period start height \((\d+)\)/.exec(wrong.body.message)?.[1],
+    );
+    expect(expected).toBeGreaterThanOrEqual(next);
+
+    // Right period: the SDK-computed BLS key and commitment signature are accepted, and the only
+    // remaining objection is that a fresh account has no generating balance.
+    const tx = commitToGeneration(
+      { chainId: CHAIN_ID, generationPeriodStart: expected },
+      account.seed,
+    );
+    expect(tx.type).toBe(19);
+    const right = await post(tx);
+    expect(right.status).toBe(400);
+    expect(right.body.message).toContain('required for block generation');
+    expect(right.body.message).not.toContain('Invalid commitment signature');
   });
 });
 

@@ -1053,6 +1053,9 @@ importers:
       '@decentralchain/node-api':
         specifier: workspace:*
         version: link:../sdk/node-api
+      '@decentralchain/node-api-grpc':
+        specifier: workspace:*
+        version: link:../sdk/node-api-grpc
       '@decentralchain/transactions':
         specifier: workspace:*
         version: link:../sdk/transactions

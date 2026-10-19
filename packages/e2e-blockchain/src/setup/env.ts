@@ -27,6 +27,16 @@ export const DS_URL =
 export const MATCHER_URL =
   process.env.DCC_TEST_MATCHER_URL ?? 'https://testnet-matcher.decentralchain.io';
 
+/** websocket-api URL (topic subscriptions). */
+export const WS_URL = process.env.DCC_TEST_WS_URL ?? 'wss://testnet-ws.decentralchain.io/ws';
+
+/**
+ * Blockchain-updates gRPC endpoint, e.g. http://127.0.0.1:6881 through an SSH tunnel. The public
+ * testnet exposes no gRPC (the node binds 6881 to 127.0.0.1; AUD-087), so the gRPC tests are
+ * reported as skipped when this is empty.
+ */
+export const GRPC_UPDATES_URL = process.env.DCC_TEST_GRPC_UPDATES_URL ?? '';
+
 /**
  * Matcher REST API key, used only to delete the per-run test order book after
  * the exchange suite. Optional: when unset, cleanup is skipped and the
