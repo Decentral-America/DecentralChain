@@ -1,7 +1,7 @@
 import { Effect } from 'effect';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import daemon from '../daemon';
+import daemon, { createDaemonControl } from '../daemon';
 
 const createLogger = () => ({
   error: vi.fn(),
@@ -87,5 +87,47 @@ describe('Daemon presets', () => {
     expect(logger.warn).toHaveBeenCalledWith({
       message: '[DAEMON] init function not found',
     });
+  });
+
+  it('stop() prevents further iterations and waits for the one in flight', async () => {
+    const logger = createLogger();
+    const control = createDaemonControl();
+    let started = 0;
+    let finished = 0;
+
+    await Effect.runPromise(
+      daemon(
+        {
+          loop: () =>
+            Effect.promise(async () => {
+              started++;
+              await new Promise((r) => setTimeout(r, 50));
+              finished++;
+            }),
+        },
+        {},
+        100,
+        5000,
+        logger,
+        control,
+      ),
+    );
+
+    await vi.advanceTimersByTimeAsync(0);
+    expect(started).toBe(1);
+
+    let stopped = false;
+    const stopPromise = control.stop().then(() => {
+      stopped = true;
+    });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(stopped).toBe(false); // current iteration still running
+
+    await vi.advanceTimersByTimeAsync(50);
+    await stopPromise;
+    expect(finished).toBe(1);
+
+    await vi.advanceTimersByTimeAsync(1_000);
+    expect(started).toBe(1); // nothing new scheduled
   });
 });

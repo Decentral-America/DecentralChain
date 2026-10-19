@@ -38,6 +38,7 @@ export const noopEventBus = {
 // ---------------------------------------------------------------------------
 export const mockPgDriver: PgDriver = {
   any: <T>(_q: string) => Effect.succeed([] as T[]),
+  close: () => Promise.resolve(),
   many: <T>(_q: string) => Effect.succeed([] as T[]),
   none: (_q) => Effect.succeed(null),
   one: <T>(_q: string) => Effect.succeed({} as T),

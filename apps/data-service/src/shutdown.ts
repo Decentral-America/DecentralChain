@@ -2,7 +2,7 @@
  * Graceful shutdown for the HTTP server.
  *
  * On SIGTERM/SIGINT: stop accepting connections, let in-flight requests finish,
- * then exit 0. If they do not finish within `graceMs` (keep it under Docker's
+ * release resources (e.g. the Postgres pool), then exit 0. If they do not finish within `graceMs` (keep it under Docker's
  * 10 s stop timeout), exit 1 so the container still stops promptly.
  */
 
@@ -16,6 +16,8 @@ export type ShutdownDeps = {
   exit: (code: number) => void;
   onSignal: (signal: NodeJS.Signals, handler: () => void) => void;
   graceMs: number;
+  /** Awaited after the server has drained, inside the same grace period. */
+  closeResources?: () => Promise<void>;
 };
 
 export const installGracefulShutdown = ({
@@ -24,6 +26,7 @@ export const installGracefulShutdown = ({
   exit,
   onSignal,
   graceMs,
+  closeResources,
 }: ShutdownDeps): void => {
   let shuttingDown = false;
 
@@ -32,21 +35,41 @@ export const installGracefulShutdown = ({
     shuttingDown = true;
     log('shutdown started', { graceMs, signal });
 
+    let finished = false;
+    const finish = (code: number) => {
+      if (finished) return;
+      finished = true;
+      clearTimeout(timer);
+      exit(code);
+    };
+
     const timer = setTimeout(() => {
       log('shutdown grace period expired; exiting');
-      exit(1);
+      finish(1);
     }, graceMs);
     timer.unref?.();
 
     server.close((err) => {
-      clearTimeout(timer);
       if (err) {
         log('server close failed', { error: err.message });
-        exit(1);
+        finish(1);
         return;
       }
-      log('shutdown complete');
-      exit(0);
+      if (!closeResources) {
+        log('shutdown complete');
+        finish(0);
+        return;
+      }
+      closeResources().then(
+        () => {
+          log('shutdown complete');
+          finish(0);
+        },
+        (e: unknown) => {
+          log('closing resources failed', { error: e instanceof Error ? e.message : String(e) });
+          finish(1);
+        },
+      );
     });
   };
 

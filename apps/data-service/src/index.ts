@@ -102,7 +102,12 @@ Effect.runPromise(
     // Node is PID 1 in the container: without a handler, SIGTERM is ignored and
     // `docker stop` SIGKILLs after 10 s, dropping in-flight requests.
     installGracefulShutdown({
-      exit: (code) => process.exit(code),
+      closeResources: () => pgDriver.close(),
+      exit: (code) => {
+        // pino writes synchronously to stdout by default; flush covers async transports.
+        logger.flush();
+        process.exit(code);
+      },
       graceMs: 8_000,
       log: (message, meta) => logger.info(meta ?? {}, message),
       onSignal: (signal, handler) => {

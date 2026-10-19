@@ -15,16 +15,44 @@ const getSleepTime = (start: Date, interval: number): number => {
   return diff < 0 ? 0 : diff;
 };
 
+/**
+ * Lets a caller stop a running daemon: no further iterations are scheduled and
+ * `stop()` resolves once the iteration in flight (if any) has settled.
+ */
+export type DaemonControl = {
+  stop: () => Promise<void>;
+};
+
+type ControlState = {
+  stopping: boolean;
+  inFlight: Promise<void> | undefined;
+  pendingTimer: ReturnType<typeof setTimeout> | undefined;
+};
+
+export const createDaemonControl = (): DaemonControl & { state: ControlState } => {
+  const state: ControlState = { inFlight: undefined, pendingTimer: undefined, stopping: false };
+  return {
+    state,
+    stop: async () => {
+      state.stopping = true;
+      if (state.pendingTimer !== undefined) clearTimeout(state.pendingTimer);
+      await state.inFlight;
+    },
+  };
+};
+
 /** loop :: (Config -> Effect) -> Config -> Number -> Number -> Promise */
 const loop = <Config>(
   func: (cfg: Config) => Effect.Effect<unknown, unknown>,
   cfg: Config,
   interval: number,
   timeout: number,
+  state: ControlState,
 ): Promise<void> => {
+  if (state.stopping) return Promise.resolve();
   const startLoop = new Date();
 
-  return Effect.runPromise(
+  const run = Effect.runPromise(
     Effect.raceAll([
       func(cfg),
       Effect.async<never, Error>((emit) => {
@@ -37,11 +65,17 @@ const loop = <Config>(
     ]),
   )
     .then(() => {
-      setTimeout(() => loop(func, cfg, interval, timeout), getSleepTime(startLoop, interval));
+      if (state.stopping) return;
+      state.pendingTimer = setTimeout(
+        () => loop(func, cfg, interval, timeout, state),
+        getSleepTime(startLoop, interval),
+      );
     })
     .catch(() => {
       // swallow: already handled inside func or timeout
     });
+  state.inFlight = run;
+  return run;
 };
 
 /** main :: Object { init, loop } -> Config -> Number ms -> Number ms -> DaemonLogger -> Effect */
@@ -54,6 +88,7 @@ const main = <Config>(
   interval: number,
   timeout: number,
   logger: DaemonLogger,
+  control: ReturnType<typeof createDaemonControl> = createDaemonControl(),
 ): Effect.Effect<void, never> => {
   const maybeInit = Option.fromNullable(daemon.init);
 
@@ -109,6 +144,7 @@ const main = <Config>(
           config,
           interval,
           timeout,
+          control.state,
         );
       }),
     ),
