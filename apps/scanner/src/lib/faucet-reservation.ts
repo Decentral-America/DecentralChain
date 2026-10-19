@@ -1,10 +1,7 @@
 /**
- * Per-address faucet reservations.
- *
- * Reserving is one atomic step (Redis `SET key value PX ttl NX`), taken BEFORE
- * the transfer is broadcast. The previous check-then-set (GET, broadcast, SET)
- * let concurrent requests for one address all pass the check. A failed
- * broadcast releases the reservation so the user can retry.
+ * Per-address faucet reservations: `reserve` atomically claims an address for
+ * a window (Redis `SET ... PX ... NX`, or an in-process map) before any
+ * transfer is built; `release` frees it again after a failed broadcast.
  */
 
 export interface FaucetReservations {

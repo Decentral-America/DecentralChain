@@ -10,8 +10,8 @@
  *
  * Runtime env:
  *   DCC_FAUCET_SEED        Faucet wallet seed (required)
- *   DCC_FAUCET_AMOUNT      Whole DCC per request (default: 10)
- *   DCC_FAUCET_RATE_HOURS  Hours between requests per address (default: 24)
+ *   DCC_FAUCET_AMOUNT      DCC per request, > 0 (default: 10)
+ *   DCC_FAUCET_RATE_HOURS  Hours between requests per address, > 0 (default: 24)
  *   DCC_CHAIN_ID           Network byte; addresses for other networks are rejected
  *   DCC_NODE_URL           Node REST API base URL
  *   REDIS_URL              Shared reservation store (in-process fallback when unset)
@@ -20,6 +20,7 @@
 import { broadcast, transfer } from '@decentralchain/transactions';
 import Redis from 'ioredis';
 import { logError } from '@/lib/error-logger';
+import { faucetSettings } from '@/lib/faucet-config';
 import {
   type FaucetReservations,
   memoryReservations,
@@ -97,8 +98,8 @@ export async function action({ request }: { request: Request }): Promise<Respons
   }
 
   // ── Reserve the address atomically, before any transfer exists ──────────────
-  const rateLimitHours = Number.parseInt(process.env.DCC_FAUCET_RATE_HOURS ?? '24', 10);
-  const windowMs = rateLimitHours * 3600 * 1000;
+  const { amountDcc, rateHours: rateLimitHours } = faucetSettings();
+  const windowMs = Math.round(rateLimitHours * 3600 * 1000);
   let reserved: boolean;
   try {
     reserved = await reservations.reserve(address, windowMs);
@@ -114,11 +115,10 @@ export async function action({ request }: { request: Request }): Promise<Respons
   }
 
   // ── Build, sign, and broadcast the transfer ─────────────────────────────────
-  const amountDcc = Number.parseInt(process.env.DCC_FAUCET_AMOUNT ?? '10', 10);
   try {
     const tx = transfer(
       {
-        amount: amountDcc * 1e8, // 1 DCC = 10^8 base units
+        amount: Math.round(amountDcc * 1e8), // 1 DCC = 10^8 base units
         attachment: '',
         fee: 100000, // 0.001 DCC
         recipient: address,
@@ -128,7 +128,10 @@ export async function action({ request }: { request: Request }): Promise<Respons
     await broadcast(tx, nodeUrl);
     return Response.json({ amount: amountDcc, success: true, txId: tx.id });
   } catch (error) {
-    await reservations.release(address).catch(() => undefined);
+    // If the release fails too, the address simply stays reserved for the window.
+    await reservations.release(address).catch((releaseError: unknown) => {
+      logError(releaseError, { address, context: 'faucet_release' });
+    });
     // Node rejection details stay in the server log; the client gets a generic message.
     logError(error, { address, context: 'faucet_broadcast' });
     return Response.json({ error: GENERIC_FAILURE }, { status: 502 });

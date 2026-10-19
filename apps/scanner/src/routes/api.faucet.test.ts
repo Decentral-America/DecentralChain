@@ -6,7 +6,23 @@ const { broadcast, transfer } = vi.hoisted(() => ({
   transfer: vi.fn(() => ({ id: 'TXID' })),
 }));
 vi.mock('@decentralchain/transactions', () => ({ broadcast, transfer }));
-vi.mock('@/lib/error-logger', () => ({ logError: vi.fn() }));
+const { logError } = vi.hoisted(() => ({ logError: vi.fn() }));
+vi.mock('@/lib/error-logger', () => ({ logError, logWarn: vi.fn() }));
+
+// The route's in-process store, wrapped so a test can make reserve/release throw.
+const store = vi.hoisted(() => ({ release: vi.fn(), reserve: vi.fn() }));
+vi.mock('@/lib/faucet-reservation', async (importOriginal) => {
+  const real = await importOriginal<typeof import('@/lib/faucet-reservation')>();
+  return {
+    ...real,
+    memoryReservations: () => {
+      const inner = real.memoryReservations();
+      store.reserve.mockImplementation(inner.reserve);
+      store.release.mockImplementation(inner.release);
+      return store;
+    },
+  };
+});
 
 process.env.DCC_FAUCET_SEED = 'unit test faucet seed';
 process.env.DCC_NODE_URL = 'https://node.invalid';
@@ -15,10 +31,12 @@ delete process.env.REDIS_URL;
 
 const { action, loader } = await import('./api.faucet');
 
-// Real testnet ('!') addresses from the 2026-10-18 live audit; one mainnet ('?') address.
+// Testnet ('!') addresses, plus one mainnet ('?') address.
 const A = '31daBZ6v4E4RcwkrSVetg1UiCamFegQgbBh';
 const B = '31LfyMt9PfLjzCaMi68Exiu7THjoBvahts9';
 const C = '31JHA1sEv9d5bAsUBzgNdAgWtBtACYysTsG';
+const D = '31daBZ6v4E4RcwkrSVetg1UiCamFegQgbBi';
+const E = '31LfyMt9PfLjzCaMi68Exiu7THjoBvahts8';
 const MAINNET = '3DcZHm89byJjfdkHTJ9m89pyeMk8vChDGtD';
 
 const post = (address: string) =>
@@ -33,6 +51,7 @@ const post = (address: string) =>
 beforeEach(() => {
   broadcast.mockReset();
   broadcast.mockResolvedValue({});
+  logError.mockClear();
 });
 
 describe('POST /api/faucet', () => {
@@ -56,6 +75,31 @@ describe('POST /api/faucet', () => {
       error: 'Faucet transfer failed. Please try again later.',
     });
     expect((await post(C)).status).toBe(200);
+  });
+
+  it('answers 503 without broadcasting when the reservation store fails', async () => {
+    store.reserve.mockRejectedValueOnce(new Error('store unavailable'));
+    const response = await post(D);
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({ error: 'Faucet temporarily unavailable' });
+    expect(broadcast).not.toHaveBeenCalled();
+    expect(logError).toHaveBeenCalledWith(expect.any(Error), { context: 'faucet_reserve' });
+  });
+
+  it('still answers the generic 502 and logs when releasing after a failed broadcast fails', async () => {
+    broadcast.mockRejectedValueOnce(new Error('node down'));
+    store.release.mockRejectedValueOnce(new Error('store unavailable'));
+    const response = await post(E);
+    expect(response.status).toBe(502);
+    expect(await response.json()).toEqual({
+      error: 'Faucet transfer failed. Please try again later.',
+    });
+    expect(logError).toHaveBeenCalledWith(expect.any(Error), {
+      address: E,
+      context: 'faucet_release',
+    });
+    // The release failed, so the address stays reserved for the window.
+    expect((await post(E)).status).toBe(429);
   });
 
   it('rejects an address from another network before reserving it', async () => {
