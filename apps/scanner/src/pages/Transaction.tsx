@@ -24,10 +24,18 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useTransaction } from '@/hooks/useTransactions';
 import {
+  fetchBatchAssetDetails,
   fetchTransactionInfo,
   fetchUnconfirmedTransactionInfo,
   fetchUnconfirmedTransactions,
 } from '@/lib/api';
+import {
+  type AssetMeta,
+  amountAssetIdOf,
+  assetIdsOf,
+  formatAssetAmount,
+  toAssetMetaMap,
+} from '@/lib/assetAmount';
 import { txTypeName } from '@/lib/transactionTypes';
 import { type Transaction as TransactionType } from '@/types';
 import { createPageUrl } from '@/utils';
@@ -37,11 +45,13 @@ import { formatAmount, fromUnix, truncate } from '../components/utils/formatters
 
 interface LoaderData {
   tx: TransactionType | null;
+  /** Decimals and names for the tx's amount and fee assets, resolved server-side. */
+  assets: Record<string, AssetMeta>;
 }
 
 export async function loader({ request }: { request: Request }): Promise<LoaderData> {
   const id = new URL(request.url).searchParams.get('id');
-  if (!id) return { tx: null };
+  if (!id) return { assets: {}, tx: null };
   // Basic sanity check: must be non-empty base58 — let the node API decide validity.
   if (!/^[1-9A-HJ-NP-Za-km-z]{10,}$/.test(id)) {
     throw data('Transaction not found', { status: 404 });
@@ -60,7 +70,10 @@ export async function loader({ request }: { request: Request }): Promise<LoaderD
   if (!tx) {
     throw data('Transaction not found', { status: 404 });
   }
-  return { tx };
+  const ids = assetIdsOf(amountAssetIdOf(tx), tx.feeAssetId);
+  const assets =
+    ids.length > 0 ? toAssetMetaMap(await fetchBatchAssetDetails(ids).catch(() => new Map())) : {};
+  return { assets, tx };
 }
 
 export function ErrorBoundary() {
@@ -93,7 +106,7 @@ export function meta({ loaderData: data }: { loaderData?: LoaderData }) {
 export default function Transaction() {
   const { t } = useLanguage();
   const navigate = useNavigate();
-  const { tx: serverTx } = useLoaderData() as LoaderData;
+  const { assets, tx: serverTx } = useLoaderData() as LoaderData;
   const [searchParams] = useSearchParams();
   const txId = searchParams.get('id') ?? '';
 
@@ -266,13 +279,16 @@ export default function Transaction() {
                         <div>
                           <p className="text-sm text-muted-foreground mb-2">{t('timestamp')}</p>
                           <p className="font-semibold">{fromUnix(displayTx.timestamp)}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {fromUnix(displayTx.timestamp)}
-                          </p>
+                          <ClientTimeAgo
+                            timestamp={displayTx.timestamp}
+                            className="text-sm text-muted-foreground"
+                          />
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground mb-2">{t('fee')}</p>
-                          <p className="font-semibold">{formatAmount(Number(displayTx.fee))} DCC</p>
+                          <p className="font-semibold">
+                            {formatAssetAmount(displayTx.fee, displayTx.feeAssetId, assets)}
+                          </p>
                         </div>
                         {displayTx.height && (
                           <div>
@@ -322,7 +338,11 @@ export default function Transaction() {
                           <div>
                             <p className="text-sm text-muted-foreground mb-2">{t('amount')}</p>
                             <p className="text-2xl font-bold">
-                              {formatAmount(displayTx.amount)} DCC
+                              {formatAssetAmount(
+                                displayTx.amount,
+                                amountAssetIdOf(displayTx),
+                                assets,
+                              )}
                             </p>
                           </div>
                         )}
@@ -333,7 +353,7 @@ export default function Transaction() {
                               to={createPageUrl('Asset', `?id=${displayTx.assetId}`)}
                               className="text-link hover:text-link-hover font-mono text-sm"
                             >
-                              {truncate(displayTx.assetId, 16)}
+                              {assets[displayTx.assetId]?.name ?? truncate(displayTx.assetId, 16)}
                             </Link>
                           </div>
                         )}
