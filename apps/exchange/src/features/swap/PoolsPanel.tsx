@@ -6,7 +6,7 @@
  * rather than zeros — a pool with no data is not a pool with no volume, and
  * the difference matters to anyone deciding where to put money.
  */
-import { fromRawAmount } from '@dcc-amm/sdk';
+import { fromRawAmount } from '@decentralchain/amm';
 import { KeyboardArrowDown, Search, Star, StarBorder } from '@mui/icons-material';
 import {
   Alert,

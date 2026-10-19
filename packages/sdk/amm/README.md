@@ -1,4 +1,4 @@
-# @dcc-amm/sdk
+# @decentralchain/amm
 
 Quoting, transaction building, and pool state reads for the DCC AMM swap
 protocol — a constant-product AMM running on two RIDE contracts:
@@ -14,7 +14,7 @@ for the caller to sign with whatever wallet/signer they use (e.g. this repo's
 own `@decentralchain/transactions`).
 
 ```ts
-import { AmmSdk, toRawAmount } from '@dcc-amm/sdk';
+import { AmmSdk, toRawAmount } from '@decentralchain/amm';
 
 const sdk = new AmmSdk({
   nodeUrl: 'https://mainnet-node.decentralchain.io',
@@ -64,3 +64,8 @@ no network calls, safe to read/review independently of the rest.
 original, already covered by tests. Didn't refactor working, tested
 financial-logic code just to satisfy a complexity threshold; worth revisiting
 if someone's touching that function anyway.
+
+## Status
+
+Private workspace package (not published to npm), consumed by `apps/exchange`. Renamed from
+`@dcc-amm/sdk` to the `@decentralchain/` scope in 2026-10.

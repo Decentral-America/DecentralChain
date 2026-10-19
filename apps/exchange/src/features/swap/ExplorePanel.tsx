@@ -6,7 +6,7 @@
  * tab exists separately from Pools — that one reads the chain, this one reads
  * history.
  */
-import { fromRawAmount } from '@dcc-amm/sdk';
+import { fromRawAmount } from '@decentralchain/amm';
 import { Search } from '@mui/icons-material';
 import {
   Box,

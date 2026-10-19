@@ -7,7 +7,7 @@
  * spendable LP tokens — the kind of wrong that makes someone think their
  * money is gone.
  */
-import { fromRawAmount } from '@dcc-amm/sdk';
+import { fromRawAmount } from '@decentralchain/amm';
 import { AccountCircleOutlined } from '@mui/icons-material';
 import { Box, CircularProgress, Paper, Stack, Typography } from '@mui/material';
 import { TokenIcon } from '@/components/common/TokenIcon';

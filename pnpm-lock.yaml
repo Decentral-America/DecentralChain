@@ -703,7 +703,7 @@ importers:
       '@coral-xyz/anchor':
         specifier: 'catalog:'
         version: 0.32.1(bufferutil@4.1.0)(typescript@5.4.5)(utf-8-validate@6.0.6)
-      '@dcc-amm/sdk':
+      '@decentralchain/amm':
         specifier: workspace:*
         version: link:../../packages/sdk/amm
       '@decentralchain/assets-pairs-order':

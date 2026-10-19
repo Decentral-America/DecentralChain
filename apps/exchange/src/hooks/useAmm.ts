@@ -4,7 +4,7 @@
  * All of this comes from the node and the two contracts directly — the
  * indexer is only needed for volume and history, which nothing here shows.
  */
-import { type AmmSdk, toRawAmount } from '@dcc-amm/sdk';
+import { type AmmSdk, toRawAmount } from '@decentralchain/amm';
 import { type UseQueryResult, useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { useMultipleAssetDetails } from '@/api/services/assetsService';

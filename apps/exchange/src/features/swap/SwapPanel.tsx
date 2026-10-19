@@ -7,7 +7,7 @@
  * what the slippage bound exists for.
  */
 
-import { fromRawAmount, toRawAmount } from '@dcc-amm/sdk';
+import { fromRawAmount, toRawAmount } from '@decentralchain/amm';
 import { SwapVert } from '@mui/icons-material';
 import {
   Alert,

@@ -10,7 +10,7 @@
  * from the first rather than typed. A mismatched pair either reverts or
  * silently returns the excess, and neither is worth discovering afterwards.
  */
-import { fromRawAmount, toRawAmount } from '@dcc-amm/sdk';
+import { fromRawAmount, toRawAmount } from '@decentralchain/amm';
 import { Add as AddIcon } from '@mui/icons-material';
 import {
   Alert,

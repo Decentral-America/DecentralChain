@@ -1,5 +1,5 @@
 {
-  "name": "@dcc-amm/sdk",
+  "name": "@decentralchain/amm",
   "description": "Quoting, transaction building, and pool state reads for the DCC AMM swap protocol.",
   "private": true,
   "type": "module",
