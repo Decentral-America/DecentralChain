@@ -12,8 +12,17 @@ export const translations: Record<Language, Record<string, string>> = {
     activeLeases: 'Active Leases',
     address: 'Address',
     addressColon: 'Address:',
+    // ── Keys used by pages but previously undefined (AUD-071) ──
+    addressCopied: 'Address copied',
     addressDetails: 'Address Details',
+    addressesCountLabel: 'Addresses',
     advancedAnalytics: 'Advanced analytics and performance metrics',
+    alertHeightMinOne: 'Height must be 1 or greater.',
+    alertHeightTooOld:
+      'Height {inputHeight} is older than the node can serve. Nodes keep the last {maxRollback} blocks, so use height {absoluteMinHeight} or later.',
+    alertHeightTooRecent:
+      'Height {inputHeight} is too recent. Stay at least {buffer} blocks below the current height ({current}): use height {safeMaxHeight} or earlier.',
+    alertWaitForHeight: 'The current block height is still loading. Try again in a moment.',
     allKnownPeers: 'All Known Peers',
     allPeers: 'All Peers',
     allTradingPairs: 'All Trading Pairs',
@@ -40,6 +49,8 @@ export const translations: Record<Language, Record<string, string>> = {
     // DistributionTool
     assetDistributionTool: 'Asset Distribution Tool',
     assetId: 'Asset ID',
+    assetIdLabel: 'Asset ID',
+    assetIdPlaceholder: 'Asset ID (leave empty for DCC)',
     assetInformation: 'Asset Information',
 
     assetLogoDesc:
@@ -52,6 +63,9 @@ export const translations: Record<Language, Record<string, string>> = {
     avgTxPerBlock: 'Avg Tx per Block',
     back: 'Back',
     balance: 'Balance',
+    balanceHuman: 'Balance',
+    balanceRaw: 'Balance (raw units)',
+    balances: 'Balances',
     blacklisted: 'Blacklisted',
 
     // Connection Status
@@ -68,14 +82,18 @@ export const translations: Record<Language, Record<string, string>> = {
 
     blockHeight: 'Block Height',
     blockId: 'Block ID',
+    blockSize: 'Block Size',
     blocks: 'Blocks',
     blocksAnalyzed: 'Blocks Analyzed',
     blockTime: 'Block Time (Last 50 Blocks)',
+    buildingButton: 'Building…',
+    buildMapButton: 'Build Map',
     bytes: 'Bytes',
 
     casinoRevenueExplanation:
       'As a node owner with {percent}% ownership of your node, you receive profits from the CR Coin Casino app running on the DecentralChain network. The total casino profit of {total} is divided equally among all {nodes} nodes in the network ({perNode} per node). Your share is then calculated based on your {percent}% ownership, resulting in {yourShare} USD in profits. All calculations are transparent and based on actual deposit/withdrawal data from the casino.',
     change24h: 'Change 24h',
+    clearButton: 'Clear',
     comprehensiveAnalysis: 'Comprehensive Analysis',
     configureNode:
       'Configure your custom node endpoint. Leave empty to use the default public node.',
@@ -97,6 +115,7 @@ export const translations: Record<Language, Record<string, string>> = {
       'Local nodes (127.0.0.1) may fail the browser test due to CORS restrictions, but will still work within the application. Public HTTPS nodes work best for browser testing.',
     corsRestriction:
       'Local nodes (127.0.0.1) may fail the browser test due to CORS restrictions, but will still work within the application. Public HTTPS nodes work best for browser testing.',
+    country: 'Country',
     cumulativePercent: 'Cumulative %',
     currentHeight: 'Current Height',
 
@@ -124,17 +143,25 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Popular Features
     distributionAnalysis: 'Distribution Analysis',
+    edgeIsTransfer: 'Edge = transfer',
     enabled: 'Enabled',
     ensureCorrectAssetId: '• Ensure the asset ID is correct',
     enterAddress: 'Enter address...',
     enterAssetId: 'Enter asset ID...',
     enterTransactionId: 'Enter transaction ID...',
+    errorBuildingGraph: 'Error building the transaction graph',
+    errorFailedToBuildGraph: 'Failed to build the transaction graph.',
+    errorFailedToRenderGraph: 'Failed to render the transaction graph.',
+    errorInvalidAddressFormat: 'Invalid address format.',
     errorOccurred: 'Error',
+    errorRenderingGraph: 'Error rendering the transaction graph',
+    errorRootAddressRequired: 'Enter a starting address.',
     exploreDexPairs: 'Explore all available trading pairs on the decentralized exchange',
     // distributionAnalysis: "Distribution Analysis", - ALREADY EXISTS
     exploreHolderDistribution: 'Explore Holder Distribution',
     failedToFetchData: 'Failed to fetch data.',
     failedToLoadAsset: 'Failed to load asset',
+    failedToLoadTransaction: 'Failed to load transaction',
     // fee: "Fee", - ALREADY EXISTS
     failedToLoadUnconfirmed: 'Failed to load unconfirmed transactions',
     fee: 'Fee',
@@ -150,6 +177,7 @@ export const translations: Record<Language, Record<string, string>> = {
     geographicalDistribution: 'Geographical distribution of connected peers',
     geolocatedPeers: 'Geolocated Peers',
     giniCoefficient: 'Gini Coefficient',
+    graphConfigurationTitle: 'Graph Configuration',
     height: 'Height',
     heightOptional: 'Height (Optional)',
     hideTransactions: 'Hide Transactions',
@@ -158,7 +186,9 @@ export const translations: Record<Language, Record<string, string>> = {
     historyReplier: 'History Replier',
     holderList: 'Holder List',
     holderTiers: 'Holder Tiers',
+    hopsExploredLabel: 'Hops Explored',
     inactive: 'Inactive',
+    initializingProgress: 'Initializing…',
     issuer: 'Issuer',
     lastBlock: 'Last Block',
     lastPrice: 'Last Price',
@@ -166,6 +196,14 @@ export const translations: Record<Language, Record<string, string>> = {
     latestBlock: 'Latest Block',
     launchDistributionTool: 'Launch Distribution Tool',
     leaseId: 'Lease ID',
+    leases: 'Leases',
+    legendClickEdge: 'Click an edge to copy its transaction ID.',
+    legendClickNode: 'Click a node to copy its address.',
+    legendDragNodes: 'Drag nodes to rearrange the graph.',
+    legendEdgeWidth: 'Edge width reflects the amount transferred.',
+    legendNodeSize: 'Node size reflects the volume the address moved.',
+    legendTitle: 'Legend',
+    live: 'Live',
 
     // BlockFeed
     liveBlockFeed: 'Live Block Feed',
@@ -174,9 +212,11 @@ export const translations: Record<Language, Record<string, string>> = {
     low24h: '24h Low',
     lowConcentration: 'Low concentration',
     maxBlockSize: 'Max Block Size',
+    maxHopsLabel: 'Max Hops (1-4)',
     mediumConcentration: 'Medium concentration',
     monitoringNewBlocks: 'Monitoring for new blocks',
     morePagesLoading: 'More pages loading...',
+    mostActiveAssets: 'Most Active Assets',
     networkMap: 'Network Map',
 
     // NetworkMap - new additions
@@ -195,6 +235,7 @@ export const translations: Record<Language, Record<string, string>> = {
     newUsers: 'New Users',
     next: 'Next',
     nftCollection: 'NFT Collection',
+    nfts: 'NFTs',
     no: 'No',
     noActiveLeases: 'No active leases',
 
@@ -209,6 +250,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Node - new additions
     nodeInformationTitle: 'Node Information',
+    nodeIsAddress: 'Node = address',
 
     // Node Configuration
 
@@ -219,6 +261,7 @@ export const translations: Record<Language, Record<string, string>> = {
     noPeersFound: 'No peers found',
     noResultsFound: 'No results found.',
     noTradingPairs: 'No trading pairs available',
+    noTransactionsFound: 'No transactions found',
     noTransactionsInBlock: 'No transactions in this block',
     noTransactionsMatch: 'No transactions match your search',
     noUnconfirmedTransactions: 'No unconfirmed transactions',
@@ -232,6 +275,7 @@ export const translations: Record<Language, Record<string, string>> = {
     pendingTransactions: 'Pending Transactions',
     prev: 'Prev',
     previous: 'Previous',
+    processingAddressProgress: 'Hop {hop}: processed {processed} of {totalRemaining} addresses…',
     rank: 'Rank',
     rawAssetData: 'Raw Asset Data',
     rawNodeData: 'Raw Node Data',
@@ -255,6 +299,7 @@ export const translations: Record<Language, Record<string, string>> = {
       'Manage cached report data. When reports are updated or regenerated, you can clear the cache to force all users to fetch the latest versions.',
     resumeFeed: 'Resume Feed',
     reward: 'Reward',
+    rootAddressLabel: 'Starting Address',
 
     // Search
     search: 'Search',
@@ -279,6 +324,7 @@ export const translations: Record<Language, Record<string, string>> = {
     simulatedData:
       'This map uses simulated geolocation data for demonstration purposes. In a production environment, peer IP addresses would be geolocated using a dedicated geolocation service. The actual locations may differ significantly.',
     snapshotAt: 'Snapshot at height {height}',
+    startingAddressPlaceholder: 'DCC address to start from',
     stateHeight: 'State Height',
 
     // Transaction Types
@@ -310,6 +356,7 @@ export const translations: Record<Language, Record<string, string>> = {
     transactionDetails: 'Transaction Details',
 
     transactionDistribution: 'Transaction Distribution (Network)',
+    transactionGraphTitle: 'Transaction Graph',
     transactionHistoryUnavailable:
       'Transaction history is currently unavailable. The recent transactions API endpoint is not responding.',
     transactionId: 'Transaction ID',
@@ -330,10 +377,14 @@ export const translations: Record<Language, Record<string, string>> = {
     transactionVolume: 'Transaction Volume',
     transactionVolumeTrend: 'Transaction Volume Trend (Last 24h Estimate)',
     transferred: 'transferred',
+    transfersCountLabel: 'Transfers',
+    treatAsNativeLabel: 'Treat as native DCC',
     troubleshooting: 'Troubleshooting:',
     tryAgain: 'Try Again',
     tryOlderHeight: "• Try a height that's {buffer}+ blocks behind current height {current}",
     txAbbreviation: 'tx',
+    txIdCopied: 'Transaction ID copied',
+    txPerAddressLimitLabel: 'Transactions per Address (50-500)',
     txs: 'Txs',
     txsShort: 'tx',
     type: 'Type',
@@ -344,7 +395,9 @@ export const translations: Record<Language, Record<string, string>> = {
     uniqueAddresses: 'Unique Addresses (All Pages)',
     uniqueAssetsTraded: 'Unique Assets Traded',
     units: 'units',
+    unknownAsset: 'Unknown asset',
     unknownNode: 'Unknown Node',
+    unnamedAsset: 'Unnamed asset',
     unnamedNFT: 'Unnamed NFT',
     updatedDate: 'Updated Date',
     updatedTimestamp: 'Updated Timestamp',
@@ -364,6 +417,8 @@ export const translations: Record<Language, Record<string, string>> = {
     // TransactionMap
     visualizeTransactionFlow: 'Visualize transaction flow between addresses',
     volume24h: 'Volume 24h',
+    warningFailedToFetchTxs: 'Failed to fetch transactions for {address}: {message}',
+    warningSkippingInvalidAddress: 'Skipping invalid address {address}',
 
     withdrawalSubmitted:
       'Withdrawal request submitted successfully! An admin will process your request shortly.',
@@ -379,8 +434,18 @@ export const translations: Record<Language, Record<string, string>> = {
     activeLeases: 'Arrendamientos Activos',
     address: 'Dirección',
     addressColon: 'Dirección:',
+    // ── Claves usadas por las páginas que no estaban definidas (AUD-071) ──
+    addressCopied: 'Dirección copiada',
     addressDetails: 'Detalles de la Dirección',
+    addressesCountLabel: 'Direcciones',
     advancedAnalytics: 'Análisis avanzado y métricas de rendimiento',
+    alertHeightMinOne: 'La altura debe ser 1 o mayor.',
+    alertHeightTooOld:
+      'La altura {inputHeight} es más antigua de lo que el nodo puede servir. Los nodos conservan los últimos {maxRollback} bloques; usa la altura {absoluteMinHeight} o posterior.',
+    alertHeightTooRecent:
+      'La altura {inputHeight} es demasiado reciente. Mantente al menos {buffer} bloques por debajo de la altura actual ({current}): usa la altura {safeMaxHeight} o anterior.',
+    alertWaitForHeight:
+      'La altura de bloque actual aún se está cargando. Inténtalo de nuevo en un momento.',
     allKnownPeers: 'Todos los Pares Conocidos',
     allPeers: 'Todos los Pares',
     allTradingPairs: 'Todos los Pares de Trading',
@@ -406,6 +471,8 @@ export const translations: Record<Language, Record<string, string>> = {
     // DistributionTool
     assetDistributionTool: 'Herramienta de Distribución de Activos',
     assetId: 'ID de Activo',
+    assetIdLabel: 'ID del activo',
+    assetIdPlaceholder: 'ID del activo (déjalo vacío para DCC)',
     assetInformation: 'Información del Activo',
 
     assetLogoDesc:
@@ -418,6 +485,9 @@ export const translations: Record<Language, Record<string, string>> = {
     avgTxPerBlock: 'Prom. Tx por Bloque',
     back: 'Atrás',
     balance: 'Saldo',
+    balanceHuman: 'Saldo',
+    balanceRaw: 'Saldo (unidades base)',
+    balances: 'Saldos',
     blacklisted: 'Lista Negra',
 
     // Connection Status
@@ -434,9 +504,12 @@ export const translations: Record<Language, Record<string, string>> = {
 
     blockHeight: 'Altura de Bloque',
     blockId: 'ID del Bloque',
+    blockSize: 'Tamaño del bloque',
     blocks: 'Bloques',
     blocksAnalyzed: 'Bloques Analizados',
     blockTime: 'Tiempo de Bloque (Últimos 50 Bloques)',
+    buildingButton: 'Construyendo…',
+    buildMapButton: 'Construir mapa',
     bytes: 'Bytes',
     cacheInfo1:
       'Los reportes se almacenan en caché durante 24 horas después de la primera obtención',
@@ -446,6 +519,7 @@ export const translations: Record<Language, Record<string, string>> = {
     change24h: 'Cambio 24h',
     clearAllCacheDesc:
       'Limpiar TODOS los datos en caché en toda la aplicación (usar con precaución)',
+    clearButton: 'Limpiar',
     // nodeInformation: "Información del Nodo", - ALREADY EXISTS
     clickNodesForDetails:
       'Haz clic en los nodos para ver más detalles sobre direcciones y transacciones',
@@ -469,6 +543,7 @@ export const translations: Record<Language, Record<string, string>> = {
       'Los nodos locales (127.0.0.1) pueden fallar la prueba del navegador debido a restricciones CORS, pero seguirán funcionando dentro de la aplicación. Los nodos públicos HTTPS funcionan mejor para pruebas en navegador.',
     corsRestriction:
       'Los nodos locales (127.0.0.1) pueden fallar la prueba del navegador debido a restricciones CORS, pero seguirán funcionando dentro de la aplicación. Los nodos públicos HTTPS funcionan mejor para pruebas en navegador.',
+    country: 'País',
     cumulativePercent: '% Acumulativo',
     currentHeight: 'Altura Actual',
 
@@ -496,18 +571,26 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Popular Features
     distributionAnalysis: 'Análisis de Distribución',
+    edgeIsTransfer: 'Arista = transferencia',
     enabled: 'Habilitado',
     ensureCorrectAssetId: '• Asegúrese de que el ID del activo sea correcto',
     enterAddress: 'Ingrese dirección...',
     enterAssetId: 'Ingresa el ID de activo...',
     enterTransactionId: 'Ingrese ID de transacción...',
+    errorBuildingGraph: 'Error al construir el grafo de transacciones',
+    errorFailedToBuildGraph: 'No se pudo construir el grafo de transacciones.',
+    errorFailedToRenderGraph: 'No se pudo dibujar el grafo de transacciones.',
+    errorInvalidAddressFormat: 'Formato de dirección no válido.',
     errorOccurred: 'Error',
+    errorRenderingGraph: 'Error al dibujar el grafo de transacciones',
+    errorRootAddressRequired: 'Ingresa una dirección de inicio.',
     exploreDexPairs:
       'Explora todos los pares de trading disponibles en el exchange descentralizado',
     // distributionAnalysis: "Análisis de Distribución", - ALREADY EXISTS
     exploreHolderDistribution: 'Explorar Distribución de Tenedores',
     failedToFetchData: 'Error al obtener datos.',
     failedToLoadAsset: 'Error al cargar activo',
+    failedToLoadTransaction: 'No se pudo cargar la transacción',
     // fee: "Tarifa", - ALREADY EXISTS
     failedToLoadUnconfirmed: 'Error al cargar transacciones no confirmadas',
     fee: 'Tarifa',
@@ -523,6 +606,7 @@ export const translations: Record<Language, Record<string, string>> = {
     geographicalDistribution: 'Distribución geográfica de pares conectados',
     geolocatedPeers: 'Pares Geolocalizados',
     giniCoefficient: 'Coeficiente de Gini',
+    graphConfigurationTitle: 'Configuración del grafo',
     height: 'Altura',
     heightOptional: 'Altura (Opcional)',
     hideTransactions: 'Ocultar Transacciones',
@@ -531,7 +615,9 @@ export const translations: Record<Language, Record<string, string>> = {
     historyReplier: 'Replicador de Historial',
     holderList: 'Lista de Tenedores',
     holderTiers: 'Niveles de Tenedores',
+    hopsExploredLabel: 'Saltos explorados',
     inactive: 'Inactivo',
+    initializingProgress: 'Inicializando…',
     issuer: 'Emisor',
     lastBlock: 'Último Bloque',
     lastPrice: 'Último Precio',
@@ -539,6 +625,14 @@ export const translations: Record<Language, Record<string, string>> = {
     latestBlock: 'Bloque Más Reciente',
     launchDistributionTool: 'Lanzar Herramienta de Distribución',
     leaseId: 'ID de Arrendamiento',
+    leases: 'Arrendamientos',
+    legendClickEdge: 'Haz clic en una arista para copiar el ID de su transacción.',
+    legendClickNode: 'Haz clic en un nodo para copiar su dirección.',
+    legendDragNodes: 'Arrastra los nodos para reorganizar el grafo.',
+    legendEdgeWidth: 'El grosor de la arista refleja el monto transferido.',
+    legendNodeSize: 'El tamaño del nodo refleja el volumen que movió la dirección.',
+    legendTitle: 'Leyenda',
+    live: 'En vivo',
 
     // BlockFeed
     liveBlockFeed: 'Feed de Bloques en Vivo',
@@ -547,9 +641,11 @@ export const translations: Record<Language, Record<string, string>> = {
     low24h: 'Mínimo 24h',
     lowConcentration: 'Baja concentración',
     maxBlockSize: 'Tamaño Máximo de Bloque',
+    maxHopsLabel: 'Saltos máximos (1-4)',
     mediumConcentration: 'Concentración media',
     monitoringNewBlocks: 'Monitoreando nuevos bloques',
     morePagesLoading: 'Cargando más páginas...',
+    mostActiveAssets: 'Activos más activos',
     networkMap: 'Mapa de Red',
 
     // NetworkMap - new additions
@@ -568,6 +664,7 @@ export const translations: Record<Language, Record<string, string>> = {
     newUsers: 'Nuevos Usuarios',
     next: 'Siguiente',
     nftCollection: 'Colección de NFT',
+    nfts: 'NFTs',
     no: 'No',
     noActiveLeases: 'No hay arrendamientos activos',
 
@@ -582,6 +679,7 @@ export const translations: Record<Language, Record<string, string>> = {
 
     // Node - new additions
     nodeInformationTitle: 'Información del Nodo',
+    nodeIsAddress: 'Nodo = dirección',
 
     // Node Configuration
 
@@ -592,6 +690,7 @@ export const translations: Record<Language, Record<string, string>> = {
     noPeersFound: 'No se encontraron pares',
     noResultsFound: 'No se encontraron resultados.',
     noTradingPairs: 'No hay pares de trading disponibles',
+    noTransactionsFound: 'No se encontraron transacciones',
     noTransactionsInBlock: 'No hay transacciones en este bloque',
     noTransactionsMatch: 'Ninguna transacción coincide con tu búsqueda',
     noUnconfirmedTransactions: 'No hay transacciones no confirmadas',
@@ -605,6 +704,8 @@ export const translations: Record<Language, Record<string, string>> = {
     pendingTransactions: 'Transacciones Pendientes',
     prev: 'Anterior',
     previous: 'Anterior',
+    processingAddressProgress:
+      'Salto {hop}: procesadas {processed} de {totalRemaining} direcciones…',
     rank: 'Rango',
     rawAssetData: 'Datos Crudos del Activo',
     rawNodeData: 'Datos Crudos del Nodo',
@@ -628,6 +729,7 @@ export const translations: Record<Language, Record<string, string>> = {
       'Gestionar datos de reportes en caché. Cuando los reportes se actualicen o regeneren, puede limpiar el caché para obligar a todos los usuarios a obtener las últimas versiones.',
     resumeFeed: 'Reanudar Feed',
     reward: 'Recompensa',
+    rootAddressLabel: 'Dirección de inicio',
     search: 'Buscar',
 
     // Address
@@ -654,6 +756,7 @@ export const translations: Record<Language, Record<string, string>> = {
     simulatedData:
       'Este mapa utiliza datos de geolocalización simulados con fines demostrativos. En un entorno de producción, las direcciones IP de los pares se geolocalizarían utilizando un servicio de geolocalización dedicado. Las ubicaciones reales pueden diferir significativamente.',
     snapshotAt: 'Instantánea en altura {height}',
+    startingAddressPlaceholder: 'Dirección DCC desde la que empezar',
     stateHeight: 'Altura de Estado',
 
     // Transaction Types
@@ -688,6 +791,7 @@ export const translations: Record<Language, Record<string, string>> = {
     transactionDetails: 'Detalles de la Transacción',
 
     transactionDistribution: 'Distribución de Transacciones (Red)',
+    transactionGraphTitle: 'Grafo de transacciones',
     transactionHistoryUnavailable:
       'El historial de transacciones no está disponible actualmente. El endpoint de la API de transacciones recientes no responde.',
     transactionId: 'ID de Transacción',
@@ -708,6 +812,8 @@ export const translations: Record<Language, Record<string, string>> = {
     transactionVolume: 'Volumen de Transacciones',
     transactionVolumeTrend: 'Tendencia de Volumen de Transacciones (Estimación Últimas 24h)',
     transferred: 'transferido',
+    transfersCountLabel: 'Transferencias',
+    treatAsNativeLabel: 'Tratar como DCC nativo',
     troubleshooting: 'Resolución de problemas:',
     tryAgain: 'Intentar de Nuevo',
     tryHeightBehind:
@@ -715,6 +821,8 @@ export const translations: Record<Language, Record<string, string>> = {
     tryOlderHeight:
       '• Intente con una altura que esté {buffer}+ bloques detrás de la altura actual {current}',
     txAbbreviation: 'tx',
+    txIdCopied: 'ID de transacción copiado',
+    txPerAddressLimitLabel: 'Transacciones por dirección (50-500)',
     txs: 'Txs',
     txsShort: 'tx',
     type: 'Tipo',
@@ -725,7 +833,9 @@ export const translations: Record<Language, Record<string, string>> = {
     uniqueAddresses: 'Direcciones Únicas (Todas las Páginas)',
     uniqueAssetsTraded: 'Activos Únicos Comerciados',
     units: 'unidades',
+    unknownAsset: 'Activo desconocido',
     unknownNode: 'Nodo Desconocido',
+    unnamedAsset: 'Activo sin nombre',
     unnamedNFT: 'NFT Sin Nombre',
     updatedDate: 'Fecha de Actualización',
     updatedTimestamp: 'Marca de Tiempo Actualizada',
@@ -749,6 +859,8 @@ export const translations: Record<Language, Record<string, string>> = {
     // TransactionMap
     visualizeTransactionFlow: 'Visualizar el flujo de transacciones entre direcciones',
     volume24h: 'Volumen 24h',
+    warningFailedToFetchTxs: 'No se pudieron obtener las transacciones de {address}: {message}',
+    warningSkippingInvalidAddress: 'Se omite la dirección no válida {address}',
     withdrawalSubmitted:
       '¡Solicitud de retiro enviada exitosamente! Un administrador procesará tu solicitud pronto.',
     yes: 'Sí',
