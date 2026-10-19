@@ -1,6 +1,14 @@
 import { issue } from '@decentralchain/transactions';
 import { create } from '../../src';
-import { CHAIN_ID, DAP_SCRIPT, MASTER_ACCOUNT, NODE_URL } from '../_state';
+import {
+  API_KEY_OPTIONS,
+  CHAIN_ID,
+  DAP_SCRIPT,
+  MASTER_ACCOUNT,
+  NO_API_KEY_REASON,
+  NODE_URL,
+  SKIP_NO_API_KEY,
+} from '../_state';
 
 const api: ReturnType<typeof create> = create(NODE_URL);
 
@@ -42,13 +50,14 @@ it('time', async () => {
   expect(typeof nodeTime.system).toBe('number');
 });
 
-it('generate seed with length', async () => {
-  const seed = await api.utils.fetchSeed(10);
+// /utils/seed requires the node API key (node >= 1.8.0). Skipped, never silently passed, without it.
+it.skipIf(SKIP_NO_API_KEY)(`generate seed with length (${NO_API_KEY_REASON})`, async () => {
+  const seed = await api.utils.fetchSeed(10, API_KEY_OPTIONS);
   expect(typeof seed.seed).toBe('string');
 });
 
-it('generate seed', async () => {
-  const seed = await api.utils.fetchSeed();
+it.skipIf(SKIP_NO_API_KEY)(`generate seed (${NO_API_KEY_REASON})`, async () => {
+  const seed = await api.utils.fetchSeed(undefined, API_KEY_OPTIONS);
   expect(typeof seed.seed).toBe('string');
 });
 

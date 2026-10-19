@@ -11,6 +11,15 @@
 
 export const NODE_URL = process.env.DCC_NODE_URL ?? 'https://mainnet-node.decentralchain.io';
 export const CHAIN_ID = process.env.DCC_CHAIN_ID ?? 'D';
+/**
+ * Node REST API key, needed by wallet-backed endpoints (/addresses, /addresses/seq, /utils/seed).
+ * Read from the environment only; tests that need it are skipped, with a stated reason, when unset.
+ */
+export const API_KEY = process.env.DCC_API_KEY ?? '';
+export const API_KEY_OPTIONS: RequestInit = API_KEY ? { headers: { 'X-API-Key': API_KEY } } : {};
+export const SKIP_NO_API_KEY = API_KEY === '';
+export const NO_API_KEY_REASON = 'DCC_API_KEY is not set: this endpoint requires the node API key';
+
 export const NETWORK_BYTE = CHAIN_ID.charCodeAt(0);
 
 export const MASTER_ACCOUNT = {

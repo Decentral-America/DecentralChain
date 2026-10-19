@@ -1,6 +1,13 @@
 import { create } from '../../src';
 import { fetchScriptInfo, type IScriptInfo } from '../../src/api-node/addresses';
-import { MASTER_ACCOUNT, NODE_URL, STATE } from '../_state';
+import {
+  API_KEY_OPTIONS,
+  MASTER_ACCOUNT,
+  NO_API_KEY_REASON,
+  NODE_URL,
+  SKIP_NO_API_KEY,
+  STATE,
+} from '../_state';
 
 const api: ReturnType<typeof create> = create(NODE_URL);
 const largeNumbeConvertHeader = {
@@ -191,12 +198,21 @@ it('effective balance confirmations, long as string', async () => {
   expect(balanceConfirmations.confirmations).toBe(confirmations);
 });
 
-it('wallet addressed', async () => {
+// /addresses and /addresses/seq require the node API key (node >= 1.8.0). Skipped, never silently
+// passed, without it.
+it.skipIf(SKIP_NO_API_KEY)(`wallet addressed (${NO_API_KEY_REASON})`, async () => {
   const address = MASTER_ACCOUNT.ADDRESS;
-  const walletAddresses = await api.addresses.fetchAddresses();
+  const walletAddresses = await api.addresses.fetchAddresses(API_KEY_OPTIONS);
 
   expect(walletAddresses).toBeInstanceOf(Array);
   expect(walletAddresses[0]).toBe(address);
+});
+
+it.skipIf(SKIP_NO_API_KEY)(`wallet addresses by index (${NO_API_KEY_REASON})`, async () => {
+  const walletAddresses = await api.addresses.fetchSeq(0, 1, API_KEY_OPTIONS);
+
+  expect(walletAddresses).toBeInstanceOf(Array);
+  expect(walletAddresses[0]).toBe(MASTER_ACCOUNT.ADDRESS);
 });
 
 it('validate address, valid address', async () => {
