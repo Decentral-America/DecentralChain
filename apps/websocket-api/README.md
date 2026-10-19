@@ -45,9 +45,11 @@ Error codes: `1` invalid message, `2` already subscribed, `3` invalid topic,
 - **Subscriptions per connection:** `MAX_SUBSCRIPTIONS_PER_CLIENT` direct
   subscriptions, and `MAX_INDIRECT_SUBTOPICS_PER_CLIENT` keys reached through
   multi-topics (error code 4 beyond either).
-- **Multi-topic size:** at most 20 addresses, 20 key patterns and 1000 resolved keys.
+- **Multi-topic size:** at most 20 addresses, 20 key patterns and 1000 resolved
+  keys; one resolution examines at most 50000 indexed keys across its addresses.
 - **Resolution load:** at most `MULTITOPIC_RESOLVE_CONCURRENCY` multi-topic
-  resolutions run against Redis at once.
+  resolutions run against Redis at once, and each connection may start at most
+  10 multi-topic subscribes per 10 seconds (error code 4 beyond any of these).
 
 ## Configuration (environment)
 

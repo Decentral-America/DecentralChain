@@ -20,6 +20,15 @@ pub fn state_index_key(address: &str) -> String {
     format!("topic://state-index/{address}")
 }
 
+/// Outcome of one [`Repo::state_index_scan`].
+#[derive(Debug, Default)]
+pub struct StateIndexScan {
+    /// Members `keep` accepted, at most `limit + 1`.
+    pub kept: Vec<String>,
+    /// Members read from the index, at most `max_examined + 1`.
+    pub examined: usize,
+}
+
 pub struct RepoConfig {
     pub host: String,
     pub port: u16,
@@ -75,15 +84,18 @@ pub trait Repo: Send + Sync {
 
     /// Members of the address's state index set (`topic://state-index/{address}`,
     /// written by BPS alongside every state key) for which `keep` returns true,
-    /// read incrementally with `SSCAN`. Stops once more than `limit` members are
-    /// kept and returns at most `limit + 1`, so callers can tell "exactly limit"
-    /// from "more".
+    /// read incrementally with `SSCAN`.
+    ///
+    /// Stops as soon as more than `limit` members are kept or more than
+    /// `max_examined` members have been examined, so `kept.len() > limit` and
+    /// `examined > max_examined` each mean "there is more than allowed".
     fn state_index_scan(
         &self,
         address: &str,
         keep: &(dyn Fn(&str) -> bool + Sync),
         limit: usize,
-    ) -> impl std::future::Future<Output = Result<Vec<String>, Error>> + Send;
+        max_examined: usize,
+    ) -> impl std::future::Future<Output = Result<StateIndexScan, Error>> + Send;
 
     fn refresh(
         &self,
@@ -168,31 +180,32 @@ impl Repo for RepoImpl {
         address: &str,
         keep: &(dyn Fn(&str) -> bool + Sync),
         limit: usize,
-    ) -> Result<Vec<String>, Error> {
+        max_examined: usize,
+    ) -> Result<StateIndexScan, Error> {
         let index_key = state_index_key(address);
         let mut pages = std::pin::pin!(self.pool.next().sscan(
             index_key,
             "*",
             Some(STATE_INDEX_SCAN_COUNT)
         ));
-        let mut kept = Vec::new();
-        while let Some(page) = pages.next().await {
+        let mut scan = StateIndexScan::default();
+        'pages: while let Some(page) = pages.next().await {
             let mut page = page?;
             for member in page.take_results().unwrap_or_default() {
+                scan.examined += 1;
                 if let Some(member) = member.as_str()
                     && keep(&member)
                 {
-                    kept.push(member.into_owned());
+                    scan.kept.push(member.into_owned());
                 }
-            }
-            if kept.len() > limit {
-                page.cancel();
-                break;
+                if scan.kept.len() > limit || scan.examined > max_examined {
+                    page.cancel();
+                    break 'pages;
+                }
             }
             // Dropping `page` requests the next one (fred continues the SSCAN cursor).
         }
-        kept.truncate(limit.saturating_add(1));
-        Ok(kept)
+        Ok(scan)
     }
 
     async fn refresh(&self, mut topics: Vec<Topic>) -> Result<HashMap<Topic, Instant>, Error> {

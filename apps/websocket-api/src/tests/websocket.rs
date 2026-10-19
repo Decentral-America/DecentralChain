@@ -18,11 +18,11 @@ use axum_test::WsMessage;
 use serde_json::{Value, json};
 use tokio::sync::{Semaphore, mpsc};
 
-use crate::websocket::MAX_MULTITOPIC_SUBTOPICS;
+use crate::websocket::{MAX_MULTITOPIC_INDEX_MEMBERS, MAX_MULTITOPIC_SUBTOPICS};
 
 use crate::client::{ClientId, Clients, Topics};
 use crate::error::Error;
-use crate::repo::Repo;
+use crate::repo::{Repo, StateIndexScan};
 use crate::shard::Sharded;
 use crate::topic::Topic;
 use crate::websocket::{self, HandleConnectionOptions};
@@ -59,13 +59,15 @@ impl Repo for MockRepo {
         Ok(vec![Some("\"mocked_value\"".to_owned()); keys.len()])
     }
     /// State index: two keys (`key_a`, `key_b`, plus a non-matching `other`) for the
-    /// test address, 1001 `big_*` keys for `3MBIG`, nothing for other addresses.
+    /// test address, 1001 `big_*` keys for `3MBIG`, one more than the per-resolution
+    /// examination cap for `3MHUGE`, nothing for other addresses.
     async fn state_index_scan(
         &self,
         address: &str,
         keep: &(dyn Fn(&str) -> bool + Sync),
         limit: usize,
-    ) -> Result<Vec<String>, Error> {
+        max_examined: usize,
+    ) -> Result<StateIndexScan, Error> {
         let members: Vec<String> = match address {
             "3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr" => ["key_a", "key_b", "other"]
                 .iter()
@@ -74,13 +76,22 @@ impl Repo for MockRepo {
             "3MBIG" => (0..1001)
                 .map(|i| format!("topic://state/{address}/big_{i}"))
                 .collect(),
+            "3MHUGE" => (0..=MAX_MULTITOPIC_INDEX_MEMBERS)
+                .map(|i| format!("topic://state/{address}/k_{i}"))
+                .collect(),
             _ => vec![],
         };
-        Ok(members
-            .into_iter()
-            .filter(|m| keep(m))
-            .take(limit.saturating_add(1))
-            .collect())
+        let mut scan = StateIndexScan::default();
+        for member in members {
+            scan.examined += 1;
+            if keep(&member) {
+                scan.kept.push(member);
+            }
+            if scan.kept.len() > limit || scan.examined > max_examined {
+                break;
+            }
+        }
+        Ok(scan)
     }
     async fn refresh(&self, topics: Vec<Topic>) -> Result<HashMap<Topic, Instant>, Error> {
         Ok(topics.into_iter().map(|t| (t, Instant::now())).collect())
@@ -141,6 +152,8 @@ fn options_with(max_subscriptions_per_client: usize) -> HandleConnectionOptions 
         max_indirect_subtopics_per_client: 5000,
         multitopic_permits: Arc::new(Semaphore::new(8)),
         multitopic_permit_timeout: Duration::from_millis(100),
+        max_multitopic_subscribes_per_window: 10,
+        multitopic_subscribe_window: Duration::from_secs(10),
     }
 }
 
@@ -611,4 +624,60 @@ async fn multitopic_over_indirect_cap_is_refused() {
     .await;
     assert_eq!(v["type"], "error", "got: {v}");
     assert_eq!(v["code"], 4u16);
+}
+
+/// A multi-topic whose address index holds more members than one resolution may
+/// examine is refused with error code 4, even when none of them match.
+#[tokio::test]
+async fn multitopic_examining_too_many_index_members_is_refused() {
+    assert_eq!(MAX_MULTITOPIC_INDEX_MEMBERS, 50_000);
+    let (server, _rx) = make_server();
+    let mut ws = server.get_websocket("/ws").await.into_websocket().await;
+    let v = subscribe_reply(
+        &mut ws,
+        "topic://state?address__in[]=3MHUGE&key__match_any[]=nomatch_*",
+    )
+    .await;
+    assert_eq!(v["type"], "error", "got: {v}");
+    assert_eq!(v["code"], 4u16);
+}
+
+/// Multi-topic subscribes are rate limited per connection: past the window's
+/// budget a subscribe is refused with error code 4; single topics are unaffected.
+#[tokio::test]
+async fn multitopic_subscribes_are_rate_limited_per_connection() {
+    let mut options = options_with(100);
+    options.max_multitopic_subscribes_per_window = 2;
+    options.multitopic_subscribe_window = Duration::from_secs(60);
+    let (server, _rx) = make_server_opts(options);
+    let mut ws = server.get_websocket("/ws").await.into_websocket().await;
+    let addr = "3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr";
+
+    for pattern in ["key_*", "key*"] {
+        let v = subscribe_reply(
+            &mut ws,
+            &format!("topic://state?address__in[]={addr}&key__match_any[]={pattern}"),
+        )
+        .await;
+        assert_eq!(v["type"], "subscribed", "got: {v}");
+    }
+    let v = subscribe_reply(
+        &mut ws,
+        &format!("topic://state?address__in[]={addr}&key__match_any[]=k*"),
+    )
+    .await;
+    assert_eq!(v["type"], "error", "got: {v}");
+    assert_eq!(v["code"], 4u16);
+
+    let v = subscribe_reply(&mut ws, &format!("topic://state/{addr}/single")).await;
+    assert_eq!(v["type"], "subscribed", "got: {v}");
+
+    // A second connection has its own budget.
+    let mut ws2 = server.get_websocket("/ws").await.into_websocket().await;
+    let v = subscribe_reply(
+        &mut ws2,
+        &format!("topic://state?address__in[]={addr}&key__match_any[]=k*"),
+    )
+    .await;
+    assert_eq!(v["type"], "subscribed", "got: {v}");
 }

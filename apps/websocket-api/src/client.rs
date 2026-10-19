@@ -7,9 +7,9 @@ use crate::topic::{StateMulti, StateSingle, Topic};
 use axum::extract::ws::Message;
 use prometheus::HistogramTimer;
 use serde::{Deserialize, Serialize};
-use std::collections::{BTreeSet, HashMap, HashSet};
+use std::collections::{BTreeSet, HashMap, HashSet, VecDeque};
 use std::sync::Arc;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 use tokio::sync::{Mutex, RwLock};
 
 pub type ClientId = usize;
@@ -58,6 +58,8 @@ pub struct Client {
     subscriptions: HashMap<Topic, ClientSubscriptionData>,
     /// Number of (subtopic, parent multi-topic) indirect subscriptions held.
     indirect_count: usize,
+    /// Start times of this connection's recent multi-topic subscribes (rate limit).
+    multitopic_subscribes: VecDeque<Instant>,
     request_id: Option<String>,
 }
 
@@ -133,7 +135,29 @@ impl Client {
             request_id,
             subscriptions: HashMap::new(),
             indirect_count: 0,
+            multitopic_subscribes: VecDeque::new(),
         }
+    }
+
+    /// Records a multi-topic subscribe at `now` if fewer than `max` were recorded
+    /// within the trailing `window`; returns false (recording nothing) otherwise.
+    pub fn try_record_multitopic_subscribe(
+        &mut self,
+        now: Instant,
+        max: usize,
+        window: Duration,
+    ) -> bool {
+        while let Some(&oldest) = self.multitopic_subscribes.front() {
+            if now.saturating_duration_since(oldest) < window {
+                break;
+            }
+            self.multitopic_subscribes.pop_front();
+        }
+        if self.multitopic_subscribes.len() >= max {
+            return false;
+        }
+        self.multitopic_subscribes.push_back(now);
+        true
     }
 
     pub fn graceful_kill(&mut self) {
@@ -711,6 +735,28 @@ impl ClientIdsByTopics {
             .collect()
     }
 
+    /// Whether [`Self::multitopics_gaining`] would return anything, without
+    /// cloning subtopic sets or subscriber lists (the hot path for every state
+    /// update, evaluated under the topics read lock).
+    pub fn any_multitopic_gaining(
+        &self,
+        topic: &Topic,
+        single: &StateSingle,
+        max_subtopics: usize,
+    ) -> bool {
+        let Some(candidates) = self.multitopics_by_address.get(&single.address) else {
+            return false;
+        };
+        candidates.iter().any(|mt| {
+            self.topics.get(mt).is_some_and(|info| {
+                !info.clients.is_empty()
+                    && !info.subtopics.contains(topic)
+                    && info.subtopics.len() < max_subtopics
+                    && info.filter.as_ref().is_some_and(|f| f.matches(single))
+            })
+        })
+    }
+
     #[cfg(test)]
     fn multitopic_index_len(&self) -> usize {
         self.multitopics_by_address.len()
@@ -866,6 +912,58 @@ mod tests {
                 .multitopics_gaining(&new_key, &single, 1000)
                 .is_empty()
         );
+        Ok(())
+    }
+
+    #[test]
+    fn multitopic_subscribe_rate_limit_slides_with_the_window() {
+        let (tx, _rx) = tokio::sync::mpsc::unbounded_channel();
+        let (kill_tx, _kill_rx) = tokio::sync::oneshot::channel();
+        let mut client = Client::new(1, tx, kill_tx, None);
+        let window = Duration::from_secs(10);
+        let t0 = Instant::now();
+        assert!(client.try_record_multitopic_subscribe(t0, 2, window));
+        assert!(client.try_record_multitopic_subscribe(t0 + Duration::from_secs(1), 2, window));
+        assert!(!client.try_record_multitopic_subscribe(t0 + Duration::from_secs(9), 2, window));
+        // The first entry leaves the window at t0 + 10 s.
+        assert!(client.try_record_multitopic_subscribe(t0 + Duration::from_secs(10), 2, window));
+        assert!(!client.try_record_multitopic_subscribe(t0 + Duration::from_secs(10), 2, window));
+    }
+
+    #[test]
+    fn any_multitopic_gaining_agrees_with_multitopics_gaining()
+    -> Result<(), Box<dyn std::error::Error>> {
+        let mut store = ClientIdsByTopics::default();
+        let mt = Topic::parse_str("topic://state?address__in[]=3MA&key__match_any[]=bal_*")?;
+        let new_key = Topic::parse_str("topic://state/3MA/bal_1")?;
+        let single = new_key.data().as_state_single().ok_or("single")?;
+        let other = Topic::parse_str("topic://state/3MA/other")?;
+        let other_single = other.data().as_state_single().ok_or("single")?;
+        let unindexed = Topic::parse_str("topic://state/3MZ/bal_1")?;
+        let unindexed_single = unindexed.data().as_state_single().ok_or("single")?;
+
+        // Registered but no direct subscriber yet: nothing gains.
+        let _ = store.update_multitopic_info(mt.clone(), HashSet::new());
+        assert!(!store.any_multitopic_gaining(&new_key, &single, 1000));
+
+        store.add_subscription(mt.clone(), 1, ClientSubscriptionKey::new("k"));
+        for (topic, s, cap) in [
+            (&new_key, &single, 1000),
+            (&new_key, &single, 0),
+            (&other, &other_single, 1000),
+            (&unindexed, &unindexed_single, 1000),
+        ] {
+            assert_eq!(
+                store.any_multitopic_gaining(topic, s, cap),
+                !store.multitopics_gaining(topic, s, cap).is_empty(),
+                "{topic} cap={cap}"
+            );
+        }
+        assert!(store.any_multitopic_gaining(&new_key, &single, 1000));
+
+        // Once the key is part of the resolved set, it no longer gains.
+        let _ = store.update_multitopic_info(mt, HashSet::from([new_key.clone()]));
+        assert!(!store.any_multitopic_gaining(&new_key, &single, 1000));
         Ok(())
     }
 

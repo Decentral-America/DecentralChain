@@ -26,6 +26,9 @@ const SUBSCRIPTION_LIMIT_ERROR_CODE: u16 = 4;
 pub const MAX_MULTITOPIC_ADDRESSES: usize = 20;
 pub const MAX_MULTITOPIC_KEY_PATTERNS: usize = 20;
 pub const MAX_MULTITOPIC_SUBTOPICS: usize = 1000;
+/// Total state-index members one multi-topic resolution may examine across all
+/// of its addresses, matching or not.
+pub const MAX_MULTITOPIC_INDEX_MEMBERS: usize = 50_000;
 
 #[derive(Clone, Debug)]
 pub struct HandleConnectionOptions {
@@ -39,6 +42,11 @@ pub struct HandleConnectionOptions {
     pub multitopic_permits: Arc<Semaphore>,
     /// How long a multi-topic subscribe waits for a permit before it is refused.
     pub multitopic_permit_timeout: std::time::Duration,
+    /// Per-connection cap on multi-topic subscribes within
+    /// `multitopic_subscribe_window`, so one client cannot keep the shared
+    /// resolution permits busy.
+    pub max_multitopic_subscribes_per_window: usize,
+    pub multitopic_subscribe_window: std::time::Duration,
 }
 
 /// Shared state for an active WebSocket connection, passed to the inner run loop.
@@ -270,6 +278,19 @@ async fn handle_income_message<R: Repo>(
                 }
                 if topic.is_multi_topic() && lock.indirect_subscriptions_count() >= max_indirect {
                     return Err(indirect_limit_error(max_indirect));
+                }
+                if topic.is_multi_topic()
+                    && !lock.try_record_multitopic_subscribe(
+                        Instant::now(),
+                        options.max_multitopic_subscribes_per_window,
+                        options.multitopic_subscribe_window,
+                    )
+                {
+                    return Err(Error::SubscriptionLimit(format!(
+                        "at most {} multi-topic subscribes per {} s per connection",
+                        options.max_multitopic_subscribes_per_window,
+                        options.multitopic_subscribe_window.as_secs()
+                    )));
                 }
             }
 
@@ -684,8 +705,12 @@ pub async fn updates_handler<R: Repo>(
 /// Reads each address's state index set once (`SSCAN`) and matches the key
 /// patterns locally, so the cost is bounded by the listed addresses' own keys,
 /// never by the whole keyspace. Refused once more than
-/// `MAX_MULTITOPIC_SUBTOPICS` keys match.
-async fn resolve_multitopic<R: Repo>(repo: &R, filter: &StateMulti) -> Result<Vec<String>, Error> {
+/// `MAX_MULTITOPIC_SUBTOPICS` keys match, or once more than
+/// `MAX_MULTITOPIC_INDEX_MEMBERS` index members have been examined in total.
+pub(crate) async fn resolve_multitopic<R: Repo>(
+    repo: &R,
+    filter: &StateMulti,
+) -> Result<Vec<String>, Error> {
     if filter.addresses.len() > MAX_MULTITOPIC_ADDRESSES
         || filter.key_patterns.len() > MAX_MULTITOPIC_KEY_PATTERNS
     {
@@ -706,9 +731,21 @@ async fn resolve_multitopic<R: Repo>(repo: &R, filter: &StateMulti) -> Result<Ve
             .is_some_and(|s| filter.matches(&s))
     };
     let mut found = std::collections::BTreeSet::new();
+    let mut examined = 0usize;
     for address in &filter.addresses {
         let remaining = MAX_MULTITOPIC_SUBTOPICS - found.len();
-        for member in repo.state_index_scan(address, &keep, remaining).await? {
+        // Never underflows: `examined` > the cap returns below.
+        let budget = MAX_MULTITOPIC_INDEX_MEMBERS - examined;
+        let scan = repo
+            .state_index_scan(address, &keep, remaining, budget)
+            .await?;
+        examined = examined.saturating_add(scan.examined);
+        if examined > MAX_MULTITOPIC_INDEX_MEMBERS {
+            return Err(Error::SubscriptionLimit(format!(
+                "a multi-topic may examine at most {MAX_MULTITOPIC_INDEX_MEMBERS} indexed keys"
+            )));
+        }
+        for member in scan.kept {
             if let Ok(topic) = Topic::parse_str(&member) {
                 found.insert(topic.to_string());
             }
@@ -734,11 +771,10 @@ async fn expand_multitopics(
     topics: &Topics,
     max_indirect: usize,
 ) {
-    if topics
+    if !topics
         .read()
         .await
-        .multitopics_gaining(topic, single, MAX_MULTITOPIC_SUBTOPICS)
-        .is_empty()
+        .any_multitopic_gaining(topic, single, MAX_MULTITOPIC_SUBTOPICS)
     {
         return;
     }

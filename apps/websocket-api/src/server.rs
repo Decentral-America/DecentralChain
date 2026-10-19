@@ -27,6 +27,9 @@ use crate::websocket;
 /// How long a multi-topic subscribe waits for a resolution permit before it is
 /// refused with the subscription-limit error.
 const MULTITOPIC_PERMIT_TIMEOUT: Duration = Duration::from_secs(2);
+/// Per-connection multi-topic subscribe budget: at most this many per window.
+const MULTITOPIC_SUBSCRIBES_PER_WINDOW: usize = 10;
+const MULTITOPIC_SUBSCRIBE_WINDOW: Duration = Duration::from_secs(10);
 
 pub struct ServerConfig {
     pub port: u16,
@@ -100,6 +103,8 @@ pub fn start<R: Repo + 'static>(
             usize::try_from(options.multitopic_resolve_concurrency).unwrap_or(1),
         )),
         multitopic_permit_timeout: MULTITOPIC_PERMIT_TIMEOUT,
+        max_multitopic_subscribes_per_window: MULTITOPIC_SUBSCRIBES_PER_WINDOW,
+        multitopic_subscribe_window: MULTITOPIC_SUBSCRIBE_WINDOW,
     });
 
     let max_conn = usize::try_from(options.max_connections).unwrap_or(usize::MAX);

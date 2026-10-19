@@ -10,7 +10,7 @@ use tokio::sync::{Mutex, mpsc};
 
 use crate::client::{Client, ClientId, ClientSubscriptionKey, Clients, Topics};
 use crate::error::Error;
-use crate::repo::Repo;
+use crate::repo::{Repo, StateIndexScan};
 use crate::shard::Sharded;
 use crate::topic::Topic;
 use crate::websocket::updates_handler;
@@ -38,8 +38,9 @@ impl Repo for NoRepo {
         _address: &str,
         _keep: &(dyn Fn(&str) -> bool + Sync),
         _limit: usize,
-    ) -> Result<Vec<String>, Error> {
-        Ok(vec![])
+        _max_examined: usize,
+    ) -> Result<StateIndexScan, Error> {
+        Ok(StateIndexScan::default())
     }
     async fn refresh(&self, topics: Vec<Topic>) -> Result<HashMap<Topic, Instant>, Error> {
         Ok(topics.into_iter().map(|t| (t, Instant::now())).collect())
