@@ -157,22 +157,6 @@ impl StateMulti {
         self.addresses.iter().any(|a| a == &single.address)
             && self.key_patterns.iter().any(|p| glob_match(p, &single.key))
     }
-
-    /// Redis `SCAN MATCH` patterns that cover every concrete topic this filter can
-    /// match (Redis glob specials other than `*` are escaped).
-    pub fn scan_patterns(&self) -> Vec<String> {
-        let mut out = Vec::with_capacity(self.addresses.len() * self.key_patterns.len());
-        for address in &self.addresses {
-            for pattern in &self.key_patterns {
-                out.push(format!(
-                    "topic://state/{}/{}",
-                    escape_redis_glob(address, false),
-                    escape_redis_glob(pattern, true)
-                ));
-            }
-        }
-        out
-    }
 }
 
 /// `*` matches any run of characters (including none); everything else is literal.
@@ -202,21 +186,6 @@ fn glob_match(pattern: &str, text: &str) -> bool {
         pi += 1;
     }
     pi == p.len()
-}
-
-fn escape_redis_glob(s: &str, keep_star: bool) -> String {
-    let mut out = String::with_capacity(s.len());
-    for c in s.chars() {
-        match c {
-            '*' if keep_star => out.push('*'),
-            '*' | '?' | '[' | ']' | '\\' => {
-                out.push('\\');
-                out.push(c);
-            }
-            _ => out.push(c),
-        }
-    }
-    out
 }
 
 /// Percent-encode any non-ASCII bytes in `s`, leaving ASCII characters unchanged.
@@ -356,17 +325,5 @@ mod tests {
             "? is literal, not a wildcard"
         );
         assert!(!f.matches(&single("3MB", "%s%s__staked__abc")));
-    }
-
-    #[test]
-    fn scan_patterns_escape_redis_glob_specials_except_star() {
-        let f = StateMulti {
-            addresses: vec!["3MA".to_owned()],
-            key_patterns: vec!["a[1]?*".to_owned()],
-        };
-        assert_eq!(
-            f.scan_patterns(),
-            vec![r"topic://state/3MA/a\[1\]\?*".to_owned()]
-        );
     }
 }

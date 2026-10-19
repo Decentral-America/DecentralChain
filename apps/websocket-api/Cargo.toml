@@ -34,7 +34,7 @@ axum = { version = "0.8", features = ["ws"] }
 tower-http = { version = "0.7", features = ["trace", "request-id", "util"] }
 
 # Redis
-fred = { version = "10", features = ["subscriber-client", "i-keys", "i-pubsub"] }
+fred = { version = "10", features = ["subscriber-client", "i-keys", "i-pubsub", "i-sets"] }
 
 # Serialization
 serde = { version = "1.0", features = ["derive"] }

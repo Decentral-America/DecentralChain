@@ -2,6 +2,8 @@ use crate::client::ClientId;
 use crate::error::Error;
 use crate::topic::Topic;
 use fred::prelude::*;
+use fred::types::scan::Scanner;
+use futures::StreamExt;
 use std::collections::HashMap;
 use std::time::{Duration, Instant};
 use tokio::task::JoinSet;
@@ -9,6 +11,14 @@ use tokio::task::JoinSet;
 use self::counter::VersionCounter;
 
 const CONNECTION_ID_KEY: &str = "NEXT_CONNECTION_ID";
+
+/// `SSCAN COUNT` hint for reading a state index set.
+const STATE_INDEX_SCAN_COUNT: u32 = 1000;
+
+/// Redis set (maintained by BPS) listing every state key written for `address`.
+pub fn state_index_key(address: &str) -> String {
+    format!("topic://state-index/{address}")
+}
 
 pub struct RepoConfig {
     pub host: String,
@@ -63,11 +73,15 @@ pub trait Repo: Send + Sync {
         keys: Vec<String>,
     ) -> impl std::future::Future<Output = Result<Vec<Option<String>>, Error>> + Send;
 
-    /// Keys matching the Redis glob `pattern`, scanned incrementally. Returns at
-    /// most `limit + 1` keys so callers can tell "exactly limit" from "more".
-    fn scan_keys(
+    /// Members of the address's state index set (`topic://state-index/{address}`,
+    /// written by BPS alongside every state key) for which `keep` returns true,
+    /// read incrementally with `SSCAN`. Stops once more than `limit` members are
+    /// kept and returns at most `limit + 1`, so callers can tell "exactly limit"
+    /// from "more".
+    fn state_index_scan(
         &self,
-        pattern: String,
+        address: &str,
+        keep: &(dyn Fn(&str) -> bool + Sync),
         limit: usize,
     ) -> impl std::future::Future<Output = Result<Vec<String>, Error>> + Send;
 
@@ -149,22 +163,36 @@ impl Repo for RepoImpl {
         }
     }
 
-    async fn scan_keys(&self, pattern: String, limit: usize) -> Result<Vec<String>, Error> {
-        let mut cursor = "0".to_owned();
-        let mut keys = Vec::new();
-        loop {
-            let (next, page): (String, Vec<String>) = self
-                .pool
-                .scan_page(cursor, pattern.clone(), Some(1000), None)
-                .await?;
-            keys.extend(page);
-            if keys.len() > limit || next == "0" {
+    async fn state_index_scan(
+        &self,
+        address: &str,
+        keep: &(dyn Fn(&str) -> bool + Sync),
+        limit: usize,
+    ) -> Result<Vec<String>, Error> {
+        let index_key = state_index_key(address);
+        let mut pages = std::pin::pin!(self.pool.next().sscan(
+            index_key,
+            "*",
+            Some(STATE_INDEX_SCAN_COUNT)
+        ));
+        let mut kept = Vec::new();
+        while let Some(page) = pages.next().await {
+            let mut page = page?;
+            for member in page.take_results().unwrap_or_default() {
+                if let Some(member) = member.as_str()
+                    && keep(&member)
+                {
+                    kept.push(member.into_owned());
+                }
+            }
+            if kept.len() > limit {
+                page.cancel();
                 break;
             }
-            cursor = next;
+            // Dropping `page` requests the next one (fred continues the SSCAN cursor).
         }
-        keys.truncate(limit.saturating_add(1));
-        Ok(keys)
+        kept.truncate(limit.saturating_add(1));
+        Ok(kept)
     }
 
     async fn refresh(&self, mut topics: Vec<Topic>) -> Result<HashMap<Topic, Instant>, Error> {

@@ -24,6 +24,10 @@ use crate::repo::Repo;
 use crate::shard::Sharded;
 use crate::websocket;
 
+/// How long a multi-topic subscribe waits for a resolution permit before it is
+/// refused with the subscription-limit error.
+const MULTITOPIC_PERMIT_TIMEOUT: Duration = Duration::from_secs(2);
+
 pub struct ServerConfig {
     pub port: u16,
     pub client_ping_interval: u64,
@@ -32,6 +36,8 @@ pub struct ServerConfig {
     pub max_connections: u32,
     pub max_connections_per_ip: u32,
     pub max_subscriptions_per_client: u32,
+    pub max_indirect_subtopics_per_client: u32,
+    pub multitopic_resolve_concurrency: u32,
 }
 
 pub struct ServerOptions {
@@ -40,6 +46,8 @@ pub struct ServerOptions {
     pub max_connections: u32,
     pub max_connections_per_ip: u32,
     pub max_subscriptions_per_client: u32,
+    pub max_indirect_subtopics_per_client: u32,
+    pub multitopic_resolve_concurrency: u32,
 }
 
 struct AppState<R: Repo + 'static> {
@@ -84,6 +92,14 @@ pub fn start<R: Repo + 'static>(
         ping_failures_threshold: options.client_ping_failures_threshold,
         max_subscriptions_per_client: usize::try_from(options.max_subscriptions_per_client)
             .unwrap_or(usize::MAX),
+        max_indirect_subtopics_per_client: usize::try_from(
+            options.max_indirect_subtopics_per_client,
+        )
+        .unwrap_or(usize::MAX),
+        multitopic_permits: Arc::new(Semaphore::new(
+            usize::try_from(options.multitopic_resolve_concurrency).unwrap_or(1),
+        )),
+        multitopic_permit_timeout: MULTITOPIC_PERMIT_TIMEOUT,
     });
 
     let max_conn = usize::try_from(options.max_connections).unwrap_or(usize::MAX);

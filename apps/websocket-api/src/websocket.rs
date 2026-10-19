@@ -3,7 +3,7 @@ use futures::{SinkExt, future};
 use std::collections::HashSet;
 use std::sync::Arc;
 use std::time::Instant;
-use tokio::sync::Mutex;
+use tokio::sync::{Mutex, Semaphore};
 
 use crate::client::{Client, ClientId, Clients, MultitopicUpdate, Subscribed, Topics};
 use crate::error::Error;
@@ -23,8 +23,8 @@ const INVALID_TOPIC_ERROR_CODE: u16 = 3;
 const SUBSCRIPTION_LIMIT_ERROR_CODE: u16 = 4;
 
 /// Bounds for one state multi-topic subscription.
-const MAX_MULTITOPIC_ADDRESSES: usize = 100;
-const MAX_MULTITOPIC_KEY_PATTERNS: usize = 20;
+pub const MAX_MULTITOPIC_ADDRESSES: usize = 20;
+pub const MAX_MULTITOPIC_KEY_PATTERNS: usize = 20;
 pub const MAX_MULTITOPIC_SUBTOPICS: usize = 1000;
 
 #[derive(Clone, Debug)]
@@ -32,6 +32,13 @@ pub struct HandleConnectionOptions {
     pub ping_interval: tokio::time::Duration,
     pub ping_failures_threshold: usize,
     pub max_subscriptions_per_client: usize,
+    /// Cap on a connection's indirect subscriptions (multi-topic expansions),
+    /// enforced on subscribe and on live expansion.
+    pub max_indirect_subtopics_per_client: usize,
+    /// Process-wide permits bounding concurrent multi-topic resolutions.
+    pub multitopic_permits: Arc<Semaphore>,
+    /// How long a multi-topic subscribe waits for a permit before it is refused.
+    pub multitopic_permit_timeout: std::time::Duration,
 }
 
 /// Shared state for an active WebSocket connection, passed to the inner run loop.
@@ -142,7 +149,7 @@ async fn run<R: Repo>(
                     *client_id,
                     topics.clone(),
                     msg,
-                    options.max_subscriptions_per_client,
+                    options,
                 ).await;
                 let send_err = match result {
                     Err(Error::UnknownIncomeMessage(detail)) => {
@@ -221,8 +228,10 @@ async fn handle_income_message<R: Repo>(
     client_id: ClientId,
     topics: Arc<Topics>,
     raw_msg: ws::Message,
-    max_subscriptions: usize,
+    options: &HandleConnectionOptions,
 ) -> Result<(), Error> {
+    let max_subscriptions = options.max_subscriptions_per_client;
+    let max_indirect = options.max_indirect_subtopics_per_client;
     let msg = IncomeMessage::try_from(raw_msg)?;
 
     match msg {
@@ -259,7 +268,30 @@ async fn handle_income_message<R: Repo>(
                         "at most {max_subscriptions} subscriptions per connection"
                     )));
                 }
+                if topic.is_multi_topic() && lock.indirect_subscriptions_count() >= max_indirect {
+                    return Err(indirect_limit_error(max_indirect));
+                }
             }
+
+            // Multi-topic resolution reads Redis; a process-wide semaphore bounds how
+            // many run at once. Held until the subtopic values are fetched.
+            let resolve_permit = if topic.is_multi_topic() {
+                match tokio::time::timeout(
+                    options.multitopic_permit_timeout,
+                    options.multitopic_permits.clone().acquire_owned(),
+                )
+                .await
+                {
+                    Ok(Ok(permit)) => Some(permit),
+                    _ => {
+                        return Err(Error::SubscriptionLimit(
+                            "multi-topic resolution is busy; retry later".to_owned(),
+                        ));
+                    }
+                }
+            } else {
+                None
+            };
 
             // Phase 2: async I/O — no locks held.
             let latency_timer = SUBSCRIBED_MESSAGE_LATENCIES.start_timer();
@@ -271,8 +303,12 @@ async fn handle_income_message<R: Repo>(
             );
 
             // A state multi-topic resolves to the JSON list of its current concrete
-            // topics (computed here from the state keys BPS SETs); a single topic
+            // topics (from the per-address state index BPS maintains); a single topic
             // reads its current value.
+            //
+            // Known window: a matching key first written after the index read below
+            // but before Phase 3 registers the multi-topic is not delivered until
+            // that key changes again (its PUBLISH finds no registered multi-topic).
             let value = if topic.is_multi_topic() {
                 let filter = topic
                     .data()
@@ -310,6 +346,7 @@ async fn handle_income_message<R: Repo>(
             } else {
                 None
             };
+            drop(resolve_permit);
 
             // Phase 3: apply state. Acquire topics THEN client (consistent lock ordering).
             {
@@ -325,6 +362,12 @@ async fn handle_income_message<R: Repo>(
                         None,
                     )?;
                     return Ok(());
+                }
+                if let Some((subtopics, _, true)) = &subtopics_computed
+                    && lock.indirect_subscriptions_count() + subtopics.len() > max_indirect
+                {
+                    latency_timer.stop_and_discard();
+                    return Err(indirect_limit_error(max_indirect));
                 }
 
                 lock.add_direct_subscription(topic.clone(), client_key.clone());
@@ -396,6 +439,12 @@ async fn handle_income_message<R: Repo>(
     Ok(())
 }
 
+fn indirect_limit_error(max_indirect: usize) -> Error {
+    Error::SubscriptionLimit(format!(
+        "multi-topics may expand to at most {max_indirect} keys per connection"
+    ))
+}
+
 async fn send_error(
     reason: impl Into<String>,
     message: impl Into<String>,
@@ -464,6 +513,7 @@ pub async fn updates_handler<R: Repo>(
     clients: Arc<Sharded<Clients>>,
     topics: Arc<Topics>,
     repo: Arc<R>,
+    max_indirect_subtopics_per_client: usize,
 ) {
     tracing::info!("WebSocket updates handler started");
 
@@ -485,7 +535,14 @@ pub async fn updates_handler<R: Repo>(
         REDIS_QUEUE_DEPTH.dec();
 
         if let Some(single) = topic.data().as_state_single() {
-            expand_multitopics(&topic, &single, &clients, &topics).await;
+            expand_multitopics(
+                &topic,
+                &single,
+                &clients,
+                &topics,
+                max_indirect_subtopics_per_client,
+            )
+            .await;
         }
 
         // Arc so we can share a single allocation across all per-shard futures.
@@ -623,6 +680,11 @@ pub async fn updates_handler<R: Repo>(
 }
 
 /// Concrete state topics that currently exist for `filter`, sorted.
+///
+/// Reads each address's state index set once (`SSCAN`) and matches the key
+/// patterns locally, so the cost is bounded by the listed addresses' own keys,
+/// never by the whole keyspace. Refused once more than
+/// `MAX_MULTITOPIC_SUBTOPICS` keys match.
 async fn resolve_multitopic<R: Repo>(repo: &R, filter: &StateMulti) -> Result<Vec<String>, Error> {
     if filter.addresses.len() > MAX_MULTITOPIC_ADDRESSES
         || filter.key_patterns.len() > MAX_MULTITOPIC_KEY_PATTERNS
@@ -632,24 +694,27 @@ async fn resolve_multitopic<R: Repo>(repo: &R, filter: &StateMulti) -> Result<Ve
              {MAX_MULTITOPIC_KEY_PATTERNS} key patterns"
         )));
     }
+    let too_many = || {
+        Error::SubscriptionLimit(format!(
+            "a multi-topic may resolve to at most {MAX_MULTITOPIC_SUBTOPICS} keys"
+        ))
+    };
+    let keep = |member: &str| {
+        Topic::parse_str(member)
+            .ok()
+            .and_then(|t| t.data().as_state_single())
+            .is_some_and(|s| filter.matches(&s))
+    };
     let mut found = std::collections::BTreeSet::new();
-    for pattern in filter.scan_patterns() {
-        for key in repo.scan_keys(pattern, MAX_MULTITOPIC_SUBTOPICS).await? {
-            let Ok(topic) = Topic::parse_str(&key) else {
-                continue;
-            };
-            if topic
-                .data()
-                .as_state_single()
-                .is_some_and(|s| filter.matches(&s))
-            {
+    for address in &filter.addresses {
+        let remaining = MAX_MULTITOPIC_SUBTOPICS - found.len();
+        for member in repo.state_index_scan(address, &keep, remaining).await? {
+            if let Ok(topic) = Topic::parse_str(&member) {
                 found.insert(topic.to_string());
             }
         }
         if found.len() > MAX_MULTITOPIC_SUBTOPICS {
-            return Err(Error::SubscriptionLimit(format!(
-                "a multi-topic may resolve to at most {MAX_MULTITOPIC_SUBTOPICS} keys"
-            )));
+            return Err(too_many());
         }
     }
     Ok(found.into_iter().collect())
@@ -658,31 +723,33 @@ async fn resolve_multitopic<R: Repo>(repo: &R, filter: &StateMulti) -> Result<Ve
 /// A new concrete state topic arrived from Redis: add it to every subscribed
 /// multi-topic whose filter matches, so the regular single-topic delivery below
 /// reaches those clients (as `update` frames on the multi-topic key).
+///
+/// The common case (no multi-topic gains the key) is decided under the topics
+/// read lock via the address index; the write lock is taken only to apply a gain.
+/// A client already holding `max_indirect` indirect subscriptions is skipped.
 async fn expand_multitopics(
     topic: &Topic,
     single: &StateSingle,
     clients: &Sharded<Clients>,
     topics: &Topics,
+    max_indirect: usize,
 ) {
-    let gained = {
-        let mut topics_lock = topics.write().await;
-        let gaining = topics_lock.multitopics_gaining(topic, single, MAX_MULTITOPIC_SUBTOPICS);
-        let mut out = Vec::with_capacity(gaining.len());
-        for (multitopic, subtopics, direct_clients) in gaining {
-            let update = topics_lock.update_multitopic_info(multitopic.clone(), subtopics);
-            for (client_id, _) in &direct_clients {
-                topics_lock.update_indirect_subscriptions(
-                    multitopic.clone(),
-                    update.clone(),
-                    client_id,
-                );
-            }
-            out.push((multitopic, direct_clients));
-        }
-        out
-    };
-    // topics lock released before taking client locks (lock ordering: topics, then client).
-    for (multitopic, direct_clients) in gained {
+    if topics
+        .read()
+        .await
+        .multitopics_gaining(topic, single, MAX_MULTITOPIC_SUBTOPICS)
+        .is_empty()
+    {
+        return;
+    }
+
+    // Lock ordering: topics, then a clients shard (read), then a client. No path
+    // holds a client or a shard lock while waiting for the topics lock.
+    let mut topics_lock = topics.write().await;
+    // Recomputed under the write lock: the state may have changed since the read.
+    let gaining = topics_lock.multitopics_gaining(topic, single, MAX_MULTITOPIC_SUBTOPICS);
+    for (multitopic, subtopics, direct_clients) in gaining {
+        let mut accepted = Vec::with_capacity(direct_clients.len());
         for (client_id, key) in direct_clients {
             let client = clients
                 .get(&client_id)
@@ -690,13 +757,31 @@ async fn expand_multitopics(
                 .await
                 .get(&client_id)
                 .cloned();
-            if let Some(client) = client {
-                client.lock().await.add_indirect_subscription(
-                    topic.clone(),
-                    multitopic.clone(),
-                    key,
+            let Some(client) = client else {
+                continue;
+            };
+            let mut lock = client.lock().await;
+            if lock.indirect_subscriptions_count() >= max_indirect {
+                tracing::debug!(
+                    client_id,
+                    multitopic = %multitopic,
+                    "indirect subscription cap reached; new key not added"
                 );
+                continue;
             }
+            lock.add_indirect_subscription(topic.clone(), multitopic.clone(), key);
+            accepted.push(client_id);
+        }
+        if accepted.is_empty() {
+            continue;
+        }
+        let update = topics_lock.update_multitopic_info(multitopic.clone(), subtopics);
+        for client_id in &accepted {
+            topics_lock.update_indirect_subscriptions(
+                multitopic.clone(),
+                update.clone(),
+                client_id,
+            );
         }
     }
 }

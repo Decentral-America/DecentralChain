@@ -18,6 +18,8 @@ use axum_test::WsMessage;
 use serde_json::{Value, json};
 use tokio::sync::{Semaphore, mpsc};
 
+use crate::websocket::MAX_MULTITOPIC_SUBTOPICS;
+
 use crate::client::{ClientId, Clients, Topics};
 use crate::error::Error;
 use crate::repo::Repo;
@@ -56,14 +58,29 @@ impl Repo for MockRepo {
     async fn get_by_keys(&self, keys: Vec<String>) -> Result<Vec<Option<String>>, Error> {
         Ok(vec![Some("\"mocked_value\"".to_owned()); keys.len()])
     }
-    /// Two current keys for `key_*` on the test address; nothing for other patterns.
-    async fn scan_keys(&self, pattern: String, _limit: usize) -> Result<Vec<String>, Error> {
-        let prefix = "topic://state/3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr/";
-        if pattern == format!("{prefix}key_*") {
-            Ok(vec![format!("{prefix}key_a"), format!("{prefix}key_b")])
-        } else {
-            Ok(vec![])
-        }
+    /// State index: two keys (`key_a`, `key_b`, plus a non-matching `other`) for the
+    /// test address, 1001 `big_*` keys for `3MBIG`, nothing for other addresses.
+    async fn state_index_scan(
+        &self,
+        address: &str,
+        keep: &(dyn Fn(&str) -> bool + Sync),
+        limit: usize,
+    ) -> Result<Vec<String>, Error> {
+        let members: Vec<String> = match address {
+            "3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr" => ["key_a", "key_b", "other"]
+                .iter()
+                .map(|k| format!("topic://state/{address}/{k}"))
+                .collect(),
+            "3MBIG" => (0..1001)
+                .map(|i| format!("topic://state/{address}/big_{i}"))
+                .collect(),
+            _ => vec![],
+        };
+        Ok(members
+            .into_iter()
+            .filter(|m| keep(m))
+            .take(limit.saturating_add(1))
+            .collect())
     }
     async fn refresh(&self, topics: Vec<Topic>) -> Result<HashMap<Topic, Instant>, Error> {
         Ok(topics.into_iter().map(|t| (t, Instant::now())).collect())
@@ -115,21 +132,28 @@ async fn ws_handler_fn(
     })
 }
 
+fn options_with(max_subscriptions_per_client: usize) -> HandleConnectionOptions {
+    HandleConnectionOptions {
+        // Very long interval so the first tick is deferred well past test duration.
+        ping_interval: Duration::from_secs(3600),
+        ping_failures_threshold: 3,
+        max_subscriptions_per_client,
+        max_indirect_subtopics_per_client: 5000,
+        multitopic_permits: Arc::new(Semaphore::new(8)),
+        multitopic_permit_timeout: Duration::from_millis(100),
+    }
+}
+
 /// Builds the test router and returns it along with the shutdown channel receiver.
 /// The receiver MUST be kept alive for the duration of the test — dropping it
 /// closes the shutdown signal and causes the server to disconnect all clients.
-fn ws_router_with(max_subscriptions_per_client: usize) -> (Router, mpsc::Receiver<()>) {
+fn ws_router_opts(options: HandleConnectionOptions) -> (Router, mpsc::Receiver<()>) {
     let (shutdown_tx, shutdown_rx) = mpsc::channel::<()>(1);
     let state = WsState {
         repo: Arc::new(MockRepo::default()),
         clients: Arc::new(Sharded::new(4)),
         topics: Arc::new(Topics::default()),
-        options: Arc::new(HandleConnectionOptions {
-            // Very long interval so the first tick is deferred well past test duration.
-            ping_interval: Duration::from_secs(3600),
-            ping_failures_threshold: 3,
-            max_subscriptions_per_client,
-        }),
+        options: Arc::new(options),
         shutdown_tx,
     };
     let router = Router::new()
@@ -143,7 +167,11 @@ fn make_server() -> (TestServer, mpsc::Receiver<()>) {
 }
 
 fn make_server_with(max_subscriptions_per_client: usize) -> (TestServer, mpsc::Receiver<()>) {
-    let (router, rx) = ws_router_with(max_subscriptions_per_client);
+    make_server_opts(options_with(max_subscriptions_per_client))
+}
+
+fn make_server_opts(options: HandleConnectionOptions) -> (TestServer, mpsc::Receiver<()>) {
+    let (router, rx) = ws_router_opts(options);
     let server = TestServer::builder().http_transport().build(router);
     (server, rx)
 }
@@ -458,21 +486,129 @@ async fn multitopic_subscription_resolves_current_keys() {
     assert_eq!(values.len(), 2, "one value per matching key: {values:?}");
 }
 
-/// Oversized multi-topics are refused with error code 4.
-#[tokio::test]
-async fn multitopic_with_too_many_addresses_is_refused() {
-    let (server, _rx) = make_server();
-    let mut ws = server.get_websocket("/ws").await.into_websocket().await;
-    let addresses: String = (0..101).map(|i| format!("address__in[]=3MA{i}&")).collect();
-    let topic = format!("topic://state?{addresses}key__match_any[]=*");
-
+/// Subscribes to `topic` and returns the first non-ping reply.
+async fn subscribe_reply(ws: &mut axum_test::TestWebSocket, topic: &str) -> Value {
     ws.send_message(WsMessage::Text(
         json!({ "type": "subscribe", "topic": topic })
             .to_string()
             .into(),
     ))
     .await;
-    let v: Value = serde_json::from_str(extract_text(&receive_non_ping(&mut ws).await)).unwrap();
+    serde_json::from_str(extract_text(&receive_non_ping(ws).await)).unwrap()
+}
+
+/// More than 20 addresses is refused with error code 4.
+#[tokio::test]
+async fn multitopic_with_too_many_addresses_is_refused() {
+    let (server, _rx) = make_server();
+    let mut ws = server.get_websocket("/ws").await.into_websocket().await;
+    let addresses: String = (0..21).map(|i| format!("address__in[]=3MA{i}&")).collect();
+    let v = subscribe_reply(
+        &mut ws,
+        &format!("topic://state?{addresses}key__match_any[]=*"),
+    )
+    .await;
+    assert_eq!(v["type"], "error", "got: {v}");
+    assert_eq!(v["code"], 4u16);
+
+    // Exactly 20 addresses is accepted.
+    let addresses: String = (0..20).map(|i| format!("address__in[]=3MA{i}&")).collect();
+    let v = subscribe_reply(
+        &mut ws,
+        &format!("topic://state?{addresses}key__match_any[]=*"),
+    )
+    .await;
+    assert_eq!(v["type"], "subscribed", "got: {v}");
+}
+
+/// More than 20 key patterns is refused with error code 4.
+#[tokio::test]
+async fn multitopic_with_too_many_key_patterns_is_refused() {
+    let (server, _rx) = make_server();
+    let mut ws = server.get_websocket("/ws").await.into_websocket().await;
+    let patterns: String = (0..21)
+        .map(|i| format!("&key__match_any[]=p{i}*"))
+        .collect();
+    let v = subscribe_reply(
+        &mut ws,
+        &format!("topic://state?address__in[]=3MA{patterns}"),
+    )
+    .await;
+    assert_eq!(v["type"], "error", "got: {v}");
+    assert_eq!(v["code"], 4u16);
+}
+
+/// A multi-topic resolving to more than MAX_MULTITOPIC_SUBTOPICS keys is refused.
+#[tokio::test]
+async fn multitopic_resolving_to_too_many_keys_is_refused() {
+    assert_eq!(MAX_MULTITOPIC_SUBTOPICS, 1000);
+    let (server, _rx) = make_server();
+    let mut ws = server.get_websocket("/ws").await.into_websocket().await;
+    let v = subscribe_reply(
+        &mut ws,
+        "topic://state?address__in[]=3MBIG&key__match_any[]=big_*",
+    )
+    .await;
+    assert_eq!(v["type"], "error", "got: {v}");
+    assert_eq!(v["code"], 4u16);
+
+    // A narrower pattern on the same address resolves fine.
+    let v = subscribe_reply(
+        &mut ws,
+        "topic://state?address__in[]=3MBIG&key__match_any[]=big_1*",
+    )
+    .await;
+    assert_eq!(v["type"], "subscribed", "got: {v}");
+}
+
+/// When every multi-topic resolution permit is taken, a multi-topic subscribe is
+/// refused with error code 4 after the permit timeout; single topics are unaffected.
+#[tokio::test]
+async fn multitopic_resolution_is_rate_limited_globally() {
+    let mut options = options_with(100);
+    options.multitopic_permits = Arc::new(Semaphore::new(0));
+    let (server, _rx) = make_server_opts(options);
+    let mut ws = server.get_websocket("/ws").await.into_websocket().await;
+
+    let v = subscribe_reply(
+        &mut ws,
+        "topic://state?address__in[]=3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr&key__match_any[]=key_*",
+    )
+    .await;
+    assert_eq!(v["type"], "error", "got: {v}");
+    assert_eq!(v["code"], 4u16);
+
+    let v = subscribe_reply(
+        &mut ws,
+        "topic://state/3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr/single",
+    )
+    .await;
+    assert_eq!(v["type"], "subscribed", "got: {v}");
+}
+
+/// A multi-topic whose resolved keys would push the connection over its indirect
+/// subtopic cap is refused with error code 4.
+#[tokio::test]
+async fn multitopic_over_indirect_cap_is_refused() {
+    let mut options = options_with(100);
+    options.max_indirect_subtopics_per_client = 3;
+    let (server, _rx) = make_server_opts(options);
+    let mut ws = server.get_websocket("/ws").await.into_websocket().await;
+
+    // Two keys: fits (2 <= 3).
+    let v = subscribe_reply(
+        &mut ws,
+        "topic://state?address__in[]=3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr&key__match_any[]=key_*",
+    )
+    .await;
+    assert_eq!(v["type"], "subscribed", "got: {v}");
+
+    // Two more: 4 > 3, refused.
+    let v = subscribe_reply(
+        &mut ws,
+        "topic://state?address__in[]=3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr&key__match_any[]=key*",
+    )
+    .await;
     assert_eq!(v["type"], "error", "got: {v}");
     assert_eq!(v["code"], 4u16);
 }

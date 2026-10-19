@@ -54,6 +54,19 @@ fn default_max_subscriptions_per_client() -> u32 {
     500
 }
 
+fn default_max_indirect_subtopics_per_client() -> u32 {
+    5000
+}
+
+fn default_multitopic_resolve_concurrency() -> u32 {
+    8
+}
+
+/// Upper bound for `MAX_INDIRECT_SUBTOPICS_PER_CLIENT`.
+const MAX_INDIRECT_SUBTOPICS_UPPER: u32 = 100_000;
+/// Upper bound for `MULTITOPIC_RESOLVE_CONCURRENCY`.
+const MULTITOPIC_RESOLVE_CONCURRENCY_UPPER: u32 = 256;
+
 #[derive(Deserialize)]
 struct FlatServerConfig {
     #[serde(default = "default_port")]
@@ -70,6 +83,10 @@ struct FlatServerConfig {
     pub max_connections_per_ip: u32,
     #[serde(default = "default_max_subscriptions_per_client")]
     pub max_subscriptions_per_client: u32,
+    #[serde(default = "default_max_indirect_subtopics_per_client")]
+    pub max_indirect_subtopics_per_client: u32,
+    #[serde(default = "default_multitopic_resolve_concurrency")]
+    pub multitopic_resolve_concurrency: u32,
 }
 
 #[derive(Deserialize)]
@@ -165,6 +182,11 @@ pub fn load_server() -> Result<server::ServerConfig, Error> {
         ));
     }
 
+    validate_multitopic_limits(
+        flat.max_indirect_subtopics_per_client,
+        flat.multitopic_resolve_concurrency,
+    )?;
+
     Ok(server::ServerConfig {
         port: flat.port,
         client_ping_interval: flat.client_ping_interval_in_secs,
@@ -173,5 +195,56 @@ pub fn load_server() -> Result<server::ServerConfig, Error> {
         max_connections: flat.max_connections,
         max_connections_per_ip: flat.max_connections_per_ip,
         max_subscriptions_per_client: flat.max_subscriptions_per_client,
+        max_indirect_subtopics_per_client: flat.max_indirect_subtopics_per_client,
+        multitopic_resolve_concurrency: flat.multitopic_resolve_concurrency,
     })
+}
+
+/// `MAX_INDIRECT_SUBTOPICS_PER_CLIENT` must be in `1..=100000` and
+/// `MULTITOPIC_RESOLVE_CONCURRENCY` in `1..=256`.
+fn validate_multitopic_limits(max_indirect: u32, concurrency: u32) -> Result<(), Error> {
+    if !(1..=MAX_INDIRECT_SUBTOPICS_UPPER).contains(&max_indirect) {
+        return Err(Error::ConfigValidation(format!(
+            "MAX_INDIRECT_SUBTOPICS_PER_CLIENT ({max_indirect}) must be between 1 and \
+             {MAX_INDIRECT_SUBTOPICS_UPPER}"
+        )));
+    }
+    if !(1..=MULTITOPIC_RESOLVE_CONCURRENCY_UPPER).contains(&concurrency) {
+        return Err(Error::ConfigValidation(format!(
+            "MULTITOPIC_RESOLVE_CONCURRENCY ({concurrency}) must be between 1 and \
+             {MULTITOPIC_RESOLVE_CONCURRENCY_UPPER}"
+        )));
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn multitopic_limit_defaults_are_valid() {
+        assert!(
+            validate_multitopic_limits(
+                default_max_indirect_subtopics_per_client(),
+                default_multitopic_resolve_concurrency()
+            )
+            .is_ok()
+        );
+    }
+
+    #[test]
+    fn multitopic_limits_out_of_range_are_rejected() {
+        for (indirect, concurrency) in [(0, 8), (100_001, 8), (5000, 0), (5000, 257)] {
+            assert!(
+                matches!(
+                    validate_multitopic_limits(indirect, concurrency),
+                    Err(Error::ConfigValidation(_))
+                ),
+                "({indirect}, {concurrency})"
+            );
+        }
+        assert!(validate_multitopic_limits(100_000, 256).is_ok());
+        assert!(validate_multitopic_limits(1, 1).is_ok());
+    }
 }
