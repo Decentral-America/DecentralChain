@@ -10,6 +10,22 @@ RUN corepack enable
 # upgrade npm to pull in a patched sigstore rather than chase a new base digest.
 RUN npm install -g npm@latest
 
+# -----------------------------------------------------------------------------
+# Workspace manifests: the package.json of every app and of e2e, nothing else.
+# pnpm-lock.yaml records every workspace project, and pnpm 12 refuses a frozen
+# install when a recorded project's package.json is missing. Copying only the
+# manifests keeps the install valid without pulling the other apps' sources, and
+# this stage's output changes only when a manifest does, so the cache holds.
+# -----------------------------------------------------------------------------
+# renovate: image=node tag=24-alpine
+FROM node:24-alpine@sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1 AS manifests
+WORKDIR /src
+COPY apps ./apps
+COPY e2e ./e2e
+RUN for f in apps/*/package.json e2e/package.json; do \
+      mkdir -p "/out/${f%/*}" && cp "$f" "/out/$f"; \
+    done
+
 FROM base AS build
 RUN apk add --no-cache git curl build-base
 
@@ -33,9 +49,12 @@ COPY vitest.base.config.ts ./
 COPY scripts ./scripts
 COPY tools ./tools
 COPY packages ./packages
+# Every workspace manifest first (see the manifests stage), then this app's source.
+COPY --from=manifests /out/ ./
 COPY apps/admin-dashboard ./apps/admin-dashboard
 
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store git init && pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store git init && pnpm install --frozen-lockfile \
+      --filter . --filter './packages/**' --filter ./apps/admin-dashboard
 RUN cd apps/admin-dashboard && pnpm react-router typegen
 
 RUN pnpm nx run admin-dashboard:build --skip-nx-cache

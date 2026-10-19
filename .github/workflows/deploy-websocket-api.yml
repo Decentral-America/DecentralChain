@@ -20,7 +20,7 @@ on:
           - testnet
 
 concurrency:
-  group: deploy-websocket-api-${{ github.event_name == 'workflow_dispatch' && inputs.network || 'mainnet' }}
+  group: ci-deploy-websocket-api-${{ github.event_name == 'workflow_dispatch' && inputs.network || 'mainnet' }}
   cancel-in-progress: false
 
 permissions:
