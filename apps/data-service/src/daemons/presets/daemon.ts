@@ -48,6 +48,7 @@ const loop = <Config>(
   interval: number,
   timeout: number,
   state: ControlState,
+  logger: DaemonLogger,
 ): Promise<void> => {
   if (state.stopping) return Promise.resolve();
   const startLoop = new Date();
@@ -59,7 +60,7 @@ const loop = <Config>(
   const scheduleNext = (): void => {
     if (state.stopping) return;
     state.pendingTimer = setTimeout(
-      () => loop(func, cfg, interval, timeout, state),
+      () => loop(func, cfg, interval, timeout, state, logger),
       getSleepTime(startLoop, interval),
     );
   };
@@ -70,7 +71,10 @@ const loop = <Config>(
     func(cfg).pipe(
       Effect.timeoutFail({
         duration: timeout,
-        onTimeout: () => new Error('Daemon timeout expired'),
+        onTimeout: () => {
+          logger.error({ message: `[DAEMON] iteration timed out after ${timeout}ms` });
+          return new Error('Daemon timeout expired');
+        },
       }),
     ),
   ).then(scheduleNext, scheduleNext);
@@ -145,6 +149,7 @@ const main = <Config>(
           interval,
           timeout,
           control.state,
+          logger,
         );
       }),
     ),

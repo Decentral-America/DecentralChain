@@ -156,9 +156,12 @@ describe('Daemon presets', () => {
     expect(calls).toBeGreaterThanOrEqual(2);
   });
 
-  it('keeps looping after a timed-out iteration', async () => {
+  it('logs, interrupts and moves past a timed-out iteration without overlap', async () => {
     const logger = createLogger();
     let calls = 0;
+    let active = 0;
+    let maxActive = 0;
+    let interrupted = false;
 
     await Effect.runPromise(
       daemon(
@@ -166,7 +169,19 @@ describe('Daemon presets', () => {
           loop: () =>
             Effect.suspend(() => {
               calls++;
-              return calls === 1 ? Effect.async<void, never>(() => {}) : Effect.succeed(undefined);
+              active++;
+              maxActive = Math.max(maxActive, active);
+              const body =
+                calls === 1
+                  ? Effect.never.pipe(
+                      Effect.onInterrupt(() =>
+                        Effect.sync(() => {
+                          interrupted = true;
+                        }),
+                      ),
+                    )
+                  : Effect.succeed(undefined);
+              return body.pipe(Effect.ensuring(Effect.sync(() => active--)));
             }),
         },
         {},
@@ -179,6 +194,11 @@ describe('Daemon presets', () => {
     await vi.advanceTimersByTimeAsync(500);
 
     expect(calls).toBeGreaterThanOrEqual(2);
+    expect(interrupted).toBe(true);
+    expect(maxActive).toBe(1);
+    expect(logger.error).toHaveBeenCalledWith({
+      message: '[DAEMON] iteration timed out after 50ms',
+    });
   });
 
   it('stop() after a failed iteration schedules nothing more', async () => {
