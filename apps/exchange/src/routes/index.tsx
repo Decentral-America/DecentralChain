@@ -262,11 +262,6 @@ export const router = createBrowserRouter([
               })),
             path: '/desktop',
           },
-          {
-            lazy: () =>
-              import('@/pages/admin/DexPairAdmin').then((m) => ({ Component: m.DexPairAdmin })),
-            path: '/dccadmin',
-          },
           /*
            * Development-only preview of the mobile shell, ported from the
            * standalone exchange app. The mobile screens live behind
