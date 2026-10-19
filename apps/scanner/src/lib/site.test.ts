@@ -9,6 +9,14 @@ describe('site identity', () => {
     expect(publicBaseUrl({})).toBe('https://decentralscan.com');
   });
 
+  it('does not fall back to the mainnet origin for unknown chains', () => {
+    expect(publicBaseUrl({ DCC_CHAIN_ID: '99' })).toBeUndefined();
+    expect(publicBaseUrl({ DCC_CHAIN_ID: 'abc' })).toBeUndefined();
+    expect(publicBaseUrl({ DCC_CHAIN_ID: '99', DCC_SCANNER_PUBLIC_URL: 'https://x.test' })).toBe(
+      'https://x.test',
+    );
+  });
+
   it('lets an explicit public URL win and strips a trailing slash', () => {
     expect(publicBaseUrl({ DCC_CHAIN_ID: '33', DCC_SCANNER_PUBLIC_URL: 'https://x.test/' })).toBe(
       'https://x.test',
@@ -19,5 +27,11 @@ describe('site identity', () => {
     expect(isMainnet({ DCC_CHAIN_ID: '33' })).toBe(false);
     expect(isMainnet({ DCC_CHAIN_ID: '63' })).toBe(true);
     expect(isMainnet({})).toBe(true);
+  });
+
+  it('fails closed on a malformed chain id', () => {
+    expect(isMainnet({ DCC_CHAIN_ID: 'abc' })).toBe(false);
+    expect(isMainnet({ DCC_CHAIN_ID: '63abc' })).toBe(false);
+    expect(isMainnet({ DCC_CHAIN_ID: '6.3' })).toBe(false);
   });
 });

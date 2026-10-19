@@ -1,7 +1,8 @@
 import { isMainnet, publicBaseUrl } from '@/lib/site';
 
-export function buildRobots(base: string): string {
-  return `User-agent: *\nAllow: /\n\nSitemap: ${base}/sitemap.xml\n`;
+export function buildRobots(base: string | undefined): string {
+  const sitemap = base ? `\nSitemap: ${base}/sitemap.xml\n` : '';
+  return `User-agent: *\nAllow: /\n${sitemap}`;
 }
 
 export function loader(): Response {

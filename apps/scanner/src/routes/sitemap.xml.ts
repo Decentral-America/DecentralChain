@@ -5,7 +5,7 @@
  * lib/site.ts). Parameterized pages (block, transaction, address, asset) are
  * discovered by crawling. robots.txt points here with an absolute URL.
  */
-import { publicBaseUrl } from '@/lib/site';
+import { isMainnet, publicBaseUrl } from '@/lib/site';
 
 /** Static routes always accessible without URL parameters. */
 const STATIC_ROUTES = [
@@ -19,13 +19,16 @@ const STATIC_ROUTES = [
 ];
 
 export function buildSitemap(
-  base: string,
+  base: string | undefined,
   today: string = new Date().toISOString().split('T')[0] ?? '',
 ): string {
-  const urls = STATIC_ROUTES.map(
-    ({ path, changefreq, priority }) =>
-      `  <url>\n    <loc>${base}${path}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`,
-  ).join('\n');
+  // Without a known public origin there are no valid absolute URLs to list.
+  const urls = (base ? STATIC_ROUTES : [])
+    .map(
+      ({ path, changefreq, priority }) =>
+        `  <url>\n    <loc>${base}${path}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`,
+    )
+    .join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>`;
 }
 
@@ -34,6 +37,7 @@ export function loader(): Response {
     headers: {
       'Cache-Control': 'public, max-age=3600',
       'Content-Type': 'application/xml; charset=utf-8',
+      ...(isMainnet() ? {} : { 'X-Robots-Tag': 'noindex, nofollow' }),
     },
   });
 }
