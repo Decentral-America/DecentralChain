@@ -179,4 +179,4 @@ To report a vulnerability, see [SECURITY.md](../../SECURITY.md).
 
 ## License
 
-[MIT](./LICENSE) — Copyright (c) [DecentralChain](https://decentralchain.io)
+[Apache-2.0](./LICENSE) — Copyright (c) Waves Platform and (c) DecentralChain. See [NOTICE](./NOTICE).

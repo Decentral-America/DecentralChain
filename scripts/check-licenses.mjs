@@ -141,6 +141,33 @@ if (
   failures.push('THIRD_PARTY_NOTICES.md: missing the "GPL-3.0-only component: curve25519" section');
 }
 
+// 5. Upstream copyright notices of forked code must stay in the shipped LICENSE/NOTICE (AUD-080).
+const UPSTREAM_NOTICES = {
+  'packages/jvm/java-sdk/LICENSE': 'Copyright (c) 2018 WavesPlatform',
+  'packages/ride/LICENSE': 'Copyright (c) 2018 WavesPlatform',
+  'packages/ride/ts/LICENSE': 'Copyright (c) 2018 WavesPlatform',
+  'packages/sdk/data-entities/NOTICE': 'Copyright (c) Waves Platform',
+  'packages/sdk/ledger/NOTICE': 'Copyright (c) Waves Platform',
+  'packages/sdk/marshall/LICENSE': 'Copyright (c) 2018 Wavesplatform LLC',
+  'packages/sdk/signature-adapter/LICENSE': 'Copyright (c) 2018 WavesPlatform',
+  'packages/sdk/signer/LICENSE': 'Copyright (c) 2020 Inal Kardanov',
+  'packages/sdk/ts-lib-crypto/LICENSE': 'Copyright (c) 2018 WavesPlatform',
+};
+for (const [rel, line] of Object.entries(UPSTREAM_NOTICES)) {
+  const path = join(repo, rel);
+  if (!existsSync(path) || !readFileSync(path, 'utf8').includes(line)) {
+    failures.push(`${rel}: upstream notice "${line}" is missing`);
+  }
+}
+for (const dir of ['ledger', 'data-entities']) {
+  const { license } = JSON.parse(
+    readFileSync(join(repo, 'packages', 'sdk', dir, 'package.json'), 'utf8'),
+  );
+  if (license !== 'Apache-2.0') {
+    failures.push(`packages/sdk/${dir}: upstream is Apache-2.0, package.json says ${license}`);
+  }
+}
+
 if (failures.length > 0) {
   console.error(`Licence scan FAILED (${failures.length}):\n  - ${failures.join('\n  - ')}`);
   process.exit(1);
