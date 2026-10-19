@@ -1,0 +1,35 @@
+name: Docker build check
+
+on:
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - 'apps/*/Dockerfile'
+      - 'apps/*/package.json'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - '.github/workflows/docker-build-check.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  cancel-in-progress: true
+  group: docker-build-check-${{ github.ref }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [data-service, scanner, admin-dashboard]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build ${{ matrix.app }} image
+        run: docker build -f apps/${{ matrix.app }}/Dockerfile -t check-${{ matrix.app }} .
