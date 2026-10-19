@@ -10,7 +10,8 @@ use crate::proto::dcc::{
             BlockAppend as BlockAppendPB, Body as BodyPB, MicroBlockAppend as MicroBlockAppendPB,
         },
         grpc::{
-            SubscribeEvent as SubscribeEventPB, SubscribeRequest as SubscribeRequestPB,
+            GetBlockUpdateRequest as GetBlockUpdateRequestPB, SubscribeEvent as SubscribeEventPB,
+            SubscribeRequest as SubscribeRequestPB,
             blockchain_updates_api_client::BlockchainUpdatesApiClient,
         },
     },
@@ -27,7 +28,7 @@ use tracing::{debug, error, warn};
 
 use super::{
     BlockMicroblockAppend, BlockchainUpdate, BlockchainUpdatesWithLastHeight, Tx, UpdatesSource,
-    epoch_ms_to_naivedatetime,
+    ancestry::BlockIdSource, epoch_ms_to_naivedatetime,
 };
 use crate::error::Error as AppError;
 
@@ -307,5 +308,28 @@ impl TryFrom<BlockchainUpdatedPB> for BlockchainUpdate {
                 "Unknown blockchain update.".to_string(),
             )),
         }
+    }
+}
+
+impl BlockIdSource for UpdatesSourceImpl {
+    async fn block_id_at(&self, height: u32) -> Result<String, AppError> {
+        let request = tonic::Request::new(GetBlockUpdateRequestPB {
+            height: i32::try_from(height).map_err(|e| {
+                AppError::InvalidMessage(format!("height {height} does not fit in i32: {e}"))
+            })?,
+        });
+        let response = self
+            .grpc_client
+            .clone()
+            .get_block_update(request)
+            .await
+            .map_err(|s| AppError::StreamError(format!("GetBlockUpdate({height}) failed: {s}")))?
+            .into_inner();
+        response
+            .update
+            .map(|u| bs58::encode(&u.id).into_string())
+            .ok_or_else(|| {
+                AppError::StreamError(format!("GetBlockUpdate({height}) returned no update"))
+            })
     }
 }

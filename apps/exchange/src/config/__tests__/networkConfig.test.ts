@@ -29,8 +29,9 @@ describe('NetworkConfig', () => {
       expect(NetworkConfig.explorer).toBe('https://decentralscan.com');
     });
 
-    it('origin points to the exchange frontend', () => {
-      expect(NetworkConfig.origin).toBe('https://decentral.exchange');
+    it('mainnet lists markets from its curated config', () => {
+      expect(NetworkConfig.marketSource).toBe('config');
+      expect(NetworkConfig.getHiddenMarketAssetNames()).toEqual([]);
     });
 
     it('support URL is an HTTPS URL', () => {

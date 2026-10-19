@@ -2269,7 +2269,7 @@
           "1_0_18": "{span.line}[1. 귀하의 계정에 Script를 설정할 수 있습니다.]\n{span.line}[2. 기타 버그 픽스.]",
           "1_0_21": "{span.line}[1. Ledger를 통한 권한 승인 수정.]\n{span.line}[2. 기타 버그 픽스.]",
           "1_0_22": "{span.line}[1. 스크립트된 계정으로 작업할 수 있는 고급 기능 추가.]",
-          "1_0_25": "{span.line}[1. [Cubensis Connect](https://chrome.google.com/webstore/detail/decentralchain-keeper/lpilbniiabackdjcionkobglmddfbcjo?hl=en) 서포트 기능 추가.]",
+          "1_0_25": "{span.line}[1. Cubensis Connect 서포트 기능 추가.]",
           "1_0_27": "{span.line}[1. 포트폴리오 탭에 \"나의 자산\" 카테고리 추가.]\n{span.line}[2. 기타 버그 픽스.]",
           "1_0_28": "{span.line}[1. 기존 계정을 모바일로 추출하는 페어링 기능 추가.]\n{span.line}[2. 기타 버그 픽스.]",
           "1_0_29": "{span.line}[1. Cyrillic 알파벳을 사용하여 QR 코드 생성 수정.]\n{span.line}[2. 워치리스트 검색을 위한 툴팁 추가.]\n{span.line}[3. 기타 버그 픽스. ]",

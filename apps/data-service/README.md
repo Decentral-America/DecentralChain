@@ -6,8 +6,8 @@ A high-performance read API for the DecentralChain blockchain. Provides HTTP end
 
 | Network | URL |
 |---------|-----|
-| Mainnet | `https://api.decentral.exchange` |
-| Testnet | `https://api.testnet.decentral.exchange` |
+| Testnet | `https://testnet-data-service.decentralchain.io/v0` |
+| Mainnet | See the network page of the DecentralChain docs |
 
 ## Local development
 
@@ -42,7 +42,7 @@ pnpm start
 pnpm pairs
 ```
 
-The API server listens on `http://localhost:3000` by default. Override via `PORT` env var.
+The API server listens on `http://localhost:3000` by default (override with `PORT`; deployments use `PORT=8080` behind Caddy).
 
 ### Tests
 
@@ -66,7 +66,8 @@ pnpm test:i
 | `PGDATABASE` | ✅ | Database name |
 | `PGUSER` | ✅ | Database user |
 | `PGPASSWORD` | ✅ | Database password |
-| `PORT` | — | HTTP listen port (default 3000) |
+| `PORT` | — | HTTP listen port (default 3000; 8080 in deployments) |
+| `PGSTATEMENTTIMEOUT` | — | Postgres statement timeout in ms (default 25000; `0` or `false` disables) |
 | `LOG_LEVEL` | — | Log verbosity: `error`, `warn`, `info`, `debug` (default `info`) |
 | `DOCS_URL` | — | Custom docs URL returned by `GET /` |
 | `NODE_ENV` | — | Set to `production` in production deployments |
@@ -127,7 +128,11 @@ PostgreSQL ← blockchain-postgres-sync ← DecentralChain node
                  HTTP clients
 ```
 
-The data service is read-only. It never writes to PostgreSQL. The `blockchain-postgres-sync` service handles all writes.
+The API never writes to PostgreSQL and should connect with a read-only role (`dcc_ro`). The pairs daemon (`dist/daemons/pairs/index.mjs`) is the only writer: it truncates and refills the `pairs` table (role `dcc_pairs`). All other writes come from `blockchain-postgres-sync`.
+
+On `SIGTERM` the API stops accepting connections, lets in-flight requests finish, then exits. The rate limiter keys clients by `X-Real-IP`, trusted only when the TCP peer is loopback (the Caddy proxy on the same host); any other peer is keyed by its own address.
+
+Deployment (`deploy-data-service.yml`) is limited to commits on `main` with a green `ci.yml` run.
 
 ## Contributing
 

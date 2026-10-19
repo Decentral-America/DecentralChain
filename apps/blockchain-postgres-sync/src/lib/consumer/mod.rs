@@ -1,3 +1,4 @@
+pub mod ancestry;
 pub mod models;
 pub mod repo;
 pub mod resubscribe;
@@ -108,6 +109,7 @@ pub trait UpdatesSource {
 /// # Errors
 ///
 /// Returns an error if the updates source, database, or block-processing logic fails.
+/// Returns an error if the stored chain differs from the node's (see [`ancestry::verify`]).
 ///
 /// # Panics
 ///
@@ -120,7 +122,7 @@ pub async fn start<T, R>(
     last_synced_height: Arc<AtomicU32>,
 ) -> Result<()>
 where
-    T: UpdatesSource + Send + 'static,
+    T: UpdatesSource + ancestry::BlockIdSource + Send + 'static,
     R: repo::Repo + Clone + Send + 'static,
 {
     let Config {
@@ -141,6 +143,11 @@ where
     // that never grows and is never freed — acceptable for a long-running daemon process.
     let asset_storage_address: Option<&'static str> =
         asset_storage_address.map(|a| &*Box::leak(a.into_boxed_str()));
+
+    // Refuse to resume an index built from another chain (re-genesis) or fork.
+    // Runs on every (re)subscribe; a node that is still catching up is retried.
+    ancestry::verify(&updates_src, &repo).await?;
+
     let starting_from_height = {
         repo.transaction(move |ops| {
             match ops.get_blocks_rollback_to(start_rollback_depth, rollback_step) {
@@ -376,12 +383,13 @@ where
     if !assets_only {
         handle_txs(repo, &block_uids_with_appends, chain_id)?;
 
-        let dcc_data = appends
+        let dcc_data = block_uids_with_appends
             .iter()
-            .filter_map(|append| {
+            .filter_map(|(block_uid, append)| {
                 append.updated_dcc_amount.map(|reward| DccData {
                     height: append.height,
                     quantity: BigDecimal::from(reward),
+                    block_uid: Some(*block_uid),
                 })
             })
             .collect_vec();
@@ -1071,7 +1079,14 @@ fn handle_asset_tickers_updates<R: RepoOperations>(
     )
 }
 
-fn squash_microblocks<R: RepoOperations>(repo: &mut R, assets_only: bool) -> Result<()> {
+/// Folds the current microblocks into the last key block: every row that points
+/// at a microblock is re-pointed at the key block, then the microblock rows are
+/// deleted and the key block takes the last microblock's (total) id.
+///
+/// # Errors
+///
+/// Returns an error if any database operation fails.
+pub fn squash_microblocks<R: RepoOperations>(repo: &mut R, assets_only: bool) -> Result<()> {
     let last_microblock_id = repo.get_total_block_id()?;
 
     if let Some(lmid) = last_microblock_id {

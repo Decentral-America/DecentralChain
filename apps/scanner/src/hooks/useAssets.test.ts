@@ -19,9 +19,12 @@ vi.mock('@/lib/api', () => ({
     quantity: '1000000000',
     reissuable: false,
   }),
+  fetchBatchAssetDetails: vi
+    .fn()
+    .mockResolvedValue(new Map([['ASSET2', { assetId: 'ASSET2', decimals: 2, name: 'AUDT' }]])),
 }));
 
-import { useAssetDetails } from './useAssets';
+import { useAssetDetails, useAssetMetas } from './useAssets';
 
 function makeWrapper() {
   const client = new QueryClient({
@@ -55,5 +58,17 @@ describe('useAssetDetails', () => {
       wrapper: makeWrapper(),
     });
     expect(result.current.isPending).toBe(true);
+  });
+});
+
+describe('useAssetMetas', () => {
+  it('returns decimals and name keyed by asset id', async () => {
+    const { result } = renderHook(() => useAssetMetas(['ASSET2']), { wrapper: makeWrapper() });
+    await waitFor(() => expect(result.current.ASSET2).toEqual({ decimals: 2, name: 'AUDT' }));
+  });
+
+  it('returns an empty map and makes no request for no ids', () => {
+    const { result } = renderHook(() => useAssetMetas([]), { wrapper: makeWrapper() });
+    expect(result.current).toEqual({});
   });
 });

@@ -3,65 +3,80 @@
  *
  * Two properties that are easy to break silently and impossible to see in
  * review: that every destination names a hue the token family actually
- * defines, and that no two tiles of one hue end up touching.
- *
- * Adjacency depends on the column count, which is why the grid pins its
- * columns instead of auto-filling. This test derives its counts from
- * `LAUNCHER_COLUMNS`, the same constant `AppLauncher` builds its
- * `gridTemplateColumns` from — change one and this fails, which is the point.
+ * defines, and that no two tiles of one hue end up touching — on the mainnet
+ * grid (15 tiles) and on test-network grids, where Swap is absent because no
+ * AMM is deployed there.
  */
 import { describe, expect, it } from 'vitest';
-import { LAUNCHER_COLUMNS, LAUNCHER_TILES, TOP_TABS } from '@/layouts/shell/navigation';
+import {
+  type Destination,
+  LAUNCHER_COLUMNS,
+  LAUNCHER_TILES,
+  launcherTilesFor,
+  SWAP,
+  TOP_TABS,
+  topTabsFor,
+} from '@/layouts/shell/navigation';
 import { APP_TILE_HUES } from '@/theme/tokens/semantic';
 
-/**
- * The counts `AppLauncher` pins its grid to, at xs / sm / md+ — read from the
- * same constant the component builds its `gridTemplateColumns` from, rather
- * than a second hardcoded copy, so a changed column count is exercised here
- * automatically instead of silently going unchecked.
- */
 const COLUMN_COUNTS = Object.values(LAUNCHER_COLUMNS);
 
-describe('LAUNCHER_TILES', () => {
-  it('lists fifteen destinations, each path once', () => {
-    const paths = LAUNCHER_TILES.map((d) => d.path);
-    expect(paths).toHaveLength(15);
-    expect(new Set(paths).size).toBe(15);
+function hueClashes(tiles: Destination[], columns: number): string[] {
+  const clashes: string[] = [];
+  tiles.forEach((tile, index) => {
+    const right = tiles[index + 1];
+    const below = tiles[index + columns];
+    const hasRightNeighbour = (index % columns) + 1 < columns;
+    if (hasRightNeighbour && right?.hue === tile.hue) {
+      clashes.push(`${tile.label} / ${right.label} (${tile.hue})`);
+    }
+    if (below?.hue === tile.hue) clashes.push(`${tile.label} / ${below.label} (${tile.hue})`);
+  });
+  return clashes;
+}
+
+describe.each([
+  { ammSupported: true, count: 15 },
+  { ammSupported: false, count: 14 },
+])('launcherTilesFor(ammSupported: $ammSupported)', ({ ammSupported, count }) => {
+  const tiles = launcherTilesFor(ammSupported);
+
+  it(`lists ${count} destinations, each path once`, () => {
+    const paths = tiles.map((d) => d.path);
+    expect(paths).toHaveLength(count);
+    expect(new Set(paths).size).toBe(count);
+  });
+
+  it('offers Swap only where an AMM is deployed', () => {
+    expect(tiles.includes(SWAP)).toBe(ammSupported);
   });
 
   it('gives every destination a hue the token family defines', () => {
-    for (const destination of LAUNCHER_TILES) {
-      expect(APP_TILE_HUES).toContain(destination.hue);
-    }
+    for (const destination of tiles) expect(APP_TILE_HUES).toContain(destination.hue);
   });
 
   it.each(COLUMN_COUNTS)('places no two tiles of one hue adjacently at %i columns', (columns) => {
-    const clashes: string[] = [];
-    LAUNCHER_TILES.forEach((tile, index) => {
-      const rightIndex = index + 1;
-      const belowIndex = index + columns;
-      const hasRightNeighbour = (index % columns) + 1 < columns;
-      if (hasRightNeighbour && LAUNCHER_TILES[rightIndex]?.hue === tile.hue) {
-        clashes.push(`${tile.label} / ${LAUNCHER_TILES[rightIndex]?.label} (${tile.hue})`);
-      }
-      if (LAUNCHER_TILES[belowIndex]?.hue === tile.hue) {
-        clashes.push(`${tile.label} / ${LAUNCHER_TILES[belowIndex]?.label} (${tile.hue})`);
-      }
-    });
-    expect(clashes).toEqual([]);
+    expect(hueClashes(tiles, columns)).toEqual([]);
   });
 });
 
 describe('TOP_TABS', () => {
   it('is built from the very objects the grid renders', () => {
-    // Identity, not equality: the previous version indexed into the group
-    // arrays positionally, so reordering a group silently retitled the top bar.
-    for (const tab of TOP_TABS) {
-      expect(LAUNCHER_TILES).toContain(tab);
-    }
+    for (const tab of TOP_TABS) expect(LAUNCHER_TILES).toContain(tab);
   });
 
-  it('is the four destinations worth a click from anywhere', () => {
-    expect(TOP_TABS.map((t) => t.label)).toEqual(['Dashboard', 'Portfolio', 'Trade', 'Swap']);
+  it('is Dashboard, Portfolio, Trade, Swap where an AMM exists', () => {
+    expect(topTabsFor(true).map((t) => t.label)).toEqual([
+      'Dashboard',
+      'Portfolio',
+      'Trade',
+      'Swap',
+    ]);
+  });
+
+  it('replaces Swap with Markets on networks without an AMM', () => {
+    const tabs = topTabsFor(false);
+    expect(tabs.map((t) => t.label)).toEqual(['Dashboard', 'Portfolio', 'Trade', 'Markets']);
+    for (const tab of tabs) expect(launcherTilesFor(false)).toContain(tab);
   });
 });

@@ -33,7 +33,10 @@ use diesel::{
     sql_query,
     sql_types::{Array, BigInt, Int8, Timestamp, VarChar},
 };
-use std::{collections::HashMap, num::NonZeroU32};
+use std::{
+    collections::{BTreeMap, HashMap},
+    num::NonZeroU32,
+};
 
 const MAX_UID: i64 = i64::MAX - 1;
 const PG_MAX_INSERT_FIELDS_COUNT: usize = 65535;
@@ -147,6 +150,19 @@ impl RepoOperations for PgRepoOperations<'_> {
             .map_err(build_err_fn("Cannot get total block id"))
     }
 
+    fn get_key_block_id_at_height(&mut self, height: i32) -> Result<Option<String>> {
+        blocks_microblocks::table
+            .select(blocks_microblocks::id)
+            .filter(blocks_microblocks::height.eq(height))
+            .filter(blocks_microblocks::time_stamp.is_not_null())
+            .order(blocks_microblocks::uid.desc())
+            .first(self.conn)
+            .optional()
+            .map_err(build_err_fn(format!(
+                "Cannot get key block id at height {height}"
+            )))
+    }
+
     fn insert_blocks_or_microblocks(&mut self, blocks: &[BlockMicroblock]) -> Result<Vec<i64>> {
         if blocks.is_empty() {
             return Ok(vec![]);
@@ -223,10 +239,24 @@ impl RepoOperations for PgRepoOperations<'_> {
     }
 
     fn insert_dcc_data(&mut self, dcc_data: &[DccData]) -> Result<()> {
+        // One row per height. A batch can carry the same key block twice (the
+        // updates stream re-delivers blocks), and ON CONFLICT DO UPDATE cannot touch
+        // the same row twice in one statement, so keep the last row per height.
+        let rows: Vec<DccData> = dcc_data
+            .iter()
+            .map(|d| (d.height, d))
+            .collect::<BTreeMap<_, _>>()
+            .into_values()
+            .cloned()
+            .collect();
         diesel::insert_into(dcc_data::table)
-            .values(dcc_data)
-            .on_conflict(dcc_data::quantity)
-            .do_nothing() // its ok to skip same quantity on historical sync
+            .values(&rows)
+            .on_conflict(dcc_data::height)
+            .do_update()
+            .set((
+                dcc_data::quantity.eq(diesel::upsert::excluded(dcc_data::quantity)),
+                dcc_data::block_uid.eq(diesel::upsert::excluded(dcc_data::block_uid)),
+            ))
             .execute(self.conn)
             .map(drop)
             .map_err(build_err_fn("Cannot insert dcc data"))

@@ -48,6 +48,7 @@ vi.mock('@/lib/api', () => ({
   fetchLastBlock: vi.fn().mockResolvedValue({
     generator: '3P3FfgF5f1WxS4jbUMqojfC3xBnrGNrMePy',
     height: 100,
+    id: 'blockid100',
     reward: 600_000_000,
     signature: 'abcdeabcdeabcde',
     timestamp: 1_700_000_000_000,
@@ -115,6 +116,15 @@ describe('Dashboard page', () => {
     await waitFor(() => {
       expect(screen.getByText('DCC v1.3.5')).toBeDefined();
     });
+  });
+
+  it('labels the block id, not the signature, as "Block ID"', async () => {
+    renderDashboard();
+    await waitFor(() => {
+      expect(screen.getAllByText('blockid100').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('hdr100').length).toBeGreaterThan(0);
+    });
+    expect(screen.queryByText('abcdeabcdeabcde')).toBeNull();
   });
 
   it('shows recent blocks table rows after headers load', async () => {

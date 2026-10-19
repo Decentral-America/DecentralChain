@@ -3,13 +3,13 @@ use crate::messages::OutcomeMessage;
 use crate::metrics::{
     MESSAGES, TOPIC_SUBSCRIBED, TOPIC_UNSUBSCRIBED, TOPICS, TOPICS_MAP_CAPACITY, TOPICS_MAP_SIZE,
 };
-use crate::topic::Topic;
+use crate::topic::{StateMulti, StateSingle, Topic};
 use axum::extract::ws::Message;
 use prometheus::HistogramTimer;
 use serde::{Deserialize, Serialize};
-use std::collections::{BTreeSet, HashMap, HashSet};
+use std::collections::{BTreeSet, HashMap, HashSet, VecDeque};
 use std::sync::Arc;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 use tokio::sync::{Mutex, RwLock};
 
 pub type ClientId = usize;
@@ -56,6 +56,10 @@ pub struct Client {
     sender: ClientSender,
     kill_tx: Option<tokio::sync::oneshot::Sender<()>>,
     subscriptions: HashMap<Topic, ClientSubscriptionData>,
+    /// Number of (subtopic, parent multi-topic) indirect subscriptions held.
+    indirect_count: usize,
+    /// Start times of this connection's recent multi-topic subscribes (rate limit).
+    multitopic_subscribes: VecDeque<Instant>,
     request_id: Option<String>,
 }
 
@@ -130,7 +134,30 @@ impl Client {
             kill_tx: Some(kill_tx),
             request_id,
             subscriptions: HashMap::new(),
+            indirect_count: 0,
+            multitopic_subscribes: VecDeque::new(),
         }
+    }
+
+    /// Records a multi-topic subscribe at `now` if fewer than `max` were recorded
+    /// within the trailing `window`; returns false (recording nothing) otherwise.
+    pub fn try_record_multitopic_subscribe(
+        &mut self,
+        now: Instant,
+        max: usize,
+        window: Duration,
+    ) -> bool {
+        while let Some(&oldest) = self.multitopic_subscribes.front() {
+            if now.saturating_duration_since(oldest) < window {
+                break;
+            }
+            self.multitopic_subscribes.pop_front();
+        }
+        if self.multitopic_subscribes.len() >= max {
+            return false;
+        }
+        self.multitopic_subscribes.push_back(now);
+        true
     }
 
     pub fn graceful_kill(&mut self) {
@@ -146,6 +173,17 @@ impl Client {
 
     pub fn contains_subscription(&self, topic: &Topic) -> bool {
         self.subscriptions.contains_key(topic)
+    }
+
+    /// Subscriptions the client asked for directly (not multi-topic expansions).
+    pub fn direct_subscriptions_count(&self) -> usize {
+        self.subscriptions.values().filter(|d| d.is_direct).count()
+    }
+
+    /// Indirect subscriptions (one per subtopic per parent multi-topic) — the
+    /// expansion cost a connection's multi-topics impose on the server.
+    pub fn indirect_subscriptions_count(&self) -> usize {
+        self.indirect_count
     }
 
     pub fn add_direct_subscription(&mut self, topic: Topic, key: ClientSubscriptionKey) {
@@ -173,13 +211,16 @@ impl Client {
             "indirect subscription added"
         );
         let data = self.subscriptions.entry(topic).or_default();
-        data.indirect_subscription_sources.insert(
+        let previous = data.indirect_subscription_sources.insert(
             parent,
             IndirectSubscriptionData {
                 subscription_key: key,
             },
         );
         data.is_indirect = true;
+        if previous.is_none() {
+            self.indirect_count += 1;
+        }
     }
 
     pub fn mark_subscription_as_new(&mut self, topic: Topic, timer: HistogramTimer) {
@@ -201,7 +242,9 @@ impl Client {
 
     pub fn remove_indirect_subscription(&mut self, topic: &Topic, parent: &Topic) {
         if let Some(data) = self.subscriptions.get_mut(topic) {
-            data.indirect_subscription_sources.remove(parent);
+            if data.indirect_subscription_sources.remove(parent).is_some() {
+                self.indirect_count = self.indirect_count.saturating_sub(1);
+            }
             if data.indirect_subscription_sources.is_empty() {
                 data.is_indirect = false;
             }
@@ -397,13 +440,20 @@ pub type Clients = RwLock<HashMap<ClientId, Arc<Mutex<Client>>>>;
 pub type Topics = RwLock<ClientIdsByTopics>;
 
 #[derive(Default, Debug)]
-pub struct ClientIdsByTopics(HashMap<Topic, KeyInfo>);
+pub struct ClientIdsByTopics {
+    topics: HashMap<Topic, KeyInfo>,
+    /// Address → registered state multi-topics listing that address, so a state
+    /// update only looks at the multi-topics that can match it.
+    multitopics_by_address: HashMap<String, HashSet<Topic>>,
+}
 
 #[derive(Debug)]
 pub struct KeyInfo {
     clients: HashMap<ClientId, ClientSubscriptionKey>,
     indirect_clients: HashMap<ClientId, HashSet<Topic>>,
     subtopics: HashSet<Topic>,
+    /// Parsed filter, for state multi-topics only (parsed once on registration).
+    filter: Option<Arc<StateMulti>>,
     last_refresh_time: Instant,
 }
 
@@ -419,6 +469,7 @@ impl KeyInfo {
             clients: HashMap::new(),
             indirect_clients: HashMap::new(),
             subtopics: HashSet::new(),
+            filter: None,
             last_refresh_time: Instant::now(),
         }
     }
@@ -434,6 +485,13 @@ impl KeyInfo {
     }
 }
 
+/// A multi-topic that gains a subtopic: its new subtopic set and direct subscribers.
+pub type GainingMultitopic = (
+    Topic,
+    HashSet<Topic>,
+    Vec<(ClientId, ClientSubscriptionKey)>,
+);
+
 #[derive(Clone, Debug)]
 pub struct MultitopicUpdate {
     pub added_subtopics: Vec<Topic>,
@@ -441,19 +499,55 @@ pub struct MultitopicUpdate {
 }
 
 impl ClientIdsByTopics {
+    /// Entry for `topic`, created (and indexed, for a state multi-topic) if absent.
+    /// The flag is true when the entry was created by this call.
+    fn entry_or_create(&mut self, topic: Topic) -> (&mut KeyInfo, bool) {
+        let created = !self.topics.contains_key(&topic);
+        if created {
+            TOPIC_SUBSCRIBED.inc();
+            TOPICS.inc();
+            let mut info = KeyInfo::new();
+            if let Some(filter) = topic.data().as_state_multi() {
+                for address in &filter.addresses {
+                    self.multitopics_by_address
+                        .entry(address.clone())
+                        .or_default()
+                        .insert(topic.clone());
+                }
+                info.filter = Some(Arc::new(filter));
+            }
+            self.topics.insert(topic.clone(), info);
+        }
+        let info = self.topics.get_mut(&topic).expect("entry ensured above");
+        (info, created)
+    }
+
+    /// Removes `topic` and its address-index entries.
+    fn remove_entry(&mut self, topic: &Topic) {
+        let Some(info) = self.topics.remove(topic) else {
+            return;
+        };
+        TOPIC_UNSUBSCRIBED.inc();
+        TOPICS.dec();
+        if let Some(filter) = info.filter {
+            for address in &filter.addresses {
+                if let Some(set) = self.multitopics_by_address.get_mut(address) {
+                    set.remove(topic);
+                    if set.is_empty() {
+                        self.multitopics_by_address.remove(address);
+                    }
+                }
+            }
+        }
+    }
+
     pub fn add_subscription(
         &mut self,
         topic: Topic,
         client_id: ClientId,
         key: ClientSubscriptionKey,
     ) {
-        let mut new_entry = false;
-        let info = self.0.entry(topic).or_insert_with(|| {
-            TOPIC_SUBSCRIBED.inc();
-            TOPICS.inc();
-            new_entry = true;
-            KeyInfo::new()
-        });
+        let (info, new_entry) = self.entry_or_create(topic);
 
         if let Some(prev) = info.clients.insert(client_id, key) {
             tracing::warn!(
@@ -469,12 +563,10 @@ impl ClientIdsByTopics {
     }
 
     pub fn remove_subscription(&mut self, topic: &Topic, client_id: &ClientId) {
-        if let Some(info) = self.0.get_mut(topic) {
+        if let Some(info) = self.topics.get_mut(topic) {
             info.clients.remove(client_id);
             if info.clients.is_empty() && info.indirect_clients.is_empty() {
-                TOPIC_UNSUBSCRIBED.inc();
-                TOPICS.dec();
-                self.0.remove(topic);
+                self.remove_entry(topic);
                 self.update_size_metrics();
             }
         }
@@ -485,13 +577,7 @@ impl ClientIdsByTopics {
         multitopic: Topic,
         subtopics: HashSet<Topic>,
     ) -> MultitopicUpdate {
-        let mut new_entry = false;
-        let info = self.0.entry(multitopic).or_insert_with(|| {
-            TOPIC_SUBSCRIBED.inc();
-            TOPICS.inc();
-            new_entry = true;
-            KeyInfo::new()
-        });
+        let (info, new_entry) = self.entry_or_create(multitopic);
 
         let added = subtopics
             .difference(&info.subtopics)
@@ -506,7 +592,6 @@ impl ClientIdsByTopics {
         if info.subtopics != subtopics {
             info.subtopics = subtopics;
         }
-        // info borrow ends here; now safe to call &self method
 
         let result = MultitopicUpdate {
             added_subtopics: added,
@@ -529,39 +614,45 @@ impl ClientIdsByTopics {
         let mut changed = false;
 
         for topic in update.added_subtopics {
-            self.0
-                .entry(topic)
-                .or_insert_with(|| {
-                    TOPIC_SUBSCRIBED.inc();
-                    TOPICS.inc();
-                    changed = true;
-                    KeyInfo::new()
-                })
-                .indirect_clients
+            let (info, created) = self.entry_or_create(topic);
+            info.indirect_clients
                 .entry(*client_id)
                 .or_default()
                 .insert(multitopic.clone());
+            changed |= created;
         }
 
         for topic in update.removed_subtopics {
-            if let Some(info) = self.0.get_mut(&topic) {
-                if let Some(multitopics) = info.indirect_clients.get_mut(client_id) {
-                    multitopics.remove(&multitopic);
-                    if multitopics.is_empty() {
-                        info.indirect_clients.remove(client_id);
-                    }
-                }
-                if info.clients.is_empty() && info.indirect_clients.is_empty() {
-                    TOPIC_UNSUBSCRIBED.inc();
-                    TOPICS.dec();
-                    changed = true;
-                    self.0.remove(&topic);
-                }
-            }
+            changed |= self.drop_indirect_client(&topic, &multitopic, client_id);
         }
 
         if changed {
             self.update_size_metrics();
+        }
+    }
+
+    /// Detaches `client_id`'s indirect subscription to `topic` via `multitopic`;
+    /// removes the entry when nobody is left. Returns true if the entry was removed.
+    fn drop_indirect_client(
+        &mut self,
+        topic: &Topic,
+        multitopic: &Topic,
+        client_id: &ClientId,
+    ) -> bool {
+        let Some(info) = self.topics.get_mut(topic) else {
+            return false;
+        };
+        if let Some(multitopics) = info.indirect_clients.get_mut(client_id) {
+            multitopics.remove(multitopic);
+            if multitopics.is_empty() {
+                info.indirect_clients.remove(client_id);
+            }
+        }
+        if info.clients.is_empty() && info.indirect_clients.is_empty() {
+            self.remove_entry(topic);
+            true
+        } else {
+            false
         }
     }
 
@@ -571,28 +662,14 @@ impl ClientIdsByTopics {
         client_id: &ClientId,
     ) -> Vec<Topic> {
         let subtopics = self
-            .0
+            .topics
             .get(multitopic)
             .map(|info| info.subtopics.iter().cloned().collect::<Vec<_>>())
             .unwrap_or_default();
 
         let mut changed = false;
-
         for topic in &subtopics {
-            if let Some(info) = self.0.get_mut(topic) {
-                if let Some(multitopics) = info.indirect_clients.get_mut(client_id) {
-                    multitopics.remove(multitopic);
-                    if multitopics.is_empty() {
-                        info.indirect_clients.remove(client_id);
-                    }
-                }
-                if info.clients.is_empty() && info.indirect_clients.is_empty() {
-                    TOPIC_UNSUBSCRIBED.inc();
-                    TOPICS.dec();
-                    changed = true;
-                    self.0.remove(topic);
-                }
-            }
+            changed |= self.drop_indirect_client(topic, multitopic, client_id);
         }
 
         if changed {
@@ -603,7 +680,7 @@ impl ClientIdsByTopics {
     }
 
     pub fn get_subscribed_clients(&self, topic: &Topic) -> HashMap<ClientId, Subscribed> {
-        self.0
+        self.topics
             .get(topic)
             .map(|info| {
                 let direct = info
@@ -619,19 +696,85 @@ impl ClientIdsByTopics {
             .unwrap_or_default()
     }
 
+    /// Multi-topics with direct subscribers whose filter matches `topic` but whose
+    /// resolved subtopic set does not contain it yet (and is below `max_subtopics`).
+    /// Returns each one's new subtopic set and its direct subscribers.
+    ///
+    /// Only the multi-topics listing `single.address` are examined (address index),
+    /// using their filters parsed at registration.
+    pub fn multitopics_gaining(
+        &self,
+        topic: &Topic,
+        single: &StateSingle,
+        max_subtopics: usize,
+    ) -> Vec<GainingMultitopic> {
+        let Some(candidates) = self.multitopics_by_address.get(&single.address) else {
+            return Vec::new();
+        };
+        candidates
+            .iter()
+            .filter_map(|mt| {
+                let info = self.topics.get(mt)?;
+                let filter = info.filter.as_ref()?;
+                if info.clients.is_empty()
+                    || info.subtopics.contains(topic)
+                    || info.subtopics.len() >= max_subtopics
+                    || !filter.matches(single)
+                {
+                    return None;
+                }
+                let mut subtopics = info.subtopics.clone();
+                subtopics.insert(topic.clone());
+                let clients = info
+                    .clients
+                    .iter()
+                    .map(|(id, key)| (*id, key.clone()))
+                    .collect();
+                Some((mt.clone(), subtopics, clients))
+            })
+            .collect()
+    }
+
+    /// Whether [`Self::multitopics_gaining`] would return anything, without
+    /// cloning subtopic sets or subscriber lists (the hot path for every state
+    /// update, evaluated under the topics read lock).
+    pub fn any_multitopic_gaining(
+        &self,
+        topic: &Topic,
+        single: &StateSingle,
+        max_subtopics: usize,
+    ) -> bool {
+        let Some(candidates) = self.multitopics_by_address.get(&single.address) else {
+            return false;
+        };
+        candidates.iter().any(|mt| {
+            self.topics.get(mt).is_some_and(|info| {
+                !info.clients.is_empty()
+                    && !info.subtopics.contains(topic)
+                    && info.subtopics.len() < max_subtopics
+                    && info.filter.as_ref().is_some_and(|f| f.matches(single))
+            })
+        })
+    }
+
+    #[cfg(test)]
+    fn multitopic_index_len(&self) -> usize {
+        self.multitopics_by_address.len()
+    }
+
     pub fn topics_iter(&self) -> impl Iterator<Item = (&Topic, &KeyInfo)> {
-        self.0.iter()
+        self.topics.iter()
     }
 
     pub fn refresh_topic(&mut self, topic: Topic, refresh_time: Instant) {
-        if let Some(info) = self.0.get_mut(&topic) {
+        if let Some(info) = self.topics.get_mut(&topic) {
             info.refresh(refresh_time);
         }
     }
 
     fn update_size_metrics(&self) {
-        TOPICS_MAP_SIZE.set(i64::try_from(self.0.len()).unwrap_or(i64::MAX));
-        TOPICS_MAP_CAPACITY.set(i64::try_from(self.0.capacity()).unwrap_or(i64::MAX));
+        TOPICS_MAP_SIZE.set(i64::try_from(self.topics.len()).unwrap_or(i64::MAX));
+        TOPICS_MAP_CAPACITY.set(i64::try_from(self.topics.capacity()).unwrap_or(i64::MAX));
     }
 }
 
@@ -737,6 +880,153 @@ mod tests {
         let update2 = store.update_multitopic_info(multitopic, subtopics);
         assert!(update2.added_subtopics.is_empty());
 
+        Ok(())
+    }
+
+    #[test]
+    fn multitopics_gaining_only_returns_matching_multitopics_missing_the_topic()
+    -> Result<(), Box<dyn std::error::Error>> {
+        let mt = Topic::parse_str("topic://state?address__in[]=3MA&key__match_any[]=bal_*")?;
+        let mut store = ClientIdsByTopics::default();
+        store.add_subscription(mt.clone(), 7, ClientSubscriptionKey::new(mt.to_string()));
+        let _ = store.update_multitopic_info(mt.clone(), HashSet::new());
+
+        let new_key = Topic::parse_str("topic://state/3MA/bal_x")?;
+        let single = new_key.data().as_state_single().ok_or("single")?;
+        let gaining = store.multitopics_gaining(&new_key, &single, 1000);
+        assert_eq!(gaining.len(), 1);
+        assert!(gaining[0].1.contains(&new_key));
+        assert_eq!(gaining[0].2[0].0, 7);
+
+        let other = Topic::parse_str("topic://state/3MA/other")?;
+        let other_single = other.data().as_state_single().ok_or("single")?;
+        assert!(
+            store
+                .multitopics_gaining(&other, &other_single, 1000)
+                .is_empty()
+        );
+
+        let _ = store.update_multitopic_info(mt, gaining[0].1.clone());
+        assert!(
+            store
+                .multitopics_gaining(&new_key, &single, 1000)
+                .is_empty()
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn multitopic_subscribe_rate_limit_slides_with_the_window() {
+        let (tx, _rx) = tokio::sync::mpsc::unbounded_channel();
+        let (kill_tx, _kill_rx) = tokio::sync::oneshot::channel();
+        let mut client = Client::new(1, tx, kill_tx, None);
+        let window = Duration::from_secs(10);
+        let t0 = Instant::now();
+        assert!(client.try_record_multitopic_subscribe(t0, 2, window));
+        assert!(client.try_record_multitopic_subscribe(t0 + Duration::from_secs(1), 2, window));
+        assert!(!client.try_record_multitopic_subscribe(t0 + Duration::from_secs(9), 2, window));
+        // The first entry leaves the window at t0 + 10 s.
+        assert!(client.try_record_multitopic_subscribe(t0 + Duration::from_secs(10), 2, window));
+        assert!(!client.try_record_multitopic_subscribe(t0 + Duration::from_secs(10), 2, window));
+    }
+
+    #[test]
+    fn any_multitopic_gaining_agrees_with_multitopics_gaining()
+    -> Result<(), Box<dyn std::error::Error>> {
+        let mut store = ClientIdsByTopics::default();
+        let mt = Topic::parse_str("topic://state?address__in[]=3MA&key__match_any[]=bal_*")?;
+        let new_key = Topic::parse_str("topic://state/3MA/bal_1")?;
+        let single = new_key.data().as_state_single().ok_or("single")?;
+        let other = Topic::parse_str("topic://state/3MA/other")?;
+        let other_single = other.data().as_state_single().ok_or("single")?;
+        let unindexed = Topic::parse_str("topic://state/3MZ/bal_1")?;
+        let unindexed_single = unindexed.data().as_state_single().ok_or("single")?;
+
+        // Registered but no direct subscriber yet: nothing gains.
+        let _ = store.update_multitopic_info(mt.clone(), HashSet::new());
+        assert!(!store.any_multitopic_gaining(&new_key, &single, 1000));
+
+        store.add_subscription(mt.clone(), 1, ClientSubscriptionKey::new("k"));
+        for (topic, s, cap) in [
+            (&new_key, &single, 1000),
+            (&new_key, &single, 0),
+            (&other, &other_single, 1000),
+            (&unindexed, &unindexed_single, 1000),
+        ] {
+            assert_eq!(
+                store.any_multitopic_gaining(topic, s, cap),
+                !store.multitopics_gaining(topic, s, cap).is_empty(),
+                "{topic} cap={cap}"
+            );
+        }
+        assert!(store.any_multitopic_gaining(&new_key, &single, 1000));
+
+        // Once the key is part of the resolved set, it no longer gains.
+        let _ = store.update_multitopic_info(mt, HashSet::from([new_key.clone()]));
+        assert!(!store.any_multitopic_gaining(&new_key, &single, 1000));
+        Ok(())
+    }
+
+    #[test]
+    fn multitopic_address_index_follows_subscriptions() -> Result<(), Box<dyn std::error::Error>> {
+        let mt = Topic::parse_str(
+            "topic://state?address__in[]=3MA&address__in[]=3MB&key__match_any[]=bal_*",
+        )?;
+        let mut store = ClientIdsByTopics::default();
+        store.add_subscription(mt.clone(), 7, ClientSubscriptionKey::new(mt.to_string()));
+        let _ = store.update_multitopic_info(mt.clone(), HashSet::new());
+        assert_eq!(store.multitopic_index_len(), 2, "one entry per address");
+
+        let b_key = Topic::parse_str("topic://state/3MB/bal_1")?;
+        let b_single = b_key.data().as_state_single().ok_or("single")?;
+        assert_eq!(store.multitopics_gaining(&b_key, &b_single, 1000).len(), 1);
+
+        let c_key = Topic::parse_str("topic://state/3MC/bal_1")?;
+        let c_single = c_key.data().as_state_single().ok_or("single")?;
+        assert!(
+            store
+                .multitopics_gaining(&c_key, &c_single, 1000)
+                .is_empty()
+        );
+
+        store.remove_subscription(&mt, &7);
+        assert_eq!(
+            store.multitopic_index_len(),
+            0,
+            "index cleared with the topic"
+        );
+        assert!(
+            store
+                .multitopics_gaining(&b_key, &b_single, 1000)
+                .is_empty()
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn indirect_subscription_count_tracks_topic_parent_pairs()
+    -> Result<(), Box<dyn std::error::Error>> {
+        let (tx, _rx) = tokio::sync::mpsc::unbounded_channel();
+        let (kill_tx, _kill_rx) = tokio::sync::oneshot::channel();
+        let mut client = Client::new(1, tx, kill_tx, None);
+        let mt1 = Topic::parse_str("topic://state?address__in[]=3MA&key__match_any[]=a*")?;
+        let mt2 = Topic::parse_str("topic://state?address__in[]=3MA&key__match_any[]=ab*")?;
+        let sub = Topic::parse_str("topic://state/3MA/abc")?;
+        let key = ClientSubscriptionKey::new("k");
+        client.add_indirect_subscription(sub.clone(), mt1.clone(), key.clone());
+        client.add_indirect_subscription(sub.clone(), mt1.clone(), key.clone());
+        assert_eq!(
+            client.indirect_subscriptions_count(),
+            1,
+            "re-adding is idempotent"
+        );
+        client.add_indirect_subscription(sub.clone(), mt2.clone(), key);
+        assert_eq!(client.indirect_subscriptions_count(), 2);
+        client.remove_indirect_subscription(&sub, &mt1);
+        client.remove_indirect_subscription(&sub, &mt1);
+        assert_eq!(client.indirect_subscriptions_count(), 1);
+        client.remove_indirect_subscription(&sub, &mt2);
+        assert_eq!(client.indirect_subscriptions_count(), 0);
         Ok(())
     }
 }

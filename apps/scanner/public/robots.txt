@@ -1,7 +1,0 @@
-# DecentralScan - Blockchain Explorer
-# https://github.com/dylanpersonguy/explorer
-
-User-agent: *
-Allow: /
-
-Sitemap: /sitemap.xml

@@ -10,11 +10,43 @@ function formatDateTime(date: Date): string {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds} UTC`;
 }
 
+/** Parses an integer amount to BigInt without going through a float; null if not a whole number. */
+function toBigIntExact(amount: number | bigint | string): bigint | null {
+  if (typeof amount === 'bigint') return amount;
+  if (typeof amount === 'number') return Number.isSafeInteger(amount) ? BigInt(amount) : null;
+  return /^-?\d+$/.test(amount.trim()) ? BigInt(amount.trim()) : null;
+}
+
+/**
+ * Formats an integer amount of base units with `decimals` decimal places, exactly
+ * (BigInt arithmetic, no float rounding above 2^53). Null when the input is not a
+ * whole number or decimals is not a small non-negative integer.
+ */
+export function formatUnitsExact(
+  amount: number | bigint | string,
+  decimals: number,
+): string | null {
+  if (!Number.isInteger(decimals) || decimals < 0 || decimals > 100) return null;
+  const value = toBigIntExact(amount);
+  if (value === null) return null;
+  const negative = value < 0n;
+  const abs = negative ? -value : value;
+  const scale = 10n ** BigInt(decimals);
+  // Fixed locale so server and client output match (no hydration mismatch).
+  const whole = (abs / scale).toLocaleString('en-US');
+  const frac = (abs % scale).toString().padStart(decimals, '0').replace(/0+$/, '');
+  const text = frac ? `${whole}.${frac}` : whole;
+  return negative && abs !== 0n ? `-${text}` : text;
+}
+
 export function formatAmount(
   amount: number | bigint | string | null | undefined,
   decimals: number = 8,
 ): string {
   if (!amount && amount !== 0) return '0';
+  const exact = formatUnitsExact(amount, decimals);
+  if (exact !== null) return exact;
+  // Non-integer or unparseable input: keep the previous float formatting.
   const value = Number(amount) / 10 ** decimals;
   // Use a fixed locale so server and client produce identical output,
   // preventing React hydration error #418 (text content mismatch).

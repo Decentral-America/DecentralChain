@@ -1,24 +1,13 @@
 import { type MiddlewareHandler } from 'hono';
-import { pick } from 'ramda';
 import { type AppEnv, type EventBus } from '../http/_common/types';
 
-// Headers that carry credentials or tokens — must never appear in logs.
-const REDACTED_HEADERS = new Set([
-  'authorization',
-  'cookie',
-  'set-cookie',
-  'x-api-key',
-  'x-auth-token',
-  'x-access-token',
-  'proxy-authorization',
-]);
-
+// Only what is needed to trace a request. Raw headers are deliberately not
+// logged: they doubled log volume and can carry credentials.
 const collectRequestData = (c: Parameters<MiddlewareHandler<AppEnv>>[0]) => ({
-  ...pick(['method', 'url'])({ method: c.req.method, url: c.req.url }),
-  headers: [...c.req.raw.headers.entries()]
-    .map(([k, v]) => `${k}:${REDACTED_HEADERS.has(k.toLowerCase()) ? '[REDACTED]' : v}`)
-    .join(';'),
+  method: c.req.method,
   requestId: c.get('requestId') ?? '',
+  url: c.req.url,
+  userAgent: c.req.header('user-agent') ?? '',
 });
 
 export default (rawEventBus: {

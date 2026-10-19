@@ -38,6 +38,7 @@ export const noopEventBus = {
 // ---------------------------------------------------------------------------
 export const mockPgDriver: PgDriver = {
   any: <T>(_q: string) => Effect.succeed([] as T[]),
+  close: () => Promise.resolve(),
   many: <T>(_q: string) => Effect.succeed([] as T[]),
   none: (_q) => Effect.succeed(null),
   one: <T>(_q: string) => Effect.succeed({} as T),
@@ -140,11 +141,12 @@ export const mockServices: ServiceMesh = {
 export function buildApp(
   services: ServiceMesh = mockServices,
   pgDriver: PgDriver = mockPgDriver,
+  eventBus: { emit: (name: string, data: unknown) => unknown } = noopEventBus,
 ): Hono<AppEnv> {
   const app = new Hono<AppEnv>();
 
   app.use(requestId());
-  app.use(injectEventBus(noopEventBus));
+  app.use(injectEventBus(eventBus as { emit: (event: string, data: unknown) => void }));
   app.use(secureHeaders({ crossOriginResourcePolicy: 'cross-origin' }));
   app.use(cors({ origin: '*' }));
 

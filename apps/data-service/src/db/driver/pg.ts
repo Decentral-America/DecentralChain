@@ -26,6 +26,8 @@ export type PgDriver = {
   any<T>(query: SqlQuery): Effect.Effect<T[], DbError | Timeout>;
   task<T>(cb: (t: postgres.TransactionSql) => T | Promise<T>): Effect.Effect<T, DbError | Timeout>;
   tx<T>(cb: (t: postgres.TransactionSql) => T | Promise<T>): Effect.Effect<T, DbError | Timeout>;
+  /** Ends the connection pool, waiting up to `timeoutSeconds` for running queries. */
+  close(timeoutSeconds?: number): Promise<void>;
 };
 
 // BigNumber custom type parser shared across all three numeric OIDs.
@@ -108,6 +110,8 @@ export const createPgDriver = (
         const rows = await run(query);
         return rows as T[];
       }),
+
+    close: (timeoutSeconds = 5) => sql.end({ timeout: timeoutSeconds }),
 
     many: <T>(query: SqlQuery) =>
       toEffectful<T[]>(async () => {

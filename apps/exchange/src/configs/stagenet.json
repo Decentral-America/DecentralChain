@@ -13,6 +13,8 @@
   "coinomat": "",
   "explorer": "https://stagenet.decentralscan.com",
   "gateway": {},
+  "hiddenMarketAssetNames": [],
+  "marketSource": "config",
   "matcher": "https://stagenet-matcher.decentralchain.io/matcher",
   "matcherPriorityList": [
     { "id": "DCC", "ticker": "DCC" },
@@ -26,7 +28,6 @@
     "dcc": "3MgT3txVhjUBy8xXBYSbBSezoJNTr1naHhp",
     "tokenomica": "3MgT3txVhjUBy8xXBYSbBSezoJNTr1naHhp"
   },
-  "origin": "https://stagenet.decentralchain.io",
   "privacyPolicy": "https://decentralchain.io/privacy-policy",
   "support": "https://decentralchain.io/soporte",
   "termsAndConditions": "https://decentralchain.io/terms-and-conditions",

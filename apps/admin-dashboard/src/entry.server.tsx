@@ -7,6 +7,8 @@ import { type EntryContext, type RouterContextProvider, ServerRouter } from 'rea
 import { isUsingDefaultSecret } from '@/lib/auth';
 import { migrateSchema } from '@/lib/db';
 import { logger } from '@/lib/logger';
+import { missingRuntimeEnv } from '@/lib/runtime-urls';
+import { classifyServerError, describeRequest } from '@/lib/server-error';
 import { runtimeConfig } from './root';
 
 // Startup checks and migrations — run once when the server process starts.
@@ -21,6 +23,20 @@ if (isUsingDefaultSecret()) {
   }
   logger.warn(
     'ADMIN_DASHBOARD_JWT_SECRET is not set or uses the default — set a strong random secret before deploying',
+  );
+}
+const missingEnv = missingRuntimeEnv();
+if (missingEnv.length > 0) {
+  if (process.env.NODE_ENV === 'production') {
+    logger.error(
+      { missing: missingEnv },
+      'Per-network configuration is missing and the image carries no defaults — refusing to start in production.',
+    );
+    process.exit(1);
+  }
+  logger.warn(
+    { missing: missingEnv },
+    'Per-network configuration is missing — using development fallbacks',
   );
 }
 if (
@@ -60,12 +76,17 @@ export default function handleRequest(
     // as inline <script> tags — required framework output, not app code. A
     // strict `script-src 'self'` with no nonce/unsafe-inline blocks React
     // Router's own scripts along with everything else, breaking hydration on
-    // every page. The nonce here and in the CSP header below must match.
+    // every page. React's own streaming SSR also emits inline <script>s
+    // (Suspense boundary completion, resumable-state markers), so the same
+    // nonce goes to renderToPipeableStream too. ServerRouter forwards it to
+    // <Scripts>, <ScrollRestoration> and <Links> via the framework context.
+    // The nonce here and in the CSP header below must match.
     const nonce = randomBytes(16).toString('base64');
 
     const { pipe, abort } = renderToPipeableStream(
       <ServerRouter context={routerContext} url={request.url} nonce={nonce} />,
       {
+        nonce,
         [readyEvent]() {
           shellRendered = true;
           const body = new PassThrough();
@@ -136,4 +157,15 @@ export default function handleRequest(
 
     setTimeout(abort, ABORT_DELAY);
   });
+}
+
+/** One info line for scanner probes (unmatched URL / wrong method); real errors keep their stack. */
+export function handleError(error: unknown, { request }: { request: Request }): void {
+  const level = classifyServerError(error, request.signal.aborted);
+  if (level === 'ignore') return;
+  if (level === 'info') {
+    logger.info(`[route] ${describeRequest(error, request)}`);
+    return;
+  }
+  logger.error({ err: error, path: new URL(request.url).pathname }, 'Unhandled server error');
 }

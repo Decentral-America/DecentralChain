@@ -1,0 +1,4 @@
+DROP INDEX IF EXISTS txs_18_recipient_address_uid_idx;
+ALTER TABLE txs_18 DROP COLUMN IF EXISTS asset_id;
+ALTER TABLE txs_18 DROP COLUMN IF EXISTS amount;
+ALTER TABLE txs_18 DROP COLUMN IF EXISTS recipient_address;

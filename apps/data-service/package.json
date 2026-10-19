@@ -26,7 +26,6 @@
     "test": "vitest run",
     "test:run": "vitest run",
     "test:i": "export $(cat variables.env | xargs) && vitest run --config vitest.integration.config.ts",
-    "test:it": "export $(cat variables.testnet.env | xargs) && vitest run --config vitest.integration.config.ts",
     "test:http": "vitest run --config vitest.http.config.ts"
   },
   "devDependencies": {

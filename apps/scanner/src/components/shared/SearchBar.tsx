@@ -28,6 +28,14 @@ export default function SearchBar(): React.ReactElement {
         return;
       }
 
+      // Block signatures are 64 bytes (86-88 base58 chars); the node indexes
+      // blocks by 32-byte id only, so a signature can never resolve.
+      if (trimmedQuery.length >= 80) {
+        throw new Error(
+          'That looks like a block signature. Blocks are found by block ID or height — copy the "Block ID" from the block page.',
+        );
+      }
+
       // Check if it's a long hash (block/tx/asset ID - typically 40+ chars)
       if (trimmedQuery.length >= 40) {
         // Try as block ID first

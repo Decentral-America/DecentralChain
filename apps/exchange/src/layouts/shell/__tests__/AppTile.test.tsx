@@ -9,12 +9,10 @@ import { ThemeProvider } from '@mui/material/styles';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { AppTile } from '@/layouts/shell/AppTile';
-import { LAUNCHER_TILES } from '@/layouts/shell/navigation';
+import { SWAP } from '@/layouts/shell/navigation';
 import { rgbToHex } from '@/test-utils/rgbToHex';
 import { createAppTheme } from '@/theme/mui-theme';
 import { contrastRatio, type ThemeMode, tokens } from '@/theme/tokens/semantic';
-
-const SWAP = LAUNCHER_TILES.find((d) => d.label === 'Swap')!;
 
 function toHex(value: string): string {
   return value.startsWith('#') ? value.toLowerCase() : rgbToHex(value);

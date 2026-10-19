@@ -59,7 +59,7 @@ jobs:
 
       - name: Build
         working-directory: apps/websocket-api
-        run: cargo build --all-targets
+        run: cargo build --all-targets --locked
 
       - name: Clippy (deny warnings)
         working-directory: apps/websocket-api
@@ -71,6 +71,7 @@ jobs:
         run: |
           cargo llvm-cov nextest \
             --all-targets \
+            --locked \
             --codecov \
             --output-path codecov.json
 

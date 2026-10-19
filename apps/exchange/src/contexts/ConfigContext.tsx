@@ -74,7 +74,6 @@ export const ConfigProvider = ({ children }: { children: ReactNode }) => {
 
       // Oracle addresses from network config
       oracles: networkConfig.oracles,
-      originUrl: networkConfig.origin,
       privacyUrl: networkConfig.privacyPolicy,
 
       // Network switching function

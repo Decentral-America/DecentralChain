@@ -25,6 +25,7 @@ import type React from 'react';
 import { useNavigate } from 'react-router';
 import { MobileAuthShell } from '@/components/layout/MobileAuthShell';
 import { config } from '@/config';
+import { CUBENSIS_ENABLED } from '@/config/cubensis';
 
 interface ImportMethod {
   id: string;
@@ -121,11 +122,14 @@ const ImportInner: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  // Ledger support is not finished yet: drop its tile rather than link to a
-  // flow that isn't ready, while leaving the route reachable directly.
-  const importMethods = config.ledgerEnabled
-    ? IMPORT_METHODS
-    : IMPORT_METHODS.filter((method) => method.id !== 'ledger');
+  // Methods that are not ready are dropped rather than linked: Ledger until
+  // its support ships, Cubensis Connect until the extension has a store
+  // listing. Their routes stay defined for direct-URL testing.
+  const importMethods = IMPORT_METHODS.filter(
+    (method) =>
+      (config.ledgerEnabled || method.id !== 'ledger') &&
+      (CUBENSIS_ENABLED || method.id !== 'cubensis-connect'),
+  );
 
   const content = (
     <Grid container spacing={3}>

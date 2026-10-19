@@ -20,6 +20,7 @@ import { rgbToHex } from '@/test-utils/rgbToHex';
 import { ImportPage } from '../ImportPage';
 
 vi.mock('@/config', () => ({ config: { ledgerEnabled: false } }));
+vi.mock('@/config/cubensis', () => ({ CUBENSIS_ENABLED: false, CUBENSIS_INSTALL_URL: '' }));
 vi.mock('react-router', () => ({ useNavigate: () => vi.fn() }));
 
 function nearestBackground(el: HTMLElement): string {

@@ -27,6 +27,13 @@ export const DS_URL =
 export const MATCHER_URL =
   process.env.DCC_TEST_MATCHER_URL ?? 'https://testnet-matcher.decentralchain.io';
 
+/**
+ * Matcher REST API key, used only to delete the per-run test order book after
+ * the exchange suite. Optional: when unset, cleanup is skipped and the
+ * exchange UI hides `E2ETestTkn` markets via its network config.
+ */
+export const MATCHER_API_KEY = process.env.DCC_TEST_MATCHER_API_KEY ?? '';
+
 /** Node REST API key — enables /peers/connected, /transactions/sign, /debug/* */
 export const API_KEY = process.env.DCC_TEST_API_KEY ?? process.env.DCC_API_KEY ?? '';
 

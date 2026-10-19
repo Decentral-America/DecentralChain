@@ -27,6 +27,12 @@ async fn main() -> Result<()> {
         "starting blockchain-postgres-sync consumer",
     );
 
+    // Apply pending schema migrations before anything reads or writes the index,
+    // so a reset database or an image with new migrations needs no manual step.
+    let applied =
+        db::run_pending_migrations(&config.postgres).context("schema migration failed")?;
+    info!(applied = ?applied, "schema migrations up to date");
+
     let conn = db::async_pool(&config.postgres)
         .await
         .context("DB connection failed")?;

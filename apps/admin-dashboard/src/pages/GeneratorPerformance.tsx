@@ -28,6 +28,7 @@ import {
   fetchBlockHeadersSeqPaginated,
   fetchHeight,
 } from '@/lib/api';
+import { DEFAULT_SCANNER_URL } from '@/lib/runtime-urls';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -116,7 +117,7 @@ function computeGeneratorStats(
 const SAMPLE_BLOCKS = 500;
 
 export default function GeneratorPerformance() {
-  const root = useRouteLoaderData('root') as { nodeUrl?: string } | undefined;
+  const root = useRouteLoaderData('root') as { nodeUrl?: string; scannerUrl?: string } | undefined;
   const nodeUrl = root?.nodeUrl ?? 'https://testnet-node.decentralchain.io';
 
   const [generators, setGenerators] = useState<GeneratorStats[]>([]);
@@ -174,7 +175,7 @@ export default function GeneratorPerformance() {
     return () => clearInterval(interval);
   }, [load]);
 
-  const scannerBase = 'https://testnet.decentralscan.com';
+  const scannerBase = root?.scannerUrl ?? DEFAULT_SCANNER_URL;
 
   return (
     <div className="p-6 space-y-6">

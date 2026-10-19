@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useLocation } from 'react-router';
 import { MobileMenuDrawer } from '@/components/mobile/MobileMenuDrawer';
 import { TabBar, type TabBarItem } from '@/components/premium/TabBar';
+import { AMM_SUPPORTED } from '@/config/amm';
 import { mobileLayout } from '@/styles/mobileTokens';
 
 /**
@@ -31,12 +32,15 @@ type Tab = {
   icon: typeof House;
 };
 
-const TABS: Tab[] = [
+const ALL_TABS: Tab[] = [
   { icon: House, key: 'portfolio', label: 'Portfolio', to: '/desktop/wallet' },
   { icon: Repeat, key: 'swap', label: 'Swap', to: '/desktop/swap' },
   { icon: ChartCandlestick, key: 'trade', label: 'Trade', to: '/desktop/dex' },
   { icon: Sprout, key: 'earn', label: 'Earn', to: '/desktop/wallet/leasing' },
 ];
+
+// Swap is offered only where an AMM is deployed.
+const TABS = ALL_TABS.filter((tab) => AMM_SUPPORTED || tab.key !== 'swap');
 
 /**
  * Which tab each route belongs to. Explicit rather than prefix-matched:
@@ -44,7 +48,6 @@ const TABS: Tab[] = [
  * Portfolio on screens it does not own. A route missing here lights no tab.
  */
 const ROUTE_TAB: Record<string, TabKey> = {
-  '/desktop/bridge': 'swap',
   '/desktop/dex': 'trade',
   '/desktop/markets': 'trade',
   '/desktop/orderbook': 'trade',
@@ -61,6 +64,8 @@ function tabForPath(pathname: string): TabKey | undefined {
   const path = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
   // The trading screen takes a pair in the path (/desktop/dex/:amount/:price).
   if (path.startsWith('/desktop/dex/')) return 'trade';
+  // The bridge sits under Swap only where Swap is offered; without an AMM it owns no tab.
+  if (path === '/desktop/bridge') return AMM_SUPPORTED ? 'swap' : undefined;
   return ROUTE_TAB[path];
 }
 

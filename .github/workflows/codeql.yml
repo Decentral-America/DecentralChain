@@ -34,11 +34,13 @@ jobs:
           # GitHub Actions workflow files
           - language: actions
             build-mode: none
+          # First-party Rust services and crates: blockchain-postgres-sync,
+          # websocket-api, groth16. CodeQL analyses Rust without a build.
+          - language: rust
+            build-mode: none
         # Intentionally excluded (detected by GitHub but not our source code):
         #   c-cpp        — vendored in Node.js native deps only
-        #   java-kotlin  — no Java/Kotlin source in this repo
-        #   python        — no Python source in this repo
-        #   rust          — vendored in Rust native addons only
+        #   python       — no Python source in this repo (ops scripts only)
 
     steps:
       - name: Checkout repository

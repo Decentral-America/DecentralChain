@@ -2269,7 +2269,7 @@
           "1_0_18": "{span.line} [ 1. Ahora puede configurar un script para su cuenta.)\n{span.line} [ 2. Se han corregido fallos menores adicionales.)",
           "1_0_21": "{span.line} [ 1. Confirmación de autorización fija a través de Ledger.)\n{span.line} [ 2. Numerosos pequeños arreglados.)",
           "1_0_22": "{span.line} Se han añadido funciones avanzadas para trabajar con cuentas con script.",
-          "1_0_25": "{span.line}[1. [Cubensis Connect](https://chrome.google.com/webstore/detail/decentralchain-keeper/lpilbniiabackdjcionkobglmddfbcjo?hl=en) se ha añadido soporte.]",
+          "1_0_25": "{span.line}[1. Cubensis Connect se ha añadido soporte.]",
           "1_0_27": "{span.line} [ 1. Se ha añadido la categoría \"Mis activos\" en Portfolio.)\n{span.line} [ 2. Las bugs menores han sido arregladas.)",
           "1_0_28": "{span.line} [ 1. Se ha añadido una función de 'pairing' para importar cuentas existentes a dispositivos móviles.)\n{span.line} [ 2. Las bugs menores han sido arregladas.)",
           "1_0_29": "{span.line} [ 1. La generación de código QR utilizando el alfabeto cirílico se ha arreglado.)\n{span.line} [ 2. Se ha añadido la ayuda contextual para la búsqueda de lista de observación.)\n{span.line} [ 3. Arreglos cosméticos adicionales. )",

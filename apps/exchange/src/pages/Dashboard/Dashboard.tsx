@@ -49,6 +49,7 @@ import {
   InsetRowSkeleton,
   TokenAvatar,
 } from '@/components/premium/InsetList';
+import { AMM_SUPPORTED } from '@/config/amm';
 import { useAuth } from '@/contexts/AuthContext';
 import { AssetDetailsDialog, type AssetDialogAsset } from '@/features/wallet/AssetDetailsDialog';
 import { BalanceChart } from '@/features/wallet/BalanceChart';
@@ -368,7 +369,7 @@ export const Dashboard = () => {
     { action: () => navigate('/desktop/create-token'), icon: <Coins />, title: 'Create token' },
     { action: () => navigate('/desktop/analytics'), icon: <ChartLine />, title: 'Analytics' },
     { action: () => navigate('/desktop/wallet/transactions'), icon: <History />, title: 'History' },
-  ];
+  ].filter((quickAction) => AMM_SUPPORTED || quickAction.title !== 'Swap');
 
   const figure = (
     <>

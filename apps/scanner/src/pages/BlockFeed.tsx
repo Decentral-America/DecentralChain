@@ -190,9 +190,9 @@ export default function BlockFeed() {
                         <p className="text-sm text-muted-foreground mb-1">{t('blockId')}</p>
                         <div className="flex items-center gap-2">
                           <code className="text-xs bg-muted px-2 py-1 rounded">
-                            {truncate(block.signature, 16)}
+                            {truncate(block.id, 16)}
                           </code>
-                          <CopyButton text={block.signature} />
+                          <CopyButton text={block.id} label="Copy block ID" />
                         </div>
                       </div>
                       <div>

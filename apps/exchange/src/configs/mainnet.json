@@ -17,6 +17,8 @@
       "url": "https://btc.decentralchain.io"
     }
   },
+  "hiddenMarketAssetNames": [],
+  "marketSource": "config",
   "matcher": "https://mainnet-matcher.decentralchain.io/matcher",
   "matcherPriorityList": [
     { "id": "DCC", "ticker": "DCC" },
@@ -29,7 +31,6 @@
     "dcc": "3DUM611HQFwQcCQDQnA5W92Xs219smEHaaP",
     "tokenomica": ""
   },
-  "origin": "https://decentral.exchange",
   "privacyPolicy": "https://decentralchain.io/privacy-policy",
   "support": "https://decentralchain.io/soporte",
   "termsAndConditions": "https://decentralchain.io/terms-and-conditions",

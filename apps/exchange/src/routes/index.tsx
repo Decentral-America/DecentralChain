@@ -19,11 +19,13 @@
  */
 import { createBrowserRouter, Navigate } from 'react-router';
 import { MobilePageShell } from '@/components/mobile/MobilePageShell';
+import { CUBENSIS_ENABLED } from '@/config/cubensis';
 import { ResponsiveScreen } from '@/layouts/ResponsiveScreen';
 import { RootLayout } from '@/layouts/RootLayout';
 import { ErrorPage } from '@/pages/ErrorPage';
 import { dexRoutes } from './dexRoutes';
 import { lazyPage } from './lazyPage';
+import { SwapRoute } from './SwapRoute';
 import { settingsRoutes } from './settingsRoutes';
 import { walletRoutes } from './walletRoutes';
 
@@ -35,7 +37,6 @@ const OrderBook = lazyPage(() => import('@/pages/OrderBook'), 'OrderBook');
 const Analytics = lazyPage(() => import('@/pages/Analytics'), 'Analytics');
 const Messages = lazyPage(() => import('@/pages/Messages'), 'Messages');
 const CreateToken = lazyPage(() => import('@/pages/CreateToken'), 'CreateToken');
-const Swap = lazyPage(() => import('@/pages/Swap'), 'Swap');
 
 /**
  * Pathless layout that wraps onboarding routes in LegacyOnboardingTheme. Lazy,
@@ -119,13 +120,19 @@ export const router = createBrowserRouter([
                   import('@/pages/ImportLedger').then((m) => ({ Component: m.ImportLedger })),
                 path: '/import/ledger',
               },
-              {
-                lazy: () =>
-                  import('@/pages/CubensisConnectImportPage').then((m) => ({
-                    Component: m.CubensisConnectImportPage,
-                  })),
-                path: '/import/cubensis-connect',
-              },
+              CUBENSIS_ENABLED
+                ? {
+                    lazy: () =>
+                      import('@/pages/CubensisConnectImportPage').then((m) => ({
+                        Component: m.CubensisConnectImportPage,
+                      })),
+                    path: '/import/cubensis-connect',
+                  }
+                : {
+                    // No store listing yet: the import flow cannot work, so it is not offered.
+                    element: <Navigate to="/import" replace />,
+                    path: '/import/cubensis-connect',
+                  },
             ],
             lazy: legacyOnboarding,
           },
@@ -237,19 +244,7 @@ export const router = createBrowserRouter([
                     path: 'create-token',
                   },
                   {
-                    element: (
-                      <ResponsiveScreen
-                        mobile={
-                          <MobilePageShell
-                            title="Swap"
-                            subtitle="Exchange one asset for another at the best available rate."
-                          >
-                            <Swap />
-                          </MobilePageShell>
-                        }
-                        desktop={<Swap />}
-                      />
-                    ),
+                    element: <SwapRoute />,
                     path: 'swap',
                   },
                 ],
@@ -266,11 +261,6 @@ export const router = createBrowserRouter([
                 Component: m.ProtectedRoute,
               })),
             path: '/desktop',
-          },
-          {
-            lazy: () =>
-              import('@/pages/admin/DexPairAdmin').then((m) => ({ Component: m.DexPairAdmin })),
-            path: '/dccadmin',
           },
           /*
            * Development-only preview of the mobile shell, ported from the

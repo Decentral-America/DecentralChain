@@ -3,6 +3,7 @@ import { isNil } from 'ramda';
 import { ParseError } from '../../../errorHandling';
 import { isSortOrder } from '../../../services/_common';
 import { parseArrayQuery, parseDate, parseTrimmedStringIfDefined } from '../../../utils/parsers';
+import { base58 } from '../../../utils/regex';
 import { DEFAULT_MAX_LIMIT } from './';
 import { type CommonFilters } from './types';
 
@@ -34,6 +35,14 @@ const sort: CommonFilters['sort'] = (s) =>
 
 const after: CommonFilters['after'] = parseTrimmedStringIfDefined;
 
+// Addresses only: anything else is a client error (400), never a DB error.
+const parseSenders = (raw?: string | string[]): Either.Either<string[] | undefined, ParseError> =>
+  Either.flatMap(isNil(raw) ? parseArrayQuery(undefined) : parseArrayQuery(raw), (list) =>
+    list === undefined || list.every((s) => base58.test(s))
+      ? Either.right(list)
+      : Either.left(new ParseError(new Error('senders must be base58 addresses'))),
+  );
+
 export default {
   after,
   blockTimeEnd: parseDate,
@@ -42,7 +51,7 @@ export default {
   limit: limit(DEFAULT_MAX_LIMIT),
   query: parseTrimmedStringIfDefined,
   sender: parseTrimmedStringIfDefined,
-  senders: parseArrayQuery,
+  senders: parseSenders,
   sort,
   timeEnd: parseDate,
   timeStart: parseDate,

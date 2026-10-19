@@ -17,6 +17,7 @@ import accessLogMiddleware from './middleware/accessLog';
 import injectEventBus from './middleware/injectEventBus';
 import { createRateLimiter } from './middleware/rateLimiter';
 import createServices from './services';
+import { installGracefulShutdown } from './shutdown';
 
 export const DccId: string = 'DCC';
 
@@ -87,7 +88,7 @@ Effect.runPromise(
   ),
 )
   .then((app) => {
-    serve(
+    const server = serve(
       {
         fetch: app.fetch,
         port: options.port,
@@ -98,7 +99,22 @@ Effect.runPromise(
         }
       },
     );
-    // Hono node-server manages keepAlive internally (defaults to 5s idle timeout)
+    // Node is PID 1 in the container: without a handler, SIGTERM is ignored and
+    // `docker stop` SIGKILLs after 10 s, dropping in-flight requests.
+    installGracefulShutdown({
+      closeResources: () => pgDriver.close(),
+      exit: (code) => {
+        // pino writes synchronously to stdout by default; flush covers async transports.
+        logger.flush();
+        process.exit(code);
+      },
+      graceMs: 8_000,
+      log: (message, meta) => logger.info(meta ?? {}, message),
+      onSignal: (signal, handler) => {
+        process.once(signal, handler);
+      },
+      server,
+    });
   })
   .catch((e: unknown) => {
     logger.error(

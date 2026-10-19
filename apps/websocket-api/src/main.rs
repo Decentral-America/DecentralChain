@@ -1,6 +1,7 @@
 mod client;
 mod config;
 mod error;
+mod limits;
 mod messages;
 mod metrics;
 mod refresher;
@@ -73,6 +74,7 @@ async fn run() -> Result<(), Error> {
             clients,
             topics,
             repo.clone(),
+            usize::try_from(server_config.max_indirect_subtopics_per_client).unwrap_or(usize::MAX),
         ))
     };
 
@@ -83,6 +85,10 @@ async fn run() -> Result<(), Error> {
         client_ping_interval: Duration::from_secs(server_config.client_ping_interval),
         client_ping_failures_threshold: server_config.client_ping_failures_threshold as usize,
         max_connections: server_config.max_connections,
+        max_connections_per_ip: server_config.max_connections_per_ip,
+        max_subscriptions_per_client: server_config.max_subscriptions_per_client,
+        max_indirect_subtopics_per_client: server_config.max_indirect_subtopics_per_client,
+        multitopic_resolve_concurrency: server_config.multitopic_resolve_concurrency,
     };
 
     let (shutdown_signal_tx, mut shutdown_signal_rx) = tokio::sync::mpsc::channel(1);

@@ -8,11 +8,14 @@
 //! - `shard`     — shard routing determinism and bucket distribution
 //! - `health`    — /health HTTP endpoint via axum-test TestServer
 //! - `websocket` — full WebSocket connection flow via axum-test WebSocket client
+//! - `redis_repo` — `RepoImpl` against a real Redis container (needs Docker)
 
 #![allow(clippy::unwrap_used)]
 
 pub mod health;
 pub mod messages;
+pub mod multitopic;
+pub mod redis_repo;
 pub mod shard;
 pub mod topic;
 pub mod websocket;

@@ -31,6 +31,7 @@ export type EthereumLikeTxsSearchRequest = RequestWithCursor<
   Partial<{
     type: EthereumLikeTransfer | EthereumLikeInvocation;
     function: string;
+    recipient: string;
   }>;
 
 export type EthereumLikeTxsRepo = Repo<

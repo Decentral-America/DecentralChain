@@ -139,6 +139,13 @@ jobs:
           # still supplies the real, domain-restricted key for builds that reach users.
           VITE_SOLANA_RPC_URL: https://api.mainnet-beta.solana.com
 
+      - name: Verify exchange security headers in the built output (affected)
+        # Checks dist/_headers -- the file Cloudflare Pages actually serves -- not a source copy.
+        run: pnpm nx affected -t verify-headers
+        env:
+          # Same as the build above, so the build it depends on is an nx cache hit.
+          VITE_SOLANA_RPC_URL: https://api.mainnet-beta.solana.com
+
       - name: Typecheck (affected)
         # Build runs first so node-api dist/ files are on disk before typecheck.
         # Same JVM exclusions: no typecheck targets defined for those packages.
@@ -148,6 +155,11 @@ jobs:
         # ride:test runs sbt test (needs Java/sbt — tested by ride.yml)
         # @decentralchain/ride:test requires Scala.js fullLinkJS output (produced by ride.yml)
         run: pnpm nx affected -t test --exclude=blockchain-postgres-sync,blst,crypto,curve25519,groth16,java-sdk,@decentralchain/ride,ride,transactions,e2e-blockchain
+
+      - name: HTTP-level tests (affected)
+        # data-service *.http.spec.ts drive the real router (vitest.http.config.ts);
+        # they are not part of the `test` target, so run them explicitly.
+        run: pnpm nx affected -t test-http
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1

@@ -29,7 +29,6 @@ export interface Config {
   supportUrl: string;
   termsUrl: string;
   privacyUrl: string;
-  originUrl: string;
 
   // Feature flags
   /** Offers the Ledger hardware-wallet path. Off until Ledger support ships. */
@@ -66,7 +65,6 @@ const getConfig = (): Config => {
     network: import.meta.env.VITE_NETWORK || 'testnet',
     networkByte: NetworkConfig.networkByte,
     nodeUrl: import.meta.env.VITE_NODE_URL || NetworkConfig.node,
-    originUrl: NetworkConfig.origin,
     privacyUrl: NetworkConfig.privacyPolicy,
     sentryDsn: import.meta.env.VITE_SENTRY_DSN,
 

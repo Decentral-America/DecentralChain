@@ -50,18 +50,19 @@ export const loadTradingPairs = (): TradingPair[] =>
 export const AVAILABLE_PAIRS: TradingPair[] = loadTradingPairs();
 
 /**
- * Preferred opening pair, falling back to the first configured one.
+ * Preferred opening pair: DCC/CRC where listed, otherwise the first pair.
  *
- * Null when the network configures no pairs at all, so the UI can say so
- * rather than rendering a pair with empty asset ids that makes every
- * downstream request fail.
+ * Null when there are no pairs at all, so the UI can say so rather than
+ * rendering a pair with empty asset ids that makes every downstream request
+ * fail.
  */
-const getDefaultPair = (): TradingPair | null => {
-  const dccCrc = AVAILABLE_PAIRS.find(
+export const pickDefaultPair = (pairs: readonly TradingPair[]): TradingPair | null => {
+  const dccCrc = pairs.find(
     (pair) => pair.amountAssetName === 'DCC' && pair.priceAssetName === 'CRC',
   );
 
-  return dccCrc ?? AVAILABLE_PAIRS[0] ?? null;
+  return dccCrc ?? pairs[0] ?? null;
 };
 
-export const DEFAULT_PAIR = getDefaultPair();
+/** Default pair for config-sourced networks. Matcher networks use `useAvailablePairs`. */
+export const DEFAULT_PAIR = pickDefaultPair(AVAILABLE_PAIRS);

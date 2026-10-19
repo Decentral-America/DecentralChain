@@ -8,6 +8,8 @@
   "coinomat": "",
   "explorer": "https://testnet.decentralscan.com",
   "gateway": {},
+  "hiddenMarketAssetNames": ["E2ETestTkn", "DEXPROOF"],
+  "marketSource": "matcher",
   "matcher": "https://testnet-matcher.decentralchain.io/matcher",
   "matcherPriorityList": [{ "id": "DCC", "ticker": "DCC" }],
   "node": "https://testnet-node.decentralchain.io",
@@ -16,10 +18,9 @@
     "dcc": "31TayDxQeiDMSi4eiXHLp1C1p6WuGHPaNQS",
     "tokenomica": ""
   },
-  "origin": "https://testnet.decentralchain.io",
   "privacyPolicy": "https://decentralchain.io/privacy-policy",
   "support": "https://decentralchain.io/soporte",
   "termsAndConditions": "https://decentralchain.io/terms-and-conditions",
   "tokenrating": "",
-  "tradingPairs": [["C84Qs2JfpDKwCrwqByj4YNwxXQfLqQCBvYboKQMv6yB6", "DCC"]]
+  "tradingPairs": []
 }

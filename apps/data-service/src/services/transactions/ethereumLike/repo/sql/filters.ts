@@ -1,7 +1,16 @@
 import { where, whereNotNull, whereNull } from '../../../../../utils/db/knex';
 
 import { createByBlockTimeStamp, createByTimeStamp } from '../../../_common/sql';
-import { after, id, ids, limit, sender, senders, sort } from '../../../_common/sql/filters';
+import {
+  after,
+  id,
+  ids,
+  limit,
+  recipient,
+  sender,
+  senders,
+  sort,
+} from '../../../_common/sql/filters';
 import commonFiltersOrder from '../../../_common/sql/filtersOrder';
 
 const byTimeStamp = createByTimeStamp('txs_18');
@@ -17,6 +26,8 @@ export const filters = {
   id,
   ids,
   limit,
+  // Ethereum transfers store their recipient (BPS txs_18.recipient_address).
+  recipient,
   sender,
   senders,
   sort,
@@ -29,4 +40,11 @@ export const filters = {
       ? whereNull('function_name')
       : whereNotNull('function_name'),
 };
-export const filtersOrder = [...commonFiltersOrder, 'timeStart', 'timeEnd', 'type', 'function'];
+export const filtersOrder = [
+  ...commonFiltersOrder,
+  'timeStart',
+  'timeEnd',
+  'type',
+  'function',
+  'recipient',
+];

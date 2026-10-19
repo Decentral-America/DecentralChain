@@ -2,6 +2,8 @@ use crate::client::ClientId;
 use crate::error::Error;
 use crate::topic::Topic;
 use fred::prelude::*;
+use fred::types::scan::Scanner;
+use futures::StreamExt;
 use std::collections::HashMap;
 use std::time::{Duration, Instant};
 use tokio::task::JoinSet;
@@ -9,6 +11,23 @@ use tokio::task::JoinSet;
 use self::counter::VersionCounter;
 
 const CONNECTION_ID_KEY: &str = "NEXT_CONNECTION_ID";
+
+/// `SSCAN COUNT` hint for reading a state index set.
+const STATE_INDEX_SCAN_COUNT: u32 = 1000;
+
+/// Redis set (maintained by BPS) listing every state key written for `address`.
+pub fn state_index_key(address: &str) -> String {
+    format!("topic://state-index/{address}")
+}
+
+/// Outcome of one [`Repo::state_index_scan`].
+#[derive(Debug, Default)]
+pub struct StateIndexScan {
+    /// Members `keep` accepted, at most `limit + 1`.
+    pub kept: Vec<String>,
+    /// Members read from the index, at most `max_examined + 1`.
+    pub examined: usize,
+}
 
 pub struct RepoConfig {
     pub host: String,
@@ -62,6 +81,21 @@ pub trait Repo: Send + Sync {
         &self,
         keys: Vec<String>,
     ) -> impl std::future::Future<Output = Result<Vec<Option<String>>, Error>> + Send;
+
+    /// Members of the address's state index set (`topic://state-index/{address}`,
+    /// written by BPS alongside every state key) for which `keep` returns true,
+    /// read incrementally with `SSCAN`.
+    ///
+    /// Stops as soon as more than `limit` members are kept or more than
+    /// `max_examined` members have been examined, so `kept.len() > limit` and
+    /// `examined > max_examined` each mean "there is more than allowed".
+    fn state_index_scan(
+        &self,
+        address: &str,
+        keep: &(dyn Fn(&str) -> bool + Sync),
+        limit: usize,
+        max_examined: usize,
+    ) -> impl std::future::Future<Output = Result<StateIndexScan, Error>> + Send;
 
     fn refresh(
         &self,
@@ -139,6 +173,39 @@ impl Repo for RepoImpl {
             }
             _ => Ok(self.pool.mget(keys).await?),
         }
+    }
+
+    async fn state_index_scan(
+        &self,
+        address: &str,
+        keep: &(dyn Fn(&str) -> bool + Sync),
+        limit: usize,
+        max_examined: usize,
+    ) -> Result<StateIndexScan, Error> {
+        let index_key = state_index_key(address);
+        let mut pages = std::pin::pin!(self.pool.next().sscan(
+            index_key,
+            "*",
+            Some(STATE_INDEX_SCAN_COUNT)
+        ));
+        let mut scan = StateIndexScan::default();
+        'pages: while let Some(page) = pages.next().await {
+            let mut page = page?;
+            for member in page.take_results().unwrap_or_default() {
+                scan.examined += 1;
+                if let Some(member) = member.as_str()
+                    && keep(&member)
+                {
+                    scan.kept.push(member.into_owned());
+                }
+                if scan.kept.len() > limit || scan.examined > max_examined {
+                    page.cancel();
+                    break 'pages;
+                }
+            }
+            // Dropping `page` requests the next one (fred continues the SSCAN cursor).
+        }
+        Ok(scan)
     }
 
     async fn refresh(&self, mut topics: Vec<Topic>) -> Result<HashMap<Topic, Instant>, Error> {

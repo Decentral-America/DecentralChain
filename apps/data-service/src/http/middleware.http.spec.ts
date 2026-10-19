@@ -79,10 +79,17 @@ describe('Secure headers', () => {
 });
 
 describe('Rate limiter', () => {
-  /**
-   * Build a minimal Hono app with just the rate limiter and a test route.
-   * We set a very low limit (max=2) and a short window so tests run fast.
-   */
+  const requestFrom = (peer: string | undefined, headers: Record<string, string> = {}) =>
+    [
+      '/ping',
+      { headers },
+      peer === undefined ? undefined : { incoming: { socket: { remoteAddress: peer } } },
+    ] as const;
+
+  /** Request as Caddy on the same host delivers it: loopback peer, Caddy-written X-Real-IP. */
+  const viaCaddy = (clientIp: string, extra: Record<string, string> = {}) =>
+    requestFrom('127.0.0.1', { 'X-Real-IP': clientIp, ...extra });
+
   function buildRateLimitedApp(max: number, windowMs: number) {
     const app = new Hono<AppEnv>();
     app.use(injectEventBus(noopEventBus));
@@ -93,46 +100,88 @@ describe('Rate limiter', () => {
 
   it('allows requests under the limit', async () => {
     const app = buildRateLimitedApp(5, 60_000);
-    const requests = Array.from({ length: 5 }, () =>
-      app.request('/ping', { headers: { 'X-Real-IP': '1.2.3.4' } }),
+    const responses = await Promise.all(
+      Array.from({ length: 5 }, () => app.request(...viaCaddy('1.2.3.4'))),
     );
-    const responses = await Promise.all(requests);
     for (const res of responses) {
       expect(res.status).toBe(200);
     }
   });
 
-  it('returns 429 when limit is exceeded for the same IP', async () => {
+  it('returns 429 with Retry-After when the limit is exceeded for the same client', async () => {
     const app = buildRateLimitedApp(3, 60_000);
-    const ip = '10.0.0.99';
-    const results: number[] = [];
-    // Send 5 sequential requests — first 3 should pass, 4th and 5th should 429
+    const statuses: number[] = [];
     for (let i = 0; i < 5; i++) {
-      const res = await app.request('/ping', { headers: { 'X-Real-IP': ip } });
-      results.push(res.status);
+      statuses.push((await app.request(...viaCaddy('10.0.0.99'))).status);
     }
-    const passed = results.filter((s) => s === 200).length;
-    const limited = results.filter((s) => s === 429).length;
-    expect(passed).toBe(3);
-    expect(limited).toBe(2);
-  });
-
-  it('returns Retry-After header when 429 is returned', async () => {
-    const app = buildRateLimitedApp(1, 60_000);
-    const ip = '10.0.0.55';
-    // First request passes
-    await app.request('/ping', { headers: { 'X-Real-IP': ip } });
-    // Second request triggers rate limit
-    const res = await app.request('/ping', { headers: { 'X-Real-IP': ip } });
-    expect(res.status).toBe(429);
+    expect(statuses).toEqual([200, 200, 200, 429, 429]);
+    const res = await app.request(...viaCaddy('10.0.0.99'));
     expect(res.headers.get('retry-after')).toBeTruthy();
   });
 
-  it('different IPs have independent rate limit windows', async () => {
+  it('different clients have independent windows', async () => {
     const app = buildRateLimitedApp(1, 60_000);
-    const res1 = await app.request('/ping', { headers: { 'X-Real-IP': '192.168.1.1' } });
-    const res2 = await app.request('/ping', { headers: { 'X-Real-IP': '192.168.1.2' } });
-    expect(res1.status).toBe(200);
-    expect(res2.status).toBe(200);
+    expect((await app.request(...viaCaddy('192.168.1.1'))).status).toBe(200);
+    expect((await app.request(...viaCaddy('192.168.1.2'))).status).toBe(200);
+  });
+
+  it('a loopback peer is keyed by X-Real-IP, not by X-Forwarded-For', async () => {
+    const app = buildRateLimitedApp(2, 60_000);
+    const statuses: number[] = [];
+    for (let i = 0; i < 4; i++) {
+      statuses.push(
+        (await app.request(...viaCaddy('8.8.8.8', { 'X-Forwarded-For': `6.6.6.${i}` }))).status,
+      );
+    }
+    expect(statuses).toEqual([200, 200, 429, 429]);
+  });
+
+  it.each(['127.0.0.2', '::1', '::ffff:127.0.0.1'])('treats %s as loopback', async (peer) => {
+    const app = buildRateLimitedApp(1, 60_000);
+    expect((await app.request(...requestFrom(peer, { 'X-Real-IP': '4.4.4.4' }))).status).toBe(200);
+    expect((await app.request(...requestFrom(peer, { 'X-Real-IP': '4.4.4.4' }))).status).toBe(429);
+    expect((await app.request(...requestFrom(peer, { 'X-Real-IP': '4.4.4.5' }))).status).toBe(200);
+  });
+
+  it('a loopback peer without a valid X-Real-IP falls back to the last X-Forwarded-For entry', async () => {
+    const app = buildRateLimitedApp(2, 60_000);
+    for (const realIp of [undefined, 'not-an-ip']) {
+      const statuses: number[] = [];
+      for (let i = 0; i < 3; i++) {
+        statuses.push(
+          (
+            await app.request(
+              ...requestFrom('127.0.0.1', {
+                'X-Forwarded-For': `6.6.6.${i}, ${realIp === undefined ? '9.9.9.9' : '9.9.9.8'}`,
+                ...(realIp === undefined ? {} : { 'X-Real-IP': realIp }),
+              }),
+            )
+          ).status,
+        );
+      }
+      expect(statuses).toEqual([200, 200, 429]);
+    }
+  });
+
+  it('a loopback peer with neither header is keyed by the peer itself', async () => {
+    const app = buildRateLimitedApp(1, 60_000);
+    expect((await app.request(...requestFrom('127.0.0.1'))).status).toBe(200);
+    expect((await app.request(...requestFrom('127.0.0.1'))).status).toBe(429);
+  });
+
+  it('keys a non-loopback peer by its own address and ignores spoofed headers', async () => {
+    const app = buildRateLimitedApp(1, 60_000);
+    const direct = (n: string) =>
+      app.request(...requestFrom('203.0.113.50', { 'X-Forwarded-For': n, 'X-Real-IP': n }));
+    expect((await direct('1.1.1.1')).status).toBe(200);
+    expect((await direct('2.2.2.2')).status).toBe(429);
+  });
+
+  it('without peer information, ignores forwarding headers', async () => {
+    const app = buildRateLimitedApp(1, 60_000);
+    const spoof = (n: string) =>
+      app.request(...requestFrom(undefined, { 'X-Forwarded-For': n, 'X-Real-IP': n }));
+    expect((await spoof('1.1.1.1')).status).toBe(200);
+    expect((await spoof('2.2.2.2')).status).toBe(429);
   });
 });

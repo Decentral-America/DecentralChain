@@ -9,7 +9,8 @@ import {
   useTheme,
 } from '@mui/material';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AVAILABLE_PAIRS, getAssetDisplayName } from '@/features/dex/tradingPairs';
+import { getAssetDisplayName } from '@/features/dex/tradingPairs';
+import { useAvailablePairs } from '@/features/dex/useAvailablePairs';
 import {
   selectSelectedPair,
   selectSetSelectedPair,
@@ -57,20 +58,25 @@ export function MarketSearchDialog({ onClose, open }: { onClose: () => void; ope
   const [cursor, setCursor] = useState(0);
   const listRef = useRef<HTMLDivElement>(null);
 
-  const quotes = useMemo(() => [...new Set(AVAILABLE_PAIRS.map(quoteOf))], []);
+  const { pairs } = useAvailablePairs();
+  const quotes = useMemo(() => [...new Set(pairs.map(quoteOf))], [pairs]);
 
   const rows = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    return AVAILABLE_PAIRS.filter((p) => {
-      const label = `${baseOf(p)}/${quoteOf(p)}`.toLowerCase();
-      const byTab =
-        quote === 'all' || (quote === 'fav' ? favs.has(keyOf(p)) : quoteOf(p) === quote);
-      return (
-        byTab &&
-        (needle === '' || label.includes(needle) || p.amountAsset.toLowerCase().startsWith(needle))
-      );
-    }).sort((a, b) => baseOf(a).localeCompare(baseOf(b)));
-  }, [query, quote, favs]);
+    return pairs
+      .filter((p) => {
+        const label = `${baseOf(p)}/${quoteOf(p)}`.toLowerCase();
+        const byTab =
+          quote === 'all' || (quote === 'fav' ? favs.has(keyOf(p)) : quoteOf(p) === quote);
+        return (
+          byTab &&
+          (needle === '' ||
+            label.includes(needle) ||
+            p.amountAsset.toLowerCase().startsWith(needle))
+        );
+      })
+      .sort((a, b) => baseOf(a).localeCompare(baseOf(b)));
+  }, [pairs, query, quote, favs]);
 
   // Reset on open so a stale query never hides the list.
   useEffect(() => {

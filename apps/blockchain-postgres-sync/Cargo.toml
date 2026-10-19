@@ -5,7 +5,7 @@ edition = "2024"
 rust-version = "1.96"
 description = "Blockchain-to-PostgreSQL sync daemon for the DecentralChain network"
 license = "Apache-2.0"
-repository = "https://github.com/Decentral-America/blockchain-postgres-sync"
+repository = "https://github.com/Decentral-America/DecentralChain"
 homepage = "https://decentral-chain.com"
 keywords = ["blockchain", "postgresql", "decentralchain", "sync", "grpc"]
 categories = ["database", "cryptography::cryptocurrencies"]
@@ -71,7 +71,7 @@ axum = { version = "0.8.9", features = ["tokio"] }
 # Redis pub/sub publisher — fire-and-forget after each committed PG transaction.
 # Only i-pubsub and i-keys are needed: PUBLISH + SET.
 # Optional: disabled when REDIS_URL env var is absent.
-fred = { version = "10", features = ["i-pubsub", "i-keys"] }
+fred = { version = "10", features = ["i-pubsub", "i-keys", "i-sets"] }
 
 # Observability
 tracing = "0.1.44"

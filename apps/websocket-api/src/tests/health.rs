@@ -12,7 +12,7 @@ use axum_test::TestServer;
 
 use crate::client::ClientId;
 use crate::error::Error;
-use crate::repo::Repo;
+use crate::repo::{Repo, StateIndexScan};
 use crate::topic::Topic;
 
 // ── Mock Repo ─────────────────────────────────────────────────────────────────
@@ -35,6 +35,15 @@ impl Repo for OkRepo {
     async fn get_by_keys(&self, keys: Vec<String>) -> Result<Vec<Option<String>>, Error> {
         Ok(vec![None; keys.len()])
     }
+    async fn state_index_scan(
+        &self,
+        _address: &str,
+        _keep: &(dyn Fn(&str) -> bool + Sync),
+        _limit: usize,
+        _max_examined: usize,
+    ) -> Result<StateIndexScan, Error> {
+        Ok(StateIndexScan::default())
+    }
     async fn refresh(&self, topics: Vec<Topic>) -> Result<HashMap<Topic, Instant>, Error> {
         Ok(topics.into_iter().map(|t| (t, Instant::now())).collect())
     }
@@ -56,6 +65,15 @@ impl Repo for ErrRepo {
         Err(Error::ConfigValidation("mock error".to_owned()))
     }
     async fn get_by_keys(&self, _keys: Vec<String>) -> Result<Vec<Option<String>>, Error> {
+        Err(Error::ConfigValidation("mock error".to_owned()))
+    }
+    async fn state_index_scan(
+        &self,
+        _address: &str,
+        _keep: &(dyn Fn(&str) -> bool + Sync),
+        _limit: usize,
+        _max_examined: usize,
+    ) -> Result<StateIndexScan, Error> {
         Err(Error::ConfigValidation("mock error".to_owned()))
     }
     async fn refresh(&self, _topics: Vec<Topic>) -> Result<HashMap<Topic, Instant>, Error> {

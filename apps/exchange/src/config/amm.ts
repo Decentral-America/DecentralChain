@@ -42,3 +42,15 @@ export const DCC_DECIMALS = 8;
  * function does — normalise at the boundary rather than assuming.
  */
 export const DCC_ASSET = 'DCC';
+
+/**
+ * Whether the AMM may be offered on this build's network.
+ *
+ * Every address above is a mainnet address and none derive from
+ * `VITE_NETWORK`; the testnet node reports PoolCore as an invalid address and
+ * no AMM is deployed on testnet or stagenet. Offering Swap there showed mainnet
+ * pools as testnet ones and broadcast swaps against mainnet contracts. Gated on
+ * the network, like `BRIDGE_SUPPORTED`, because the config is hardcoded and
+ * therefore always present.
+ */
+export const AMM_SUPPORTED = import.meta.env.VITE_NETWORK === 'mainnet';

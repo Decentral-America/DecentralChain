@@ -1,9 +1,11 @@
+import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import babel from '@rolldown/plugin-babel';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
 import pkg from './package.json' with { type: 'json' };
+import { resolveBuildNetwork, withNoindexHeader } from './scripts/verifyHeaders.js';
 
 const { NODE_ENV, VITE_API_URL, VITE_NODE_URL, VITE_SOLANA_RPC_URL } = process.env;
 
@@ -68,6 +70,31 @@ const bridgeEnvGuard = (): Plugin => ({
   },
   name: 'bridge-env-guard',
 });
+
+/**
+ * Keeps test networks out of search results.
+ *
+ * public/_headers is shared by every network's build, so the noindex header is
+ * added to the `/*` rule of dist/_headers here, for non-mainnet builds only. robots.txt keeps
+ * `Allow: /` so crawlers can fetch pages and see the header.
+ */
+const networkIndexingPlugin = (): Plugin => {
+  let headersFile = '';
+  let network = 'mainnet';
+  return {
+    apply: 'build',
+    closeBundle() {
+      if (network === 'mainnet') return;
+      writeFileSync(headersFile, withNoindexHeader(readFileSync(headersFile, 'utf8')));
+    },
+    configResolved(config) {
+      // Throws for a production build without VITE_NETWORK (no silent mainnet default).
+      network = resolveBuildNetwork(config.env, config.isProduction);
+      headersFile = path.resolve(config.root, config.build.outDir, '_headers');
+    },
+    name: 'network-indexing',
+  };
+};
 
 export default defineConfig({
   build: {
@@ -209,6 +236,7 @@ export default defineConfig({
     // as a separate Babel pass rather than through a `babel` option.
     babel({ presets: [reactCompilerPreset()] }),
     i18nPreloadVersionPlugin,
+    networkIndexingPlugin(),
     // sentryVitePlugin must be last — source maps must be finalized before upload.
     // Disabled when SENTRY_AUTH_TOKEN is absent (local dev / forks without the secret).
     sentryVitePlugin({

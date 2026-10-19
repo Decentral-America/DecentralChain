@@ -33,6 +33,9 @@ pub enum Error {
     #[error("invalid topic from client: {0}")]
     InvalidTopicFromClient(String),
 
+    #[error("subscription limit: {0}")]
+    SubscriptionLimit(String),
+
     #[error("invalid topic in redis: {0}")]
     InvalidTopicInRedis(TopicParseError),
 }

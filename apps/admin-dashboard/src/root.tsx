@@ -13,14 +13,14 @@ import { Toaster } from '@/components/ui/toaster';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
 import { queryClientInstance } from '@/lib/query-client';
+import { scannerUrl } from '@/lib/runtime-urls';
 import { type Route } from './+types/root';
 
 export function runtimeConfig() {
   return {
     grafanaUrl: process.env.GRAFANA_URL ?? '',
     nodeUrl: process.env.DCC_NODE_URL ?? 'https://testnet-node.decentralchain.io',
-    scannerUrl:
-      process.env.ADMIN_DASHBOARD_SCANNER_URL ?? 'https://testnet-scanner.decentralchain.io',
+    scannerUrl: scannerUrl(),
     // NOTE: never put secrets here — this object is serialized into the SSR HTML
     // and is accessible to any authenticated browser session via useRouteLoaderData.
   };

@@ -39,6 +39,8 @@ export interface Transaction {
     args: Array<{ type: string; value: unknown }>;
   };
   payment?: Array<{ amount: string | number; assetId: string | null }>;
+  /** Exchange (type 7) only: the first order, whose pair names the amount asset. */
+  order1?: { assetPair?: { amountAsset?: string | null; priceAsset?: string | null } };
   data?: Array<{ key: string; type: string; value: unknown }>;
   stateChanges?: unknown;
   applicationStatus?: 'succeeded' | 'script_execution_failed';

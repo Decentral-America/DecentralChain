@@ -3,6 +3,7 @@ import { address } from '@decentralchain/ts-lib-crypto';
 import { type ActionFunctionArgs } from 'react-router';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
+import { isAllowedNodeUrl } from '@/lib/nodeUrlAllowlist';
 import { createIdempotencyCache, createRateLimiter } from '@/lib/rateLimiter';
 import { generateWallets, insertFundedWallets } from '@/lib/treasuryWallets';
 
@@ -21,27 +22,6 @@ const WAVELETS_PER_DCC = 100_000_000;
 // recipients per call; nothing should be hitting it faster than that.
 const checkRateLimit = createRateLimiter({ max: 1, windowMs: 30_000 });
 const idempotencyCache = createIdempotencyCache<{ errors: string[]; txIds: string[] }>();
-
-function isAllowedNodeUrl(nodeUrl: string): boolean {
-  const allowlist = (process.env.ADMIN_DASHBOARD_ALLOWED_NODE_URLS ?? '')
-    .split(',')
-    .map((s) => s.trim())
-    .filter(Boolean);
-
-  if (allowlist.length === 0) {
-    if (process.env.NODE_ENV === 'production') return false;
-    logger.warn(
-      'ADMIN_DASHBOARD_ALLOWED_NODE_URLS is not set — allowing any nodeUrl in non-production only',
-    );
-    return true;
-  }
-  try {
-    const origin = new URL(nodeUrl).origin;
-    return allowlist.includes(origin);
-  } catch {
-    return false;
-  }
-}
 
 interface FundParams {
   senderSeed: string;

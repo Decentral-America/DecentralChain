@@ -27,7 +27,7 @@ const APP_ROOT = path.resolve(import.meta.dirname, '../../../..');
 const LOGO_CDN = 'https://cdn.jsdelivr.net';
 
 /** Every file in this app that declares a Content-Security-Policy. */
-const CSP_FILES = ['vite.config.ts', 'nginx.conf', 'docker/nginx/default.conf'];
+const CSP_FILES = ['public/_headers', 'vite.config.ts', 'nginx.conf', 'docker/nginx/default.conf'];
 
 /**
  * A `connect-src` directive runs until the next `;` (nginx, where directives
@@ -49,12 +49,12 @@ describe('Content-Security-Policy', () => {
   /**
    * Guards the guard. If a config file is renamed or a directive stops being
    * matchable, `found` silently empties and every assertion below passes
-   * vacuously. Five is the count at the time of writing: one dev-server policy,
-   * two in `nginx.conf` (server + `.html$`), two in `docker/nginx/default.conf`
+   * vacuously. Six is the count at the time of writing: one in public/_headers (the policy
+   * Cloudflare serves), one dev-server policy, two in `nginx.conf` (server + `.html$`), two in `docker/nginx/default.conf`
    * (server + `.html$`).
    */
   it('finds every shipped connect-src directive', () => {
-    expect(found.length).toBeGreaterThanOrEqual(5);
+    expect(found.length).toBeGreaterThanOrEqual(6);
   });
 
   it.each(CSP_FILES)('%s declares at least one connect-src', (file) => {
@@ -62,7 +62,7 @@ describe('Content-Security-Policy', () => {
   });
 
   it('allows the logo CDN in every connect-src that ships', () => {
-    const missing = found.filter(({ directive }) => !directive.includes(LOGO_CDN));
+    const missing = found.filter(({ directive }) => !directive.split(/\s+/).includes(LOGO_CDN));
     expect(missing.map(({ file }) => file)).toEqual([]);
   });
 });

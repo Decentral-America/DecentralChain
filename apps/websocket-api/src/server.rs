@@ -1,7 +1,7 @@
 use axum::{
     Router,
     extract::{
-        State,
+        ConnectInfo, State,
         ws::{WebSocket, WebSocketUpgrade},
     },
     http::{HeaderMap, StatusCode},
@@ -18,10 +18,18 @@ use tower_http::trace::TraceLayer;
 
 use crate::client::{Clients, Topics};
 use crate::error::Error;
+use crate::limits::{self, IpConnectionLimiter};
 use crate::metrics::REGISTRY;
 use crate::repo::Repo;
 use crate::shard::Sharded;
 use crate::websocket;
+
+/// How long a multi-topic subscribe waits for a resolution permit before it is
+/// refused with the subscription-limit error.
+const MULTITOPIC_PERMIT_TIMEOUT: Duration = Duration::from_secs(2);
+/// Per-connection multi-topic subscribe budget: at most this many per window.
+const MULTITOPIC_SUBSCRIBES_PER_WINDOW: usize = 10;
+const MULTITOPIC_SUBSCRIBE_WINDOW: Duration = Duration::from_secs(10);
 
 pub struct ServerConfig {
     pub port: u16,
@@ -29,12 +37,20 @@ pub struct ServerConfig {
     pub client_ping_failures_threshold: u16,
     pub graceful_shutdown_duration: Duration,
     pub max_connections: u32,
+    pub max_connections_per_ip: u32,
+    pub max_subscriptions_per_client: u32,
+    pub max_indirect_subtopics_per_client: u32,
+    pub multitopic_resolve_concurrency: u32,
 }
 
 pub struct ServerOptions {
     pub client_ping_interval: Duration,
     pub client_ping_failures_threshold: usize,
     pub max_connections: u32,
+    pub max_connections_per_ip: u32,
+    pub max_subscriptions_per_client: u32,
+    pub max_indirect_subtopics_per_client: u32,
+    pub multitopic_resolve_concurrency: u32,
 }
 
 struct AppState<R: Repo + 'static> {
@@ -44,6 +60,7 @@ struct AppState<R: Repo + 'static> {
     options: Arc<websocket::HandleConnectionOptions>,
     shutdown_signal: tokio::sync::mpsc::Sender<()>,
     connection_semaphore: Arc<Semaphore>,
+    ip_limiter: Arc<IpConnectionLimiter>,
 }
 
 // Manual Clone implementation so we don't require R: Clone —
@@ -57,6 +74,7 @@ impl<R: Repo + 'static> Clone for AppState<R> {
             options: Arc::clone(&self.options),
             shutdown_signal: self.shutdown_signal.clone(),
             connection_semaphore: Arc::clone(&self.connection_semaphore),
+            ip_limiter: Arc::clone(&self.ip_limiter),
         }
     }
 }
@@ -75,9 +93,22 @@ pub fn start<R: Repo + 'static>(
     let handle_opts = Arc::new(websocket::HandleConnectionOptions {
         ping_interval: options.client_ping_interval,
         ping_failures_threshold: options.client_ping_failures_threshold,
+        max_subscriptions_per_client: usize::try_from(options.max_subscriptions_per_client)
+            .unwrap_or(usize::MAX),
+        max_indirect_subtopics_per_client: usize::try_from(
+            options.max_indirect_subtopics_per_client,
+        )
+        .unwrap_or(usize::MAX),
+        multitopic_permits: Arc::new(Semaphore::new(
+            usize::try_from(options.multitopic_resolve_concurrency).unwrap_or(1),
+        )),
+        multitopic_permit_timeout: MULTITOPIC_PERMIT_TIMEOUT,
+        max_multitopic_subscribes_per_window: MULTITOPIC_SUBSCRIBES_PER_WINDOW,
+        multitopic_subscribe_window: MULTITOPIC_SUBSCRIBE_WINDOW,
     });
 
     let max_conn = usize::try_from(options.max_connections).unwrap_or(usize::MAX);
+    let max_per_ip = usize::try_from(options.max_connections_per_ip).unwrap_or(usize::MAX);
     let state = AppState {
         repo,
         clients,
@@ -85,6 +116,7 @@ pub fn start<R: Repo + 'static>(
         options: handle_opts,
         shutdown_signal,
         connection_semaphore: Arc::new(Semaphore::new(max_conn)),
+        ip_limiter: IpConnectionLimiter::new(max_per_ip),
     };
 
     // Layer order: first .layer() call = outermost = first to process the request.
@@ -109,12 +141,15 @@ pub fn start<R: Repo + 'static>(
             .await
             .map_err(|e| Error::ConfigValidation(format!("bind {addr}: {e}")))?;
 
-        axum::serve(listener, app)
-            .with_graceful_shutdown(async move {
-                let _ = stop_rx.await;
-            })
-            .await
-            .map_err(|e| Error::ConfigValidation(format!("server error: {e}")))?;
+        axum::serve(
+            listener,
+            app.into_make_service_with_connect_info::<SocketAddr>(),
+        )
+        .with_graceful_shutdown(async move {
+            let _ = stop_rx.await;
+        })
+        .await
+        .map_err(|e| Error::ConfigValidation(format!("server error: {e}")))?;
 
         Ok(())
     };
@@ -124,6 +159,7 @@ pub fn start<R: Repo + 'static>(
 
 async fn ws_handler<R: Repo + 'static>(
     ws: WebSocketUpgrade,
+    ConnectInfo(peer): ConnectInfo<SocketAddr>,
     headers: HeaderMap,
     State(state): State<AppState<R>>,
 ) -> Response {
@@ -131,6 +167,13 @@ async fn ws_handler<R: Repo + 'static>(
         .get("x-request-id")
         .and_then(|v| v.to_str().ok())
         .map(str::to_owned);
+
+    // Per-client-IP cap first, so one client cannot take every global slot.
+    let ip = limits::client_ip(peer, &headers);
+    let Some(ip_guard) = state.ip_limiter.try_acquire(ip) else {
+        tracing::warn!(%ip, active = state.ip_limiter.active(ip), "per-IP connection limit reached; rejecting WebSocket connection");
+        return StatusCode::TOO_MANY_REQUESTS.into_response();
+    };
 
     // Reject with 503 when at capacity — prevent memory/fd exhaustion.
     let permit = match Arc::clone(&state.connection_semaphore).try_acquire_owned() {
@@ -142,8 +185,9 @@ async fn ws_handler<R: Repo + 'static>(
     };
 
     ws.on_upgrade(move |socket| async move {
-        // Hold the semaphore permit for the lifetime of this connection.
+        // Hold the global permit and the per-IP slot for the lifetime of this connection.
         let _permit = permit;
+        let _ip_guard = ip_guard;
         handle_upgraded::<R>(socket, state, request_id).await;
     })
 }

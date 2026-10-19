@@ -4,7 +4,10 @@
 //!
 //! **State events** (`topic://state/{address}/{key}`):
 //!   1. `SET`   — caches the current value so late subscribers get it on first read.
-//!   2. `PUBLISH` — fans the update to active WebSocket subscribers in real time.
+//!   2. `SADD topic://state-index/{address}` — records the key in its address's
+//!      index set, so multi-topic subscriptions resolve per address instead of
+//!      scanning the keyspace. State keys are never deleted, so neither are entries.
+//!   3. `PUBLISH` — fans the update to active WebSocket subscribers in real time.
 //!
 //! **Transaction events** (`topic://transactions?type=all&address={addr}`):
 //!   - `PUBLISH` only — no prior state to cache; subscribers receive the raw tx JSON.
@@ -15,8 +18,25 @@
 
 use crate::proto::dcc::data_entry::Value;
 use base64::{Engine, engine::general_purpose::STANDARD as BASE64};
-use fred::interfaces::{ClientLike, KeysInterface, PubsubInterface};
+use fred::clients::Pipeline;
+use fred::interfaces::{ClientLike, KeysInterface, PubsubInterface, SetsInterface};
 use fred::prelude::*;
+
+/// Prefix of a concrete state channel/key: `topic://state/{address}/{key}`.
+const STATE_PREFIX: &str = "topic://state/";
+
+/// Redis set listing every state key BPS has written for one address.
+///
+/// Returns `None` when `channel` is not a concrete `topic://state/{address}/{key}`.
+#[must_use]
+pub fn state_index_key(channel: &str) -> Option<String> {
+    let rest = channel.strip_prefix(STATE_PREFIX)?;
+    let (address, key) = rest.split_once('/')?;
+    if address.is_empty() || key.is_empty() {
+        return None;
+    }
+    Some(format!("topic://state-index/{address}"))
+}
 
 /// A single data-entry change to publish to Redis.
 #[derive(Debug)]
@@ -76,31 +96,55 @@ impl Publisher {
 
     /// Publish a batch of data-entry changes to Redis.
     ///
-    /// For each event:
+    /// For each event, one pipeline (a single round trip, commands applied in order):
     /// - `SET` stores the current value so new subscribers see it on first read.
+    /// - `SADD` records the key in its address's state index (see [`state_index_key`]).
     /// - `PUBLISH` notifies active WebSocket subscribers in real time.
     ///
+    /// Because the commands share one connection and are queued in this order, a
+    /// subscriber reacting to the `PUBLISH` can already read the value and index entry.
     /// Failures are logged at WARN level and skipped — they do not propagate.
     pub async fn publish_batch(&self, events: &[DataEntryEvent]) {
         for event in events {
-            // SET — current value for new subscribers (no TTL: blockchain state is permanent).
-            if let Err(e) = self
-                .client
-                .set::<(), _, _>(&event.channel, &event.value, None, None, false)
-                .await
-            {
-                tracing::warn!(channel = %event.channel, error = %e, "Redis SET failed; continuing");
-            }
-
-            // PUBLISH — real-time notification to active subscribers.
-            if let Err(e) = self
-                .client
-                .publish::<i64, _, _>(&event.channel, &event.value)
-                .await
-            {
-                tracing::warn!(channel = %event.channel, error = %e, "Redis PUBLISH failed; continuing");
+            let pipeline = self.client.pipeline();
+            let ops = match Self::queue_state_event(&pipeline, event).await {
+                Ok(ops) => ops,
+                Err(e) => {
+                    tracing::warn!(channel = %event.channel, error = %e, "Redis pipeline build failed; continuing");
+                    continue;
+                }
+            };
+            let results = pipeline.try_all::<fred::types::Value>().await;
+            for (op, result) in ops.iter().zip(results) {
+                if let Err(e) = result {
+                    tracing::warn!(channel = %event.channel, op, error = %e, "Redis command failed; continuing");
+                }
             }
         }
+    }
+
+    /// Queues SET, SADD (concrete state keys only) and PUBLISH for `event` on
+    /// `pipeline`, in that order. Queueing only buffers in memory; command errors
+    /// are reported per command by `try_all`. Returns the queued command names.
+    async fn queue_state_event(
+        pipeline: &Pipeline<Client>,
+        event: &DataEntryEvent,
+    ) -> Result<Vec<&'static str>, fred::error::Error> {
+        let mut ops = Vec::with_capacity(3);
+        // No TTL: blockchain state is permanent.
+        pipeline
+            .set::<(), _, _>(&event.channel, &event.value, None, None, false)
+            .await?;
+        ops.push("SET");
+        if let Some(index_key) = state_index_key(&event.channel) {
+            pipeline.sadd::<(), _, _>(index_key, &event.channel).await?;
+            ops.push("SADD state index");
+        }
+        pipeline
+            .publish::<(), _, _>(&event.channel, &event.value)
+            .await?;
+        ops.push("PUBLISH");
+        Ok(ops)
     }
 
     /// Broadcast confirmed transactions to all subscribed WebSocket clients.
@@ -150,6 +194,23 @@ mod tests {
     use super::*;
 
     // ── value_to_json — happy-path and edge cases ─────────────────────────────
+
+    // ── state_index_key ──────────────────────────────────────────────────────
+
+    #[test]
+    fn state_index_key_is_per_address() {
+        assert_eq!(
+            state_index_key("topic://state/3MA/some/key").as_deref(),
+            Some("topic://state-index/3MA")
+        );
+    }
+
+    #[test]
+    fn state_index_key_rejects_non_state_channels() {
+        assert_eq!(state_index_key("topic://transactions?type=all"), None);
+        assert_eq!(state_index_key("topic://state//k"), None);
+        assert_eq!(state_index_key("topic://state/3MA"), None);
+    }
 
     #[test]
     fn value_to_json_none_is_null() {

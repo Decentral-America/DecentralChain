@@ -25,6 +25,7 @@ import {
   fetchRewards,
   fetchSuspendedPeers,
 } from '@/lib/api';
+import { DEFAULT_SCANNER_URL } from '@/lib/runtime-urls';
 import { type Route } from './+types/Nodes';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -165,7 +166,7 @@ export default function Nodes() {
   const data = useLoaderData<typeof loader>();
   const { revalidate, state } = useRevalidator();
   const root = useRouteLoaderData('root') as { scannerUrl?: string } | undefined;
-  const scannerBase = root?.scannerUrl ?? 'https://testnet-scanner.decentralchain.io';
+  const scannerBase = root?.scannerUrl ?? DEFAULT_SCANNER_URL;
 
   useEffect(() => {
     const interval = setInterval(() => revalidate(), 30_000);

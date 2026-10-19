@@ -339,42 +339,6 @@ async fn test_asset_update_insert_and_query() {
     assert_eq!(rows[0].volume, 1_000_000_000);
 }
 
-// ─── Test: dcc_data insert (on_conflict do nothing) ──────────────────────────
-
-#[tokio::test]
-async fn test_dcc_data_on_conflict_do_nothing() {
-    let (_container, url) = start_pg().await;
-    let mut conn = migrate_and_connect(&url);
-
-    // The dcc_data primary key is `quantity`, so two rows with same quantity
-    // must be silently ignored (same as the production do_nothing strategy).
-    sql_query("INSERT INTO dcc_data (height, quantity) VALUES (1, 10000000000000)")
-        .execute(&mut conn)
-        .unwrap();
-
-    // Duplicate quantity — should not fail.
-    let result = sql_query(
-        "INSERT INTO dcc_data (height, quantity) \
-         VALUES (2, 10000000000000) \
-         ON CONFLICT (quantity) DO NOTHING",
-    )
-    .execute(&mut conn);
-
-    assert!(result.is_ok(), "ON CONFLICT DO NOTHING should not error");
-
-    // Only the first row should exist.
-    #[derive(diesel::QueryableByName)]
-    struct Cnt {
-        #[diesel(sql_type = diesel::sql_types::BigInt)]
-        cnt: i64,
-    }
-    let rows: Vec<Cnt> =
-        sql_query("SELECT COUNT(*)::bigint AS cnt FROM dcc_data WHERE quantity = 10000000000000")
-            .load(&mut conn)
-            .unwrap();
-    assert_eq!(rows[0].cnt, 1, "duplicate quantity row should be ignored");
-}
-
 // ─── Test: get_decimals_or_exception function ─────────────────────────────────
 
 #[tokio::test]

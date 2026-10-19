@@ -159,15 +159,25 @@ impl
                     bytes: tx.clone(),
                     block_uid,
                     function_name: None,
+                    recipient_address: None,
+                    amount: None,
+                    asset_id: None,
                 };
                 let result_tx = match meta.action.as_ref().ok_or_else(|| {
                     Error::InconsistentDataError("Ethereum metadata has no action".into())
                 })? {
-                    EthAction::Transfer(_) => Tx18Combined {
-                        tx: eth_tx,
-                        args: vec![],
-                        payments: vec![],
-                    },
+                    EthAction::Transfer(transfer) => {
+                        eth_tx.recipient_address = Some(into_base58(&transfer.recipient_address));
+                        if let Some(Amount { asset_id, amount }) = transfer.amount.as_ref() {
+                            eth_tx.amount = Some(*amount);
+                            eth_tx.asset_id = Some(extract_asset_id(asset_id));
+                        }
+                        Tx18Combined {
+                            tx: eth_tx,
+                            args: vec![],
+                            payments: vec![],
+                        }
+                    }
                     EthAction::Invoke(imeta) => {
                         eth_tx.function_name = Some(imeta.function_name.clone());
                         Tx18Combined {
@@ -351,7 +361,7 @@ impl
                     amount: *amount,
                     attachment: into_base58(&t.attachment),
                     recipient_address: into_base58(&meta.recipient_address),
-                    recipient_alias: extract_recipient_alias(t.recipient.as_ref()),
+                    recipient_alias: extract_recipient_alias(t.recipient.as_ref(), chain_id),
                     block_uid,
                 })
             }
@@ -475,7 +485,7 @@ impl
                     status,
                     amount: t.amount,
                     recipient_address: into_base58(&meta.recipient_address),
-                    recipient_alias: extract_recipient_alias(t.recipient.as_ref()),
+                    recipient_alias: extract_recipient_alias(t.recipient.as_ref(), chain_id),
                     block_uid,
                 })
             }
@@ -545,7 +555,7 @@ impl
                         .map(|(i, (t, rcpt_addr))| Tx11Transfers {
                             tx_uid,
                             recipient_address: into_base58(rcpt_addr),
-                            recipient_alias: extract_recipient_alias(t.recipient.as_ref()),
+                            recipient_alias: extract_recipient_alias(t.recipient.as_ref(), chain_id),
                             amount: t.amount,
                             position_in_tx: i16::try_from(i)
                                 .expect("mass transfer recipient index is protocol-bounded (<=100) << i16::MAX"),
@@ -685,7 +695,7 @@ impl
                         function_name: Some(meta.function_name.clone()),
                         fee_asset_id: invoke_fee_asset_id,
                         dapp_address: into_base58(&meta.d_app_address),
-                        dapp_alias: extract_recipient_alias(t.d_app.as_ref()),
+                        dapp_alias: extract_recipient_alias(t.d_app.as_ref(), chain_id),
                         block_uid,
                     },
                     args: meta
@@ -795,10 +805,14 @@ impl
     }
 }
 
-fn extract_recipient_alias(rcpt: Option<&Recipient>) -> Option<String> {
+/// Alias recipient in the node's format, `alias:<chain id char>:<name>`, so the
+/// value can be passed back to the node unchanged.
+fn extract_recipient_alias(rcpt: Option<&Recipient>, chain_id: ChainId) -> Option<String> {
     rcpt.and_then(|r| r.recipient.as_ref())
         .and_then(|r| match r {
-            InnerRecipient::Alias(alias) if !alias.is_empty() => Some(alias.clone()),
+            InnerRecipient::Alias(alias) if !alias.is_empty() => {
+                Some(format!("alias:{}:{alias}", char::from(chain_id)))
+            }
             _ => None,
         })
 }
@@ -885,17 +899,21 @@ mod tests {
 
     #[test]
     fn extract_recipient_alias_returns_none_for_empty() {
-        assert!(extract_recipient_alias(None).is_none());
+        assert!(extract_recipient_alias(None, b'!').is_none());
     }
 
     #[test]
-    fn extract_recipient_alias_returns_alias_string() {
+    fn extract_recipient_alias_keeps_the_node_format() {
         let rcpt = Some(Recipient {
             recipient: Some(InnerRecipient::Alias("myalias".to_string())),
         });
         assert_eq!(
-            extract_recipient_alias(rcpt.as_ref()),
-            Some("myalias".to_string())
+            extract_recipient_alias(rcpt.as_ref(), b'!'),
+            Some("alias:!:myalias".to_string())
+        );
+        assert_eq!(
+            extract_recipient_alias(rcpt.as_ref(), b'?'),
+            Some("alias:?:myalias".to_string())
         );
     }
 
@@ -904,7 +922,7 @@ mod tests {
         let rcpt = Some(Recipient {
             recipient: Some(InnerRecipient::Alias(String::new())),
         });
-        assert!(extract_recipient_alias(rcpt.as_ref()).is_none());
+        assert!(extract_recipient_alias(rcpt.as_ref(), b'!').is_none());
     }
 
     // ── extract_script ───────────────────────────────────────────────────────
@@ -941,5 +959,44 @@ mod tests {
             }
             Ok(_) => panic!("expected Err but got Ok"),
         }
+    }
+
+    // ── Ethereum transfer recipient (AUD-151) ────────────────────────────────
+
+    #[test]
+    fn ethereum_transfer_stores_recipient_amount_and_asset() {
+        use crate::proto::dcc::events::transaction_metadata::EthereumTransferMetadata;
+
+        let tx = SignedTransaction {
+            transaction: Some(Transaction::EthereumTransaction(vec![0xf8, 0x6b])),
+            proofs: vec![],
+        };
+        let meta = TransactionMetadata {
+            sender_address: vec![1, 33, 7, 7, 7],
+            metadata: Some(Metadata::Ethereum(EthereumMetadata {
+                timestamp: 1_700_000_000_000,
+                fee: 100_000,
+                sender_public_key: vec![2; 64],
+                action: Some(EthAction::Transfer(EthereumTransferMetadata {
+                    recipient_address: vec![1, 33, 9, 9, 9],
+                    amount: Some(Amount {
+                        asset_id: vec![],
+                        amount: 100_000,
+                    }),
+                })),
+            })),
+        };
+        let id = "ethTxId".to_string();
+        let converted = Tx::try_from((&tx, &id, 73_311, &meta, 1, 2, b'!')).unwrap();
+        let Tx::Ethereum(combined) = converted else {
+            panic!("expected an Ethereum tx");
+        };
+        assert_eq!(
+            combined.tx.recipient_address,
+            Some(into_base58([1u8, 33, 9, 9, 9]))
+        );
+        assert_eq!(combined.tx.amount, Some(100_000));
+        assert_eq!(combined.tx.asset_id, Some(DCC_ID.to_string()));
+        assert_eq!(combined.tx.function_name, None);
     }
 }

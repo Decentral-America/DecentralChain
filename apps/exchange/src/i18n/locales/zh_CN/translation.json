@@ -2269,7 +2269,7 @@
           "1_0_18": "{span.line} [1。您现在可以为您的帐户设置脚本。] \n {span.line} [2。其他小错误已得到修复。]",
           "1_0_21": "{span.line} [1。通过总帐修复授权确认。] \n {span.line} [2。修复了许多小错误。]",
           "1_0_22": "{span.line} [1。添加了高级功能以使用脚本帐户。]",
-          "1_0_25": "{span.line} [1。已添加[Cubensis Connect]（https://chrome.google.com/webstore/detail/decentralchain-keeper/lpilbniiabackdjcionkobglmddfbcjo?hl=en）支持。",
+          "1_0_25": "{span.line} [1。已添加Cubensis Connect支持。]",
           "1_0_27": "{span.line} [1。在投资组合中添加了“我的资产”类别。 \n{span.line} [2。小错误已得到修复。]",
           "1_0_28": "{span.line} [1。添加了配对功能，可将现有帐户导入移动设备。 \n{span.line} [2。小错误已得到修复。]",
           "1_0_29": "{span.line} [1。使用西里尔字母生成QR码已得到修复。] \n{span.line} [2。已添加用于监视列表搜索的工具提示。] \n{span.line} [3。进一步的美觀修复。 ]",

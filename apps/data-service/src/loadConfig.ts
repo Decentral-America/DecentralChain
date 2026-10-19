@@ -68,6 +68,23 @@ const parsePositiveInt = (envVar: string, fallback: number): number => {
   return n;
 };
 
+export const DEFAULT_STATEMENT_TIMEOUT_MS = 25_000;
+
+/**
+ * Postgres statement_timeout in ms. Unset: 25 s, just under the 30 s HTTP
+ * timeout, so a query aborted by the HTTP layer does not keep its pool connection.
+ * "0" or "false" disables it.
+ */
+export const parseStatementTimeout = (raw: string | undefined): number | false => {
+  if (isNil(raw) || raw === '') return DEFAULT_STATEMENT_TIMEOUT_MS;
+  if (raw === 'false' || raw === '0') return false;
+  const n = parseInt(raw, 10);
+  if (Number.isNaN(n) || n < 0 || String(n) !== raw.trim()) {
+    throw new Error(`PGSTATEMENTTIMEOUT=${raw} is not a valid non-negative integer (ms)`);
+  }
+  return n;
+};
+
 export const loadDefaultConfig = (): DefaultConfig => {
   // assert common env vars are set
   checkEnv(commonEnvVariables);
@@ -81,11 +98,7 @@ export const loadDefaultConfig = (): DefaultConfig => {
     postgresPassword: process.env['PGPASSWORD'] ?? '',
     postgresPoolSize: parsePositiveInt('PGPOOLSIZE', 20),
     postgresPort: parsePort('PGPORT', 5432),
-    postgresStatementTimeout:
-      isNil(process.env['PGSTATEMENTTIMEOUT']) ||
-      Number.isNaN(parseInt(process.env['PGSTATEMENTTIMEOUT'], 10))
-        ? false
-        : parseInt(process.env['PGSTATEMENTTIMEOUT'], 10),
+    postgresStatementTimeout: parseStatementTimeout(process.env['PGSTATEMENTTIMEOUT']),
     postgresUser: process.env['PGUSER'] || 'postgres',
   };
 };

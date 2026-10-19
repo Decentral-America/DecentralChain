@@ -168,6 +168,9 @@ vi.mock('@/lib/logger', () => ({
 vi.mock('@/features/dex/TradingPairSelector', () => ({
   TradingPairSelector: () => <div>pair-selector</div>,
 }));
+vi.mock('@/features/dex/useAvailablePairs', () => ({
+  useAvailablePairs: () => ({ defaultPair: null, error: null, isLoading: false, pairs: [] }),
+}));
 vi.mock('@/features/dex/OrderBook', () => ({ OrderBook: () => <div>order-book</div> }));
 vi.mock('@/features/dex/BuyOrderForm', () => ({ BuyOrderForm: () => <div>buy-form</div> }));
 vi.mock('@/features/dex/SellOrderForm', () => ({ SellOrderForm: () => <div>sell-form</div> }));

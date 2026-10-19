@@ -1,18 +1,21 @@
 import { AlertCircle, ArrowLeft, Box } from 'lucide-react';
 import { data, Link, useLoaderData, useNavigate, useSearchParams } from 'react-router';
 import { ClientNumber } from '@/components/ClientNumber';
+import { ClientTimeAgo } from '@/components/ClientTimeAgo';
 import RouteError from '@/components/RouteError';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useAssetMetas } from '@/hooks/useAssets';
 import { useBlockAt, useBlockById } from '@/hooks/useBlocks';
 import { fetchBlockById, fetchBlockHeadersSeq, type IBlock, type IBlockHeader } from '@/lib/api';
+import { assetIdsOf, formatAssetAmount } from '@/lib/assetAmount';
 import { txTypeName } from '@/lib/transactionTypes';
 import { createPageUrl } from '@/utils';
 import CopyButton from '../components/shared/CopyButton';
-import { fromUnix, truncate } from '../components/utils/formatters';
+import { formatAmount, fromUnix, truncate } from '../components/utils/formatters';
 
 /**
  * DCC-156 — Deferred data streaming.
@@ -87,6 +90,11 @@ function isFullBlock(b: IBlock | IBlockHeader): b is IBlock {
   return 'transactions' in b;
 }
 
+/** The node returns feeAssetId on transactions; the SDK block type does not declare it. */
+function feeAssetIdOf(tx: unknown): string | null | undefined {
+  return (tx as { feeAssetId?: string | null }).feeAssetId;
+}
+
 export default function BlockDetail() {
   const { block: serverBlock } = useLoaderData() as LoaderData;
   const navigate = useNavigate();
@@ -101,6 +109,9 @@ export default function BlockDetail() {
   const queryResult = id ? blockById : blockByHeight;
   const { isLoading, error } = queryResult;
   const block = queryResult.data ?? serverBlock ?? null;
+  const feeAssets = useAssetMetas(
+    block && isFullBlock(block) ? assetIdsOf(...block.transactions.map(feeAssetIdOf)) : [],
+  );
 
   if (error) {
     return (
@@ -170,9 +181,22 @@ export default function BlockDetail() {
                 <div>
                   <p className="text-sm text-muted-foreground mb-2">Timestamp</p>
                   <p className="font-semibold">{fromUnix(block.timestamp)}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {block.timestamp ? fromUnix(block.timestamp) : 'N/A'}
-                  </p>
+                  <ClientTimeAgo
+                    timestamp={block.timestamp}
+                    className="text-sm text-muted-foreground"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <p className="text-sm text-muted-foreground mb-2">Block ID</p>
+                  <div className="flex items-center gap-2">
+                    <code
+                      data-testid="block-id"
+                      className="text-sm bg-muted p-2 rounded flex-1 overflow-x-auto"
+                    >
+                      {block.id}
+                    </code>
+                    <CopyButton text={block.id} label="Copy block ID" />
+                  </div>
                 </div>
                 <div className="md:col-span-2">
                   <p className="text-sm text-muted-foreground mb-2">Block Signature</p>
@@ -201,7 +225,7 @@ export default function BlockDetail() {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground mb-2">Reward</p>
-                  <p className="font-semibold">{block.reward || 0} DCC</p>
+                  <p className="font-semibold">{formatAmount(block.reward ?? 0)} DCC</p>
                 </div>
                 <div className="md:col-span-2">
                   <p className="text-sm text-muted-foreground mb-2">Generator</p>
@@ -255,7 +279,9 @@ export default function BlockDetail() {
                           Type: {txTypeName(tx.type)}
                         </p>
                       </div>
-                      <Badge variant="secondary">Fee: {tx.fee || 0}</Badge>
+                      <Badge variant="secondary">
+                        Fee: {formatAssetAmount(tx.fee ?? 0, feeAssetIdOf(tx), feeAssets)}
+                      </Badge>
                     </div>
                   ))}
                 </div>

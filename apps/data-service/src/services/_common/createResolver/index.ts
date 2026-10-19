@@ -8,7 +8,6 @@ import {
 } from '../../../errorHandling';
 import { type SearchedItems } from '../../../types';
 import { eitherToEffect } from '../../../utils/fp';
-import { tap } from '../../../utils/tap';
 import { applyValidation } from './applyToResult';
 import {
   type EmitEvent,
@@ -19,6 +18,15 @@ import {
 } from './types';
 
 export { applyTransformation } from './applyToResult';
+
+// Emit a progress event without changing the value. Effect.tap runs whatever the
+// callback returns as an effect, so the callback must return an effect itself:
+// returning the tapped value made Option.none() (an Effect that fails with
+// NoSuchElementException) turn every "not found" into a failure.
+const emit =
+  (emitEvent: EmitEvent, name: string) =>
+  <A>(value: A): Effect.Effect<void> =>
+    Effect.sync(() => emitEvent(name)(value));
 
 const createResolver = <RequestRaw, RequestTransformed, ResponseRaw, ResponseTransformed>(
   transformInput: (
@@ -32,13 +40,13 @@ const createResolver = <RequestRaw, RequestTransformed, ResponseRaw, ResponseTra
 ): Effect.Effect<ResponseTransformed, AppError> =>
   pipe(
     eitherToEffect(transformInput(request)),
-    Effect.tap(tap(emitEvent('TRANSFORM_INPUT_OK'))),
+    Effect.tap(emit(emitEvent, 'TRANSFORM_INPUT_OK')),
     Effect.flatMap(getData),
-    Effect.tap(tap(emitEvent('DB_QUERY_OK'))),
+    Effect.tap(emit(emitEvent, 'DB_QUERY_OK')),
     Effect.flatMap((raw) => eitherToEffect(validateAllResults(raw))),
-    Effect.tap(tap(emitEvent('RESULT_VALIDATION_OK'))),
+    Effect.tap(emit(emitEvent, 'RESULT_VALIDATION_OK')),
     Effect.map((result) => transformAllResults(result, request)),
-    Effect.tap(tap(emitEvent('TRANSFORM_RESULT_OK'))),
+    Effect.tap(emit(emitEvent, 'TRANSFORM_RESULT_OK')),
   ) as unknown as Effect.Effect<ResponseTransformed, AppError>;
 
 const getResolver =

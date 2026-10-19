@@ -133,8 +133,8 @@ export default function Dashboard() {
               <div>
                 <p className="text-sm text-muted-foreground mb-1">{t('blockId')}</p>
                 <div className="flex items-center gap-2">
-                  <code className="text-sm font-mono">{truncate(lastBlock.signature, 12)}</code>
-                  <CopyButton text={lastBlock.signature} label={t('copyBlockId')} />
+                  <code className="text-sm font-mono">{truncate(lastBlock.id, 12)}</code>
+                  <CopyButton text={lastBlock.id} label={t('copyBlockId')} />
                 </div>
               </div>
               <div>
@@ -218,7 +218,7 @@ export default function Dashboard() {
                       .reverse()
                       .map((block) => (
                         <TableRow
-                          key={block.signature}
+                          key={block.id}
                           className="hover:bg-muted cursor-pointer"
                           onClick={() =>
                             navigate(createPageUrl('BlockDetail', `?height=${block.height}`))
@@ -234,8 +234,8 @@ export default function Dashboard() {
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
-                              <code className="text-sm">{truncate(block.signature, 10)}</code>
-                              <CopyButton text={block.signature} />
+                              <code className="text-sm">{truncate(block.id, 10)}</code>
+                              <CopyButton text={block.id} label={t('copyBlockId')} />
                             </div>
                           </TableCell>
                           <TableCell className="text-sm text-muted-foreground">
