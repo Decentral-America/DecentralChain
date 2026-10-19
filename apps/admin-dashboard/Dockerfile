@@ -64,19 +64,16 @@ COPY --from=build /prod/admin-dashboard ./
 RUN chown -R admindash:admindash /app
 USER admindash
 
-# Non-secret runtime configuration — safe to bake as ENV defaults.
-# Secret values (OAuth credentials, JWT secret) are injected at runtime
-# via the host env_file; they are NOT set here to avoid leaking into image layers.
+# Network-neutral runtime defaults only. Per-network values (ADMIN_DASHBOARD_URL,
+# ADMIN_DASHBOARD_SCANNER_URL, DCC_NODE_URL, ADMIN_DASHBOARD_PG_DATABASE) come from
+# the deploy's env file; the server refuses to start in production without them,
+# so a mainnet deploy can never silently run against testnet.
 ENV NODE_ENV=production \
     PORT=3001 \
-    ADMIN_DASHBOARD_URL="https://testnet-admin.decentralchain.io" \
-    DCC_NODE_URL=https://testnet-node.decentralchain.io \
-    ADMIN_DASHBOARD_SCANNER_URL=https://testnet-scanner.decentralchain.io \
     ADMIN_DASHBOARD_GITHUB_ORG="Decentral-America" \
     DCC_LOAD_TESTER_PATH="/opt/dcc/load-tester" \
     DCC_WALLET_CSV_PATH="/opt/dcc/test-wallets.csv" \
     E2E_SUITE_PATH="/opt/dcc/DecentralChain" \
-    ADMIN_DASHBOARD_PG_DATABASE="admin_testnet" \
     LOG_LEVEL="info"
     # Secret vars below are injected at runtime via env_file — never baked into the image:
     # ADMIN_DASHBOARD_GITHUB_PAT          — fine-grained PAT: Actions:Read, Contents:Read on Decentral-America/*

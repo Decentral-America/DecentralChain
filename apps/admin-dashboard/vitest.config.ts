@@ -1,16 +1,17 @@
+import { fileURLToPath } from 'node:url';
 import { mergeConfig } from 'vitest/config';
 import baseConfig from '../../vitest.base.config';
 
 export default mergeConfig(baseConfig, {
+  // Route modules import '@/lib/...'; tests import routes directly.
+  resolve: {
+    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+  },
   test: {
-    // admin-dashboard is a React Router SSR app — unit tests cover lib utilities only.
-    // Coverage is scoped to lib/ to avoid instrumenting server routes and React pages
-    // (those require integration testing against a live server).
     coverage: {
       exclude: ['src/index.ts'],
-      include: ['src/lib/**/*.ts'],
-      // No threshold enforcement — admin-dashboard is an SSR app where the
-      // meaningful coverage comes from E2E tests, not unit test percentages.
+      // lib/ and the server routes that carry auth and treasury logic.
+      include: ['src/lib/**/*.ts', 'src/routes/**/*.ts'],
       thresholds: {
         branches: 0,
         functions: 0,

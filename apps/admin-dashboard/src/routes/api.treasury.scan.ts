@@ -2,6 +2,7 @@ import { type LoaderFunctionArgs } from 'react-router';
 import { fetchBalanceDetails } from '@/lib/api';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
+import { isAllowedNodeUrl } from '@/lib/nodeUrlAllowlist';
 import { getAllWallets } from '@/lib/treasuryWallets';
 
 async function getUser(request: Request): Promise<string | null> {
@@ -29,10 +30,15 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const user = await getUser(request);
   if (!user) return new Response('Unauthorized', { status: 401 });
 
-  const nodeUrl =
-    new URL(request.url).searchParams.get('nodeUrl') ??
-    process.env.DCC_NODE_URL ??
-    'https://testnet-node.decentralchain.io';
+  const requested = new URL(request.url).searchParams.get('nodeUrl');
+  if (requested !== null && !isAllowedNodeUrl(requested)) {
+    logger.warn({ nodeUrl: requested, user }, 'Treasury scan: rejected nodeUrl not in allowlist');
+    return Response.json(
+      { error: 'nodeUrl is not in ADMIN_DASHBOARD_ALLOWED_NODE_URLS' },
+      { status: 400 },
+    );
+  }
+  const nodeUrl = requested ?? process.env.DCC_NODE_URL ?? 'https://testnet-node.decentralchain.io';
 
   let wallets: Awaited<ReturnType<typeof getAllWallets>>;
   try {

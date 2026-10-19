@@ -7,6 +7,8 @@ import { type EntryContext, type RouterContextProvider, ServerRouter } from 'rea
 import { isUsingDefaultSecret } from '@/lib/auth';
 import { migrateSchema } from '@/lib/db';
 import { logger } from '@/lib/logger';
+import { missingRuntimeEnv } from '@/lib/runtime-urls';
+import { classifyServerError, describeRequest } from '@/lib/server-error';
 import { runtimeConfig } from './root';
 
 // Startup checks and migrations — run once when the server process starts.
@@ -21,6 +23,20 @@ if (isUsingDefaultSecret()) {
   }
   logger.warn(
     'ADMIN_DASHBOARD_JWT_SECRET is not set or uses the default — set a strong random secret before deploying',
+  );
+}
+const missingEnv = missingRuntimeEnv();
+if (missingEnv.length > 0) {
+  if (process.env.NODE_ENV === 'production') {
+    logger.error(
+      { missing: missingEnv },
+      'Per-network configuration is missing and the image carries no defaults — refusing to start in production.',
+    );
+    process.exit(1);
+  }
+  logger.warn(
+    { missing: missingEnv },
+    'Per-network configuration is missing — using development fallbacks',
   );
 }
 if (
@@ -136,4 +152,15 @@ export default function handleRequest(
 
     setTimeout(abort, ABORT_DELAY);
   });
+}
+
+/** One info line for scanner probes (unmatched URL / wrong method); real errors keep their stack. */
+export function handleError(error: unknown, { request }: { request: Request }): void {
+  const level = classifyServerError(error, request.signal.aborted);
+  if (level === 'ignore') return;
+  if (level === 'info') {
+    logger.info(`[route] ${describeRequest(error, request)}`);
+    return;
+  }
+  logger.error({ err: error, path: new URL(request.url).pathname }, 'Unhandled server error');
 }

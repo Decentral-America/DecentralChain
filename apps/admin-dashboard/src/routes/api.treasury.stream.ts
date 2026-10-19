@@ -4,6 +4,7 @@ import { address } from '@decentralchain/ts-lib-crypto';
 import { type ActionFunctionArgs, type LoaderFunctionArgs } from 'react-router';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
+import { isAllowedNodeUrl } from '@/lib/nodeUrlAllowlist';
 import { getUnsweptWallets, markSwept } from '@/lib/treasuryWallets';
 import {
   isFunded,
@@ -226,6 +227,12 @@ export async function action({ request }: ActionFunctionArgs) {
       typeof body.nodeUrl === 'string'
         ? body.nodeUrl
         : (process.env.DCC_NODE_URL ?? 'https://testnet-node.decentralchain.io');
+    if (typeof body.nodeUrl === 'string' && !isAllowedNodeUrl(nodeUrl)) {
+      return Response.json(
+        { error: 'nodeUrl is not in ADMIN_DASHBOARD_ALLOWED_NODE_URLS' },
+        { status: 400 },
+      );
+    }
 
     const chainId =
       typeof body.chainId === 'string' && body.chainId.length === 1 ? body.chainId : '!';

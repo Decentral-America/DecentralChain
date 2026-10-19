@@ -1,6 +1,7 @@
 import { type LoaderFunctionArgs } from 'react-router';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
+import { scannerUrl } from '@/lib/runtime-urls';
 
 async function getUser(request: Request): Promise<string | null> {
   const token = getTokenFromRequest(request);
@@ -63,7 +64,7 @@ function buildServices(): ServiceDef[] {
       category: 'newark',
       name: 'Scanner',
       upCodes: [200, 304],
-      url: 'https://testnet.decentralscan.com',
+      url: scannerUrl(),
     },
     {
       category: 'newark',
