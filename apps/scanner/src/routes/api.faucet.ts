@@ -1,113 +1,94 @@
 /**
  * Faucet API — POST /api/faucet
  *
- * Validates a DCC address, optionally verifies a reCAPTCHA v3 token, applies a
- * per-address rate limit, then signs and broadcasts a transfer from the faucet
- * wallet. All configuration comes from runtime Docker env vars:
+ * Validates a DCC address for this network, atomically reserves it for the
+ * rate window, then signs and broadcasts a transfer from the faucet wallet.
+ * A failed broadcast releases the reservation so the user can retry.
  *
- *   DCC_FAUCET_SEED          Wallet seed for the faucet account (required)
- *   DCC_FAUCET_AMOUNT        Whole DCC to send per request (default: 10)
- *   DCC_FAUCET_RATE_HOURS    Hours between requests per address (default: 24)
- *   DCC_RECAPTCHA_SECRET     reCAPTCHA v3 secret key (optional — skips check if unset)
- *   DCC_NODE_URL             Node REST API base URL
+ * Abuse controls: the edge's per-IP rate limit in front of this route and the
+ * per-address window here; the faucet balance is monitored via /api/health.
+ *
+ * Runtime env:
+ *   DCC_FAUCET_SEED        Faucet wallet seed (required)
+ *   DCC_FAUCET_AMOUNT      Whole DCC per request (default: 10)
+ *   DCC_FAUCET_RATE_HOURS  Hours between requests per address (default: 24)
+ *   DCC_CHAIN_ID           Network byte; addresses for other networks are rejected
+ *   DCC_NODE_URL           Node REST API base URL
+ *   REDIS_URL              Shared reservation store (in-process fallback when unset)
  */
 
 import { broadcast, transfer } from '@decentralchain/transactions';
 import Redis from 'ioredis';
+import { logError } from '@/lib/error-logger';
+import {
+  type FaucetReservations,
+  memoryReservations,
+  redisReservations,
+} from '@/lib/faucet-reservation';
 
-// ── Rate limiter ──────────────────────────────────────────────────────────────
-// Backed by Redis (shared, survives redeploys/restarts) when REDIS_URL is
-// configured; falls back to an in-process Map otherwise so the faucet still
-// works if Redis isn't wired up on this network. The in-memory fallback has
-// the same limitation flagged in the audit: it resets on redeploy, letting an
-// address re-claim immediately after a deploy. The Redis path fixes that.
-const lastRequest = new Map<string, number>();
-const redis = process.env.REDIS_URL ? new Redis(process.env.REDIS_URL) : null;
+const reservations: FaucetReservations = process.env.REDIS_URL
+  ? redisReservations(new Redis(process.env.REDIS_URL))
+  : memoryReservations();
 
-async function isRateLimited(address: string, windowMs: number): Promise<boolean> {
-  if (redis) {
-    const key = `faucet:last-request:${address}`;
-    const last = await redis.get(key);
-    return last !== null && Date.now() - Number(last) < windowMs;
+const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+const NETWORK_NAMES: Record<number, string> = { 33: 'testnet', 63: 'mainnet', 83: 'stagenet' };
+const GENERIC_FAILURE = 'Faucet transfer failed. Please try again later.';
+
+/** DCC address bytes: [version=1, chainId, ...payload, ...checksum] — always 26 bytes. */
+function decodeBase58(s: string): number[] {
+  let n = 0n;
+  for (const c of s) n = n * 58n + BigInt(BASE58_ALPHABET.indexOf(c));
+  const bytes: number[] = [];
+  while (n > 0n) {
+    bytes.unshift(Number(n & 0xffn));
+    n >>= 8n;
   }
-  const last = lastRequest.get(address);
-  return last !== undefined && Date.now() - last < windowMs;
+  while (bytes.length < 26) bytes.unshift(0);
+  return bytes;
 }
 
-async function recordRequest(address: string, windowMs: number): Promise<void> {
-  if (redis) {
-    const key = `faucet:last-request:${address}`;
-    await redis.set(key, Date.now(), 'PX', windowMs);
-    return;
-  }
-  lastRequest.set(address, Date.now());
+/** The faucet only accepts POST; monitors use GET /api/health. */
+export function loader(): Response {
+  return Response.json(
+    { error: 'Method not allowed. POST {"address": "<testnet address>"} to request DCC.' },
+    { headers: { Allow: 'POST' }, status: 405 },
+  );
 }
 
-// ── reCAPTCHA v3 verification ─────────────────────────────────────────────────
-async function verifyRecaptcha(token: string, secret: string): Promise<boolean> {
-  const res = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-    body: `secret=${encodeURIComponent(secret)}&response=${encodeURIComponent(token)}`,
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    method: 'POST',
-  });
-  const json = (await res.json()) as { score?: number; success: boolean };
-  // Score >= 0.5 is human-like; 0 = bot
-  return json.success && (json.score ?? 1) >= 0.5;
-}
-
-// ── Resource route action ─────────────────────────────────────────────────────
 export async function action({ request }: { request: Request }): Promise<Response> {
   const seed = process.env.DCC_FAUCET_SEED;
-  if (!seed) {
+  const nodeUrl = process.env.DCC_NODE_URL;
+  if (!seed || !nodeUrl) {
     return Response.json({ error: 'Faucet not configured on this network' }, { status: 503 });
   }
 
   if (request.method !== 'POST') {
-    return Response.json({ error: 'Method not allowed' }, { status: 405 });
+    return Response.json(
+      { error: 'Method not allowed' },
+      { headers: { Allow: 'POST' }, status: 405 },
+    );
   }
 
-  // ── Parse body ──────────────────────────────────────────────────────────────
-  let body: { address?: unknown; captchaToken?: unknown };
+  let body: { address?: unknown };
   try {
-    body = (await request.json()) as { address?: unknown; captchaToken?: unknown };
+    body = (await request.json()) as { address?: unknown };
   } catch {
     return Response.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
   const address = typeof body.address === 'string' ? body.address.trim() : '';
-  const captchaToken = typeof body.captchaToken === 'string' ? body.captchaToken : '';
-
-  // ── Validate address ────────────────────────────────────────────────────────
-  // DCC mainnet/testnet/stagenet addresses: 35-char base58, start with '3'
   if (!/^3[1-9A-HJ-NP-Za-km-z]{34}$/.test(address)) {
     return Response.json({ error: 'Invalid DCC address' }, { status: 400 });
   }
 
-  // Validate the chain byte embedded in the address matches this network.
-  // DCC address bytes: [version=1, chainId, ...payload, ...checksum]
-  // Chain byte for testnet=33('!'), mainnet=63('?'), stagenet=83('S').
-  const BASE58_ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-  const decodeBase58 = (s: string): number[] => {
-    let n = BigInt(0);
-    for (const c of s) {
-      n = n * BigInt(58) + BigInt(BASE58_ALPHABET.indexOf(c));
-    }
-    const bytes: number[] = [];
-    while (n > 0n) {
-      bytes.unshift(Number(n & 0xffn));
-      n >>= 8n;
-    }
-    while (bytes.length < 26) bytes.unshift(0);
-    return bytes;
-  };
-  const expectedChainId = process.env.DCC_CHAIN_ID ? parseInt(process.env.DCC_CHAIN_ID, 10) : null;
+  const expectedChainId = process.env.DCC_CHAIN_ID
+    ? Number.parseInt(process.env.DCC_CHAIN_ID, 10)
+    : null;
   if (expectedChainId !== null) {
-    const decoded = decodeBase58(address);
-    const addrChainId = decoded[1] ?? 0; // byte index 1 is the chain ID (array always 26 bytes)
+    const addrChainId = decodeBase58(address)[1] ?? 0;
     if (addrChainId !== expectedChainId) {
-      const networkNames: Record<number, string> = { 33: 'testnet', 63: 'mainnet', 83: 'stagenet' };
-      const expected = networkNames[expectedChainId] ?? `chain ${expectedChainId}`;
-      const provided = networkNames[addrChainId] ?? `chain ${addrChainId}`;
+      const expected = NETWORK_NAMES[expectedChainId] ?? `chain ${expectedChainId}`;
+      const provided = NETWORK_NAMES[addrChainId] ?? `chain ${addrChainId}`;
       return Response.json(
         { error: `This address is for ${provided}. Please provide a ${expected} address.` },
         { status: 400 },
@@ -115,25 +96,17 @@ export async function action({ request }: { request: Request }): Promise<Respons
     }
   }
 
-  // ── reCAPTCHA ───────────────────────────────────────────────────────────────
-  const recaptchaSecret = process.env.DCC_RECAPTCHA_SECRET;
-  if (recaptchaSecret) {
-    if (!captchaToken) {
-      return Response.json({ error: 'CAPTCHA token required' }, { status: 400 });
-    }
-    const valid = await verifyRecaptcha(captchaToken, recaptchaSecret);
-    if (!valid) {
-      return Response.json(
-        { error: 'CAPTCHA verification failed. Please try again.' },
-        { status: 400 },
-      );
-    }
+  // ── Reserve the address atomically, before any transfer exists ──────────────
+  const rateLimitHours = Number.parseInt(process.env.DCC_FAUCET_RATE_HOURS ?? '24', 10);
+  const windowMs = rateLimitHours * 3600 * 1000;
+  let reserved: boolean;
+  try {
+    reserved = await reservations.reserve(address, windowMs);
+  } catch (error) {
+    logError(error, { context: 'faucet_reserve' });
+    return Response.json({ error: 'Faucet temporarily unavailable' }, { status: 503 });
   }
-
-  // ── Rate limit ──────────────────────────────────────────────────────────────
-  const rateLimitHours = parseInt(process.env.DCC_FAUCET_RATE_HOURS ?? '24', 10);
-  const rateLimitMs = rateLimitHours * 3600 * 1000;
-  if (await isRateLimited(address, rateLimitMs)) {
+  if (!reserved) {
     return Response.json(
       { error: `This address already received DCC. Try again in ${rateLimitHours} hours.` },
       { status: 429 },
@@ -141,36 +114,23 @@ export async function action({ request }: { request: Request }): Promise<Respons
   }
 
   // ── Build, sign, and broadcast the transfer ─────────────────────────────────
-  const nodeUrl = process.env.DCC_NODE_URL;
-  if (!nodeUrl) {
-    return Response.json({ error: 'Faucet not configured on this network' }, { status: 503 });
-  }
-  const amountDcc = parseInt(process.env.DCC_FAUCET_AMOUNT ?? '10', 10);
-  // 1 DCC = 10^8 units (same decimal structure as WAVES)
-  const amountUnits = amountDcc * 1e8;
-
+  const amountDcc = Number.parseInt(process.env.DCC_FAUCET_AMOUNT ?? '10', 10);
   try {
     const tx = transfer(
       {
-        amount: amountUnits,
+        amount: amountDcc * 1e8, // 1 DCC = 10^8 base units
         attachment: '',
         fee: 100000, // 0.001 DCC
         recipient: address,
       },
       seed,
     );
-
     await broadcast(tx, nodeUrl);
-
-    await recordRequest(address, rateLimitMs);
-
-    return Response.json({
-      amount: amountDcc,
-      success: true,
-      txId: tx.id,
-    });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : 'Failed to broadcast transaction';
-    return Response.json({ error: message }, { status: 500 });
+    return Response.json({ amount: amountDcc, success: true, txId: tx.id });
+  } catch (error) {
+    await reservations.release(address).catch(() => undefined);
+    // Node rejection details stay in the server log; the client gets a generic message.
+    logError(error, { address, context: 'faucet_broadcast' });
+    return Response.json({ error: GENERIC_FAILURE }, { status: 502 });
   }
 }
