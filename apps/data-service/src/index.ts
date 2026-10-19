@@ -15,7 +15,7 @@ import { loadConfig } from './loadConfig';
 import createAndSubscribeLogger from './logger';
 import accessLogMiddleware from './middleware/accessLog';
 import injectEventBus from './middleware/injectEventBus';
-import { createRateLimiter } from './middleware/rateLimiter';
+import { createRateLimiter, DEFAULT_MAX_REQUESTS } from './middleware/rateLimiter';
 import createServices from './services';
 import { installGracefulShutdown } from './shutdown';
 
@@ -59,12 +59,12 @@ Effect.runPromise(
       // Per-IP rate limiting — defense-in-depth against request floods.
       // Primary protection is the Caddy reverse proxy (infra layer), but an
       // app-layer limit caps damage from a single abusive IP even if Caddy's
-      // rate limiting is not configured. 120 req/min (2 req/s average) is
-      // generous for normal browser wallet/dapp polling; pathological scrapers
-      // will be capped. Responses include standard RateLimit headers.
+      // rate limiting is not configured. The limit (300 req/min per real client
+      // IP) matches Caddy's ds_per_ip zone, so this limiter never rejects traffic the
+      // edge would have allowed; pathological scrapers are still capped. Responses include standard RateLimit headers.
       // NOTE: in-process storage — not shared across replicas. For multi-replica
       // deployments, replace createRateLimiter with a Redis-backed store.
-      app.use(createRateLimiter({ max: 120, windowMs: 60_000 }));
+      app.use(createRateLimiter({ max: DEFAULT_MAX_REQUESTS, windowMs: 60_000 }));
 
       // Abort handlers that take longer than 30 s — prevents slow DB queries
       // from holding connections open indefinitely.

@@ -9,7 +9,7 @@ import { Hono } from 'hono';
 import { describe, expect, it } from 'vitest';
 import { type AppEnv } from '../http/_common/types';
 import injectEventBus from '../middleware/injectEventBus';
-import { createRateLimiter } from '../middleware/rateLimiter';
+import { createRateLimiter, DEFAULT_MAX_REQUESTS } from '../middleware/rateLimiter';
 import { buildApp, noopEventBus } from '../test/app-factory';
 
 describe('CORS headers', () => {
@@ -106,6 +106,21 @@ describe('Rate limiter', () => {
     for (const res of responses) {
       expect(res.status).toBe(200);
     }
+  });
+
+  it('defaults to the Caddy edge zone: 300 requests per client per minute, then 429', async () => {
+    expect(DEFAULT_MAX_REQUESTS).toBe(300);
+    const app = new Hono<AppEnv>();
+    app.use(injectEventBus(noopEventBus));
+    app.use(createRateLimiter());
+    app.get('/ping', (c) => c.json({ ok: true }));
+    let lastOk = 0;
+    for (let i = 0; i < DEFAULT_MAX_REQUESTS; i++) {
+      lastOk = (await app.request(...viaCaddy('7.7.7.7'))).status;
+      if (lastOk !== 200) throw new Error(`request ${i + 1} was limited`);
+    }
+    expect(lastOk).toBe(200);
+    expect((await app.request(...viaCaddy('7.7.7.7'))).status).toBe(429);
   });
 
   it('returns 429 with Retry-After when the limit is exceeded for the same client', async () => {
