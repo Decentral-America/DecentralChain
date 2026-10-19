@@ -1,0 +1,60 @@
+name: Maven POM drift
+
+# Fails when a JVM package's source version is already on Maven Central but its direct
+# runtime dependencies differ from the published POM (AUD-026). Same coordinates must
+# never mean two different artifacts: bump the version instead.
+
+on:
+  pull_request:
+    paths:
+      - 'packages/jvm/**/pom.xml'
+      - 'packages/sdk/protobuf-schemas/pom.xml'
+      - 'scripts/check-maven-drift.sh'
+      - '.github/workflows/maven-drift.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'packages/jvm/**/pom.xml'
+      - 'packages/sdk/protobuf-schemas/pom.xml'
+      - 'scripts/check-maven-drift.sh'
+      - '.github/workflows/maven-drift.yml'
+  schedule:
+    - cron: '30 7 * * 1'  # weekly, Monday 07:30 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  drift:
+    name: ${{ matrix.package }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - packages/jvm/blst
+          - packages/jvm/curve25519
+          - packages/jvm/crypto
+          - packages/jvm/transactions
+          - packages/jvm/java-sdk
+          - packages/jvm/groth16
+          - packages/sdk/protobuf-schemas
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Java 25 (Temurin)
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6  # v6.0.1
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+
+      - name: Compare source POM with Maven Central
+        env:
+          PACKAGE: ${{ matrix.package }}
+        run: scripts/check-maven-drift.sh "$PACKAGE"

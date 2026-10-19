@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.2] — unreleased
+
+### Changed
+- Depends on transactions 1.1.0 (DecentralChain chain-id defaults) and crypto 2.0.8 (BouncyCastle 1.86).
+- POM licence corrected to MIT, matching LICENSE.
+
 ## [Unreleased]
 
 ### Fixed (Round 11 — 2026-05-17, Docker integration test suite now passes 71/71)

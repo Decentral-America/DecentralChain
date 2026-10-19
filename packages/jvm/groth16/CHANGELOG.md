@@ -7,6 +7,11 @@ Versioning: [DecentralChain version conventions](https://github.com/Decentral-Am
 
 ---
 
+## [0.2.1.1] — unreleased
+
+### Fixed
+- POM licence metadata now says MIT, matching LICENSE (0.2.1.0's POM said Apache-2.0). No code change.
+
 ## [0.2.1.0] — 2026-05-17
 
 Initial DCC release — fork of [Decentral-America/zdcc](https://github.com/Decentral-America/zdcc),

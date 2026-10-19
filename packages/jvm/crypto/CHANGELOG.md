@@ -5,6 +5,15 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [2.0.8] — unreleased
+
+### Security
+- Depends on BouncyCastle `bcprov-jdk18on` 1.86. 2.0.7 on Maven Central declares 1.84, which is
+  affected by GHSA-9pwp-9qqc-pr26 (critical) and GHSA-qp49-qgx5-5m26 (high).
+
+### Changed
+- Depends on curve25519 1.0.1.
+
 ## [2.0.7] — 2026-05-19
 
 ### Added

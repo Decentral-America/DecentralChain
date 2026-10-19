@@ -8,7 +8,7 @@
   <!-- ── Coordinates ──────────────────────────────────────────────────── -->
   <groupId>io.decentralchain</groupId>
   <artifactId>transactions</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <packaging>jar</packaging>
 
   <!-- ── Project metadata (required for Maven Central) ───────────────── -->
@@ -67,7 +67,7 @@
 
     <!-- Dependency version properties — pinned and audited 2026-05 -->
     <!-- io.decentralchain:crypto 2.0.7 — DCC fork of Decentral-America/crypto v2.0.7 (DCC-264) -->
-    <dcc-crypto.version>2.0.7</dcc-crypto.version>
+    <dcc-crypto.version>2.0.8</dcc-crypto.version>
     <!-- protobuf-schemas 1.6.6 — DCC local build (io.decentralchain namespace) -->
     <protobuf-schemas.version>1.6.6</protobuf-schemas.version>
     <!-- jackson-databind 2.22.3 — 2.22.0 fixed CVE-2026-54512/54513/54514/54516/54517/54518;
