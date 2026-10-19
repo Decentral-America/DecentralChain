@@ -105,7 +105,35 @@ export function sourceAllows(source, url) {
   return wildcard ? target.hostname.endsWith(`.${host}`) : target.hostname === host;
 }
 
-export function checkHeaders(text, { network, requiredOrigins = [], bundleOrigins = [] }) {
+/** Sources that allow every host for a scheme (or everything); never acceptable here. */
+const BROAD_SOURCES = new Set(['*', 'http:', 'https:', 'ws:', 'wss:']);
+/** Directives that must list hosts explicitly. */
+const HOST_LIST_DIRECTIVES = ['connect-src', 'frame-src', 'script-src'];
+const GA_LOADER_ORIGIN = 'https://www.googletagmanager.com';
+
+/** Broad scheme/wildcard sources, and the analytics loader when analytics is enabled. */
+function checkSourceBreadth(directives, analyticsEnabled) {
+  const problems = [];
+  for (const name of HOST_LIST_DIRECTIVES) {
+    for (const source of directives.get(name) ?? []) {
+      if (BROAD_SOURCES.has(source.toLowerCase())) {
+        problems.push(`CSP ${name} must not contain the bare source ${source}`);
+      }
+    }
+  }
+  const scriptSrc = directives.get('script-src') ?? [];
+  if (analyticsEnabled && !scriptSrc.some((source) => sourceAllows(source, GA_LOADER_ORIGIN))) {
+    problems.push(
+      `VITE_GA_MEASUREMENT_ID is set but CSP script-src does not allow ${GA_LOADER_ORIGIN}`,
+    );
+  }
+  return problems;
+}
+
+export function checkHeaders(
+  text,
+  { network, requiredOrigins = [], bundleOrigins = [], analyticsEnabled = false },
+) {
   const problems = [];
   text.split('\n').forEach((line, index) => {
     if (line.length > MAX_LINE) {
@@ -129,6 +157,7 @@ export function checkHeaders(text, { network, requiredOrigins = [], bundleOrigin
     if ((directives.get('script-src') ?? []).includes("'unsafe-inline'")) {
       problems.push("CSP script-src must not allow 'unsafe-inline'");
     }
+    problems.push(...checkSourceBreadth(directives, analyticsEnabled));
     const connect = directives.get('connect-src') ?? [];
     for (const origin of requiredOrigins) {
       if (!connect.some((source) => sourceAllows(source, origin))) {
@@ -166,8 +195,12 @@ export function checkHeaders(text, { network, requiredOrigins = [], bundleOrigin
  * Origins that appear in the built bundle but are never fetched or framed by
  * the exchange, so the CSP rightly does not list them. Each entry says why;
  * anything else the bundle references must be in connect-src or frame-src.
+ *
+ * An entry here only exempts the origin from this check: the CSP still blocks
+ * it in the browser. Any new fetch, frame or script load from a listed origin
+ * needs a CSP change (and the entry removed), or it fails at runtime.
  */
-const NON_FETCH_ORIGINS = new Map([
+export const NON_FETCH_ORIGINS = new Map([
   ['http://www.w3.org', 'XML/SVG namespace URIs'],
   ['https://decentralchain.io', 'outbound links (privacy policy, terms, support)'],
   ['https://decentralscan.com', 'explorer links; the exchange never calls the explorer'],
@@ -192,8 +225,10 @@ const NON_FETCH_ORIGINS = new Map([
     'Solana mobile-wallet modal markup; the fonts are blocked and it falls back to system fonts',
   ],
   [
+    // react-ga4 is statically bundled and carries its loader URL. checkHeaders
+    // fails if a deploy sets VITE_GA_MEASUREMENT_ID without allowing it in script-src.
     'https://www.googletagmanager.com',
-    'react-ga4 default; loaded only when VITE_GA_MEASUREMENT_ID is set, which no deploy sets',
+    'react-ga4 loader; used only when VITE_GA_MEASUREMENT_ID is set, which no deploy sets',
   ],
   [
     'https://api.devnet.solana.com',
@@ -215,9 +250,11 @@ const NON_FETCH_ORIGINS = new Map([
     'http://api.mainnet-beta.solana.com',
     '@solana/web3.js cluster defaults; the app uses VITE_SOLANA_RPC_URL',
   ],
-  ['http://localhost', 'dev-only default and URL-parsing base'],
-  ['ws://localhost', 'dev-only default'],
-  ['ws://localhost:8080', 'dev-only default'],
+  // URL-parsing base: react-router resolves paths against it. The Solana mobile
+  // wallet adapter also probes it; the CSP blocks that and the adapter ignores the error.
+  ['http://localhost', 'URL-parsing base in react-router'],
+  // rpc-websockets constructor default; @solana/web3.js always passes its own endpoint.
+  ['ws://localhost:8080', 'rpc-websockets default argument, never used'],
 ]);
 
 /** Absolute http(s)/ws(s) origins referenced by the built js, html and css (source maps excluded). */
@@ -264,6 +301,36 @@ export function checkBundleOrigins(headersText, origins) {
     .map((origin) => `bundle references ${origin}, which is not in CSP connect-src or frame-src`);
 }
 
+/** Networks a deploy build may target. */
+const NETWORKS = ['mainnet', 'stagenet', 'testnet'];
+
+/**
+ * The network a Vite build targets, from its resolved env. A production build
+ * must set VITE_NETWORK explicitly: silently defaulting to mainnet would ship a
+ * test network without its noindex header. Other builds default to mainnet.
+ */
+export function resolveBuildNetwork(env, isProduction) {
+  const network = env.VITE_NETWORK;
+  if (!network) {
+    if (isProduction) {
+      throw new Error(
+        'VITE_NETWORK is not set for this production build; build with --mode <mainnet|stagenet|testnet env> or set it explicitly',
+      );
+    }
+    return 'mainnet';
+  }
+  if (!NETWORKS.includes(network)) {
+    throw new Error(`VITE_NETWORK "${network}" is not one of ${NETWORKS.join(', ')}`);
+  }
+  return network;
+}
+
+/** Whether the network's deploy env enables Google Analytics. */
+export function analyticsEnabledFor(network) {
+  const envText = readFileSync(path.join(APP_ROOT, ENV_FILE[network]), 'utf8');
+  return /^VITE_GA_MEASUREMENT_ID=\S+/m.test(envText);
+}
+
 /** Every service origin the network's build talks to: node, matcher, data service, websocket. */
 export function requiredOriginsFor(network) {
   const config = JSON.parse(
@@ -284,6 +351,7 @@ function main([file, network]) {
     return 2;
   }
   const problems = checkHeaders(readFileSync(file, 'utf8'), {
+    analyticsEnabled: analyticsEnabledFor(network),
     bundleOrigins: scanBundleOrigins(path.dirname(path.resolve(file))),
     network,
     requiredOrigins: requiredOriginsFor(network),

@@ -5,7 +5,7 @@ import { sentryVitePlugin } from '@sentry/vite-plugin';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { defineConfig, type Plugin } from 'vite';
 import pkg from './package.json' with { type: 'json' };
-import { withNoindexHeader } from './scripts/verifyHeaders.js';
+import { resolveBuildNetwork, withNoindexHeader } from './scripts/verifyHeaders.js';
 
 const { NODE_ENV, VITE_API_URL, VITE_NODE_URL, VITE_SOLANA_RPC_URL } = process.env;
 
@@ -88,7 +88,8 @@ const networkIndexingPlugin = (): Plugin => {
       writeFileSync(headersFile, withNoindexHeader(readFileSync(headersFile, 'utf8')));
     },
     configResolved(config) {
-      network = config.env['VITE_NETWORK'] ?? 'mainnet';
+      // Throws for a production build without VITE_NETWORK (no silent mainnet default).
+      network = resolveBuildNetwork(config.env, config.isProduction);
       headersFile = path.resolve(config.root, config.build.outDir, '_headers');
     },
     name: 'network-indexing',

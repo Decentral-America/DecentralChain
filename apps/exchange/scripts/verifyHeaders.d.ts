@@ -16,6 +16,13 @@ export function checkHeaders(
     network: 'mainnet' | 'stagenet' | 'testnet';
     requiredOrigins?: string[];
     bundleOrigins?: string[];
+    analyticsEnabled?: boolean;
   },
 ): string[];
+export const NON_FETCH_ORIGINS: Map<string, string>;
+export function resolveBuildNetwork(
+  env: Record<string, string | undefined>,
+  isProduction: boolean,
+): 'mainnet' | 'stagenet' | 'testnet';
+export function analyticsEnabledFor(network: 'mainnet' | 'stagenet' | 'testnet'): boolean;
 export function requiredOriginsFor(network: 'mainnet' | 'stagenet' | 'testnet'): string[];

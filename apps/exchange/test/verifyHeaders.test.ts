@@ -11,9 +11,11 @@ import { describe, expect, it } from 'vitest';
 import {
   checkBundleOrigins,
   checkHeaders,
+  NON_FETCH_ORIGINS,
   parseCsp,
   parseHeadersFile,
   requiredOriginsFor,
+  resolveBuildNetwork,
   scanBundleOrigins,
   sourceAllows,
   withNoindexHeader,
@@ -78,6 +80,71 @@ describe('checkHeaders', () => {
         requiredOrigins: ['https://testnet-matcher.decentralchain.io'],
       }),
     ).toContain('CSP connect-src does not allow https://testnet-matcher.decentralchain.io');
+  });
+});
+
+describe('broad CSP sources', () => {
+  const policy = (directive: string) =>
+    `/*\n  Content-Security-Policy: default-src 'self'; ${directive}; frame-ancestors 'none'; object-src 'none'; base-uri 'self'\n`;
+
+  it.each([
+    ['connect-src', '*'],
+    ['connect-src', 'https:'],
+    ['connect-src', 'wss:'],
+    ['frame-src', 'https:'],
+    ['frame-src', '*'],
+    ['script-src', 'http:'],
+    ['script-src', 'ws:'],
+    ['script-src', '*'],
+  ])('rejects %s containing a bare %s', (directive, source) => {
+    expect(checkHeaders(policy(`${directive} 'self' ${source}`), { network: 'mainnet' })).toContain(
+      `CSP ${directive} must not contain the bare source ${source}`,
+    );
+  });
+
+  it('accepts host sources and leaves img-src alone', () => {
+    const problems = checkHeaders(
+      policy("connect-src 'self' https://*.decentralchain.io; img-src 'self' https:"),
+      { network: 'mainnet' },
+    );
+    expect(problems.filter((p) => p.includes('bare source'))).toEqual([]);
+  });
+});
+
+describe('NON_FETCH_ORIGINS', () => {
+  it('lists only the localhost origins the bundled libraries reference', () => {
+    expect(NON_FETCH_ORIGINS.has('ws://localhost')).toBe(false);
+    expect([...NON_FETCH_ORIGINS.keys()].filter((o) => o.includes('localhost'))).toEqual([
+      'http://localhost',
+      'ws://localhost:8080',
+    ]);
+  });
+
+  it('fails a build that enables Google Analytics while the CSP still blocks its loader', () => {
+    expect(checkHeaders(HEADERS, { analyticsEnabled: true, network: 'mainnet' })).toContain(
+      'VITE_GA_MEASUREMENT_ID is set but CSP script-src does not allow https://www.googletagmanager.com',
+    );
+    expect(checkHeaders(HEADERS, { analyticsEnabled: false, network: 'mainnet' })).toEqual([]);
+  });
+});
+
+describe('resolveBuildNetwork', () => {
+  it('fails a production build with no VITE_NETWORK instead of defaulting to mainnet', () => {
+    expect(() => resolveBuildNetwork({}, true)).toThrow('VITE_NETWORK');
+    expect(() => resolveBuildNetwork({ VITE_NETWORK: '' }, true)).toThrow('VITE_NETWORK');
+  });
+
+  it('fails on an unknown network', () => {
+    expect(() => resolveBuildNetwork({ VITE_NETWORK: 'devnet' }, true)).toThrow('devnet');
+  });
+
+  it('returns the configured network', () => {
+    expect(resolveBuildNetwork({ VITE_NETWORK: 'testnet' }, true)).toBe('testnet');
+    expect(resolveBuildNetwork({ VITE_NETWORK: 'mainnet' }, false)).toBe('mainnet');
+  });
+
+  it('lets a non-production build run without one (treated as mainnet: no noindex)', () => {
+    expect(resolveBuildNetwork({}, false)).toBe('mainnet');
   });
 });
 
