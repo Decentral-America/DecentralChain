@@ -15,8 +15,14 @@ const byOrderSender = curryN(2, (orderSender, q) =>
   ),
 );
 
-const byOrderSenders = curryN(2, (senders, q) =>
-  q.clone().whereRaw(`array[order1->>'sender', order2->>'sender'] && ?`, `{${senders.join(',')}}`),
+// One placeholder per element: knex escapes each value as its own literal.
+const byOrderSenders = curryN(2, (senders: string[], q) =>
+  q
+    .clone()
+    .whereRaw(
+      `array[order1->>'sender', order2->>'sender'] && array[${senders.map(() => '?').join(', ')}]::varchar[]`,
+      senders,
+    ),
 );
 
 const byOrder = curryN(2, (orderId, q) =>
