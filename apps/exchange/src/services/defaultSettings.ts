@@ -367,9 +367,7 @@ let defaultSettingsInstance: DefaultSettings | null = null;
  * Get the singleton DefaultSettings instance
  */
 export function getDefaultSettings(): DefaultSettings {
-  if (!defaultSettingsInstance) {
-    defaultSettingsInstance = createDefaultSettings();
-  }
+  defaultSettingsInstance ??= createDefaultSettings();
   return defaultSettingsInstance;
 }
 

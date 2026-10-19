@@ -33,12 +33,8 @@ src/i18n/
 ├── index.ts              # i18next configuration
 ├── i18n.ts               # Barrel exports
 ├── README.md             # This file
-└── locales/              # Translation files (auto-generated)
-    ├── de/
-    │   └── translation.json
-    ├── en/
-    │   └── translation.json
-    └── ...
+└── (translations live in apps/exchange/public/locales/<lng>/translation.json —
+     the one tree, served at /locales/... and loaded by i18next-http-backend)
 ```
 
 ## Usage in Components
@@ -122,7 +118,7 @@ npm run merge-locales
 This script:
 1. Reads all JSON files from each language directory in `/locale/`
 2. Merges them into a single `translation.json` per language
-3. Outputs to `src/i18n/locales/{language}/translation.json`
+3. Outputs to `public/locales/{language}/translation.json`
 
 ### Translation Key Structure
 
@@ -175,7 +171,7 @@ For better TypeScript support, you can extend the translation types:
 ```typescript
 // i18next.d.ts
 import 'react-i18next';
-import en from './locales/en/translation.json';
+import en from '../../public/locales/en/translation.json';
 
 declare module 'react-i18next' {
   interface CustomTypeOptions {
