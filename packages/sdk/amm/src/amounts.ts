@@ -8,14 +8,41 @@
  */
 
 /**
+ * Rewrites a decimal written in exponent notation ("1.5e-7", "1e+21") as a
+ * plain decimal string ("0.00000015", "1000000000000000000000"). Exact: it only
+ * moves the decimal point of the digits JavaScript printed.
+ */
+function toPlainDecimal(value: string): string {
+  const match = /^(-?)(\d+)(?:\.(\d+))?e([+-]?\d+)$/i.exec(value.trim());
+  if (!match) return value.trim();
+  const [, sign = '', intDigits = '', fracDigits = '', exponent = '0'] = match;
+  const digits = intDigits + fracDigits;
+  const point = intDigits.length + Number(exponent);
+  if (point <= 0) return `${sign}0.${'0'.repeat(-point)}${digits}`;
+  if (point >= digits.length) return `${sign}${digits}${'0'.repeat(point - digits.length)}`;
+  return `${sign}${digits.slice(0, point)}.${digits.slice(point)}`;
+}
+
+/** Linear-time replacement for `str.replace(/0+$/, '')` (CodeQL js/polynomial-redos). */
+function trimTrailingZeros(digits: string): string {
+  let end = digits.length;
+  while (end > 0 && digits.charCodeAt(end - 1) === 48 /* '0' */) end -= 1;
+  return digits.slice(0, end);
+}
+
+/**
  * Convert a human-readable amount to raw integer units.
  *
- * @param amount - Human-readable amount (e.g., "1.5")
+ * @param amount - Human-readable amount (e.g., "1.5", 1.5, 1e-7)
  * @param decimals - Token decimals (e.g., 8)
- * @returns Raw integer amount as bigint
+ * @returns Raw integer amount as bigint (excess decimals are truncated)
+ * @throws RangeError when `amount` is a non-finite number
  */
 export function toRawAmount(amount: string | number, decimals: number): bigint {
-  const str = typeof amount === 'number' ? amount.toString() : amount;
+  if (typeof amount === 'number' && !Number.isFinite(amount)) {
+    throw new RangeError(`toRawAmount: amount must be a finite number, got ${amount}`);
+  }
+  const str = toPlainDecimal(typeof amount === 'number' ? String(amount) : amount);
 
   // Split at decimal point
   const parts = str.split('.');
@@ -29,27 +56,24 @@ export function toRawAmount(amount: string | number, decimals: number): bigint {
     fracPart = fracPart.padEnd(decimals, '0');
   }
 
-  const combined = intPart + fracPart;
-  return BigInt(combined);
+  return BigInt(intPart + fracPart);
 }
 
 /**
  * Convert a raw integer amount to a human-readable string.
  *
- * @param rawAmount - Raw integer amount
+ * @param rawAmount - Raw integer amount (may be negative)
  * @param decimals - Token decimals
- * @returns Human-readable string (e.g., "1.5")
+ * @returns Human-readable string (e.g., "1.5", "-0.00000005")
  */
 export function fromRawAmount(rawAmount: bigint, decimals: number): string {
+  if (rawAmount < 0n) return `-${fromRawAmount(-rawAmount, decimals)}`;
   const str = rawAmount.toString();
   if (decimals === 0) return str;
 
   const padded = str.padStart(decimals + 1, '0');
   const intPart = padded.slice(0, padded.length - decimals);
-  const fracPart = padded.slice(padded.length - decimals);
-
-  // Remove trailing zeros from fractional part
-  const trimmedFrac = fracPart.replace(/0+$/, '');
+  const trimmedFrac = trimTrailingZeros(padded.slice(padded.length - decimals));
   if (trimmedFrac === '') return intPart;
   return `${intPart}.${trimmedFrac}`;
 }
