@@ -21,6 +21,8 @@ Cargo.lock
 !packages/jvm/groth16/Cargo.lock
 !apps/blockchain-postgres-sync/Cargo.lock
 !apps/websocket-api/Cargo.lock
+# Binaries commit their lockfile so builds and audits see the shipped tree.
+!apps/load-tester/Cargo.lock
 target/
 packages/sdk/crypto/pkg/
 
