@@ -1,3 +1,4 @@
+import { getConnInfo } from '@hono/node-server/conninfo';
 import { type Context, type Next } from 'hono';
 
 /**
@@ -14,11 +15,12 @@ import { type Context, type Next } from 'hono';
  * the Map with a Redis INCR / EXPIRE call using the existing postgres driver
  * or a dedicated Redis client.
  *
- * IP resolution
- * ─────────────
- * Trusts X-Real-IP set by Caddy (infra/terraform/scripts/bootstrap.sh).
- * Data-service is loopback-bound (127.0.0.1:8080) — Caddy is the only
- * reachable ingress, so X-Real-IP cannot be spoofed by external clients.
+ * Client identification
+ * ─────────────────────
+ * data-service runs on the host network behind Caddy on the same host, so for
+ * proxied requests the TCP peer is loopback and Caddy writes the real client as
+ * the last X-Forwarded-For entry (earlier entries and any X-Real-IP come from the
+ * client and are ignored). Any other peer is keyed by its own address.
  *
  * Response on limit exceeded: 429 Too Many Requests with Retry-After,
  * X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset headers
@@ -42,6 +44,11 @@ export interface RateLimiterOptions {
    * @default 120 (2 req/s average over a 1-minute window)
    */
   max?: number;
+  /**
+   * TCP peer address of the request. Defaults to the Node socket's remote address.
+   * Injectable for tests.
+   */
+  peerAddress?: (c: Context) => string | undefined;
 }
 
 /**
@@ -52,7 +59,30 @@ export interface RateLimiterOptions {
  * app.use(createRateLimiter({ windowMs: 60_000, max: 120 }));
  * ```
  */
-export function createRateLimiter({ windowMs = 60_000, max = 120 }: RateLimiterOptions = {}) {
+const LOOPBACK = new Set(['127.0.0.1', '::1', '::ffff:127.0.0.1']);
+
+export const defaultPeerAddress = (c: Context): string | undefined => {
+  try {
+    return getConnInfo(c).remote.address;
+  } catch {
+    return undefined;
+  }
+};
+
+/** The client a request is counted against (see "Client identification" above). */
+export const clientKey = (c: Context, peer: string | undefined): string => {
+  if (peer !== undefined && LOOPBACK.has(peer)) {
+    const forwarded = c.req.header('x-forwarded-for')?.split(',').pop()?.trim();
+    return forwarded !== undefined && forwarded !== '' ? forwarded : peer;
+  }
+  return peer ?? 'unknown';
+};
+
+export function createRateLimiter({
+  windowMs = 60_000,
+  max = 120,
+  peerAddress = defaultPeerAddress,
+}: RateLimiterOptions = {}) {
   const windows = new Map<string, RateLimitWindow>();
 
   // Periodic cleanup to prevent unbounded Map growth when many unique IPs
@@ -67,12 +97,7 @@ export function createRateLimiter({ windowMs = 60_000, max = 120 }: RateLimiterO
   cleanup.unref();
 
   return async function rateLimiter(c: Context, next: Next) {
-    // X-Real-IP is set by Caddy from the actual client remote address.
-    // X-Forwarded-For is a secondary fallback for local dev without Caddy.
-    const ip =
-      c.req.header('x-real-ip') ??
-      c.req.header('x-forwarded-for')?.split(',')[0]?.trim() ??
-      'unknown';
+    const ip = clientKey(c, peerAddress(c));
 
     const now = Date.now();
     const win = windows.get(ip);
