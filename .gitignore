@@ -67,3 +67,5 @@ scripts/sync-to-polyrepos.sh
 
 .claude/settings.local.jsonroadmap-project/
 biome_report.json
+__pycache__/
+*.pyc
