@@ -146,9 +146,20 @@ export function fetchEffectiveBalance(
   });
 }
 
-export function fetchSeq(base: string, from: number, to: number): Promise<string[]> {
+/**
+ * GET /addresses/seq/{from}/{to}
+ * Wallet addresses by index. Requires the node API key: pass it as
+ * `{ headers: { 'X-API-Key': key } }` in `options`.
+ */
+export function fetchSeq(
+  base: string,
+  from: number,
+  to: number,
+  options: RequestInit = {},
+): Promise<string[]> {
   return request({
     base,
+    options,
     url: `/addresses/seq/${pathSegment(from)}/${pathSegment(to)}`,
   });
 }
@@ -172,9 +183,15 @@ export function fetchPublicKey(base: string, publicKey: string): Promise<IPublic
   });
 }
 
-export function fetchAddresses(base: string): Promise<string[]> {
+/**
+ * GET /addresses
+ * Wallet addresses. Requires the node API key: pass it as
+ * `{ headers: { 'X-API-Key': key } }` in `options`.
+ */
+export function fetchAddresses(base: string, options: RequestInit = {}): Promise<string[]> {
   return request({
     base,
+    options,
     url: '/addresses',
   });
 }

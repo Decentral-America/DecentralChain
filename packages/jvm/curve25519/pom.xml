@@ -9,10 +9,11 @@
   <groupId>io.decentralchain</groupId>
   <artifactId>curve25519</artifactId>
   <!--
-    Version: 1.0.0 — DCC-branded release (first publication to io.decentralchain).
+    Version: 1.0.1 — re-release from the current tree (jna 5.19.1). 1.0.0 on Maven
+    Central was built from an older tree (jna 5.18.1).
     Based on upstream 0.6.6 (WhisperSystems fork via Decentral-America/curve25519).
   -->
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <packaging>jar</packaging>
 
   <!-- ── Project metadata (required for Maven Central) ───────────────── -->

@@ -14,6 +14,7 @@ import {
   type IAllConnectedResponse,
 } from '@/lib/api';
 import { logError } from '@/lib/error-logger';
+import { pageMeta } from '@/lib/page-meta';
 import { type Peer } from '@/types';
 
 type SustainabilityStats = {
@@ -24,6 +25,8 @@ type SustainabilityStats = {
   hostingProviders: Record<string, number>;
   countriesData: Record<string, { total: number; green: number }>;
 };
+
+export const meta = () => pageMeta('Sustainability');
 
 export default function Sustainability() {
   const [greenStats, setGreenStats] = useState<SustainabilityStats | null>(null);

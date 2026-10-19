@@ -1,0 +1,54 @@
+name: Load Tester CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/load-tester/**'
+      - '.github/workflows/load-tester.yml'
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - 'apps/load-tester/**'
+      - '.github/workflows/load-tester.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: load-tester-ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Rust stable
+        uses: dtolnay/rust-toolchain@6bed0761d98439e5a578e2877258200ad565ba87 # stable
+        with:
+          toolchain: stable
+
+      - name: Cache Rust build artifacts
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with:
+          workspaces: apps/load-tester
+          cache-on-failure: true
+
+      - name: Build (locked)
+        working-directory: apps/load-tester
+        run: cargo build --locked --all-targets
+
+      - name: Test (locked)
+        working-directory: apps/load-tester
+        run: cargo test --locked

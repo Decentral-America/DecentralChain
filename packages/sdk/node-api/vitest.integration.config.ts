@@ -6,7 +6,7 @@ import { defineConfig } from 'vitest/config';
  * These tests require a running DecentralChain node.
  * Set DCC_NODE_URL and related environment variables before running.
  *
- *   DCC_NODE_URL=https://nodes.decentralchain.io npm run test:integration
+ *   DCC_NODE_URL=https://mainnet-node.decentralchain.io npm run test:integration
  */
 export default defineConfig({
   test: {

@@ -48,9 +48,9 @@ ignore = [
   { id = "RUSTSEC-2024-0436", reason = "transitive via fastcrypto-zkp; proc-macro only, no runtime exposure; tracked for fastcrypto-zkp update" },
 
   # RUSTSEC-2023-0071: rsa Marvin timing attack.
-  # Risk: rsa is NOT in our dependency tree (verified via cargo tree).
-  # cargo-deny may be flagging a dev-dep that we do not ship.
-  { id = "RUSTSEC-2023-0071", reason = "rsa crate not in production dependency tree; flagged only in test dev-dep transitive path" },
+  # rsa IS compiled into the native library (rsa > fastcrypto > fastcrypto-zkp > groth16_fastcrypto),
+  # but Groth16 verification never performs RSA decryption, the only affected operation.
+  { id = "RUSTSEC-2023-0071", reason = "rsa is linked via fastcrypto but RSA decryption is never reachable from groth16 verification" },
 
   # RUSTSEC-2025-0055: owo-colors ANSI injection in logging.
   # Risk: owo-colors is NOT in production runtime; test tooling only.

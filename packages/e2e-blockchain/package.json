@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@decentralchain/node-api": "workspace:*",
+    "@decentralchain/node-api-grpc": "workspace:*",
     "@decentralchain/transactions": "workspace:*",
     "@decentralchain/ts-lib-crypto": "workspace:*",
     "@ethereumjs/rlp": "^10.1.3"

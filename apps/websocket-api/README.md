@@ -28,6 +28,11 @@ Client → server: `{"type":"subscribe","topic":"..."}`, `{"type":"unsubscribe",
 
 Server → client: `subscribed`, `update`, `unsubscribed`, `ping`, `error`.
 
+Frame semantics: `subscribed` carries the topic's current value. When a topic has no value yet
+(for example a data key nobody has written), no frame is sent at subscribe time; the first value
+that arrives is delivered as the `subscribed` frame, and every later change is an `update`. A
+client must therefore treat the first `subscribed` or `update` frame for a topic as its value.
+
 Error codes: `1` invalid message, `2` already subscribed, `3` invalid topic,
 `4` subscription limit exceeded.
 

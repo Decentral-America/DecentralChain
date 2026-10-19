@@ -39,18 +39,10 @@ describe('third-party wallet links', () => {
 
 /**
  * The listing link was stripped from the 1_0_25 changelog line with a regex.
- * These checks make sure that rewrite only touched the link markup: no keys
- * were lost, and the line is still a well-formed `{span.line}[...]` string.
+ * These checks make sure that rewrite only touched the link markup: the line
+ * is still a well-formed `{span.line}[...]` string in every locale. (Key
+ * completeness is enforced by src/i18n/__tests__/localeCoverage.test.ts.)
  */
-function keyPaths(obj: Record<string, unknown>, prefix = ''): string[] {
-  return Object.entries(obj).flatMap(([key, value]) => [
-    `${prefix}/${key}`,
-    ...(value && typeof value === 'object' && !Array.isArray(value)
-      ? keyPaths(value as Record<string, unknown>, `${prefix}/${key}`)
-      : []),
-  ]);
-}
-
 function find(obj: unknown, key: string, out: string[] = []): string[] {
   if (obj && typeof obj === 'object') {
     for (const [k, v] of Object.entries(obj)) {
@@ -62,18 +54,12 @@ function find(obj: unknown, key: string, out: string[] = []): string[] {
 }
 
 describe('locale files after the link removal', () => {
-  // Key counts of every locale file before the rewrite (snapshot).
-  const expected = JSON.parse(
-    readFileSync(path.join(import.meta.dirname, 'localeKeyCounts.json'), 'utf8'),
-  ) as Record<string, number>;
+  const locales = readdirSync(path.join(APP, 'public/locales'));
 
-  it.each(Object.entries(expected))('%s keeps every key', (file, count) => {
-    const json = JSON.parse(readFileSync(path.join(APP, file), 'utf8'));
-    expect(new Set(keyPaths(json)).size).toBe(count);
-  });
-
-  it.each(Object.keys(expected))('%s 1_0_25 is a clean changelog line', (file) => {
-    const json = JSON.parse(readFileSync(path.join(APP, file), 'utf8'));
+  it.each(locales)('%s 1_0_25 is a clean changelog line', (locale) => {
+    const json = JSON.parse(
+      readFileSync(path.join(APP, 'public/locales', locale, 'translation.json'), 'utf8'),
+    );
     const values = find(json, '1_0_25');
     expect(values.length).toBeGreaterThan(0);
     for (const value of values) {

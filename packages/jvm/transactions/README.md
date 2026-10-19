@@ -68,12 +68,14 @@ implementation("io.decentralchain:transactions:1.0.0")
 ### Build a signed Transfer transaction
 
 ```java
-import com.decentralchain.transactions.TransferTransaction;
-import com.decentralchain.transactions.account.PrivateKey;
-import com.decentralchain.transactions.common.Amount;
-import com.decentralchain.transactions.DccConfig;
+import io.decentralchain.transactions.TransferTransaction;
+import io.decentralchain.transactions.account.PrivateKey;
+import io.decentralchain.transactions.common.Amount;
+import io.decentralchain.transactions.common.ChainId;
+import io.decentralchain.transactions.DccConfig;
 
-DccConfig.chainId('?'); // DCC mainnet (byte 63)
+// DecentralChain mainnet ('?') is the default. For testnet:
+DccConfig.chainId(ChainId.TESTNET);
 
 PrivateKey sender = PrivateKey.fromSeed("your seed phrase");
 TransferTransaction tx = TransferTransaction.builder(recipient, Amount.of(100_000_000L))
@@ -86,7 +88,8 @@ System.out.println(tx.toJson());
 ### Build an Ethereum-compatible transaction
 
 ```java
-import com.decentralchain.transactions.EthereumTransaction;
+import io.decentralchain.transactions.EthereumTransaction;
+import io.decentralchain.transactions.common.ChainId;
 import org.web3j.crypto.ECKeyPair;
 import java.math.BigInteger;
 
@@ -94,13 +97,13 @@ ECKeyPair keyPair = ECKeyPair.create(privateKeyBytes);
 EthereumTransaction tx = EthereumTransaction.transfer(
         recipient, Amount.of(100_000_000L),
         EthereumTransaction.DEFAULT_GAS_PRICE,
-        (byte) 'W', 100_000L, System.currentTimeMillis(), keyPair);
+        ChainId.MAINNET, 100_000L, System.currentTimeMillis(), keyPair);
 ```
 
 ### Parse a raw transaction
 
 ```java
-import com.decentralchain.transactions.Transaction;
+import io.decentralchain.transactions.Transaction;
 
 Transaction tx = Transaction.fromJson(jsonString);
 Transaction txFromBytes = Transaction.fromBytes(rawBytes);
@@ -174,3 +177,7 @@ MIT — see [LICENSE](LICENSE).
 
 Original work © Wavesplatform contributors.  
 Fork © 2026-present [Decentral America](https://decentralchain.io).
+
+**GPL notice:** this package depends on `io.decentralchain:curve25519`, which is GPL-3.0-only.
+Programs that include it are subject to GPL-3.0. See `META-INF/NOTICE` in the jar and
+[THIRD_PARTY_NOTICES.md](https://github.com/Decentral-America/DecentralChain/blob/main/THIRD_PARTY_NOTICES.md).

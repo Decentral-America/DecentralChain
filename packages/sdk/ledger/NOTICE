@@ -1,0 +1,8 @@
+@decentralchain/ledger
+Copyright (c) Waves Platform (upstream @waves/ledger, https://github.com/wavesplatform/waves-ledger-js)
+Copyright (c) 2026-present DecentralChain
+
+Licensed under the Apache License, Version 2.0 (see LICENSE). This package is a modified
+version of @waves/ledger: renamed, migrated to ESM/TypeScript tooling, and adapted to
+DecentralChain chain ids. Upstream used the Apache-2.0 licence, so this derivative is
+also distributed under Apache-2.0.

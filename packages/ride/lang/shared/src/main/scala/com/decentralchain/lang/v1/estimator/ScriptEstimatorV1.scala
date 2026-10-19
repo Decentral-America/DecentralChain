@@ -21,8 +21,8 @@ object ScriptEstimatorV1 extends ScriptEstimator {
         funcs: Map[FunctionHeader, Coeval[Long]]
     ): Result[(Long, Map[String, (EXPR, Boolean)])] = t.flatMap {
 
-      case _: CONST_LONG | _: CONST_BYTESTR | _: CONST_STRING | _: CONST_BOOLEAN => EitherT.pure((1, syms))
-      case t: GETTER => aux(EitherT.pure(t.expr), syms, funcs).map { case (comp, out) => (comp + 2, out) }
+      case _: EVALUATED => EitherT.pure((1, syms))
+      case t: GETTER    => aux(EitherT.pure(t.expr), syms, funcs).map { case (comp, out) => (comp + 2, out) }
 
       case LET_BLOCK(let: LET, body) =>
         aux(EitherT.pure(body), syms + ((let.name, (let.value, false))), funcs)
@@ -77,7 +77,8 @@ object ScriptEstimatorV1 extends ScriptEstimator {
           (argsComp, argsSyms) = args
         } yield (callCost() + argsComp, argsSyms)
 
-      case _ => ??? // NOTE: Non-exhaustive match — all known cases handled above
+      case BLOCK(_: FAILED_DEC, _) => EitherT.pure((0L, syms))
+      case _: FAILED_EXPR          => EitherT.pure((0L, syms))
     }
 
     aux(EitherT.pure(t), declaredVals.map(_ -> ((TRUE, true))).toMap, Map.empty).value().map(_._1)

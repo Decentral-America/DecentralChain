@@ -26,8 +26,6 @@ describe('Throughput benchmarks', () => {
   // ── 10-worker burst ────────────────────────────────────────────────────────
 
   describe('DCC transfer burst (50 TX × 10 workers)', () => {
-    let tps: number;
-
     it('broadcasts 50 transfers concurrently and measures TPS', async () => {
       // Generate 50 unique recipient addresses (no funding needed — 0-balance targets)
       const recipients = Array.from({ length: 50 }, () => randomTestAccount(CHAIN_ID));
@@ -52,23 +50,14 @@ describe('Throughput benchmarks', () => {
       );
 
       const elapsed = (Date.now() - start) / 1_000;
-      tps = accepted.length / elapsed;
+      const tps = accepted.length / elapsed;
 
-      const _rejectCount = results.length - accepted.length;
+      if (tps < TARGET_TPS) {
+        console.warn(`Throughput ${tps.toFixed(1)} TPS is below the ${TARGET_TPS} TPS soft target`);
+      }
 
       // Fail only if pathologically bad
       expect(tps).toBeGreaterThanOrEqual(MIN_ACCEPTABLE_TPS);
-    });
-
-    it('warns when TPS is below soft target', () => {
-      if (tps !== undefined && tps < TARGET_TPS) {
-        console.warn(
-          `⚠ Throughput ${tps.toFixed(1)} TPS below target ${TARGET_TPS} TPS ` +
-            `(quorum=0, avg block ≈ 40 s; consider tuning min-block-time)`,
-        );
-      }
-      // Always passes — this is observability, not a hard gate
-      expect(true).toBe(true);
     });
   });
 
@@ -88,12 +77,13 @@ describe('Throughput benchmarks', () => {
 
         const start = Date.now();
         await broadcast(tx, API_BASE);
-        await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+        const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
         const elapsed = (Date.now() - start) / 1_000;
 
-        const _effectiveTps = batchSize / elapsed;
-
-        expect(true).toBe(true); // always passes — metric is logged
+        console.info(
+          `mass transfer x${batchSize}: ${(batchSize / elapsed).toFixed(1)} transfers/s`,
+        );
+        expect(confirmed.height).toBeGreaterThan(0);
       });
     }
   });

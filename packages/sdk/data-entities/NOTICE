@@ -1,0 +1,8 @@
+@decentralchain/data-entities
+Copyright (c) Waves Platform (upstream @waves/data-entities, https://github.com/wavesplatform/waves-data-entities)
+Copyright (c) 2026-present DecentralChain
+
+Licensed under the Apache License, Version 2.0 (see LICENSE). This package is a modified
+version of @waves/data-entities: renamed, migrated to ESM/TypeScript tooling, and
+rebranded for DecentralChain. Upstream used the Apache-2.0 licence, so this derivative
+is also distributed under Apache-2.0.

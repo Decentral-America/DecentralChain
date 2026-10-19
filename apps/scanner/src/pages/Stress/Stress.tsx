@@ -10,9 +10,12 @@
  *   Right  — Performance Charts (TPS line + block-time bar)
  */
 import { Activity } from 'lucide-react';
+import { pageMeta } from '@/lib/page-meta';
 import { ChainPulse } from './components/ChainPulse';
 import { MassTransferFeed } from './components/MassTransferFeed';
 import { PerformanceCharts } from './components/PerformanceCharts';
+
+export const meta = () => pageMeta('Stress Test');
 
 export default function Stress() {
   return (

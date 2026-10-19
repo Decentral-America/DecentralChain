@@ -16,8 +16,11 @@ import {
 } from '@/components/ui/table';
 import { truncate } from '@/components/utils/formatters';
 import { useFaucetHistory } from '@/hooks/useFaucetHistory';
+import { pageMeta } from '@/lib/page-meta';
 
 const CONTACT_EMAIL = 'info@decentralchain.io';
+
+export const meta = () => pageMeta('Testnet Faucet');
 
 export default function Faucet() {
   const [address, setAddress] = useState('');

@@ -96,7 +96,7 @@
     },
     "check:publint": {
       "cache": true,
-      "dependsOn": ["build"],
+      "dependsOn": ["build", "check:exports"],
       "inputs": [
         "production",
         "^production",

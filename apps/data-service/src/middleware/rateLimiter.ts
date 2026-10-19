@@ -46,7 +46,7 @@ export interface RateLimiterOptions {
   windowMs?: number;
   /**
    * Maximum number of requests per IP per window.
-   * @default 120 (2 req/s average over a 1-minute window)
+   * @default 300 (5 req/s average over a 1-minute window; see DEFAULT_MAX_REQUESTS)
    */
   max?: number;
   /**
@@ -61,7 +61,7 @@ export interface RateLimiterOptions {
  *
  * @example
  * ```ts
- * app.use(createRateLimiter({ windowMs: 60_000, max: 120 }));
+ * app.use(createRateLimiter({ windowMs: 60_000, max: DEFAULT_MAX_REQUESTS }));
  * ```
  */
 const isLoopback = (address: string): boolean => {
@@ -93,9 +93,17 @@ export const clientKey = (c: Context, peer: string | undefined): string => {
   );
 };
 
+/**
+ * Default requests per client per window. Equal to the Caddy edge zone for this service
+ * (ds_per_ip: 300 events per 1m per real client IP in infra's render-caddyfile.sh), so the
+ * in-process limiter is a backstop for a bypassed or misconfigured edge and never the tighter
+ * of the two: legitimate clients are limited at the edge, not twice at different thresholds.
+ */
+export const DEFAULT_MAX_REQUESTS = 300;
+
 export function createRateLimiter({
   windowMs = 60_000,
-  max = 120,
+  max = DEFAULT_MAX_REQUESTS,
   peerAddress = defaultPeerAddress,
 }: RateLimiterOptions = {}) {
   const windows = new Map<string, RateLimitWindow>();

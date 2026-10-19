@@ -56,7 +56,7 @@ import Signer from '@decentralchain/signer';
 
 // 1. Create a Signer instance pointing to a DecentralChain node
 const signer = new Signer({
-  NODE_URL: 'https://nodes.decentralchain.io',
+  NODE_URL: 'https://mainnet-node.decentralchain.io',
 });
 
 // 2. Connect a provider (e.g. a seed-based provider for development)
@@ -84,7 +84,7 @@ new Signer(options?: Partial<SignerOptions>)
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `NODE_URL` | `string` | `'https://nodes.decentralchain.io'` | URL of the DecentralChain node to connect to. The network byte is derived automatically. |
+| `NODE_URL` | `string` | `'https://mainnet-node.decentralchain.io'` | URL of the DecentralChain node to connect to. The network byte is derived automatically. |
 | `LOG_LEVEL` | `'verbose' \| 'production' \| 'error'` | `'production'` | Logging verbosity. `production` logs warnings and errors only. |
 
 ## Methods

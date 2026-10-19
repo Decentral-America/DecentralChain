@@ -7,6 +7,12 @@ Versioning: [DecentralChain version conventions](https://github.com/Decentral-Am
 
 ---
 
+## [1.0.1] — unreleased
+
+### Changed
+- Re-release from the current tree: JNA 5.19.1. 1.0.0 on Maven Central was built from an older
+  tree (JNA 5.18.1). Licence unchanged: GPL-3.0-only (see THIRD_PARTY_NOTICES.md at the repo root).
+
 ## [0.6.6] — 2026-05-17
 
 Initial DCC release — fork of [WhisperSystems/curve25519-java](https://github.com/whispersystems/curve25519-java)

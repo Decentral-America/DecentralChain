@@ -23,7 +23,6 @@ export default defineConfig({
         'src/vite-env.d.ts',
         'src/types/**',
         'src/locales/**',
-        'src/i18n/locales/**',
         'src/lib/data-service/**', // Legacy data-service — separate audit
       ],
       include: ['src/**/*.{ts,tsx}'],

@@ -54,3 +54,50 @@ export function ensureNetwork<This extends TProviderCubensisThis, Args extends u
       });
   };
 }
+
+type MethodDecorator = (target: never, context: ClassMethodDecoratorContext) => unknown;
+
+/**
+ * Applies TC39-style method decorators to `ctor.prototype[name]` at runtime.
+ *
+ * These guards used to be attached with `@decorator` syntax, but tsdown/rolldown
+ * only lowers legacy decorators, so standard decorator syntax reached `dist/`
+ * verbatim and Node 24 could not parse the published module. Applying the same
+ * decorator functions here keeps their behaviour and emits plain JavaScript.
+ *
+ * `decorators` are listed top-to-bottom as they would appear above the method;
+ * like the language feature, the one closest to the method is applied first.
+ */
+export function applyMethodDecorators(
+  ctor: { prototype: object },
+  name: string,
+  ...decorators: MethodDecorator[]
+): void {
+  const proto = ctor.prototype as Record<string, unknown>;
+  const original = proto[name];
+  if (typeof original !== 'function') {
+    throw new TypeError(`applyMethodDecorators: ${name} is not a method`);
+  }
+  const context = {
+    access: {
+      get: (obj: object) => (obj as Record<string, unknown>)[name],
+      has: (obj: object) => name in obj,
+    },
+    addInitializer: () => undefined,
+    kind: 'method',
+    metadata: undefined,
+    name,
+    private: false,
+    static: false,
+  } as unknown as ClassMethodDecoratorContext;
+  let method: unknown = original;
+  for (const decorate of [...decorators].reverse()) {
+    method = decorate(method as never, context);
+  }
+  Object.defineProperty(proto, name, {
+    configurable: true,
+    enumerable: false,
+    value: method,
+    writable: true,
+  });
+}

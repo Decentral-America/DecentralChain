@@ -71,3 +71,7 @@ mvn package -P release -Dgpg.skip=true  # local install without signing
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+**GPL notice:** this package depends on `io.decentralchain:curve25519`, which is GPL-3.0-only.
+Programs that include it are subject to GPL-3.0. See `META-INF/NOTICE` in the jar and
+[THIRD_PARTY_NOTICES.md](https://github.com/Decentral-America/DecentralChain/blob/main/THIRD_PARTY_NOTICES.md).

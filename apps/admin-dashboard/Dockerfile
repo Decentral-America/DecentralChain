@@ -64,7 +64,10 @@ RUN pnpm --filter admin-dashboard --prod deploy --legacy /prod/admin-dashboard \
 # ── Stage 2: Runtime ─────────────────────────────────────────────────────────
 FROM base AS runtime
 
-RUN apk upgrade --no-cache libcrypto3 libssl3
+# Cache-bust: the registry build cache would otherwise replay an old OS-package upgrade.
+# CI passes a value that changes every run, so this layer (and the cheap ones after it) is rebuilt.
+ARG OS_PKG_EPOCH=unset
+RUN echo "OS package epoch: ${OS_PKG_EPOCH}" && apk upgrade --no-cache libcrypto3 libssl3
 
 # npm is only needed in the build stage (it's inherited from `base`, which patches
 # its bundled sigstore CVE) -- runtime uses pnpm's deployed node_modules directly

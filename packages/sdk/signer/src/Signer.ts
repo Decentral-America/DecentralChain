@@ -10,6 +10,7 @@ import {
 } from '@decentralchain/types';
 import { DEFAULT_OPTIONS } from './constants.js';
 import {
+  applyMethodDecorators,
   catchProviderError,
   checkAuthAsync,
   ensureProvider,
@@ -140,7 +141,6 @@ export class Signer {
   // Event handling
   // ---------------------------------------------------------------------------
 
-  @ensureProvider
   public on<EVENT extends keyof AuthEvents>(
     event: EVENT,
     handler: Handler<AuthEvents[EVENT]>,
@@ -150,7 +150,6 @@ export class Signer {
     return this;
   }
 
-  @ensureProvider
   public once<EVENT extends keyof AuthEvents>(
     event: EVENT,
     handler: Handler<AuthEvents[EVENT]>,
@@ -160,7 +159,6 @@ export class Signer {
     return this;
   }
 
-  @ensureProvider
   public off<EVENT extends keyof AuthEvents>(
     event: EVENT,
     handler: Handler<AuthEvents[EVENT]>,
@@ -267,8 +265,6 @@ export class Signer {
    * await signer.getBalance();
    * ```
    */
-  @ensureProviderAsync
-  @checkAuthAsync
   public getBalance(): Promise<Array<Balance>> {
     const userData = this._userData;
     if (!userData) return Promise.reject(new Error('User not authenticated'));
@@ -320,7 +316,6 @@ export class Signer {
    * await signer.login();
    * ```
    */
-  @ensureProviderAsync
   public login(): Promise<UserData> {
     const provider = this.currentProvider;
     if (!provider) throw new Error('Provider not set');
@@ -342,7 +337,6 @@ export class Signer {
   }
 
   /** Log out the current user. */
-  @ensureProviderAsync
   public async logout(): Promise<void> {
     await this._connectPromise;
 
@@ -362,19 +356,16 @@ export class Signer {
   // ---------------------------------------------------------------------------
 
   /** Sign a message (the provider may add a prefix). */
-  @ensureProviderAsync
   public signMessage(message: string | number): Promise<string> {
     return this._connectPromise.then((provider) => provider.signMessage(message));
   }
 
   /** Sign an exchange order. */
-  @ensureProviderAsync
   public signOrder(order: TOrderArgs): Promise<TSignedOrder> {
     return this._connectPromise.then((provider) => provider.signOrder(order));
   }
 
   /** Sign typed data. */
-  @ensureProviderAsync
   public signTypedData(data: Array<TypedData>): Promise<string> {
     return this._connectPromise.then((provider) => provider.signTypedData(data));
   }
@@ -706,7 +697,6 @@ export class Signer {
 
   private _sign<T extends SignerTx>(toSign: T): Promise<SignedTx<T>>;
   private _sign<T extends SignerTx>(toSign: T[]): Promise<[SignedTx<T>]>;
-  @catchProviderError
   private _sign<T extends SignerTx>(toSign: T[]): Promise<SignedTx<T>[]> {
     const validation = this._validate(toSign);
 
@@ -765,3 +755,15 @@ export class Signer {
     ) as unknown as Promise<BroadcastedTx<SignedTx<T>>>;
   }
 }
+
+// Same guards the methods carried as @decorators (see applyMethodDecorators).
+applyMethodDecorators(Signer, 'on', ensureProvider);
+applyMethodDecorators(Signer, 'once', ensureProvider);
+applyMethodDecorators(Signer, 'off', ensureProvider);
+applyMethodDecorators(Signer, 'getBalance', ensureProviderAsync, checkAuthAsync);
+applyMethodDecorators(Signer, 'login', ensureProviderAsync);
+applyMethodDecorators(Signer, 'logout', ensureProviderAsync);
+applyMethodDecorators(Signer, 'signMessage', ensureProviderAsync);
+applyMethodDecorators(Signer, 'signOrder', ensureProviderAsync);
+applyMethodDecorators(Signer, 'signTypedData', ensureProviderAsync);
+applyMethodDecorators(Signer, '_sign', catchProviderError);

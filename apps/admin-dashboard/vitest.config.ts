@@ -13,10 +13,10 @@ export default mergeConfig(baseConfig, {
       // lib/ and the server routes that carry auth and treasury logic.
       include: ['src/lib/**/*.ts', 'src/routes/**/*.ts'],
       thresholds: {
-        branches: 0,
-        functions: 0,
-        lines: 0,
-        statements: 0,
+        branches: 20,
+        functions: 22,
+        lines: 24,
+        statements: 23,
       },
     },
   },

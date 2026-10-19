@@ -2,7 +2,7 @@
  * Swap — the DCC AMM.
  *
  * Six views over one protocol. Trading and liquidity read the contracts
- * directly through `@dcc-amm/sdk`; Pools and Explore also read the indexer,
+ * directly through `@decentralchain/amm`; Pools and Explore also read the indexer,
  * because volume, fees and swap counts are history and a chain cannot be
  * asked for history.
  *

@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
+import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
 
 const EXCHANGE = process.env.LIVE_EXCHANGE_URL ?? 'https://testnet.decentral.exchange';
@@ -152,5 +153,22 @@ test.describe('admin dashboard', () => {
     expect(response?.status()).toBe(200);
     await expect(page.getByRole('heading', { name: 'DCC Node Dashboard' })).toBeVisible();
     expect(problems).toEqual([]);
+  });
+});
+
+test.describe('scanner accessibility (WCAG 2 A/AA)', () => {
+  for (const route of ['/', '/blocks', '/address?addr=31daBZ6v4E4RcwkrSVetg1UiCamFegQgbBh']) {
+    test(`${route} has no axe violations`, async ({ page }) => {
+      await page.goto(`${SCANNER}${route}`, { waitUntil: 'networkidle' });
+      const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
+      expect(results.violations.map((v) => `${v.id} x${v.nodes.length}`)).toEqual([]);
+    });
+  }
+
+  test('routes have distinct titles', async ({ page }) => {
+    await page.goto(`${SCANNER}/blocks`);
+    const blocks = await page.title();
+    await page.goto(`${SCANNER}/network`);
+    expect(await page.title()).not.toBe(blocks);
   });
 });

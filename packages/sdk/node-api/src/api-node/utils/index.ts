@@ -5,11 +5,17 @@ import stringify from '../../tools/stringify';
 
 /**
  * GET /utils/seed
- * Generate random seed
+ * Generate random seed. Requires the node API key: pass it as
+ * `{ headers: { 'X-API-Key': key } }` in `options`.
  */
-export function fetchSeed(base: string, length?: number): Promise<{ seed: string }> {
+export function fetchSeed(
+  base: string,
+  length?: number,
+  options: RequestInit = {},
+): Promise<{ seed: string }> {
   return request({
     base,
+    options,
     url: `/utils/seed${length ? `/${length}` : ''}`,
   });
 }

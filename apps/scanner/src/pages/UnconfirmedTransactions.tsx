@@ -19,11 +19,14 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { fetchUnconfirmedTransactions } from '@/lib/api';
+import { pageMeta } from '@/lib/page-meta';
 import { txTypeName } from '@/lib/transactionTypes';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import CopyButton from '../components/shared/CopyButton';
 import { formatAmount, truncate } from '../components/utils/formatters';
+
+export const meta = () => pageMeta('Unconfirmed Transactions');
 
 export default function UnconfirmedTransactions() {
   const navigate = useNavigate();

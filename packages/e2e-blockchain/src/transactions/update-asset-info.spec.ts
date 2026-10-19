@@ -75,7 +75,7 @@ describe('UpdateAssetInfo (type 17)', () => {
 
   // ── update name ───────────────────────────────────────────────────────────
 
-  it('updates token name (skips if cooldown not met)', async () => {
+  it('updates token name (skips if cooldown not met)', async (ctx) => {
     const assetId = await issueToken(issuer.seed, uniqueName('ORI'), 'Original description');
     const newName = uniqueName('UPD');
 
@@ -88,8 +88,7 @@ describe('UpdateAssetInfo (type 17)', () => {
       await broadcast(tx, API_BASE);
     } catch (e) {
       if (isCooldownError(e)) {
-        console.warn(`UpdateAssetInfo cooldown active — ${e}`);
-        return; // skip this assertion; test is structural pass
+        ctx.skip(`UpdateAssetInfo cooldown active on this network: ${String(e)}`);
       }
       throw e;
     }
@@ -101,7 +100,7 @@ describe('UpdateAssetInfo (type 17)', () => {
 
   // ── update description ────────────────────────────────────────────────────
 
-  it('updates token description (skips if cooldown not met)', async () => {
+  it('updates token description (skips if cooldown not met)', async (ctx) => {
     const assetId = await issueToken(issuer.seed, uniqueName('DSC'), 'Old description');
     const newDesc = `Updated at ${Date.now()}`;
 
@@ -114,8 +113,7 @@ describe('UpdateAssetInfo (type 17)', () => {
       await broadcast(tx, API_BASE);
     } catch (e) {
       if (isCooldownError(e)) {
-        console.warn(`Cooldown: ${e}`);
-        return;
+        ctx.skip(`UpdateAssetInfo cooldown active on this network: ${String(e)}`);
       }
       throw e;
     }
@@ -127,7 +125,7 @@ describe('UpdateAssetInfo (type 17)', () => {
 
   // ── update name and description ───────────────────────────────────────────
 
-  it('updates name and description in one TX (skips if cooldown not met)', async () => {
+  it('updates name and description in one TX (skips if cooldown not met)', async (ctx) => {
     const assetId = await issueToken(issuer.seed, uniqueName('BOT'), 'Both to be updated');
     const newName = uniqueName('NBT');
     const newDesc = 'Updated name and description in one TX';
@@ -141,8 +139,7 @@ describe('UpdateAssetInfo (type 17)', () => {
       await broadcast(tx, API_BASE);
     } catch (e) {
       if (isCooldownError(e)) {
-        console.warn(`Cooldown: ${e}`);
-        return;
+        ctx.skip(`UpdateAssetInfo cooldown active on this network: ${String(e)}`);
       }
       throw e;
     }

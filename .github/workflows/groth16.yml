@@ -171,7 +171,11 @@ jobs:
         working-directory: packages/jvm/groth16
         run: |
           # Ignored advisories are documented with risk assessment in deny.toml.
-          # RUSTSEC-2023-0071: rsa Marvin timing — rsa not in production dep tree
+          # RUSTSEC-2023-0071: rsa Marvin timing side channel. rsa IS compiled into the native
+          #   library (rsa > fastcrypto > fastcrypto-zkp > groth16_fastcrypto > groth16_jni), but
+          #   groth16 verification never performs RSA decryption, the only affected operation.
+          #   fastcrypto-zkp 0.1.4 also links reqwest (a non-optional dependency, so it cannot be
+          #   feature-disabled); the verify path makes no network calls.
           # RUSTSEC-2025-0055: new advisory on transitive dep with no fix available yet
           # RUSTSEC-2025-0141: bincode unmaintained — transitive via fastcrypto-zkp
           # RUSTSEC-2024-0388: derivative unmaintained — proc-macro, no runtime exposure

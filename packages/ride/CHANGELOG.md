@@ -2,6 +2,17 @@
 
 All notable changes to `packages/ride` are documented here.
 
+## [1.6.3] — unreleased
+
+### Fixed
+- `+`, `-` and `*` overflow always report `long overflow` (node-scala c80c4d1c39); the text
+  previously depended on the JVM's JIT state.
+- Estimator V1 handles every evaluated constant and failed declarations/expressions instead of
+  throwing `NotImplementedError` (node-scala 86ea1c5af2).
+
+### Changed
+- Depends on curve25519 1.0.1.
+
 ## [Unreleased] — Round 9 enterprise audit
 
 ### Changed

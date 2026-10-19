@@ -42,3 +42,28 @@ describe('ethereumSign', () => {
     expect(recoveredUncompressed).toEqual(ethPublicKey);
   });
 });
+
+describe('ethereumSign — EIP-155 known-answer vector (https://eips.ethereum.org/EIPS/eip-155)', () => {
+  // EIP-155 example: nonce 9, gasPrice 20 gwei, gas 21000, to 0x3535…35, value 1 ether,
+  // empty data, chainId 1, signed with private key 0x4646…46.
+  const privateKey = new Uint8Array(32).fill(0x46);
+  const signingPayload = Uint8Array.from(
+    Buffer.from(
+      'ec098504a817c800825208943535353535353535353535353535353535353535880de0b6b3a764000080018080',
+      'hex',
+    ),
+  );
+
+  it('hashes the payload to the signing hash published in the EIP', () => {
+    expect(Buffer.from(keccak(signingPayload)).toString('hex')).toBe(
+      'daf5a779ae972f972197303d7b574746c7ef83eadac0f2791ad23db92e4c8e53',
+    );
+  });
+
+  it('produces the r, s and v published in the EIP', () => {
+    const { r, s, recovery } = ethereumSign(privateKey, signingPayload);
+    expect(r).toBe(18515461264373351373200002665853028612451056578545711640558177340181847433846n);
+    expect(s).toBe(46948507304638947509940763649030358759909902576025900602547168820602576006531n);
+    expect(1n * 2n + 35n + BigInt(recovery)).toBe(37n); // v = chainId * 2 + 35 + recovery
+  });
+});

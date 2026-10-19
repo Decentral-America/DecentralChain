@@ -28,6 +28,7 @@
   "files": [
     "dist",
     "LICENSE",
+    "NOTICE",
     "README.md"
   ],
   "funding": {
@@ -46,7 +47,7 @@
     "asset-pair",
     "candle"
   ],
-  "license": "MIT",
+  "license": "Apache-2.0",
   "module": "./dist/index.mjs",
   "name": "@decentralchain/data-entities",
   "nx": {

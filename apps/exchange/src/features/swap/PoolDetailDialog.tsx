@@ -6,7 +6,7 @@
  * window, the label says which window — "24h volume", not "volume" — because
  * an unqualified number here would be read as all-time.
  */
-import { fromRawAmount } from '@dcc-amm/sdk';
+import { fromRawAmount } from '@decentralchain/amm';
 import { Close } from '@mui/icons-material';
 import { Box, Dialog, DialogContent, Divider, IconButton, Stack, Typography } from '@mui/material';
 import { TokenIcon } from '@/components/common/TokenIcon';

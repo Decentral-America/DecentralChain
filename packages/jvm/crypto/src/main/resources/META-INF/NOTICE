@@ -1,0 +1,16 @@
+NOTICE: GPL-3.0-only third-party component
+
+This artifact depends on io.decentralchain:curve25519, which is licensed under the
+GNU General Public License, version 3 only (GPL-3.0-only). curve25519 is a fork of
+WhisperSystems curve25519-java (https://github.com/signalapp/curve25519-java).
+
+This artifact's own code is licensed as stated in its LICENSE file. A program that
+includes curve25519 (for example a DecentralChain node or matcher binary, Docker image
+or Debian package) is a combined work subject to GPL-3.0, including the obligation to
+provide the corresponding source code to recipients.
+
+Source of io.decentralchain:curve25519:
+https://github.com/Decentral-America/DecentralChain/tree/main/packages/jvm/curve25519
+
+All third-party notices: THIRD_PARTY_NOTICES.md in
+https://github.com/Decentral-America/DecentralChain

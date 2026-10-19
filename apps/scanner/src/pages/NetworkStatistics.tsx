@@ -26,7 +26,10 @@ import {
   type INodeStatus,
   type INodeVersion,
 } from '@/lib/api';
+import { pageMeta } from '@/lib/page-meta';
 import { useLanguage } from '../components/contexts/LanguageContext';
+
+export const meta = () => pageMeta('Network Statistics');
 
 export default function NetworkStatistics() {
   const { t } = useLanguage();

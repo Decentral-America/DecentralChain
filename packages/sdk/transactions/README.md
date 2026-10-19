@@ -53,7 +53,7 @@ const tx = transfer(
   seed,
 );
 
-const result = await broadcast(tx, 'https://nodes.decentralchain.io');
+const result = await broadcast(tx, 'https://mainnet-node.decentralchain.io');
 ```
 
 ## Transaction Types
@@ -88,7 +88,7 @@ const signedTx = transfer(
   seed,
 );
 
-await broadcast(signedTx, 'https://nodes.decentralchain.io');
+await broadcast(signedTx, 'https://mainnet-node.decentralchain.io');
 ```
 
 ### Issue Token
@@ -110,7 +110,7 @@ const signedTx = issue(
   seed,
 );
 
-await broadcast(signedTx, 'https://nodes.decentralchain.io');
+await broadcast(signedTx, 'https://mainnet-node.decentralchain.io');
 ```
 
 ### Data Transaction
@@ -132,7 +132,7 @@ const signedTx = data(
   seed,
 );
 
-await broadcast(signedTx, 'https://nodes.decentralchain.io');
+await broadcast(signedTx, 'https://mainnet-node.decentralchain.io');
 ```
 
 ## Node Interaction
@@ -140,7 +140,7 @@ await broadcast(signedTx, 'https://nodes.decentralchain.io');
 ```typescript
 import { nodeInteraction } from '@decentralchain/transactions';
 
-const nodeUrl = 'https://nodes.decentralchain.io';
+const nodeUrl = 'https://mainnet-node.decentralchain.io';
 
 // Get account balance
 const balance = await nodeInteraction.balance('3L...address', nodeUrl);

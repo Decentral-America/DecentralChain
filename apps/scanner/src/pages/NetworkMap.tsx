@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { extractIp, usePeerGeo } from '@/hooks/usePeerGeo';
 import { fetchAllPeers, fetchConnectedPeers } from '@/lib/api';
+import { pageMeta } from '@/lib/page-meta';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import { type GeolocatedPeer } from './NetworkMapContent';
 
@@ -17,6 +18,8 @@ const NetworkMapContent = lazy(() =>
     ? import('./NetworkMapContent')
     : Promise.resolve({ default: () => null as unknown as React.ReactElement }),
 );
+
+export const meta = () => pageMeta('Network Map');
 
 export default function NetworkMap() {
   const { t } = useLanguage();

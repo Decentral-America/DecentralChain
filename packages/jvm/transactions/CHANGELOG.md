@@ -7,6 +7,18 @@ Versioning: [DecentralChain version conventions](https://github.com/Decentral-Am
 
 ---
 
+## [1.1.0] — unreleased
+
+### Changed
+- `ChainId.MAINNET`/`TESTNET`/`STAGENET` are now the DecentralChain values `'?'`, `'!'`, `'S'`
+  (were the Waves values `'W'`, `'T'`, `'S'`), and `DccConfig`'s default chain id is DecentralChain
+  mainnet (`DccConfig.DEFAULT_CHAIN_ID`). Code that never set a chain id built Waves-mainnet
+  transactions that DecentralChain nodes reject.
+- Dependency set aligned with the source tree (crypto 2.0.8 with BouncyCastle 1.86,
+  protobuf-schemas 1.6.6, web3j 6.0.0, vert.x 5.2.0, Jackson 2.22.3); 1.0.0 on Maven Central was
+  built from an older tree.
+- Sources moved to `io/decentralchain/...` to match their package names.
+
 ## [1.0.0] — 2026-05-17
 
 Initial DCC release — fork of [Decentral-America/transactions-java](https://github.com/Decentral-America/transactions-java)

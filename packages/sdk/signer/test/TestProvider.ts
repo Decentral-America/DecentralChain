@@ -17,7 +17,7 @@ import { NETWORK_BYTE } from './test-env';
 export class TestProvider implements Provider {
   private options: ConnectOptions = {
     NETWORK_BYTE,
-    NODE_URL: 'https://nodes.decentralchain.io',
+    NODE_URL: 'https://mainnet-node.decentralchain.io',
   };
 
   private readonly seed: string;

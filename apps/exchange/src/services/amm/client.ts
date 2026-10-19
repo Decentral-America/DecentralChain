@@ -5,7 +5,7 @@
  * quoting or swapping. The indexer exists for volume and history, which this
  * page does not need.
  */
-import { AmmSdk } from '@dcc-amm/sdk';
+import { AmmSdk } from '@decentralchain/amm';
 import { AMM_CHAIN_ID, AMM_NODE_URL, AMM_POOL_CORE, AMM_SWAP_ROUTER } from '@/config/amm';
 
 let instance: AmmSdk | null = null;

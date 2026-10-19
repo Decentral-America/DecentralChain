@@ -53,12 +53,19 @@ object PureContext {
       catch { case _: ArithmeticException => throw new ArithmeticException("/ by zero") }
     }
 
+  // Same JVM fast-throw optimization as above: once hot, the *Exact intrinsics can throw a
+  // preallocated ArithmeticException with a null message, so the RIDE error text would flip from
+  // "long overflow" to "java.lang.ArithmeticException" depending on a node's JIT state.
+  private def longOverflow[A](op: => A): A =
+    try op
+    catch { case _: ArithmeticException => throw new ArithmeticException("long overflow") }
+
   lazy val mulLong: BaseFunction[NoContext] =
-    createTryOp(MUL_OP, LONG, LONG, MUL_LONG)((a, b) => Math.multiplyExact(a, b))
+    createTryOp(MUL_OP, LONG, LONG, MUL_LONG)((a, b) => longOverflow(Math.multiplyExact(a, b)))
   lazy val sumLong: BaseFunction[NoContext] =
-    createTryOp(SUM_OP, LONG, LONG, SUM_LONG)((a, b) => Math.addExact(a, b))
+    createTryOp(SUM_OP, LONG, LONG, SUM_LONG)((a, b) => longOverflow(Math.addExact(a, b)))
   lazy val subLong: BaseFunction[NoContext] =
-    createTryOp(SUB_OP, LONG, LONG, SUB_LONG)((a, b) => Math.subtractExact(a, b))
+    createTryOp(SUB_OP, LONG, LONG, SUB_LONG)((a, b) => longOverflow(Math.subtractExact(a, b)))
 
   lazy val sumString: BaseFunction[NoContext] =
     createRawOp(

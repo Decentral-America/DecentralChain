@@ -98,7 +98,9 @@ jobs:
               ;;
           esac
 
-          # crypto depends on curve25519 + blst — install from source until they're on Central
+          # crypto declares curve25519 + blst at versions that may not be on Central yet
+          # (e.g. crypto 2.0.8 → curve25519 1.0.1 before both are released): install them
+          # from this checkout so the crypto build resolves them.
           if [ "$PACKAGE" = "crypto" ]; then
             INSTALL_PREREQS=$'packages/jvm/curve25519\npackages/jvm/blst'
           else

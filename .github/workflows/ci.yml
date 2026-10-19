@@ -104,6 +104,10 @@ jobs:
       - name: Check module boundaries
         run: node scripts/check-boundaries.mjs
 
+      - name: Check protobuf-schemas manifest versions
+        # npm, Maven, Cargo and NuGet manifests must carry one schema version (AUD-172).
+        run: node scripts/sync-proto-versions.mjs --check
+
       # ── node-api path-existence check (Tier 5 contract conformance) ────────────────
       # check-node-api-paths.mjs reads node-scala's OpenAPI spec from _node-scala (a
       # workspace-relative subdirectory of this checkout) — check it out into that location.
@@ -138,6 +142,11 @@ jobs:
           # the public endpoint that .env.testnet/.env.staging use. deploy-exchange.yml
           # still supplies the real, domain-restricted key for builds that reach users.
           VITE_SOLANA_RPC_URL: https://api.mainnet-beta.solana.com
+
+      - name: Verify built SDK packages import in Node (affected)
+        # Catches build output Node cannot execute (e.g. un-lowered decorators) before
+        # it reaches npm. Packages not rebuilt in this run have no dist/ and are skipped.
+        run: node scripts/check-dist-imports.mjs
 
       - name: Verify exchange security headers in the built output (affected)
         # Checks dist/_headers -- the file Cloudflare Pages actually serves -- not a source copy.
@@ -185,7 +194,9 @@ jobs:
         run: pnpm exec biome format --reporter=github .
 
       - name: License scan
-        run: pnpm licenses list --prod 2>&1 | tee /tmp/licenses.txt && echo "License scan complete ($(wc -l < /tmp/licenses.txt) entries)"
+        # Gating (AUD-166): production npm dependencies of every workspace project, our own
+        # package licences and LICENSE files, and pom.xml-vs-LICENSE for the JVM packages.
+        run: node scripts/check-licenses.mjs
 
       - name: Self-healing CI
         # Report task failures to Nx Cloud and surface fix suggestions.

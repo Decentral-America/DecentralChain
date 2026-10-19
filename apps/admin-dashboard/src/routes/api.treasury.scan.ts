@@ -1,16 +1,9 @@
 import { type LoaderFunctionArgs } from 'react-router';
 import { fetchBalanceDetails } from '@/lib/api';
-import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
 import { isAllowedNodeUrl } from '@/lib/nodeUrlAllowlist';
+import { requireTreasuryUser } from '@/lib/treasuryAccess';
 import { getAllWallets } from '@/lib/treasuryWallets';
-
-async function getUser(request: Request): Promise<string | null> {
-  const token = getTokenFromRequest(request);
-  if (!token) return null;
-  const payload = await verifyToken(token);
-  return payload?.username ?? null;
-}
 
 const SCAN_BATCH_SIZE = 50;
 const DUST_THRESHOLD_WAVELETS = 1_000;
@@ -27,8 +20,9 @@ const DUST_THRESHOLD_WAVELETS = 1_000;
 //   data: { type: 'error', message }
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const user = await getUser(request);
-  if (!user) return new Response('Unauthorized', { status: 401 });
+  const access = await requireTreasuryUser(request);
+  if (!access.ok) return access.response;
+  const user = access.user;
 
   const requested = new URL(request.url).searchParams.get('nodeUrl');
   if (requested !== null && !isAllowedNodeUrl(requested)) {

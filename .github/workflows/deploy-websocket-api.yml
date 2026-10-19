@@ -124,6 +124,8 @@ jobs:
         with:
           context: apps/websocket-api
           push: true
+          # Always re-resolve the base image tags; never reuse a stale local copy.
+          pull: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache
@@ -162,7 +164,7 @@ jobs:
   call-deploy:
     name: Deploy (${{ needs.resolve.outputs.network }})
     needs: [resolve]
-    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@4bc2daef19d93fc97b0fd69a93e55a1a00a9e56b # main
+    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@996c5fc332a05ad8b551c9c0317369df9899cd7d # main
     with:
       network: ${{ needs.resolve.outputs.network }}
       image:   ghcr.io/decentral-america/websocket-api:${{ github.sha }}

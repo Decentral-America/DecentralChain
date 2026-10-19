@@ -2,6 +2,7 @@ import { Activity, ArrowRight, BarChart3, Box, Coins, Globe, Search } from 'luci
 import { Link } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { pageMeta } from '@/lib/page-meta';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import SearchBar from '../components/shared/SearchBar';
@@ -44,6 +45,8 @@ const features = [
     title: 'Distribution Tool',
   },
 ];
+
+export const meta = () => pageMeta('Home');
 
 export default function Home() {
   const { t } = useLanguage();

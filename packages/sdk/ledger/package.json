@@ -28,6 +28,7 @@
   "files": [
     "dist",
     "LICENSE",
+    "NOTICE",
     "README.md"
   ],
   "funding": {
@@ -45,7 +46,7 @@
     "nano-x",
     "webusb"
   ],
-  "license": "MIT",
+  "license": "Apache-2.0",
   "module": "./dist/index.mjs",
   "name": "@decentralchain/ledger",
   "nx": {

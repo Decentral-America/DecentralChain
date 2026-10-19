@@ -53,3 +53,31 @@ describe('formatAmount', () => {
     expect(formatAmount(100000000n, 8, 4)).toBe('1');
   });
 });
+
+describe('amount edge cases (AUD-168)', () => {
+  it('accepts numbers JavaScript prints in exponent notation', () => {
+    expect(toRawAmount(1e-7, 8)).toBe(10n);
+    expect(toRawAmount(1.5e-7, 8)).toBe(15n);
+    expect(toRawAmount(1e-9, 8)).toBe(0n);
+    expect(toRawAmount(1e21, 0)).toBe(1_000_000_000_000_000_000_000n);
+    expect(toRawAmount('2.5e-3', 8)).toBe(250_000n);
+  });
+
+  it('rejects non-finite numbers', () => {
+    expect(() => toRawAmount(Number.NaN, 8)).toThrow(RangeError);
+    expect(() => toRawAmount(Number.POSITIVE_INFINITY, 8)).toThrow(RangeError);
+  });
+
+  it('keeps the minus sign in front for negative raw amounts', () => {
+    expect(fromRawAmount(-5n, 8)).toBe('-0.00000005');
+    expect(fromRawAmount(-150_000_000n, 8)).toBe('-1.5');
+    expect(fromRawAmount(-100_000_000n, 8)).toBe('-1');
+  });
+
+  it('trims trailing zeros in linear time on long inputs', () => {
+    const raw = 10n ** 50_000n; // "1" followed by 50,000 zeros
+    const started = performance.now();
+    expect(fromRawAmount(raw, 50_000)).toBe('1');
+    expect(performance.now() - started).toBeLessThan(250);
+  });
+});

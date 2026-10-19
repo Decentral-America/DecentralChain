@@ -33,7 +33,8 @@ const LANGUAGES = [
 
 // Source and destination paths
 const SOURCE_DIR = path.join(__dirname, '../../locale');
-const DEST_DIR = path.join(__dirname, '../src/i18n/locales');
+// Single locale tree: the files i18next-http-backend serves at runtime.
+const DEST_DIR = path.join(__dirname, '../public/locales');
 
 /**
  * Merge all JSON files from a language directory

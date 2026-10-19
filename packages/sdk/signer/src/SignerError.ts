@@ -1,5 +1,5 @@
 const REPOSITORY_URL =
-  'https://github.com/Decentral-America/DecentralChain/tree/main/packages/signer';
+  'https://github.com/Decentral-America/DecentralChain/tree/main/packages/sdk/signer';
 
 export const ERRORS = {
   API_ARGUMENTS: 1007 as const,

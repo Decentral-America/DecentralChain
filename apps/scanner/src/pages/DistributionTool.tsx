@@ -33,6 +33,7 @@ import {
   fetchHeight,
   type TAssetDetails,
 } from '@/lib/api';
+import { pageMeta } from '@/lib/page-meta';
 import { type SortConfig as BaseSortConfig } from '@/types';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
@@ -76,6 +77,8 @@ type ProcessedDistributionData = {
     gini: number;
   };
 };
+
+export const meta = () => pageMeta('Distribution Tool');
 
 export default function DistributionTool() {
   const { t } = useLanguage();

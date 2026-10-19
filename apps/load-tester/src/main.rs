@@ -169,13 +169,18 @@ mod tests {
             "Address mismatch — crypto derivation doesn't match pywaves");
     }
 
+    /// Known-answer vector for Base58(Keccak256(Blake2b256(key))), the node's
+    /// `api-key-hash` scheme: the public default key "ridethewaves!" hashes to
+    /// H6nsiifwYKYEx6YzYD7woP1XCn72RVvx6tC1zjjLXqsu. No deployment key in tests.
     #[test]
-    fn test_api_key_hash_matches_node_config() {
-        let key = "***REDACTED_MAIN_API_KEY***=";
-        let hash = crypto::api_key_hash(key);
-        assert_eq!(hash, "5gZJk3xTibMQ65CvKeBzoHR4pY5h7EYmAc87ZZcLW7ps",
-            "API key hash mismatch — check keccak256(blake2b256(key)) implementation");
+    fn test_api_key_hash_known_vector() {
+        assert_eq!(
+            crypto::api_key_hash("ridethewaves!"),
+            "H6nsiifwYKYEx6YzYD7woP1XCn72RVvx6tC1zjjLXqsu",
+            "API key hash mismatch — check keccak256(blake2b256(key)) implementation"
+        );
     }
+
     #[test]
     fn test_proto_sign_bytes_match_pywaves() {
         let txs = tx::presign_batch(

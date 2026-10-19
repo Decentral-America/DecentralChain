@@ -26,6 +26,7 @@ import {
   type ISuspendedPeer,
 } from '@/lib/api';
 import { logError } from '@/lib/error-logger';
+import { pageMeta } from '@/lib/page-meta';
 import { type NodeRegistrationRecord, type Peer } from '@/types';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import { fromUnix } from '../components/utils/formatters';
@@ -54,6 +55,8 @@ const extractPeers = (data: PeerApiShape): Peer[] => {
   }
   return ((data as IAllConnectedResponse | IAllResponse).peers as Peer[]) || [];
 };
+
+export const meta = () => pageMeta('Peers');
 
 export default function Peers() {
   const { t } = useLanguage();
