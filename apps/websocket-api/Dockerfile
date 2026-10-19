@@ -30,7 +30,7 @@ RUN cargo build --release --locked --bin service --bin healthcheck
 # async/await machinery in tokio). cc is the correct variant for Rust binaries.
 # :nonroot runs as uid 65532 — no useradd step required.
 # renovate: image=gcr.io/distroless/cc-debian13 tag=nonroot
-FROM gcr.io/distroless/cc-debian13:nonroot@sha256:54df941ed0d06a1bd95ef5e0ce391fd8d9f94b64782dc9a60062727849ee3f97
+FROM gcr.io/distroless/cc-debian13:nonroot@sha256:e792ab3d241a468a4fd7519ddbbebe66b49b5f365771716ea688ad40b6c6f1c2
 
 WORKDIR /app
 COPY --from=builder /usr/src/service/target/release/service .
