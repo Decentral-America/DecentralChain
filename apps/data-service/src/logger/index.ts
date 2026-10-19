@@ -1,7 +1,7 @@
 import type pino from 'pino';
 import { compose, omit } from 'ramda';
+import createLogger from './pino';
 import { stringifyMetaInProd } from './utils';
-import createLogger from './winston';
 
 const getLevelOrDefault =
   (def: string) =>

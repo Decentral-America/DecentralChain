@@ -4,7 +4,7 @@ A high-performance blockchain-to-PostgreSQL sync daemon for the **DecentralChain
 
 Subscribes to a node's gRPC Blockchain Updates API, processes block and microblock events in real time, and persists structured data (assets, transactions, candles) into PostgreSQL for use by data services, explorers, and analytics.
 
-**Current testnet image:** `fbece975a` — type-19 (CommitToGeneration) enabled, gRPC dedup+upsert fix applied, Loader.scala re-seek bug fixed. Deployed and healthy.
+**Deployed image:** whatever `deploy-bps.yml` last deployed; check it on the host with `docker inspect -f '{{.Config.Image}}' blockchain-postgres-sync-testnet`.
 
 [![CI](https://github.com/Decentral-America/DecentralChain/actions/workflows/bps.yml/badge.svg)](https://github.com/Decentral-America/DecentralChain/actions/workflows/bps.yml)
 
@@ -48,8 +48,8 @@ All standard Waves-protocol transaction types (1–18) plus the DCC-original:
 
 | Type | Name | Table | Notes |
 |------|------|-------|-------|
-| 1–18 | Standard Waves-protocol types | `txs_1` – `txs_18` | Full coverage |
-| **19** | **CommitToGeneration** | **`txs_19`** | DCC-original — T2 HotStuff generator commitment; migration `2026-06-28-000000_add_txs_19_commit_to_generation` |
+| 1–18 | Standard Waves-protocol types | `txs_1` – `txs_18` | Children of `txs`; type 18 also stores Ethereum-transfer recipient/amount/asset |
+| **19** | **CommitToGeneration** | **`txs_19`** | DCC-original — T2 HotStuff generator commitment; migration `2026-06-28-000000_add_txs_19_commit_to_generation`. Child of `txs` since migration `2026-10-19-000001_txs_19_inherit_txs` (rows used to be lost on microblock squash). |
 
 ---
 
@@ -81,7 +81,7 @@ Bare names like `HOST` or `CHAIN_ID` are **not** recognized at runtime.
 |---|---|
 | `BPS_BLOCKCHAIN_UPDATES_URL` | gRPC endpoint of the DCC node, e.g. `http://node:6881` |
 | `BPS_CHAIN_ID` | Network byte (`63` = Mainnet, `33` = Testnet, `83` = Stagenet) |
-| `BPS_STARTING_HEIGHT` | Block height to begin sync from (use `0` for genesis) |
+| `BPS_STARTING_HEIGHT` | Block height to begin sync from (use `1` for genesis; the node rejects 0) |
 | `POSTGRES__HOST` | PostgreSQL host |
 | `POSTGRES__DATABASE` | PostgreSQL database name |
 | `POSTGRES__USER` | PostgreSQL username |
@@ -118,7 +118,7 @@ docker build -t blockchain-postgres-sync .
 docker run --rm \
   -e BPS_BLOCKCHAIN_UPDATES_URL=http://node:6881 \
   -e BPS_CHAIN_ID=63 \
-  -e BPS_STARTING_HEIGHT=0 \
+  -e BPS_STARTING_HEIGHT=1 \
   -e POSTGRES__HOST=postgres \
   -e POSTGRES__DATABASE=blockchain \
   -e POSTGRES__USER=postgres \
@@ -129,7 +129,7 @@ docker run --rm \
 docker run --rm \
   -e BPS_BLOCKCHAIN_UPDATES_URL=http://node:6881 \
   -e BPS_CHAIN_ID=33 \
-  -e BPS_STARTING_HEIGHT=0 \
+  -e BPS_STARTING_HEIGHT=1 \
   -e POSTGRES__HOST=postgres \
   -e POSTGRES__DATABASE=bps_testnet \
   -e POSTGRES__USER=postgres \
@@ -163,7 +163,7 @@ services:
     environment:
       BPS_BLOCKCHAIN_UPDATES_URL: http://node:6881
       BPS_CHAIN_ID: 63
-      BPS_STARTING_HEIGHT: 0
+      BPS_STARTING_HEIGHT: 1
       POSTGRES__HOST: postgres
       POSTGRES__DATABASE: blockchain
       POSTGRES__USER: postgres
@@ -228,10 +228,30 @@ cargo deny check
 6. `cargo deny check` — dependency policy / license / advisory check
 7. `cargo machete` — unused dependency check
 
-Docker image build and deploy live in the separate `deploy-bps.yml` workflow, not in CI.
+Docker image build and deploy live in the separate `deploy-bps.yml` workflow, not in CI. It deploys only commits that are on `main`.
 
 ---
 
 ## License
 
 Apache 2.0 — see [LICENSE](../../LICENSE).
+
+## Startup safety
+
+- **Migrations run on start.** The consumer applies pending migrations before it
+  connects to the node; `./migration up` is only needed for manual maintenance.
+- **Chain ancestry check.** Before streaming, the consumer compares its stored
+  genesis block and last solid block with the node. On a mismatch (re-genesis or
+  fork) it exits with `InconsistentDataError` instead of mixing two chains. Reset
+  the database (`infra/runbooks/reset-bps-testnet.md`) to recover.
+- **Parity check.** `scripts/verify_chain_parity.py --node <REST URL> --db <name>`
+  compares every block id and per-height transaction count with the node.
+- **Credentials are redacted.** The startup configuration log masks passwords in
+  the Postgres, Redis and node URLs.
+
+## Redis publication
+
+For every data-entry change the consumer sets `topic://state/<address>/<key>`,
+publishes the value on the same channel, and records the key in the set
+`topic://state-index/<address>`. websocket-api reads that index to resolve
+multi-topic subscriptions.

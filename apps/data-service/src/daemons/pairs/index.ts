@@ -1,7 +1,7 @@
 import { Effect } from 'effect';
 
 import { createPgDriver } from '../../db';
-import createLogger from '../../logger/winston';
+import createLogger from '../../logger/pino';
 import { installGracefulShutdown } from '../../shutdown';
 import runDaemon, { createDaemonControl } from '../presets/daemon';
 import createDaemon from './create';
