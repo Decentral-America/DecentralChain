@@ -104,6 +104,10 @@ jobs:
       - name: Check module boundaries
         run: node scripts/check-boundaries.mjs
 
+      - name: Check protobuf-schemas manifest versions
+        # npm, Maven, Cargo and NuGet manifests must carry one schema version (AUD-172).
+        run: node scripts/sync-proto-versions.mjs --check
+
       # ── node-api path-existence check (Tier 5 contract conformance) ────────────────
       # check-node-api-paths.mjs reads node-scala's OpenAPI spec from _node-scala (a
       # workspace-relative subdirectory of this checkout) — check it out into that location.
