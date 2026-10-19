@@ -76,12 +76,17 @@ export default function handleRequest(
     // as inline <script> tags — required framework output, not app code. A
     // strict `script-src 'self'` with no nonce/unsafe-inline blocks React
     // Router's own scripts along with everything else, breaking hydration on
-    // every page. The nonce here and in the CSP header below must match.
+    // every page. React's own streaming SSR also emits inline <script>s
+    // (Suspense boundary completion, resumable-state markers), so the same
+    // nonce goes to renderToPipeableStream too. ServerRouter forwards it to
+    // <Scripts>, <ScrollRestoration> and <Links> via the framework context.
+    // The nonce here and in the CSP header below must match.
     const nonce = randomBytes(16).toString('base64');
 
     const { pipe, abort } = renderToPipeableStream(
       <ServerRouter context={routerContext} url={request.url} nonce={nonce} />,
       {
+        nonce,
         [readyEvent]() {
           shellRendered = true;
           const body = new PassThrough();
