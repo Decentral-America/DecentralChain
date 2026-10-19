@@ -39,6 +39,41 @@ env:
   IMAGE_NAME: ghcr.io/decentral-america/data-service
 
 jobs:
+  # ── Gate: deploy only commits that are on main and passed CI ─────────────────
+  gate:
+    name: Gate (commit on main, CI green)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Checkout (full history for the ancestry check)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Require the deployed commit to be on main
+        run: |
+          set -euo pipefail
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::$GITHUB_SHA is not on main. Deploy only commits merged to main."
+            exit 1
+          fi
+
+      - name: Require a green CI run for this commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          green=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow ci.yml --commit "$GITHUB_SHA" \
+            --json conclusion --jq '[.[] | select(.conclusion == "success")] | length')
+          if [[ "$green" -lt 1 ]]; then
+            echo "::error::No successful ci.yml run for $GITHUB_SHA. Wait for CI on main, then deploy."
+            exit 1
+          fi
+
   # ── Build and push Docker image ───────────────────────────────────────────────
   # One image serves all networks — Postgres credentials and matcher config
   # are injected at container start via environment-scoped GitHub Secrets.
@@ -47,6 +82,7 @@ jobs:
   # call-deploy reusable-workflow-call job from being scheduled by GitHub Actions.
   docker:
     name: Build and push
+    needs: [gate]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -148,7 +184,7 @@ jobs:
   call-deploy:
     name: Deploy (${{ needs.resolve.outputs.network }})
     needs: [resolve]
-    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@1bf177abd396a804c9d2cbb8274c7bcb3ffdfd6d # main
+    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@4bc2daef19d93fc97b0fd69a93e55a1a00a9e56b # main
     with:
       network: ${{ needs.resolve.outputs.network }}
       image:   ghcr.io/decentral-america/data-service:${{ github.sha }}

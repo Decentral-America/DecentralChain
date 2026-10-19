@@ -33,8 +33,34 @@ env:
   IMAGE_NAME: ghcr.io/decentral-america/websocket-api
 
 jobs:
+  # ── Gate: deploy only commits that are on main and passed CI ─────────────────
+  gate:
+    name: Gate (commit on main)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      # Rust services: bps.yml is path-filtered, so a green-run lookup can miss;
+      # the docker job below runs `cargo nextest run --all-targets` before building.
+      - name: Checkout (full history for the ancestry check)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Require the deployed commit to be on main
+        run: |
+          set -euo pipefail
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::$GITHUB_SHA is not on main. Deploy only commits merged to main."
+            exit 1
+          fi
+
   docker:
     name: Build and push Docker image
+    needs: [gate]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -131,155 +157,13 @@ jobs:
             echo "network=mainnet" >> "$GITHUB_OUTPUT"
           fi
 
-  # Cross-repo reusable workflow calls fail non-deterministically on GitHub Free
-  # for this org. Inline the deploy logic directly — identical behaviour to
-  # deploy-container.yml: Trivy scan → SCP compose file → SSH deploy with rollback.
-  scan:
-    name: Trivy scan websocket-api
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs: docker
-    permissions:
-      contents: read
-      security-events: write
-
-    steps:
-      - name: Checkout infra repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          repository: Decentral-America/infra
-          persist-credentials: false
-
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Run Trivy vulnerability scan
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        with:
-          image-ref:      'ghcr.io/decentral-america/websocket-api:${{ github.sha }}'
-          format:         'sarif'
-          output:         'trivy-results.sarif'
-          severity:       'HIGH,CRITICAL'
-          exit-code:      '1'
-          ignore-unfixed: true
-          scanners:       'vuln'
-          version:        'v0.74.0'
-          limit-severities-for-sarif: 'true'
-          trivyignores:   '.trivyignore'
-
-      - name: Upload Trivy SARIF to GitHub Security
-        if: always() && hashFiles('trivy-results.sarif') != ''
-        continue-on-error: true
-        uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2  # v4.38.2
-        with:
-          sarif_file: trivy-results.sarif
-
-  deploy:
+  # ── Deploy via infra reusable workflow (Trivy gate, compose up --wait, auto-rollback) ──
+  call-deploy:
     name: Deploy (${{ needs.resolve.outputs.network }})
-    runs-on: ubuntu-latest
-    needs: [resolve, scan]
-    timeout-minutes: 15
-
-    steps:
-      - name: Checkout infra repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          repository: Decentral-America/infra
-          persist-credentials: false
-
-      - name: Set up SSH credentials
-        env:
-          DEPLOY_HOST: ${{ needs.resolve.outputs.network == 'testnet' && secrets.TESTNET_DEPLOY_HOST || needs.resolve.outputs.network == 'stagenet' && secrets.STAGENET_DEPLOY_HOST || secrets.MAINNET_DEPLOY_HOST }}
-          DEPLOY_KEY:  ${{ needs.resolve.outputs.network == 'testnet' && secrets.TESTNET_DEPLOY_SSH_KEY || needs.resolve.outputs.network == 'stagenet' && secrets.STAGENET_DEPLOY_SSH_KEY || secrets.MAINNET_DEPLOY_SSH_KEY }}
-        run: |
-          set -euo pipefail
-          install -d -m 700 ~/.ssh
-          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
-
-      - name: Upload websocket-api.yml to server
-        env:
-          DEPLOY_HOST: ${{ needs.resolve.outputs.network == 'testnet' && secrets.TESTNET_DEPLOY_HOST || needs.resolve.outputs.network == 'stagenet' && secrets.STAGENET_DEPLOY_HOST || secrets.MAINNET_DEPLOY_HOST }}
-          DEPLOY_USER: ${{ needs.resolve.outputs.network == 'testnet' && secrets.TESTNET_DEPLOY_USER || needs.resolve.outputs.network == 'stagenet' && secrets.STAGENET_DEPLOY_USER || secrets.MAINNET_DEPLOY_USER }}
-        run: |
-          set -euo pipefail
-          scp -i ~/.ssh/deploy_key \
-            compose/websocket-api.yml \
-            "$DEPLOY_USER@$DEPLOY_HOST:/opt/dcc/compose/"
-
-      - name: Pull image, deploy, and auto-rollback on failure
-        env:
-          GHCR_TOKEN:    ${{ secrets.GHCR_TOKEN }}
-          DEPLOY_HOST:   ${{ needs.resolve.outputs.network == 'testnet' && secrets.TESTNET_DEPLOY_HOST || needs.resolve.outputs.network == 'stagenet' && secrets.STAGENET_DEPLOY_HOST || secrets.MAINNET_DEPLOY_HOST }}
-          DEPLOY_USER:   ${{ needs.resolve.outputs.network == 'testnet' && secrets.TESTNET_DEPLOY_USER || needs.resolve.outputs.network == 'stagenet' && secrets.STAGENET_DEPLOY_USER || secrets.MAINNET_DEPLOY_USER }}
-          INPUT_IMAGE:   ghcr.io/decentral-america/websocket-api:${{ github.sha }}
-          INPUT_NETWORK: ${{ needs.resolve.outputs.network }}
-        run: |
-          set -euo pipefail
-          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes -o ConnectTimeout=10 \
-            "$DEPLOY_USER@$DEPLOY_HOST" bash -s << REMOTE
-          set -euo pipefail
-          GHCR_TOKEN="${GHCR_TOKEN}"
-          INPUT_IMAGE="${INPUT_IMAGE}"
-          INPUT_NETWORK="${INPUT_NETWORK}"
-
-          export IMAGE_TAG="\$INPUT_IMAGE"
-          export NETWORK="\$INPUT_NETWORK"
-          SERVICE="websocket-api"
-          COMPOSE_DIR="/opt/dcc/compose"
-
-          echo "Authenticating with GHCR..."
-          echo "\$GHCR_TOKEN" | docker login ghcr.io -u x-access-token --password-stdin
-
-          PREV_IMAGE=\$(docker inspect --format '{{.Config.Image}}' "\${SERVICE}-\${NETWORK}" 2>/dev/null || echo "")
-          echo "Previous image: \${PREV_IMAGE:-<none — first deploy>}"
-
-          EXISTING_PROJECT=\$(docker inspect \
-            --format '{{index .Config.Labels "com.docker.compose.project"}}' \
-            "\${SERVICE}-\${NETWORK}" 2>/dev/null || true)
-          EXPECTED_PROJECT="\${SERVICE}-\${NETWORK}"
-          if [[ -n "\$EXISTING_PROJECT" && "\$EXISTING_PROJECT" != "\$EXPECTED_PROJECT" ]]; then
-            docker rm -f "\${SERVICE}-\${NETWORK}"
-          fi
-
-          echo "Pulling \$IMAGE_TAG"
-          docker pull "\$IMAGE_TAG"
-
-          echo "Deploying \$SERVICE on \$NETWORK..."
-          cd "\$COMPOSE_DIR"
-
-          if ! docker compose \
-            --project-name "\${SERVICE}-\${NETWORK}" \
-            --file "\${SERVICE}.yml" up \
-            --detach \
-            --wait \
-            --wait-timeout 120 \
-            "\$SERVICE"; then
-
-            echo "::error::Health check failed for \$SERVICE on \$NETWORK."
-            echo "=== docker logs \${SERVICE}-\${NETWORK} ==="
-            docker logs "\${SERVICE}-\${NETWORK}" 2>&1 | tail -40 || true
-            echo "=== docker inspect state ==="
-            docker inspect "\${SERVICE}-\${NETWORK}" 2>&1 | python3 -c "import sys,json; d=json.load(sys.stdin); s=d[0]['State']; print('Status:', s['Status']); print('ExitCode:', s['ExitCode']); print('Error:', s['Error']); print('OOMKilled:', s['OOMKilled'])" 2>/dev/null || true
-
-            if [[ -n "\$PREV_IMAGE" ]]; then
-              echo "Rolling back to \$PREV_IMAGE"
-              export IMAGE_TAG="\$PREV_IMAGE"
-              docker compose \
-                --project-name "\${SERVICE}-\${NETWORK}" \
-                --file "\${SERVICE}.yml" up \
-                --detach --wait --wait-timeout 120 "\$SERVICE" \
-                && echo "Rollback successful." \
-                || echo "::error::Rollback also failed — manual intervention required."
-            fi
-            exit 1
-          fi
-
-          docker image prune -f
-          echo "Deploy complete: \$IMAGE_TAG → \$NETWORK"
-          REMOTE
+    needs: [resolve]
+    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@4bc2daef19d93fc97b0fd69a93e55a1a00a9e56b # main
+    with:
+      network: ${{ needs.resolve.outputs.network }}
+      image:   ghcr.io/decentral-america/websocket-api:${{ github.sha }}
+      service: websocket-api
+    secrets: inherit
