@@ -1,120 +1,59 @@
 /**
- * Peer network tests — requires DCC_API_KEY in env.
+ * Peer network tests.
  *
- * The /peers/connected and /peers/all endpoints are API-key protected.
- * Tests skip gracefully on 403 (public node without key configured).
- *
- * Covers:
- *   - Node has at least 1 connected peer (retries 120 s for bootstrapping nodes)
- *   - Peer objects have expected structure (address, declaredAddress fields)
- *   - All connected peers are on the same chain (height spread < 10 blocks)
- *   - /peers/all returns the full known-peer list
+ * /peers/connected and /peers/all are API-key protected on the node. On the public testnet the
+ * edge proxy adds the key for these two GET routes; for any other node set DCC_TEST_API_KEY
+ * (admin-e2e passes it too). Nothing here is skipped silently: no answer, no peers, or a peer
+ * from another chain fails the run.
  */
 
-import { API_BASE } from '../setup/env';
+import { API_BASE, API_KEY, CHAIN_ID } from '../setup/env';
 
-const TIMEOUT = 180_000; // peer reconnection can take up to 120 s after restart
+const TIMEOUT = 180_000;
 
-const API_KEY = process.env.DCC_API_KEY ?? '';
+type Peer = {
+  address: string;
+  declaredAddress?: string;
+  peerName?: string;
+  applicationName?: string;
+  applicationVersion?: string;
+};
 
-function authHeaders(): Record<string, string> {
-  return API_KEY ? { 'X-Api-Key': API_KEY } : {};
+async function peers(path: 'connected' | 'all'): Promise<Peer[]> {
+  const res = await fetch(`${API_BASE}peers/${path}`, {
+    headers: API_KEY ? { 'X-API-Key': API_KEY } : {},
+  });
+  expect(res.status, `/peers/${path} must answer 200; set DCC_TEST_API_KEY for this node`).toBe(
+    200,
+  );
+  return ((await res.json()) as { peers: Peer[] }).peers;
 }
-
-async function connectedPeers(): Promise<Array<Record<string, unknown>>> {
-  const res = await fetch(`${API_BASE}peers/connected`, { headers: authHeaders() });
-  if (res.status === 403) {
-    return null as unknown as Array<Record<string, unknown>>; // signal: key required
-  }
-  if (!res.ok) throw new Error(`/peers/connected HTTP ${res.status}`);
-  const body = (await res.json()) as { peers: Array<Record<string, unknown>> };
-  return body.peers ?? [];
-}
-
-// ── Suite ─────────────────────────────────────────────────────────────────────
 
 describe('Peer network connectivity', () => {
   vi.setConfig({ testTimeout: TIMEOUT });
 
-  it('GET /peers/connected is reachable (200 with key, 403 without)', async () => {
-    const res = await fetch(`${API_BASE}peers/connected`, { headers: authHeaders() });
-    expect([200, 403]).toContain(res.status);
-  });
-
-  it('node has ≥ 1 connected peer within 120 s (skips if API key absent)', async () => {
-    if (!API_KEY) return; // silently pass — key not configured in this env
-
+  it('node has at least one connected peer within 120 s', async () => {
     const deadline = Date.now() + 120_000;
-    let peers: Array<Record<string, unknown>> = [];
-
-    while (Date.now() < deadline) {
-      const result = await connectedPeers();
-      if (result === null) {
-        return;
-      }
-      peers = result;
-      if (peers.length >= 1) break;
+    let connected = await peers('connected');
+    while (connected.length === 0 && Date.now() < deadline) {
       await new Promise((r) => setTimeout(r, 10_000));
+      connected = await peers('connected');
     }
-
-    if (peers.length === 0) {
-      console.warn('Node has 0 peers after 120 s — may be isolated post-restart');
-      return; // skip, not fail — transient state
-    }
-
-    expect(peers.length).toBeGreaterThanOrEqual(1);
+    expect(connected.length).toBeGreaterThanOrEqual(1);
   });
 
-  it('peer objects have address and peerName fields', async () => {
-    if (!API_KEY) return;
-
-    const result = await connectedPeers();
-    if (result === null || result.length === 0) return; // skip if no peers or no key
-
-    for (const peer of result.slice(0, 5)) {
-      // At minimum: address field must be present
-      expect('address' in peer || 'declaredAddress' in peer).toBe(true);
+  it('every connected peer has an address and runs this chain', async () => {
+    const connected = await peers('connected');
+    expect(connected.length).toBeGreaterThanOrEqual(1);
+    for (const peer of connected) {
+      expect(peer.address).toMatch(/^\/.+:\d+$/);
+      expect(peer.applicationName).toBe(`DCC${CHAIN_ID}`);
     }
   });
 
-  it('connected peers are on the same chain (height spread < 10 blocks)', async () => {
-    if (!API_KEY) return;
-
-    const result = await connectedPeers();
-    if (result === null || result.length < 2) return; // need ≥ 2 peers to compare
-
-    const heights: number[] = [];
-    for (const peer of result) {
-      const declared = (peer.declaredAddress ?? peer.address) as string;
-      // Extract host from peer address format /ip:port
-      const clean = declared.replace(/^\//, '');
-      try {
-        const res = await fetch(`http://${clean}/blocks/height`, {
-          signal: AbortSignal.timeout(5_000),
-        });
-        if (res.ok) {
-          const { height } = (await res.json()) as { height: number };
-          heights.push(height);
-        }
-      } catch {
-        // peer may not expose REST — skip it
-      }
-    }
-
-    if (heights.length < 2) return; // not enough data
-
-    const spread = Math.max(...heights) - Math.min(...heights);
-    expect(spread).toBeLessThan(10);
-  });
-
-  it('/peers/all returns the known peer database', async () => {
-    if (!API_KEY) return;
-
-    const res = await fetch(`${API_BASE}peers/all`, { headers: authHeaders() });
-    if (res.status === 403) return; // no key
-
-    expect(res.ok).toBe(true);
-    const body = (await res.json()) as { peers: unknown[] };
-    expect(Array.isArray(body.peers ?? body)).toBe(true);
+  it('/peers/all answers with the known-peer list (may be empty when peers are only inbound)', async () => {
+    const all = await peers('all');
+    expect(Array.isArray(all)).toBe(true);
+    for (const peer of all) expect(peer.address).toMatch(/^\/.+:\d+$/);
   });
 });

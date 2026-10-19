@@ -110,23 +110,22 @@ describe('Ethereum compatibility layer (Type 18, EIP-155)', () => {
     expect('result' in result || 'error' in result).toBe(true);
   });
 
-  it('eth_blockNumber returns hex-encoded positive integer', async () => {
+  it('eth_blockNumber returns the current height as hex', async () => {
     const result = (await ethRpc('eth_blockNumber', [])) as { result?: string };
-    if (!result.result) return; // endpoint may not be supported
-    const blockNum = parseInt(result.result, 16);
-    expect(blockNum).toBeGreaterThan(0);
+    expect(result.result).toMatch(/^0x[0-9a-f]+$/i);
+    const res = await fetch(`${API_BASE}blocks/height`);
+    const { height } = (await res.json()) as { height: number };
+    expect(Math.abs(Number.parseInt(result.result ?? '', 16) - height)).toBeLessThanOrEqual(2);
   });
 
-  it('eth_getBalance with 0x address returns hex balance (may be 0x0)', async () => {
-    // Use the zero address — balance 0, but proves RPC works
+  it('eth_getBalance for the zero address returns a hex balance', async () => {
     const ethAddr = `0x${'0'.repeat(40)}`;
     const result = (await ethRpc('eth_getBalance', [ethAddr, 'latest'])) as {
       result?: string;
       error?: unknown;
     };
-    if ('error' in result) return;
+    expect(result.error).toBeUndefined();
     expect(result.result).toMatch(/^0x[0-9a-f]+$/i);
-    expect(parseInt(result.result!, 16)).toBeGreaterThanOrEqual(0);
   });
 
   it('/eth/assets returns 200 or 400 (route registered)', async () => {
