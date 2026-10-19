@@ -169,7 +169,7 @@ export async function waitNBlocks(
 /**
  * Get account effective balance
  * @param txId - transaction ID as base58 string
- * @param nodeUrl - node address to ask balance from. E.g. https://nodes.decentralchain.io/
+ * @param nodeUrl - node address to ask balance from. E.g. https://mainnet-node.decentralchain.io/
  */
 export async function transactionById(
   txId: string,
@@ -182,7 +182,7 @@ export async function transactionById(
 /**
  * Get account effective balance
  * @param address - DCC address as base58 string
- * @param nodeUrl - node address to ask balance from. E.g. https://nodes.decentralchain.io/
+ * @param nodeUrl - node address to ask balance from. E.g. https://mainnet-node.decentralchain.io/
  */
 export async function balance(
   address: string,
@@ -199,7 +199,7 @@ export async function balance(
 /**
  * Retrieve full information about DCC account balance. Effective, generating etc
  * @param address - DCC address as base58 string
- * @param nodeUrl - node address to ask balance from. E.g. https://nodes.decentralchain.io/
+ * @param nodeUrl - node address to ask balance from. E.g. https://mainnet-node.decentralchain.io/
  */
 export async function balanceDetails(
   address: string,
@@ -213,7 +213,7 @@ export async function balanceDetails(
  * Retrieve information about specific asset account balance
  * @param assetId - id of asset
  * @param address - DCC address as base58 string
- * @param nodeUrl - node address to ask balance from. E.g. https://nodes.decentralchain.io/
+ * @param nodeUrl - node address to ask balance from. E.g. https://mainnet-node.decentralchain.io/
  */
 export async function assetBalance(
   assetId: string,
@@ -234,7 +234,7 @@ export interface IAccountDataRequestOptions {
 /**
  * Get full account dictionary
  * @param options - DCC address and optional match regular expression. If match is present keys will be filtered by this regexp
- * @param nodeUrl - node address to ask data from. E.g. https://nodes.decentralchain.io/
+ * @param nodeUrl - node address to ask data from. E.g. https://mainnet-node.decentralchain.io/
  */
 export async function accountData(
   options: IAccountDataRequestOptions,
@@ -286,7 +286,7 @@ export async function accountData(
  * Get data from account dictionary by key
  * @param address - DCC address as base58 string
  * @param key - dictionary key
- * @param nodeUrl - node address to ask data from. E.g. https://nodes.decentralchain.io/
+ * @param nodeUrl - node address to ask data from. E.g. https://mainnet-node.decentralchain.io/
  */
 export async function accountDataByKey(
   key: string,
@@ -303,7 +303,7 @@ export async function accountDataByKey(
 /**
  * Get account script info
  * @param address - DCC address as base58 string
- * @param nodeUrl - node address to ask data from. E.g. https://nodes.decentralchain.io/
+ * @param nodeUrl - node address to ask data from. E.g. https://mainnet-node.decentralchain.io/
  */
 export async function scriptInfo(
   address: string,
@@ -316,7 +316,7 @@ export async function scriptInfo(
 /**
  * Get account script meta, i.e., available callable functions
  * @param address - DCC address as base58 string
- * @param nodeUrl - node address to ask data from. E.g. https://nodes.decentralchain.io/
+ * @param nodeUrl - node address to ask data from. E.g. https://mainnet-node.decentralchain.io/
  */
 export async function scriptMeta(
   address: string,
@@ -327,13 +327,13 @@ export async function scriptMeta(
 
 /**
  * Get miner’s reward status and total supply
- * @param nodeUrl - node address to ask data from. E.g. https://nodes.decentralchain.io/
+ * @param nodeUrl - node address to ask data from. E.g. https://mainnet-node.decentralchain.io/
  */
 export async function rewards(nodeUrl: string, requestOptions?: RequestInit): Promise<unknown>;
 /**
  * Get miner's reward status at height and total supply
  * @param height - block number to get info
- * @param nodeUrl - node address to ask data from. E.g. https://nodes.decentralchain.io/
+ * @param nodeUrl - node address to ask data from. E.g. https://mainnet-node.decentralchain.io/
  */
 export async function rewards(
   height: number,
@@ -358,7 +358,7 @@ export async function rewards(
 /**
  * Get invokeScript tx state changes
  * @param transactionId - invokeScript transaction id as base58 string
- * @param nodeUrl - node address to ask data from. E.g. https://nodes.decentralchain.io/
+ * @param nodeUrl - node address to ask data from. E.g. https://mainnet-node.decentralchain.io/
  */
 export async function stateChanges(
   transactionId: string,
@@ -373,7 +373,7 @@ export async function stateChanges(
  * Sends transaction to DCC node
  * IMPORTANT: You cannot broadcast order. Orders should be sent to matcher via submitOrder method
  * @param tx - transaction to send
- * @param nodeUrl - node address to send tx to. E.g. https://nodes.decentralchain.io/
+ * @param nodeUrl - node address to send tx to. E.g. https://mainnet-node.decentralchain.io/
  */
 export function broadcast<T extends SignedTransaction<Transaction<string | number>>>(
   tx: T,
@@ -399,7 +399,7 @@ export interface IEthBroadcastResult {
  * with the node's real message on rejection.
  *
  * @param rawTxHex - 0x-prefixed signed RLP hex, e.g. `ethereumTransfer(...).raw`
- * @param nodeUrl - node address to send tx to. E.g. https://nodes.decentralchain.io/
+ * @param nodeUrl - node address to send tx to. E.g. https://mainnet-node.decentralchain.io/
  */
 export async function broadcastEthereum(
   rawTxHex: string,

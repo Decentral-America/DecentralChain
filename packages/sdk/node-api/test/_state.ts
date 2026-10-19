@@ -6,10 +6,10 @@
  * to point to a running DecentralChain node.
  *
  * Example:
- *   DCC_NODE_URL=https://nodes.decentralchain.io npm run test:integration
+ *   DCC_NODE_URL=https://mainnet-node.decentralchain.io npm run test:integration
  */
 
-export const NODE_URL = process.env.DCC_NODE_URL ?? 'https://nodes.decentralchain.io';
+export const NODE_URL = process.env.DCC_NODE_URL ?? 'https://mainnet-node.decentralchain.io';
 export const CHAIN_ID = process.env.DCC_CHAIN_ID ?? 'D';
 export const NETWORK_BYTE = CHAIN_ID.charCodeAt(0);
 

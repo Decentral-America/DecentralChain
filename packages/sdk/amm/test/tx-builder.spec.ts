@@ -4,7 +4,7 @@ import { type AmmSdkConfig } from '../src/types';
 const config: AmmSdkConfig = {
   chainId: 'D',
   dAppAddress: '3PAmmDAppAddress',
-  nodeUrl: 'https://nodes.decentralchain.io',
+  nodeUrl: 'https://mainnet-node.decentralchain.io',
 };
 
 describe('TxBuilder v2', () => {

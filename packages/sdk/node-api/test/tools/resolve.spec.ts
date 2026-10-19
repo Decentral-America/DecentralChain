@@ -35,8 +35,8 @@ describe('resolve – SSRF prevention & protocol enforcement', () => {
   });
 
   it('allows HTTPS for remote hosts', () => {
-    const result = resolve('/blocks/height', 'https://nodes.decentralchain.io');
-    expect(result).toBe('https://nodes.decentralchain.io/blocks/height');
+    const result = resolve('/blocks/height', 'https://mainnet-node.decentralchain.io');
+    expect(result).toBe('https://mainnet-node.decentralchain.io/blocks/height');
   });
 
   it('handles paths without leading slash', () => {

@@ -38,7 +38,7 @@ npm install @decentralchain/node-api
 ```typescript
 import { create } from '@decentralchain/node-api';
 
-const api = create('https://nodes.decentralchain.io');
+const api = create('https://mainnet-node.decentralchain.io');
 
 // Get current block height
 const { height } = await api.blocks.fetchHeight();
