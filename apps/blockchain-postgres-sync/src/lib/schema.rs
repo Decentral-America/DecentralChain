@@ -656,9 +656,10 @@ diesel::table! {
 diesel::table! {
     use diesel::sql_types::*;
 
-    dcc_data (quantity) {
-        height -> Nullable<Int4>,
+    dcc_data (height) {
+        height -> Int4,
         quantity -> Numeric,
+        block_uid -> Nullable<Int8>,
     }
 }
 

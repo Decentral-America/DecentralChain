@@ -33,7 +33,10 @@ use diesel::{
     sql_query,
     sql_types::{Array, BigInt, Int8, Timestamp, VarChar},
 };
-use std::{collections::HashMap, num::NonZeroU32};
+use std::{
+    collections::{BTreeMap, HashMap},
+    num::NonZeroU32,
+};
 
 const MAX_UID: i64 = i64::MAX - 1;
 const PG_MAX_INSERT_FIELDS_COUNT: usize = 65535;
@@ -236,10 +239,24 @@ impl RepoOperations for PgRepoOperations<'_> {
     }
 
     fn insert_dcc_data(&mut self, dcc_data: &[DccData]) -> Result<()> {
+        // One row per height. A batch can carry the same key block twice (the
+        // updates stream re-delivers blocks), and ON CONFLICT DO UPDATE cannot touch
+        // the same row twice in one statement, so keep the last row per height.
+        let rows: Vec<DccData> = dcc_data
+            .iter()
+            .map(|d| (d.height, d))
+            .collect::<BTreeMap<_, _>>()
+            .into_values()
+            .cloned()
+            .collect();
         diesel::insert_into(dcc_data::table)
-            .values(dcc_data)
-            .on_conflict(dcc_data::quantity)
-            .do_nothing() // its ok to skip same quantity on historical sync
+            .values(&rows)
+            .on_conflict(dcc_data::height)
+            .do_update()
+            .set((
+                dcc_data::quantity.eq(diesel::upsert::excluded(dcc_data::quantity)),
+                dcc_data::block_uid.eq(diesel::upsert::excluded(dcc_data::block_uid)),
+            ))
             .execute(self.conn)
             .map(drop)
             .map_err(build_err_fn("Cannot insert dcc data"))

@@ -383,12 +383,13 @@ where
     if !assets_only {
         handle_txs(repo, &block_uids_with_appends, chain_id)?;
 
-        let dcc_data = appends
+        let dcc_data = block_uids_with_appends
             .iter()
-            .filter_map(|append| {
+            .filter_map(|(block_uid, append)| {
                 append.updated_dcc_amount.map(|reward| DccData {
                     height: append.height,
                     quantity: BigDecimal::from(reward),
+                    block_uid: Some(*block_uid),
                 })
             })
             .collect_vec();
