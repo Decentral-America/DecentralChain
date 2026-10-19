@@ -11,7 +11,9 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import pending from '../pendingTranslations.json';
+import pendingFile from '../pendingTranslations.json';
+
+const pending = pendingFile as { keys: string[][]; locales: string[] };
 
 type Tree = { [key: string]: Tree | string | string[] };
 
