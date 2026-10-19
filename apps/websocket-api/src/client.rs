@@ -148,6 +148,11 @@ impl Client {
         self.subscriptions.contains_key(topic)
     }
 
+    /// Subscriptions the client asked for directly (not multi-topic expansions).
+    pub fn direct_subscriptions_count(&self) -> usize {
+        self.subscriptions.values().filter(|d| d.is_direct).count()
+    }
+
     pub fn add_direct_subscription(&mut self, topic: Topic, key: ClientSubscriptionKey) {
         tracing::debug!(
             client_id = self.client_id,

@@ -3,6 +3,7 @@
 pub mod client;
 pub mod config;
 pub mod error;
+pub mod limits;
 pub mod messages;
 pub mod metrics;
 pub mod refresher;

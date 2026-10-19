@@ -109,7 +109,7 @@ async fn ws_handler_fn(
 /// Builds the test router and returns it along with the shutdown channel receiver.
 /// The receiver MUST be kept alive for the duration of the test — dropping it
 /// closes the shutdown signal and causes the server to disconnect all clients.
-fn ws_router() -> (Router, mpsc::Receiver<()>) {
+fn ws_router_with(max_subscriptions_per_client: usize) -> (Router, mpsc::Receiver<()>) {
     let (shutdown_tx, shutdown_rx) = mpsc::channel::<()>(1);
     let state = WsState {
         repo: Arc::new(MockRepo::default()),
@@ -119,6 +119,7 @@ fn ws_router() -> (Router, mpsc::Receiver<()>) {
             // Very long interval so the first tick is deferred well past test duration.
             ping_interval: Duration::from_secs(3600),
             ping_failures_threshold: 3,
+            max_subscriptions_per_client,
         }),
         shutdown_tx,
     };
@@ -129,7 +130,11 @@ fn ws_router() -> (Router, mpsc::Receiver<()>) {
 }
 
 fn make_server() -> (TestServer, mpsc::Receiver<()>) {
-    let (router, rx) = ws_router();
+    make_server_with(100)
+}
+
+fn make_server_with(max_subscriptions_per_client: usize) -> (TestServer, mpsc::Receiver<()>) {
+    let (router, rx) = ws_router_with(max_subscriptions_per_client);
     let server = TestServer::builder().http_transport().build(router);
     (server, rx)
 }
@@ -366,4 +371,58 @@ async fn unsubscribe_then_resubscribe_succeeds() {
         v2["type"], "subscribed",
         "re-subscribe after unsub must succeed, got: {v2}"
     );
+}
+
+/// A connection may hold at most `max_subscriptions_per_client` subscriptions;
+/// the next one gets error code 4 and the connection stays open.
+#[tokio::test]
+async fn subscription_cap_per_connection_returns_error_code_4() {
+    let (server, _rx) = make_server_with(2);
+    let mut ws = server.get_websocket("/ws").await.into_websocket().await;
+
+    for key in ["cap_a", "cap_b"] {
+        ws.send_message(WsMessage::Text(
+            json!({ "type": "subscribe",
+                    "topic": format!("topic://state/3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr/{key}") })
+            .to_string()
+            .into(),
+        ))
+        .await;
+        let v: Value =
+            serde_json::from_str(extract_text(&receive_non_ping(&mut ws).await)).unwrap();
+        assert_eq!(v["type"], "subscribed");
+    }
+
+    ws.send_message(WsMessage::Text(
+        json!({ "type": "subscribe",
+                "topic": "topic://state/3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr/cap_c" })
+        .to_string()
+        .into(),
+    ))
+    .await;
+    let v: Value = serde_json::from_str(extract_text(&receive_non_ping(&mut ws).await)).unwrap();
+    assert_eq!(
+        v["type"], "error",
+        "third subscription must be refused, got: {v}"
+    );
+    assert_eq!(v["code"], 4u16);
+
+    // Unsubscribing frees a slot.
+    ws.send_message(WsMessage::Text(
+        json!({ "type": "unsubscribe",
+                "topic": "topic://state/3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr/cap_a" })
+        .to_string()
+        .into(),
+    ))
+    .await;
+    let _unsub = receive_non_ping(&mut ws).await;
+    ws.send_message(WsMessage::Text(
+        json!({ "type": "subscribe",
+                "topic": "topic://state/3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr/cap_c" })
+        .to_string()
+        .into(),
+    ))
+    .await;
+    let v: Value = serde_json::from_str(extract_text(&receive_non_ping(&mut ws).await)).unwrap();
+    assert_eq!(v["type"], "subscribed");
 }

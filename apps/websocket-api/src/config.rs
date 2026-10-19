@@ -46,6 +46,14 @@ fn default_max_connections() -> u32 {
     10_000
 }
 
+fn default_max_connections_per_ip() -> u32 {
+    50
+}
+
+fn default_max_subscriptions_per_client() -> u32 {
+    500
+}
+
 #[derive(Deserialize)]
 struct FlatServerConfig {
     #[serde(default = "default_port")]
@@ -58,6 +66,10 @@ struct FlatServerConfig {
     pub graceful_shutdown_duration_seconds: u64,
     #[serde(default = "default_max_connections")]
     pub max_connections: u32,
+    #[serde(default = "default_max_connections_per_ip")]
+    pub max_connections_per_ip: u32,
+    #[serde(default = "default_max_subscriptions_per_client")]
+    pub max_subscriptions_per_client: u32,
 }
 
 #[derive(Deserialize)]
@@ -141,11 +153,25 @@ pub fn load_repo() -> Result<repo::RepoConfig, Error> {
 pub fn load_server() -> Result<server::ServerConfig, Error> {
     let flat = envy::from_env::<FlatServerConfig>()?;
 
+    if flat.max_connections_per_ip == 0 || flat.max_connections_per_ip > flat.max_connections {
+        return Err(Error::ConfigValidation(format!(
+            "MAX_CONNECTIONS_PER_IP ({}) must be between 1 and MAX_CONNECTIONS ({})",
+            flat.max_connections_per_ip, flat.max_connections
+        )));
+    }
+    if flat.max_subscriptions_per_client == 0 {
+        return Err(Error::ConfigValidation(
+            "MAX_SUBSCRIPTIONS_PER_CLIENT must be at least 1".to_owned(),
+        ));
+    }
+
     Ok(server::ServerConfig {
         port: flat.port,
         client_ping_interval: flat.client_ping_interval_in_secs,
         client_ping_failures_threshold: flat.client_ping_failures_threshold,
         graceful_shutdown_duration: Duration::from_secs(flat.graceful_shutdown_duration_seconds),
         max_connections: flat.max_connections,
+        max_connections_per_ip: flat.max_connections_per_ip,
+        max_subscriptions_per_client: flat.max_subscriptions_per_client,
     })
 }

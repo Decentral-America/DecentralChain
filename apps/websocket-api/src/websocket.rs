@@ -20,11 +20,13 @@ use self::values::{DataEntry, TopicValue, TopicValues};
 const INVALID_MESSAGE_ERROR_CODE: u16 = 1;
 const ALREADY_SUBSCRIBED_ERROR_CODE: u16 = 2;
 const INVALID_TOPIC_ERROR_CODE: u16 = 3;
+const SUBSCRIPTION_LIMIT_ERROR_CODE: u16 = 4;
 
 #[derive(Clone, Debug)]
 pub struct HandleConnectionOptions {
     pub ping_interval: tokio::time::Duration,
     pub ping_failures_threshold: usize,
+    pub max_subscriptions_per_client: usize,
 }
 
 /// Shared state for an active WebSocket connection, passed to the inner run loop.
@@ -135,6 +137,7 @@ async fn run<R: Repo>(
                     *client_id,
                     topics.clone(),
                     msg,
+                    options.max_subscriptions_per_client,
                 ).await;
                 let send_err = match result {
                     Err(Error::UnknownIncomeMessage(detail)) => {
@@ -148,6 +151,9 @@ async fn run<R: Repo>(
                             INVALID_TOPIC_ERROR_CODE,
                             client,
                         ).await
+                    }
+                    Err(Error::SubscriptionLimit(detail)) => {
+                        send_error(detail, "Subscription limit exceeded", SUBSCRIPTION_LIMIT_ERROR_CODE, client).await
                     }
                     Err(Error::InvalidPongMessage) => break,
                     Err(e) => {
@@ -210,6 +216,7 @@ async fn handle_income_message<R: Repo>(
     client_id: ClientId,
     topics: Arc<Topics>,
     raw_msg: ws::Message,
+    max_subscriptions: usize,
 ) -> Result<(), Error> {
     let msg = IncomeMessage::try_from(raw_msg)?;
 
@@ -241,6 +248,11 @@ async fn handle_income_message<R: Repo>(
                         None,
                     )?;
                     return Ok(());
+                }
+                if lock.direct_subscriptions_count() >= max_subscriptions {
+                    return Err(Error::SubscriptionLimit(format!(
+                        "at most {max_subscriptions} subscriptions per connection"
+                    )));
                 }
             }
 
