@@ -80,6 +80,9 @@ type Pages = {
   "/sitemap.xml": {
     params: {};
   };
+  "/robots.txt": {
+    params: {};
+  };
   "/api/faucet": {
     params: {};
   };
@@ -96,7 +99,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/dashboard" | "/blocks" | "/blockdetail" | "/transaction" | "/address" | "/asset" | "/dexpairs" | "/network" | "/stress" | "/generator" | "/blockfeed" | "/unconfirmedtransactions" | "/distributiontool" | "/transactionmap" | "/networkstatistics" | "/networkmap" | "/peers" | "/sustainability" | "/node" | "/home" | "/faucet" | "/sitemap.xml" | "/api/faucet" | "/api/health" | "/api/geo/:ip/json";
+    page: "/" | "/dashboard" | "/blocks" | "/blockdetail" | "/transaction" | "/address" | "/asset" | "/dexpairs" | "/network" | "/stress" | "/generator" | "/blockfeed" | "/unconfirmedtransactions" | "/distributiontool" | "/transactionmap" | "/networkstatistics" | "/networkmap" | "/peers" | "/sustainability" | "/node" | "/home" | "/faucet" | "/sitemap.xml" | "/robots.txt" | "/api/faucet" | "/api/health" | "/api/geo/:ip/json";
   };
   "Layout.tsx": {
     id: "Layout";
@@ -193,6 +196,10 @@ type RouteFiles = {
     id: "routes/sitemap.xml";
     page: "/sitemap.xml";
   };
+  "routes/robots.txt.ts": {
+    id: "routes/robots.txt";
+    page: "/robots.txt";
+  };
   "routes/api.faucet.ts": {
     id: "routes/api.faucet";
     page: "/api/faucet";
@@ -233,6 +240,7 @@ type RouteModules = {
   "pages/Home": typeof import("./src/pages/Home.tsx");
   "pages/Faucet": typeof import("./src/pages/Faucet.tsx");
   "routes/sitemap.xml": typeof import("./src/routes/sitemap.xml.ts");
+  "routes/robots.txt": typeof import("./src/routes/robots.txt.ts");
   "routes/api.faucet": typeof import("./src/routes/api.faucet.ts");
   "routes/api.health": typeof import("./src/routes/api.health.ts");
   "routes/api.geo.ip": typeof import("./src/routes/api.geo.ip.ts");

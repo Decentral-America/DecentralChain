@@ -12,9 +12,13 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { formatAmount, truncate } from '@/components/utils/formatters';
+import { createPageUrl } from '@/utils';
 import { useMassTransferFeed } from '../hooks/useMassTransferFeed';
 
-const TESTNET_EXPLORER = 'https://testnet-explorer.decentralchain.io';
+/** Transaction detail page in this explorer (the old external explorer host no longer resolves). */
+export function txDetailHref(id: string): string {
+  return createPageUrl('Transaction', `?id=${encodeURIComponent(id)}`);
+}
 
 function formatTs(ms: number): string {
   if (!ms) return '—';
@@ -75,7 +79,7 @@ export function MassTransferFeed() {
                 <TableRow
                   key={tx.id}
                   className="hover:bg-muted cursor-pointer"
-                  onClick={() => window.open(`${TESTNET_EXPLORER}/transactions/${tx.id}`, '_blank')}
+                  onClick={() => window.open(txDetailHref(tx.id), '_blank', 'noopener,noreferrer')}
                 >
                   <TableCell>
                     <div className="flex items-center gap-1">

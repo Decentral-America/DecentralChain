@@ -39,6 +39,7 @@ export default [
 
   // ── Resource routes (no layout wrapper) ──────────────────────────────────
   route('sitemap.xml', 'routes/sitemap.xml.ts'),
+  route('robots.txt', 'routes/robots.txt.ts'),
   route('api/faucet', 'routes/api.faucet.ts'),
   route('api/health', 'routes/api.health.ts'),
   route('api/geo/:ip/json', 'routes/api.geo.ip.ts'),
