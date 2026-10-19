@@ -90,7 +90,9 @@ RUN addgroup -S scanner && adduser -S -G scanner scanner
 WORKDIR /app
 
 # Only copy the deployed scanner app and its production dependencies.
-COPY --from=build /prod/scanner ./
+# --chown here, not a later chown -R layer: that layer rewrote pnpm's hardlinked files and
+# produced a tar containerd could not extract (hardlink target missing) on the VPS.
+COPY --from=build --chown=scanner:scanner /prod/scanner ./
 
 # node:24-alpine ships npm's own bundled node_modules (tar, brace-expansion,
 # sigstore, ip-address, etc.) as part of the base image. This service never
@@ -105,8 +107,6 @@ RUN rm -rf /usr/local/lib/node_modules/npm
 RUN find /app/node_modules -path '*@typescript/typescript-linux-*' -prune -exec rm -rf {} + \
     && find /app/node_modules/.pnpm -maxdepth 1 -name '@typescript+typescript-linux-*' -exec rm -rf {} +
 
-# Ensure non-root owns the files
-RUN chown -R scanner:scanner /app
 USER scanner
 
 # Runtime-configurable environment variables with safe defaults
