@@ -79,13 +79,16 @@ describe('Secure headers', () => {
 });
 
 describe('Rate limiter', () => {
-  /** Request as Caddy on the same host delivers it: loopback peer, Caddy-written last XFF entry. */
-  const viaCaddy = (clientIp: string, extra: Record<string, string> = {}) =>
+  const requestFrom = (peer: string | undefined, headers: Record<string, string> = {}) =>
     [
       '/ping',
-      { headers: { 'X-Forwarded-For': clientIp, ...extra } },
-      { incoming: { socket: { remoteAddress: '127.0.0.1' } } },
+      { headers },
+      peer === undefined ? undefined : { incoming: { socket: { remoteAddress: peer } } },
     ] as const;
+
+  /** Request as Caddy on the same host delivers it: loopback peer, Caddy-written X-Real-IP. */
+  const viaCaddy = (clientIp: string, extra: Record<string, string> = {}) =>
+    requestFrom('127.0.0.1', { 'X-Real-IP': clientIp, ...extra });
 
   function buildRateLimitedApp(max: number, windowMs: number) {
     const app = new Hono<AppEnv>();
@@ -122,28 +125,63 @@ describe('Rate limiter', () => {
     expect((await app.request(...viaCaddy('192.168.1.2'))).status).toBe(200);
   });
 
-  it('ignores client-supplied X-Real-IP and leading X-Forwarded-For entries', async () => {
+  it('a loopback peer is keyed by X-Real-IP, not by X-Forwarded-For', async () => {
     const app = buildRateLimitedApp(2, 60_000);
     const statuses: number[] = [];
     for (let i = 0; i < 4; i++) {
-      // Spoofed values change on every request; the Caddy-written last entry does not.
       statuses.push(
-        (await app.request(...viaCaddy(`6.6.6.${i}, 9.9.9.9`, { 'X-Real-IP': `7.7.7.${i}` })))
-          .status,
+        (await app.request(...viaCaddy('8.8.8.8', { 'X-Forwarded-For': `6.6.6.${i}` }))).status,
       );
     }
     expect(statuses).toEqual([200, 200, 429, 429]);
   });
 
-  it('keys a non-loopback peer by its own address and ignores its headers', async () => {
+  it.each(['127.0.0.2', '::1', '::ffff:127.0.0.1'])('treats %s as loopback', async (peer) => {
     const app = buildRateLimitedApp(1, 60_000);
-    const direct = (xff: string) =>
-      app.request(
-        '/ping',
-        { headers: { 'X-Forwarded-For': xff } },
-        { incoming: { socket: { remoteAddress: '203.0.113.50' } } },
-      );
+    expect((await app.request(...requestFrom(peer, { 'X-Real-IP': '4.4.4.4' }))).status).toBe(200);
+    expect((await app.request(...requestFrom(peer, { 'X-Real-IP': '4.4.4.4' }))).status).toBe(429);
+    expect((await app.request(...requestFrom(peer, { 'X-Real-IP': '4.4.4.5' }))).status).toBe(200);
+  });
+
+  it('a loopback peer without a valid X-Real-IP falls back to the last X-Forwarded-For entry', async () => {
+    const app = buildRateLimitedApp(2, 60_000);
+    for (const realIp of [undefined, 'not-an-ip']) {
+      const statuses: number[] = [];
+      for (let i = 0; i < 3; i++) {
+        statuses.push(
+          (
+            await app.request(
+              ...requestFrom('127.0.0.1', {
+                'X-Forwarded-For': `6.6.6.${i}, ${realIp === undefined ? '9.9.9.9' : '9.9.9.8'}`,
+                ...(realIp === undefined ? {} : { 'X-Real-IP': realIp }),
+              }),
+            )
+          ).status,
+        );
+      }
+      expect(statuses).toEqual([200, 200, 429]);
+    }
+  });
+
+  it('a loopback peer with neither header is keyed by the peer itself', async () => {
+    const app = buildRateLimitedApp(1, 60_000);
+    expect((await app.request(...requestFrom('127.0.0.1'))).status).toBe(200);
+    expect((await app.request(...requestFrom('127.0.0.1'))).status).toBe(429);
+  });
+
+  it('keys a non-loopback peer by its own address and ignores spoofed headers', async () => {
+    const app = buildRateLimitedApp(1, 60_000);
+    const direct = (n: string) =>
+      app.request(...requestFrom('203.0.113.50', { 'X-Forwarded-For': n, 'X-Real-IP': n }));
     expect((await direct('1.1.1.1')).status).toBe(200);
     expect((await direct('2.2.2.2')).status).toBe(429);
+  });
+
+  it('without peer information, ignores forwarding headers', async () => {
+    const app = buildRateLimitedApp(1, 60_000);
+    const spoof = (n: string) =>
+      app.request(...requestFrom(undefined, { 'X-Forwarded-For': n, 'X-Real-IP': n }));
+    expect((await spoof('1.1.1.1')).status).toBe(200);
+    expect((await spoof('2.2.2.2')).status).toBe(429);
   });
 });

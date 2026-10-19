@@ -1,3 +1,4 @@
+import { isIP } from 'node:net';
 import { getConnInfo } from '@hono/node-server/conninfo';
 import { type Context, type Next } from 'hono';
 
@@ -17,10 +18,14 @@ import { type Context, type Next } from 'hono';
  *
  * Client identification
  * ─────────────────────
- * data-service runs on the host network behind Caddy on the same host, so for
- * proxied requests the TCP peer is loopback and Caddy writes the real client as
- * the last X-Forwarded-For entry (earlier entries and any X-Real-IP come from the
- * client and are ignored). Any other peer is keyed by its own address.
+ * data-service runs on the host network behind Caddy on the same host, and Caddy
+ * overwrites X-Real-IP with the real client address. So for a loopback TCP peer
+ * (127.0.0.0/8, ::1, IPv4-mapped) the key is X-Real-IP when it is a valid IP, then
+ * the last X-Forwarded-For entry, then the peer itself. Any other peer is keyed by
+ * its own address and every forwarding header is ignored. When the peer address is
+ * unavailable (a runtime that does not expose the socket) all forwarding headers
+ * are ignored too, since nothing proves they came from the proxy.
+ * This is the same trust model as websocket-api.
  *
  * Response on limit exceeded: 429 Too Many Requests with Retry-After,
  * X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset headers
@@ -59,7 +64,15 @@ export interface RateLimiterOptions {
  * app.use(createRateLimiter({ windowMs: 60_000, max: 120 }));
  * ```
  */
-const LOOPBACK = new Set(['127.0.0.1', '::1', '::ffff:127.0.0.1']);
+const isLoopback = (address: string): boolean => {
+  const v4 = address.toLowerCase().replace(/^::ffff:/, '');
+  return isIP(v4) === 4 ? v4.startsWith('127.') : v4 === '::1';
+};
+
+const validIp = (value: string | undefined): string | undefined => {
+  const trimmed = value?.trim();
+  return trimmed !== undefined && isIP(trimmed) !== 0 ? trimmed : undefined;
+};
 
 export const defaultPeerAddress = (c: Context): string | undefined => {
   try {
@@ -71,11 +84,13 @@ export const defaultPeerAddress = (c: Context): string | undefined => {
 
 /** The client a request is counted against (see "Client identification" above). */
 export const clientKey = (c: Context, peer: string | undefined): string => {
-  if (peer !== undefined && LOOPBACK.has(peer)) {
-    const forwarded = c.req.header('x-forwarded-for')?.split(',').pop()?.trim();
-    return forwarded !== undefined && forwarded !== '' ? forwarded : peer;
-  }
-  return peer ?? 'unknown';
+  if (peer === undefined) return 'unknown';
+  if (!isLoopback(peer)) return peer;
+  return (
+    validIp(c.req.header('x-real-ip')) ??
+    validIp(c.req.header('x-forwarded-for')?.split(',').pop()) ??
+    peer
+  );
 };
 
 export function createRateLimiter({
