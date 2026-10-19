@@ -30,8 +30,14 @@ for (const { file, re } of targets) {
 }
 
 if (check && drift.length > 0) {
-  console.error(`protobuf-schemas manifest versions differ from package.json:\n  ${drift.join('\n  ')}`);
+  console.error(
+    `protobuf-schemas manifest versions differ from package.json:\n  ${drift.join('\n  ')}`,
+  );
   console.error('Fix: node scripts/sync-proto-versions.mjs');
   process.exit(1);
 }
-console.log(drift.length > 0 ? `synced to ${version}: ${drift.join('; ')}` : `protobuf-schemas: every manifest at ${version}`);
+console.log(
+  drift.length > 0
+    ? `synced to ${version}: ${drift.join('; ')}`
+    : `protobuf-schemas: every manifest at ${version}`,
+);

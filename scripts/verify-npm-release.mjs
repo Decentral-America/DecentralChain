@@ -54,18 +54,31 @@ if (smoke && failures.length === 0) {
   for (const { name, version } of packages) {
     const dir = mkdtempSync(join(tmpdir(), 'npm-smoke-'));
     try {
-      writeFileSync(join(dir, 'package.json'), JSON.stringify({ name: 'smoke', private: true, type: 'module' }));
-      execFileSync('npm', ['install', `${name}@${version}`, '--no-audit', '--no-fund', `--registry=${registry}`], {
-        cwd: dir,
-        stdio: 'inherit',
-      });
-      execFileSync(process.execPath, ['--input-type=module', '-e', `await import(${JSON.stringify(name)})`], {
-        cwd: dir,
-        stdio: 'inherit',
-      });
+      writeFileSync(
+        join(dir, 'package.json'),
+        JSON.stringify({ name: 'smoke', private: true, type: 'module' }),
+      );
+      execFileSync(
+        'npm',
+        ['install', `${name}@${version}`, '--no-audit', '--no-fund', `--registry=${registry}`],
+        {
+          cwd: dir,
+          stdio: 'inherit',
+        },
+      );
+      execFileSync(
+        process.execPath,
+        ['--input-type=module', '-e', `await import(${JSON.stringify(name)})`],
+        {
+          cwd: dir,
+          stdio: 'inherit',
+        },
+      );
       console.log(`ok   install+import ${name}@${version} on Node ${process.version}`);
     } catch (e) {
-      failures.push(`${name}@${version}: install/import failed: ${e instanceof Error ? e.message.split('\n')[0] : e}`);
+      failures.push(
+        `${name}@${version}: install/import failed: ${e instanceof Error ? e.message.split('\n')[0] : e}`,
+      );
     } finally {
       rmSync(dir, { force: true, recursive: true });
     }
@@ -76,4 +89,6 @@ if (failures.length > 0) {
   console.error(`\nnpm release verification FAILED:\n  - ${failures.join('\n  - ')}`);
   process.exit(1);
 }
-console.log(`\nnpm release verified for ${packages.length} package(s)${smoke ? ' (published, latest, installable, importable)' : ''}`);
+console.log(
+  `\nnpm release verified for ${packages.length} package(s)${smoke ? ' (published, latest, installable, importable)' : ''}`,
+);
