@@ -153,8 +153,14 @@ jobs:
           context: .
           file: apps/admin-dashboard/Dockerfile
           push: true
+          # Always re-resolve the base image tags; never reuse a stale local copy.
+          pull: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          # Changes every run so the cached OS-package upgrade layer is rebuilt (stale layers
+          # made the Trivy gate fail on CVEs the base image had already fixed).
+          build-args: |
+            OS_PKG_EPOCH=${{ github.run_id }}-${{ github.run_attempt }}
           cache-from: type=registry,ref=${{ env.IMAGE_NAME }}:buildcache
           cache-to:   type=registry,ref=${{ env.IMAGE_NAME }}:buildcache,mode=max
           provenance: true
@@ -170,7 +176,7 @@ jobs:
   call-deploy:
     name: Deploy (${{ needs.resolve.outputs.network }})
     needs: [resolve]
-    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@4bc2daef19d93fc97b0fd69a93e55a1a00a9e56b # main
+    uses: Decentral-America/infra/.github/workflows/deploy-container.yml@996c5fc332a05ad8b551c9c0317369df9899cd7d # main
     with:
       network: ${{ needs.resolve.outputs.network }}
       image:   ghcr.io/decentral-america/admin-dashboard:${{ github.sha }}

@@ -40,7 +40,11 @@ LABEL org.opencontainers.image.source="https://github.com/Decentral-America/bloc
       org.opencontainers.image.licenses="Apache-2.0" \
       org.opencontainers.image.vendor="Decentral America"
 
-RUN apt-get update && \
+# Cache-bust: the registry build cache would otherwise replay an old OS-package upgrade.
+# CI passes a value that changes every run, so this layer (and the cheap ones after it) is rebuilt.
+ARG OS_PKG_EPOCH=unset
+RUN echo "OS package epoch: ${OS_PKG_EPOCH}" && \
+    apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
         ca-certificates \
