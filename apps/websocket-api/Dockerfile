@@ -18,11 +18,11 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=planner /usr/src/service/recipe.json recipe.json
-RUN cargo chef cook --release --recipe-path recipe.json
+RUN cargo chef cook --release --locked --recipe-path recipe.json
 
 # ── Application compiler ──────────────────────────────────────────────────────
 COPY . .
-RUN cargo build --release --bin service --bin healthcheck
+RUN cargo build --release --locked --bin service --bin healthcheck
 
 # ── Runtime image ─────────────────────────────────────────────────────────────
 # distroless/cc-debian13 adds libgcc-s1 and libstdc++6 on top of base.

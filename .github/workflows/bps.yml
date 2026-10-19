@@ -80,6 +80,7 @@ jobs:
           set -euo pipefail
           cargo llvm-cov nextest \
             --all-targets \
+            --locked \
             --codecov \
             --output-path codecov.json
 
@@ -95,7 +96,7 @@ jobs:
 
       - name: Check documentation
         working-directory: apps/blockchain-postgres-sync
-        run: RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --all-features
+        run: RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --all-features --locked
 
       # ── Security & dependency policy ──────────────────────────────────────────
       - name: Dependency policy check (cargo deny)
