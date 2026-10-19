@@ -9,11 +9,13 @@ on:
       - 'packages/ride/**'
       - 'packages/jvm/groth16/**'
       - '.github/workflows/ride.yml'
+      - 'scripts/ride-sync-diff.sh'
   pull_request:
     paths:
       - 'packages/ride/**'
       - 'packages/jvm/groth16/**'
       - '.github/workflows/ride.yml'
+      - 'scripts/ride-sync-diff.sh'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -268,3 +270,38 @@ jobs:
           name: ride-dependency-manifest
           path: packages/ride/lang-deps.txt
           retention-days: 90
+
+  node-scala-sync:
+    name: RIDE sources match node-scala (pinned)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Read pinned node-scala commit
+        id: pin
+        run: echo "ref=$(tr -d '[:space:]' < packages/ride/NODE_SCALA_REF)" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout node-scala at the pinned commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          repository: Decentral-America/node-scala
+          ref: ${{ steps.pin.outputs.ref }}
+          path: _node-scala
+          persist-credentials: false
+
+      - name: Set up JDK 25 (Temurin)
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6  # v6.0.1
+        with:
+          java-version: '25'
+          distribution: temurin
+          cache: sbt
+
+      - name: Install sbt launcher
+        uses: sbt/setup-sbt@6158cb0903b8ceeae04f830055f3155e1b6a5ad7  # v1.5.11
+
+      - name: Compare with node-scala
+        run: scripts/ride-sync-diff.sh _node-scala

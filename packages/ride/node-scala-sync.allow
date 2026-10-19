@@ -1,0 +1,25 @@
+# Files where packages/ride intentionally or temporarily differs from node-scala@NODE_SCALA_REF
+# after formatting, ignoring imports/comments/blank lines. node-scala is the source of truth.
+# Every entry needs a reason. Resolution of these is a node-scala follow-up (AUD-081).
+#
+# A) ride-only hardening from DecentralChain #55 (2026-07-05), not in node-scala.
+#    Decide in node-scala: upstream it (consensus-reviewed) or drop it here.
+differs lang/shared/src/main/scala/com/decentralchain/lang/utils/package.scala  # dummy Environment throws IllegalStateException instead of ???
+differs lang/shared/src/main/scala/com/decentralchain/lang/v1/compiler/ContractCompiler.scala  # getValidated helpers instead of raw .get
+differs lang/shared/src/main/scala/com/decentralchain/lang/v1/compiler/ExpressionCompiler.scala  # getValidated helpers instead of raw .get
+differs lang/shared/src/main/scala/com/decentralchain/lang/v1/compiler/TypeInferrer.scala  # ??? replaced by IllegalStateException
+differs lang/shared/src/main/scala/com/decentralchain/lang/v1/compiler/Types.scala  # ??? replaced by IllegalStateException
+differs lang/shared/src/main/scala/com/decentralchain/lang/v1/evaluator/EvaluatorV1.scala  # ??? replaced by IllegalStateException
+differs lang/shared/src/main/scala/com/decentralchain/lang/v1/evaluator/ctx/impl/dcc/Vals.scala  # guarded Option.get in assetThisVal/lastBlockVal
+differs lang/shared/src/main/scala/com/decentralchain/lang/v1/parser/Parser.scala  # excluded from scalafmt (KNOWN-6), so formatting differs; plus object-pattern field name NoCut+VALID filter
+differs lang/js/src/main/scala/com/decentralchain/lang/Global.scala  # JS groth16/ecrecover throw UnsupportedOperationException instead of ???
+differs lang/jvm/src/main/scala/com/decentralchain/lang/FileCompiler.scala  # println instead of slf4j logger (ride CLI)
+only-ride lang/js/src/main/scala/com/decentralchain/common/ByteStrComparator.scala  # Scala.js-only helper for the JS build
+# B) node-scala removals not yet mirrored here (7081361e30 dead code, 62f8a1240a feature 28).
+differs lang/shared/src/main/scala/com/decentralchain/lang/v1/BaseGlobal.scala  # Random vs ThreadLocalRandom; feature-28 groth16 path removed in node
+differs lang/shared/src/main/scala/com/decentralchain/lang/v1/compiler/CompilationError.scala  # TooManyExpressions/NoExpressions removed in node
+differs lang/shared/src/main/scala/com/decentralchain/lang/v1/parser/UnaryOperation.scala  # POSITIVE_OP removed in node
+differs lang/shared/src/main/scala/com/decentralchain/lang/v1/traits/domain/Tx.scala  # unused Pmt case class removed in node
+# C) Same content, different file name (ride renamed WavesContext -> DccContext; node did not).
+only-node lang/shared/src/main/scala/com/decentralchain/lang/v1/evaluator/ctx/impl/dcc/WavesContext.scala  # identical to ride's DccContext.scala
+only-ride lang/shared/src/main/scala/com/decentralchain/lang/v1/evaluator/ctx/impl/dcc/DccContext.scala  # identical to node's WavesContext.scala
