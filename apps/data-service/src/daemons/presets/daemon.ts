@@ -52,28 +52,28 @@ const loop = <Config>(
   if (state.stopping) return Promise.resolve();
   const startLoop = new Date();
 
+  // Schedule the next iteration whether this one succeeded, failed or timed out
+  // (failures are already logged by logTaskProgress). Stopping here would leave
+  // the process alive but never updating the pairs table again. Nothing is
+  // scheduled once stop() has been called.
+  const scheduleNext = (): void => {
+    if (state.stopping) return;
+    state.pendingTimer = setTimeout(
+      () => loop(func, cfg, interval, timeout, state),
+      getSleepTime(startLoop, interval),
+    );
+  };
+
   const run = Effect.runPromise(
-    Effect.raceAll([
-      func(cfg),
-      Effect.async<never, Error>((emit) => {
-        const timerId = setTimeout(
-          () => emit(Effect.fail(new Error('Daemon timeout expired'))),
-          timeout,
-        );
-        return Effect.sync(() => clearTimeout(timerId));
+    // raceAll only settles on the first *success*, so a failing timeout leg would
+    // wait forever on a hung iteration; timeoutFail interrupts it instead.
+    func(cfg).pipe(
+      Effect.timeoutFail({
+        duration: timeout,
+        onTimeout: () => new Error('Daemon timeout expired'),
       }),
-    ]),
-  )
-    .then(() => {
-      if (state.stopping) return;
-      state.pendingTimer = setTimeout(
-        () => loop(func, cfg, interval, timeout, state),
-        getSleepTime(startLoop, interval),
-      );
-    })
-    .catch(() => {
-      // swallow: already handled inside func or timeout
-    });
+    ),
+  ).then(scheduleNext, scheduleNext);
   state.inFlight = run;
   return run;
 };

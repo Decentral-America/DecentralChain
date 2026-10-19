@@ -130,4 +130,84 @@ describe('Daemon presets', () => {
     await vi.advanceTimersByTimeAsync(1_000);
     expect(started).toBe(1); // nothing new scheduled
   });
+
+  it('keeps looping after a failed iteration', async () => {
+    const logger = createLogger();
+    let calls = 0;
+
+    await Effect.runPromise(
+      daemon(
+        {
+          loop: () =>
+            Effect.suspend(() => {
+              calls++;
+              return calls === 1 ? Effect.fail(new Error('db down')) : Effect.succeed(undefined);
+            }),
+        },
+        {},
+        100,
+        50,
+        logger,
+      ),
+    );
+
+    await vi.advanceTimersByTimeAsync(500);
+
+    expect(calls).toBeGreaterThanOrEqual(2);
+  });
+
+  it('keeps looping after a timed-out iteration', async () => {
+    const logger = createLogger();
+    let calls = 0;
+
+    await Effect.runPromise(
+      daemon(
+        {
+          loop: () =>
+            Effect.suspend(() => {
+              calls++;
+              return calls === 1 ? Effect.async<void, never>(() => {}) : Effect.succeed(undefined);
+            }),
+        },
+        {},
+        100,
+        50,
+        logger,
+      ),
+    );
+
+    await vi.advanceTimersByTimeAsync(500);
+
+    expect(calls).toBeGreaterThanOrEqual(2);
+  });
+
+  it('stop() after a failed iteration schedules nothing more', async () => {
+    const logger = createLogger();
+    const control = createDaemonControl();
+    let calls = 0;
+
+    await Effect.runPromise(
+      daemon(
+        {
+          loop: () =>
+            Effect.suspend(() => {
+              calls++;
+              return Effect.fail(new Error('db down'));
+            }),
+        },
+        {},
+        100,
+        50,
+        logger,
+        control,
+      ),
+    );
+
+    await vi.advanceTimersByTimeAsync(250);
+    const before = calls;
+    expect(before).toBeGreaterThanOrEqual(2);
+    await control.stop();
+    await vi.advanceTimersByTimeAsync(1_000);
+    expect(calls).toBe(before);
+  });
 });
