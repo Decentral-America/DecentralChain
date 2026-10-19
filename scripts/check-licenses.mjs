@@ -119,6 +119,28 @@ for (const rel of [...jvmDirs.sort(), 'packages/sdk/protobuf-schemas']) {
     failures.push(`${rel}: licence ${pomSpdx} is not allowed`);
 }
 
+// 4. Every artifact that ships with the GPL-3.0 curve25519 must say so (AUD-079).
+const GPL_CONSUMER_NOTICES = [
+  'packages/jvm/crypto/src/main/resources/META-INF/NOTICE',
+  'packages/jvm/transactions/src/main/resources/META-INF/NOTICE',
+  'packages/jvm/java-sdk/src/main/resources/META-INF/NOTICE',
+  'packages/ride/lang/jvm/src/main/resources/META-INF/NOTICE',
+];
+for (const rel of GPL_CONSUMER_NOTICES) {
+  const path = join(repo, rel);
+  const text = existsSync(path) ? readFileSync(path, 'utf8') : '';
+  if (!text.includes('io.decentralchain:curve25519') || !text.includes('GPL-3.0-only')) {
+    failures.push(`${rel}: missing the curve25519 GPL-3.0-only notice`);
+  }
+}
+const notices = join(repo, 'THIRD_PARTY_NOTICES.md');
+if (
+  !existsSync(notices) ||
+  !readFileSync(notices, 'utf8').includes('## GPL-3.0-only component: curve25519')
+) {
+  failures.push('THIRD_PARTY_NOTICES.md: missing the "GPL-3.0-only component: curve25519" section');
+}
+
 if (failures.length > 0) {
   console.error(`Licence scan FAILED (${failures.length}):\n  - ${failures.join('\n  - ')}`);
   process.exit(1);
