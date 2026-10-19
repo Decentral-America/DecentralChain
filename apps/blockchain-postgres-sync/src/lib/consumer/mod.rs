@@ -1071,7 +1071,14 @@ fn handle_asset_tickers_updates<R: RepoOperations>(
     )
 }
 
-fn squash_microblocks<R: RepoOperations>(repo: &mut R, assets_only: bool) -> Result<()> {
+/// Folds the current microblocks into the last key block: every row that points
+/// at a microblock is re-pointed at the key block, then the microblock rows are
+/// deleted and the key block takes the last microblock's (total) id.
+///
+/// # Errors
+///
+/// Returns an error if any database operation fails.
+pub fn squash_microblocks<R: RepoOperations>(repo: &mut R, assets_only: bool) -> Result<()> {
     let last_microblock_id = repo.get_total_block_id()?;
 
     if let Some(lmid) = last_microblock_id {
