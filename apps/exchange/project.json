@@ -10,6 +10,14 @@
       "options": {
         "config": "apps/exchange/playwright.config.ts"
       }
+    },
+    "verify-headers": {
+      "dependsOn": ["build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/verifyHeaders.js dist/_headers mainnet",
+        "cwd": "apps/exchange"
+      }
     }
   }
 }

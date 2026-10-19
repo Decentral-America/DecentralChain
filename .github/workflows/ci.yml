@@ -139,6 +139,13 @@ jobs:
           # still supplies the real, domain-restricted key for builds that reach users.
           VITE_SOLANA_RPC_URL: https://api.mainnet-beta.solana.com
 
+      - name: Verify exchange security headers in the built output (affected)
+        # Checks dist/_headers -- the file Cloudflare Pages actually serves -- not a source copy.
+        run: pnpm nx affected -t verify-headers
+        env:
+          # Same as the build above, so the build it depends on is an nx cache hit.
+          VITE_SOLANA_RPC_URL: https://api.mainnet-beta.solana.com
+
       - name: Typecheck (affected)
         # Build runs first so node-api dist/ files are on disk before typecheck.
         # Same JVM exclusions: no typecheck targets defined for those packages.
