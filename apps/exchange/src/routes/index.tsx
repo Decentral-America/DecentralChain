@@ -24,6 +24,7 @@ import { RootLayout } from '@/layouts/RootLayout';
 import { ErrorPage } from '@/pages/ErrorPage';
 import { dexRoutes } from './dexRoutes';
 import { lazyPage } from './lazyPage';
+import { SwapRoute } from './SwapRoute';
 import { settingsRoutes } from './settingsRoutes';
 import { walletRoutes } from './walletRoutes';
 
@@ -35,7 +36,6 @@ const OrderBook = lazyPage(() => import('@/pages/OrderBook'), 'OrderBook');
 const Analytics = lazyPage(() => import('@/pages/Analytics'), 'Analytics');
 const Messages = lazyPage(() => import('@/pages/Messages'), 'Messages');
 const CreateToken = lazyPage(() => import('@/pages/CreateToken'), 'CreateToken');
-const Swap = lazyPage(() => import('@/pages/Swap'), 'Swap');
 
 /**
  * Pathless layout that wraps onboarding routes in LegacyOnboardingTheme. Lazy,
@@ -237,19 +237,7 @@ export const router = createBrowserRouter([
                     path: 'create-token',
                   },
                   {
-                    element: (
-                      <ResponsiveScreen
-                        mobile={
-                          <MobilePageShell
-                            title="Swap"
-                            subtitle="Exchange one asset for another at the best available rate."
-                          >
-                            <Swap />
-                          </MobilePageShell>
-                        }
-                        desktop={<Swap />}
-                      />
-                    ),
+                    element: <SwapRoute />,
                     path: 'swap',
                   },
                 ],

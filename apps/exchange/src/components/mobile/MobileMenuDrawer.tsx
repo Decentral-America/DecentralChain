@@ -4,6 +4,7 @@ import { Icon, type IconName } from '@/components/atoms/Icon';
 import { BottomSheet } from '@/components/mobile/BottomSheet';
 import { AssetMark } from '@/components/mobile/primitives';
 import { GroupedList, ListRow } from '@/components/premium/GroupedList';
+import { AMM_SUPPORTED } from '@/config/amm';
 import { useAuth } from '@/contexts/AuthContext';
 
 /**
@@ -42,7 +43,9 @@ const GROUPS: MenuGroup[] = [
   {
     items: [
       { icon: 'swap', label: 'Trade', to: '/desktop/dex' },
-      { icon: 'refresh', label: 'Swap', to: '/desktop/swap' },
+      ...(AMM_SUPPORTED
+        ? [{ icon: 'refresh', label: 'Swap', to: '/desktop/swap' } satisfies MenuItem]
+        : []),
       { icon: 'externalLink', label: 'Bridge', to: '/desktop/bridge' },
       { icon: 'chart', label: 'Order book', to: '/desktop/orderbook' },
       { icon: 'search', label: 'Markets', to: '/desktop/markets' },

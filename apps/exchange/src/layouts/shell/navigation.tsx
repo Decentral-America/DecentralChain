@@ -16,6 +16,7 @@ import {
   Waypoints,
 } from 'lucide-react';
 import { type ReactElement } from 'react';
+import { AMM_SUPPORTED } from '@/config/amm';
 import { type AppTileHue } from '@/theme/tokens/semantic';
 
 export interface Destination {
@@ -102,7 +103,7 @@ const TRADE: Destination = {
   path: '/desktop/dex',
 };
 
-const SWAP: Destination = {
+export const SWAP: Destination = {
   description: 'One asset for another, at the best rate',
   hue: 'teal',
   icon: <ArrowLeftRight size="1em" />,
@@ -173,7 +174,7 @@ const SETTINGS: Destination = {
  * once, positioned so no repeated pair touches at 3, 4 or 7 columns, the three
  * counts the grid pins itself to. `navigation.test.ts` holds that.
  */
-export const LAUNCHER_TILES: Destination[] = [
+const ALL_LAUNCHER_TILES: Destination[] = [
   DASHBOARD,
   TRADE,
   SWAP,
@@ -192,6 +193,17 @@ export const LAUNCHER_TILES: Destination[] = [
 ];
 
 /**
+ * The launcher grid for a build. Swap is dropped where the network has no AMM
+ * deployment; the remaining fourteen keep the hue arrangement collision-free
+ * at every pinned column count (`navigation.test.ts` checks both lists).
+ */
+export function launcherTilesFor(ammSupported: boolean): Destination[] {
+  return ammSupported ? ALL_LAUNCHER_TILES : ALL_LAUNCHER_TILES.filter((d) => d !== SWAP);
+}
+
+export const LAUNCHER_TILES: Destination[] = launcherTilesFor(AMM_SUPPORTED);
+
+/**
  * The only column counts `LAUNCHER_TILES`' hue arrangement is collision-free
  * at, keyed by breakpoint.
  *
@@ -206,7 +218,13 @@ export const LAUNCHER_COLUMNS = { md: 7, sm: 4, xs: 3 } as const;
  * The top tabs. Four destinations and then the launcher: the places worth a
  * click from anywhere, with everything else one press away.
  */
-export const TOP_TABS: Destination[] = [DASHBOARD, PORTFOLIO, TRADE, SWAP];
+export function topTabsFor(ammSupported: boolean): Destination[] {
+  return ammSupported
+    ? [DASHBOARD, PORTFOLIO, TRADE, SWAP]
+    : [DASHBOARD, PORTFOLIO, TRADE, MARKETS];
+}
+
+export const TOP_TABS: Destination[] = topTabsFor(AMM_SUPPORTED);
 
 /** Whether a destination is the one currently open. */
 export function isCurrent(destination: Destination, pathname: string): boolean {
