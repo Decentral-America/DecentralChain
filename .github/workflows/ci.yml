@@ -139,6 +139,11 @@ jobs:
           # still supplies the real, domain-restricted key for builds that reach users.
           VITE_SOLANA_RPC_URL: https://api.mainnet-beta.solana.com
 
+      - name: Verify built SDK packages import in Node (affected)
+        # Catches build output Node cannot execute (e.g. un-lowered decorators) before
+        # it reaches npm. Packages not rebuilt in this run have no dist/ and are skipped.
+        run: node scripts/check-dist-imports.mjs
+
       - name: Verify exchange security headers in the built output (affected)
         # Checks dist/_headers -- the file Cloudflare Pages actually serves -- not a source copy.
         run: pnpm nx affected -t verify-headers

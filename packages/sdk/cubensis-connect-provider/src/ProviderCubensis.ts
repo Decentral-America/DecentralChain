@@ -20,7 +20,7 @@ import {
 import { EventEmitter } from 'typed-ts-events';
 import { keeperTxFactory, signerTxFactory } from './adapter';
 import { base16Encode, base64Encode, randomBytes, stringToBytes } from './crypto';
-import { ensureNetwork } from './decorators';
+import { applyMethodDecorators, ensureNetwork } from './decorators';
 import { TRANSACTION_TYPE } from './transaction-type';
 import { calculateFee } from './utils';
 
@@ -166,7 +166,6 @@ export class ProviderCubensis implements Provider {
    * @returns The authenticated user's address and public key
    * @throws {Error} If network mismatch or user rejects
    */
-  @ensureNetwork
   public login(): Promise<UserData> {
     // Regenerate nonce on every login to prevent replay attacks
     this._authData = { data: base16Encode(randomBytes(16)) };
@@ -196,7 +195,6 @@ export class ProviderCubensis implements Provider {
    * @param data - The message to sign (string or number, converted to string)
    * @returns The base64-encoded signature
    */
-  @ensureNetwork
   public signMessage(data: string | number): Promise<string> {
     return withTimeout(
       this._api
@@ -217,7 +215,6 @@ export class ProviderCubensis implements Provider {
    * @returns The signed order with id, proofs, and senderPublicKey
    * @throws {Error} If network mismatch or user rejects
    */
-  @ensureNetwork
   public signOrder(data: TOrderArgs): Promise<TSignedOrder> {
     return this._api
       .signOrder({
@@ -262,7 +259,6 @@ export class ProviderCubensis implements Provider {
    * @param data - Array of typed data entries to sign
    * @returns The base64-encoded signature
    */
-  @ensureNetwork
   public signTypedData(data: TypedData[]): Promise<string> {
     return withTimeout(
       this._api
@@ -286,7 +282,6 @@ export class ProviderCubensis implements Provider {
    * @returns Array of signed transactions
    */
   public async sign<T extends SignerTx>(toSign: T[]): Promise<SignedTx<T>>;
-  @ensureNetwork
   public async sign<T extends SignerTx[]>(toSign: T): Promise<SignedTx<T>> {
     const toSignWithFee = await Promise.all(toSign.map((tx) => this._txWithFee(tx)));
 
@@ -341,3 +336,10 @@ export class ProviderCubensis implements Provider {
     return Promise.resolve(tx);
   }
 }
+
+// Same network guard the methods carried as @ensureNetwork (see applyMethodDecorators).
+applyMethodDecorators(ProviderCubensis, 'login', ensureNetwork);
+applyMethodDecorators(ProviderCubensis, 'signMessage', ensureNetwork);
+applyMethodDecorators(ProviderCubensis, 'signOrder', ensureNetwork);
+applyMethodDecorators(ProviderCubensis, 'signTypedData', ensureNetwork);
+applyMethodDecorators(ProviderCubensis, 'sign', ensureNetwork);
