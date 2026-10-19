@@ -17,12 +17,18 @@ def headers(start, stop):
 
 
 class FakeEnv:
-    def __init__(self, dup=False, short=False, fail_on=None, above_tip=False):
+    def __init__(self, dup=False, short=False, fail_on=None, above_tip=False,
+                 moving=False, boom=False):
         self.dup, self.short, self.fail_on, self.above_tip = dup, short, fail_on, above_tip
+        self.moving, self.boom = moving, boom
+        self.height_reads = 0
         self.calls = 0
 
     def node_get(self, base, path):
         if path == "/blocks/height":
+            self.height_reads += 1
+            if self.moving and self.height_reads > 1:
+                return {"height": TIP + 3}  # chain advanced while the run was in flight
             return {"height": TIP}
         _, _, _, _, a, b = path.split("/")
         hs = headers(int(a), int(b))
@@ -32,7 +38,11 @@ class FakeEnv:
         self.calls += 1
         if self.fail_on == self.calls:
             raise subprocess.CalledProcessError(1, "psql", stderr="boom")
+        if self.boom:
+            raise RuntimeError("unexpected")
         if "max(height)" in sql:
+            if self.moving:
+                return [[str(TIP + 3)]]
             return [[str(TIP + 3 if self.above_tip else TIP)]]
         if "FROM blocks_microblocks" in sql:
             rows = [[str(h), f"id{h}"] for h in range(1, 6)]
@@ -78,6 +88,19 @@ class ParityTests(unittest.TestCase):
         code, out, _ = run_main(FakeEnv(above_tip=True))
         self.assertEqual(code, 1)
         self.assertIn("id_mismatches=1 count_mismatches=1", out.splitlines()[-1])
+
+    def test_moving_tip_is_not_a_mismatch(self):
+        env = FakeEnv(moving=True)  # start tip 7, BPS max 10, fresh tip 10
+        code, out, _ = run_main(env)
+        self.assertEqual(code, 0)
+        self.assertEqual(out.splitlines()[-1],
+                         "RESULT id_mismatches=0 count_mismatches=0 heights=1-5")
+        self.assertEqual(env.height_reads, 2)
+
+    def test_unexpected_exception_exits_2(self):
+        code, _, err = run_main(FakeEnv(boom=True))
+        self.assertEqual(code, 2)
+        self.assertIn("unexpected error: RuntimeError", err)
 
     def test_from_must_be_positive(self):
         out, err = io.StringIO(), io.StringIO()

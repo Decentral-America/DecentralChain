@@ -14,7 +14,7 @@ tip is skipped) it checks:
     header's transactionCount. Child tables (including txs_19) inherit from txs,
     so they are covered through inheritance, not queried separately.
 It also reports the maximum height in txs and blocks_microblocks; any row above
-the node tip is counted as a mismatch.
+the node tip (re-read just before that comparison) is counted as a mismatch.
 
 Exit status: 0 = full parity, 1 = at least one mismatch, 2 = usage/connection/query
 error (a crash never exits 1).
@@ -23,6 +23,7 @@ The final line is machine-readable:
 """
 
 import argparse
+import http.client
 import json
 import subprocess
 import sys
@@ -76,8 +77,11 @@ def main() -> int:
         return run(args)
     except subprocess.CalledProcessError as exc:
         print(f"psql failed (exit {exc.returncode}): {exc.stderr}", file=sys.stderr)
-    except (OSError, ValueError, KeyError) as exc:  # includes HTTPError/URLError
+    except (OSError, ValueError, KeyError, TypeError, http.client.HTTPException) as exc:
+        # OSError includes HTTPError/URLError
         print(f"error: {type(exc).__name__}: {exc}", file=sys.stderr)
+    except Exception as exc:  # noqa: BLE001 - a crash must never look like a mismatch (exit 1)
+        print(f"unexpected error: {type(exc).__name__}: {exc}", file=sys.stderr)
     return 2
 
 
@@ -125,6 +129,9 @@ def run(args) -> int:
 
     max_txs = int(psql(args.db, "SELECT coalesce(max(height), 0) FROM txs")[0][0])
     max_blk = int(psql(args.db, "SELECT coalesce(max(height), 0) FROM blocks_microblocks")[0][0])
+    # The chain keeps growing while the comparison runs, so judge "above tip"
+    # against a tip read right now, not the one read at the start.
+    tip = int(node_get(args.node, "/blocks/height")["height"])
     print(f"max height: node={tip} txs={max_txs} blocks_microblocks={max_blk} checked_to={end}")
     if max_blk > tip:
         id_mismatch.append(max_blk)
