@@ -194,7 +194,9 @@ jobs:
         run: pnpm exec biome format --reporter=github .
 
       - name: License scan
-        run: pnpm licenses list --prod 2>&1 | tee /tmp/licenses.txt && echo "License scan complete ($(wc -l < /tmp/licenses.txt) entries)"
+        # Gating (AUD-166): production npm dependencies of every workspace project, our own
+        # package licences and LICENSE files, and pom.xml-vs-LICENSE for the JVM packages.
+        run: node scripts/check-licenses.mjs
 
       - name: Self-healing CI
         # Report task failures to Nx Cloud and surface fix suggestions.
