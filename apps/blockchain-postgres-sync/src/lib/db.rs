@@ -3,6 +3,7 @@ use deadpool_diesel::{Manager as DManager, Pool as DPool, Runtime};
 use diesel::Connection;
 use diesel::pg::PgConnection;
 use diesel::r2d2::{ConnectionManager, Pool};
+use diesel_migrations::{EmbeddedMigrations, MigrationHarness, embed_migrations};
 use std::time::Duration;
 
 use crate::config::postgres::Config;
@@ -47,4 +48,23 @@ pub fn unpooled(config: &Config) -> Result<PgConnection> {
     let db_url = config.database_url();
 
     PgConnection::establish(&db_url).map_err(|err| Error::new(AppError::ConnectionError(err)))
+}
+
+/// The schema migrations shipped in this crate (`migrations/`).
+pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!();
+
+/// Applies every pending embedded migration and returns the applied versions.
+///
+/// The consumer calls this on start, so a fresh or reset database, or a new image
+/// with new migrations, needs no separate `migration up` step.
+///
+/// # Errors
+///
+/// Returns an error if the connection cannot be established or a migration fails.
+pub fn run_pending_migrations(config: &Config) -> Result<Vec<String>> {
+    let mut conn = unpooled(config)?;
+    let applied = conn
+        .run_pending_migrations(MIGRATIONS)
+        .map_err(|e| anyhow::anyhow!("running schema migrations failed: {e}"))?;
+    Ok(applied.into_iter().map(|v| v.to_string()).collect())
 }

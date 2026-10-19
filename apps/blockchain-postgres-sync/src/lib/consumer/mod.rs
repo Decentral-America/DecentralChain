@@ -1,3 +1,4 @@
+pub mod ancestry;
 pub mod models;
 pub mod repo;
 pub mod resubscribe;
@@ -108,6 +109,7 @@ pub trait UpdatesSource {
 /// # Errors
 ///
 /// Returns an error if the updates source, database, or block-processing logic fails.
+/// Returns an error if the stored chain differs from the node's (see [`ancestry::verify`]).
 ///
 /// # Panics
 ///
@@ -120,7 +122,7 @@ pub async fn start<T, R>(
     last_synced_height: Arc<AtomicU32>,
 ) -> Result<()>
 where
-    T: UpdatesSource + Send + 'static,
+    T: UpdatesSource + ancestry::BlockIdSource + Send + 'static,
     R: repo::Repo + Clone + Send + 'static,
 {
     let Config {
@@ -141,6 +143,11 @@ where
     // that never grows and is never freed — acceptable for a long-running daemon process.
     let asset_storage_address: Option<&'static str> =
         asset_storage_address.map(|a| &*Box::leak(a.into_boxed_str()));
+
+    // Refuse to resume an index built from another chain (re-genesis) or fork.
+    // Runs on every (re)subscribe; a node that is still catching up is retried.
+    ancestry::verify(&updates_src, &repo).await?;
+
     let starting_from_height = {
         repo.transaction(move |ops| {
             match ops.get_blocks_rollback_to(start_rollback_depth, rollback_step) {

@@ -147,6 +147,19 @@ impl RepoOperations for PgRepoOperations<'_> {
             .map_err(build_err_fn("Cannot get total block id"))
     }
 
+    fn get_key_block_id_at_height(&mut self, height: i32) -> Result<Option<String>> {
+        blocks_microblocks::table
+            .select(blocks_microblocks::id)
+            .filter(blocks_microblocks::height.eq(height))
+            .filter(blocks_microblocks::time_stamp.is_not_null())
+            .order(blocks_microblocks::uid.desc())
+            .first(self.conn)
+            .optional()
+            .map_err(build_err_fn(format!(
+                "Cannot get key block id at height {height}"
+            )))
+    }
+
     fn insert_blocks_or_microblocks(&mut self, blocks: &[BlockMicroblock]) -> Result<Vec<i64>> {
         if blocks.is_empty() {
             return Ok(vec![]);

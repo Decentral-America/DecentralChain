@@ -1,7 +1,7 @@
-//! Regression test for AUD-016: a microblock squash must keep CommitToGeneration
+//! Regression test for AUD-016: a microblock squash must keep `CommitToGeneration`
 //! (type 19) transactions and re-point them at the key block.
 //!
-//! Run with: cargo test --test txs19_squash
+//! Run with: cargo test --test `txs19_squash`
 
 #![allow(clippy::unwrap_used)]
 

@@ -48,6 +48,9 @@ pub trait RepoOperations {
 
     fn get_total_block_id(&mut self) -> Result<Option<String>>;
 
+    /// Id of the key block (not a microblock) stored at `height`, if any.
+    fn get_key_block_id_at_height(&mut self, height: i32) -> Result<Option<String>>;
+
     fn insert_blocks_or_microblocks(&mut self, blocks: &[BlockMicroblock]) -> Result<Vec<i64>>;
 
     fn change_block_id(&mut self, block_uid: i64, new_block_id: &str) -> Result<()>;

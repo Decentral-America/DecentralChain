@@ -51,7 +51,7 @@ struct ConfigFlat {
     redis_url: Option<String>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct Config {
     pub asset_storage_address: Option<String>,
     pub assets_only: bool,
@@ -65,6 +65,60 @@ pub struct Config {
     pub metrics_port: u16,
     /// Redis URL for pub/sub publishing. `None` disables publishing.
     pub redis_url: Option<String>,
+}
+
+/// Replaces the password in a URL's userinfo (`scheme://user:password@host`) with `***`.
+///
+/// URLs without credentials are returned unchanged. Used by the manual `Debug` impl so the
+/// startup log never contains a Redis or gRPC password.
+fn redact_url(url: &str) -> String {
+    let Some(scheme_end) = url.find("://").map(|i| i + 3) else {
+        return url.to_owned();
+    };
+    let rest = &url[scheme_end..];
+    let authority_end = rest.find(['/', '?', '#']).unwrap_or(rest.len());
+    let authority = &rest[..authority_end];
+    // The userinfo ends at the last '@' of the authority.
+    let Some(at) = authority.rfind('@') else {
+        return url.to_owned();
+    };
+    let userinfo = &authority[..at];
+    let redacted = userinfo
+        .split_once(':')
+        .map_or_else(|| userinfo.to_owned(), |(user, _)| format!("{user}:***"));
+    format!(
+        "{}{}@{}{}",
+        &url[..scheme_end],
+        redacted,
+        &authority[at + 1..],
+        &rest[authority_end..]
+    )
+}
+
+// Manual Debug implementation: the startup log prints this struct, and the URLs may carry
+// credentials (e.g. `redis://:password@host`).
+impl std::fmt::Debug for Config {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Config")
+            .field(
+                "asset_storage_address",
+                &self.asset_storage_address.as_deref().map(redact_url),
+            )
+            .field("assets_only", &self.assets_only)
+            .field(
+                "blockchain_updates_url",
+                &redact_url(&self.blockchain_updates_url),
+            )
+            .field("chain_id", &self.chain_id)
+            .field("max_wait_time", &self.max_wait_time)
+            .field("starting_height", &self.starting_height)
+            .field("updates_per_request", &self.updates_per_request)
+            .field("start_rollback_depth", &self.start_rollback_depth)
+            .field("rollback_step", &self.rollback_step)
+            .field("metrics_port", &self.metrics_port)
+            .field("redis_url", &self.redis_url.as_deref().map(redact_url))
+            .finish()
+    }
 }
 
 /// # Errors
@@ -121,6 +175,28 @@ mod tests {
             metrics_port: 9090,
             redis_url: None,
         }
+    }
+
+    #[test]
+    fn debug_output_never_contains_credentials() {
+        let mut c = make_defaults();
+        c.redis_url = Some("redis://:s3cr3tPass@redis.internal:6379/0".into());
+        c.blockchain_updates_url = "http://grpcuser:grpcPass@node:6881".into();
+        c.asset_storage_address = Some("https://bob:assetPass@assets.example/".into());
+        let out = format!("{c:?}");
+        for secret in ["s3cr3tPass", "grpcPass", "assetPass"] {
+            assert!(!out.contains(secret), "{secret} leaked: {out}");
+        }
+        assert!(out.contains("redis://:***@redis.internal:6379/0"), "{out}");
+        assert!(out.contains("http://grpcuser:***@node:6881"), "{out}");
+    }
+
+    #[test]
+    fn redact_url_leaves_credential_free_urls_alone() {
+        assert_eq!(redact_url("http://node:6881"), "http://node:6881");
+        assert_eq!(redact_url("redis://host:6379/0"), "redis://host:6379/0");
+        assert_eq!(redact_url("not a url"), "not a url");
+        assert_eq!(redact_url("http://user@host/p@th"), "http://user@host/p@th");
     }
 
     #[test]
