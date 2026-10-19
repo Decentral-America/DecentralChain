@@ -5,6 +5,7 @@ import { type ActionFunctionArgs, type LoaderFunctionArgs } from 'react-router';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
 import { isAllowedNodeUrl } from '@/lib/nodeUrlAllowlist';
+import { requireTreasuryUser } from '@/lib/treasuryAccess';
 import { getUnsweptWallets, markSwept } from '@/lib/treasuryWallets';
 import {
   isFunded,
@@ -216,8 +217,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const user = await getUser(request);
-  if (!user) return new Response('Unauthorized', { status: 401 });
+  const access = await requireTreasuryUser(request);
+  if (!access.ok) return access.response;
+  const user = access.user;
 
   const body = (await request.json()) as Record<string, unknown>;
   const intent = body.intent;

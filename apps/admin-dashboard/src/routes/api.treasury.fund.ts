@@ -1,18 +1,11 @@
 import { broadcast, massTransfer, waitForTx } from '@decentralchain/transactions';
 import { address } from '@decentralchain/ts-lib-crypto';
 import { type ActionFunctionArgs } from 'react-router';
-import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 import { logger } from '@/lib/logger';
 import { isAllowedNodeUrl } from '@/lib/nodeUrlAllowlist';
 import { createIdempotencyCache, createRateLimiter } from '@/lib/rateLimiter';
+import { requireTreasuryUser } from '@/lib/treasuryAccess';
 import { generateWallets, insertFundedWallets } from '@/lib/treasuryWallets';
-
-async function getUser(request: Request): Promise<string | null> {
-  const token = getTokenFromRequest(request);
-  if (!token) return null;
-  const payload = await verifyToken(token);
-  return payload?.username ?? null;
-}
 
 const MAX_RECIPIENTS_PER_TX = 100;
 const BASE_MASS_TRANSFER_FEE = 100_000;
@@ -67,8 +60,9 @@ function validateFundParams(
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const user = await getUser(request);
-  if (!user) return new Response('Unauthorized', { status: 401 });
+  const access = await requireTreasuryUser(request);
+  if (!access.ok) return access.response;
+  const user = access.user;
 
   const rateLimitResult = checkRateLimit(user);
   if (!rateLimitResult.ok) {
