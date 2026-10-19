@@ -90,6 +90,11 @@ function isFullBlock(b: IBlock | IBlockHeader): b is IBlock {
   return 'transactions' in b;
 }
 
+/** The node returns feeAssetId on transactions; the SDK block type does not declare it. */
+function feeAssetIdOf(tx: unknown): string | null | undefined {
+  return (tx as { feeAssetId?: string | null }).feeAssetId;
+}
+
 export default function BlockDetail() {
   const { block: serverBlock } = useLoaderData() as LoaderData;
   const navigate = useNavigate();
@@ -105,11 +110,7 @@ export default function BlockDetail() {
   const { isLoading, error } = queryResult;
   const block = queryResult.data ?? serverBlock ?? null;
   const feeAssets = useAssetMetas(
-    block && isFullBlock(block)
-      ? assetIdsOf(
-          ...block.transactions.map((tx) => (tx as { feeAssetId?: string | null }).feeAssetId),
-        )
-      : [],
+    block && isFullBlock(block) ? assetIdsOf(...block.transactions.map(feeAssetIdOf)) : [],
   );
 
   if (error) {
@@ -267,12 +268,7 @@ export default function BlockDetail() {
                         </p>
                       </div>
                       <Badge variant="secondary">
-                        Fee:{' '}
-                        {formatAssetAmount(
-                          tx.fee ?? 0,
-                          (tx as { feeAssetId?: string | null }).feeAssetId,
-                          feeAssets,
-                        )}
+                        Fee: {formatAssetAmount(tx.fee ?? 0, feeAssetIdOf(tx), feeAssets)}
                       </Badge>
                     </div>
                   ))}

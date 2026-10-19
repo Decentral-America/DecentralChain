@@ -30,6 +30,27 @@ describe('formatAmount', () => {
   });
 });
 
+describe('formatAmount exactness', () => {
+  it('keeps every digit above 2^53', () => {
+    expect(formatAmount('123456789012345678', 8)).toBe('1,234,567,890.12345678');
+    expect(formatAmount(2n ** 53n + 1n, 0)).toBe('9,007,199,254,740,993');
+    expect(formatAmount('9007199254740993', 0)).toBe('9,007,199,254,740,993');
+  });
+
+  it('handles 0 decimals, trailing zeros and typical values', () => {
+    expect(formatAmount(1234567, 0)).toBe('1,234,567');
+    expect(formatAmount('150000000', 8)).toBe('1.5');
+    expect(formatAmount(2000000000, 8)).toBe('20');
+  });
+
+  it('handles negatives and non-integer input without throwing', () => {
+    expect(formatAmount('-150000000', 8)).toBe('-1.5');
+    expect(formatAmount(-5, 8)).toBe('-0.00000005');
+    expect(formatAmount('abc')).toBe('NaN');
+    expect(formatAmount(150000000.5, 8)).toBe('1.50000001');
+  });
+});
+
 describe('truncate', () => {
   it('truncates long strings', () => {
     const long = 'abcdefghijklmnopqrstuvwxyz1234567890';

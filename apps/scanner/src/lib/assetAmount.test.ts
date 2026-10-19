@@ -21,6 +21,13 @@ describe('formatAssetAmount', () => {
     expect(formatAssetAmount(100_000_000, 'DCC', assets)).toBe('1 DCC');
   });
 
+  it('does not round amounts above 2^53 base units', () => {
+    expect(formatAssetAmount('123456789012345678', 'DCC', assets)).toBe(
+      '1,234,567,890.12345678 DCC',
+    );
+    expect(formatAssetAmount('9007199254740993', AUDT, assets)).toBe('90,071,992,547,409.93 AUDT');
+  });
+
   it('labels raw base units when the asset could not be resolved, never as DCC', () => {
     expect(formatAssetAmount(10_000_000, 'UnknownAssetId', assets)).toBe('10,000,000 units');
   });

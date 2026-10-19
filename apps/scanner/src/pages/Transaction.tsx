@@ -72,7 +72,16 @@ export async function loader({ request }: { request: Request }): Promise<LoaderD
   }
   const ids = assetIdsOf(amountAssetIdOf(tx), tx.feeAssetId);
   const assets =
-    ids.length > 0 ? toAssetMetaMap(await fetchBatchAssetDetails(ids).catch(() => new Map())) : {};
+    ids.length > 0
+      ? toAssetMetaMap(
+          await fetchBatchAssetDetails(ids).catch((error: unknown) => {
+            // Amounts then render as raw units; the page itself still loads.
+            // biome-ignore lint/suspicious/noConsole: debug-level trace of a swallowed lookup failure
+            console.debug('[transaction] asset metadata lookup failed', error);
+            return new Map();
+          }),
+        )
+      : {};
   return { assets, tx };
 }
 
