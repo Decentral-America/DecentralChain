@@ -13,6 +13,7 @@
 
 pub mod health;
 pub mod messages;
+pub mod multitopic;
 pub mod shard;
 pub mod topic;
 pub mod websocket;

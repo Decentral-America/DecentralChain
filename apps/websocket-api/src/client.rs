@@ -3,7 +3,7 @@ use crate::messages::OutcomeMessage;
 use crate::metrics::{
     MESSAGES, TOPIC_SUBSCRIBED, TOPIC_UNSUBSCRIBED, TOPICS, TOPICS_MAP_CAPACITY, TOPICS_MAP_SIZE,
 };
-use crate::topic::Topic;
+use crate::topic::{StateSingle, Topic};
 use axum::extract::ws::Message;
 use prometheus::HistogramTimer;
 use serde::{Deserialize, Serialize};
@@ -439,6 +439,13 @@ impl KeyInfo {
     }
 }
 
+/// A multi-topic that gains a subtopic: its new subtopic set and direct subscribers.
+pub type GainingMultitopic = (
+    Topic,
+    HashSet<Topic>,
+    Vec<(ClientId, ClientSubscriptionKey)>,
+);
+
 #[derive(Clone, Debug)]
 pub struct MultitopicUpdate {
     pub added_subtopics: Vec<Topic>,
@@ -624,6 +631,41 @@ impl ClientIdsByTopics {
             .unwrap_or_default()
     }
 
+    /// Multi-topics with direct subscribers whose filter matches `topic` but whose
+    /// resolved subtopic set does not contain it yet (and is below `max_subtopics`).
+    /// Returns each one's new subtopic set and its direct subscribers.
+    pub fn multitopics_gaining(
+        &self,
+        topic: &Topic,
+        single: &StateSingle,
+        max_subtopics: usize,
+    ) -> Vec<GainingMultitopic> {
+        self.0
+            .iter()
+            .filter(|(mt, info)| {
+                mt.is_multi_topic()
+                    && !info.clients.is_empty()
+                    && !info.subtopics.contains(topic)
+                    && info.subtopics.len() < max_subtopics
+            })
+            .filter(|(mt, _)| {
+                mt.data()
+                    .as_state_multi()
+                    .is_some_and(|f| f.matches(single))
+            })
+            .map(|(mt, info)| {
+                let mut subtopics = info.subtopics.clone();
+                subtopics.insert(topic.clone());
+                let clients = info
+                    .clients
+                    .iter()
+                    .map(|(id, key)| (*id, key.clone()))
+                    .collect();
+                (mt.clone(), subtopics, clients)
+            })
+            .collect()
+    }
+
     pub fn topics_iter(&self) -> impl Iterator<Item = (&Topic, &KeyInfo)> {
         self.0.iter()
     }
@@ -742,6 +784,38 @@ mod tests {
         let update2 = store.update_multitopic_info(multitopic, subtopics);
         assert!(update2.added_subtopics.is_empty());
 
+        Ok(())
+    }
+
+    #[test]
+    fn multitopics_gaining_only_returns_matching_multitopics_missing_the_topic()
+    -> Result<(), Box<dyn std::error::Error>> {
+        let mt = Topic::parse_str("topic://state?address__in[]=3MA&key__match_any[]=bal_*")?;
+        let mut store = ClientIdsByTopics::default();
+        store.add_subscription(mt.clone(), 7, ClientSubscriptionKey::new(mt.to_string()));
+        let _ = store.update_multitopic_info(mt.clone(), HashSet::new());
+
+        let new_key = Topic::parse_str("topic://state/3MA/bal_x")?;
+        let single = new_key.data().as_state_single().ok_or("single")?;
+        let gaining = store.multitopics_gaining(&new_key, &single, 1000);
+        assert_eq!(gaining.len(), 1);
+        assert!(gaining[0].1.contains(&new_key));
+        assert_eq!(gaining[0].2[0].0, 7);
+
+        let other = Topic::parse_str("topic://state/3MA/other")?;
+        let other_single = other.data().as_state_single().ok_or("single")?;
+        assert!(
+            store
+                .multitopics_gaining(&other, &other_single, 1000)
+                .is_empty()
+        );
+
+        let _ = store.update_multitopic_info(mt, gaining[0].1.clone());
+        assert!(
+            store
+                .multitopics_gaining(&new_key, &single, 1000)
+                .is_empty()
+        );
         Ok(())
     }
 }

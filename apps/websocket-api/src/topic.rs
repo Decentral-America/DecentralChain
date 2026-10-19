@@ -103,6 +103,36 @@ impl<'a> TopicData<'a> {
             key: key.to_owned(),
         })
     }
+
+    /// If this is a state multi-topic with at least one address and one key
+    /// pattern (and nothing else), returns its filter.
+    pub fn as_state_multi(&self) -> Option<StateMulti> {
+        let query = self.uri.strip_prefix("topic://state?")?;
+        let mut addresses = Vec::new();
+        let mut key_patterns = Vec::new();
+        for pair in query.split('&').filter(|p| !p.is_empty()) {
+            let (name, value) = pair.split_once('=')?;
+            if value.is_empty() {
+                return None;
+            }
+            match name {
+                "address__in[]" | "address__in%5B%5D" => addresses.push(value.to_owned()),
+                "key__match_any[]" | "key__match_any%5B%5D" => key_patterns.push(value.to_owned()),
+                _ => return None,
+            }
+        }
+        if addresses.is_empty() || key_patterns.is_empty() {
+            return None;
+        }
+        addresses.sort();
+        addresses.dedup();
+        key_patterns.sort();
+        key_patterns.dedup();
+        Some(StateMulti {
+            addresses,
+            key_patterns,
+        })
+    }
 }
 
 /// Address and key from a concrete `topic://state/ADDRESS/KEY` URI.
@@ -110,6 +140,83 @@ impl<'a> TopicData<'a> {
 pub struct StateSingle {
     pub address: String,
     pub key: String,
+}
+
+/// Filter of a state multi-topic:
+/// `topic://state?address__in[]=ADDR&...&key__match_any[]=PATTERN&...`.
+/// `*` in a pattern matches any run of characters; every other character is literal.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct StateMulti {
+    pub addresses: Vec<String>,
+    pub key_patterns: Vec<String>,
+}
+
+impl StateMulti {
+    /// Whether the concrete state topic `single` belongs to this multi-topic.
+    pub fn matches(&self, single: &StateSingle) -> bool {
+        self.addresses.iter().any(|a| a == &single.address)
+            && self.key_patterns.iter().any(|p| glob_match(p, &single.key))
+    }
+
+    /// Redis `SCAN MATCH` patterns that cover every concrete topic this filter can
+    /// match (Redis glob specials other than `*` are escaped).
+    pub fn scan_patterns(&self) -> Vec<String> {
+        let mut out = Vec::with_capacity(self.addresses.len() * self.key_patterns.len());
+        for address in &self.addresses {
+            for pattern in &self.key_patterns {
+                out.push(format!(
+                    "topic://state/{}/{}",
+                    escape_redis_glob(address, false),
+                    escape_redis_glob(pattern, true)
+                ));
+            }
+        }
+        out
+    }
+}
+
+/// `*` matches any run of characters (including none); everything else is literal.
+fn glob_match(pattern: &str, text: &str) -> bool {
+    let p = pattern.as_bytes();
+    let t = text.as_bytes();
+    let (mut pi, mut ti) = (0usize, 0usize);
+    let mut star: Option<usize> = None;
+    let mut mark = 0usize;
+    while ti < t.len() {
+        if pi < p.len() && p[pi] == b'*' {
+            star = Some(pi);
+            pi += 1;
+            mark = ti;
+        } else if pi < p.len() && p[pi] == t[ti] {
+            pi += 1;
+            ti += 1;
+        } else if let Some(s) = star {
+            pi = s + 1;
+            mark += 1;
+            ti = mark;
+        } else {
+            return false;
+        }
+    }
+    while pi < p.len() && p[pi] == b'*' {
+        pi += 1;
+    }
+    pi == p.len()
+}
+
+fn escape_redis_glob(s: &str, keep_star: bool) -> String {
+    let mut out = String::with_capacity(s.len());
+    for c in s.chars() {
+        match c {
+            '*' if keep_star => out.push('*'),
+            '*' | '?' | '[' | ']' | '\\' => {
+                out.push('\\');
+                out.push(c);
+            }
+            _ => out.push(c),
+        }
+    }
+    out
 }
 
 /// Percent-encode any non-ASCII bytes in `s`, leaving ASCII characters unchanged.
@@ -206,5 +313,60 @@ mod tests {
         let mut map = HashMap::new();
         map.insert(t1, "value");
         assert_eq!(map[&t2], "value");
+    }
+
+    #[test]
+    fn multi_topic_filter_parses_addresses_and_patterns() {
+        let t = Topic::parse_str(
+            "topic://state?address__in[]=3MA&address__in[]=3MB&key__match_any[]=bal_*&key__match_any[]=x",
+        )
+        .unwrap();
+        let f = t.data().as_state_multi().unwrap();
+        assert_eq!(f.addresses, vec!["3MA".to_owned(), "3MB".to_owned()]);
+        assert_eq!(f.key_patterns, vec!["bal_*".to_owned(), "x".to_owned()]);
+    }
+
+    #[test]
+    fn multi_topic_filter_rejects_unknown_or_missing_parts() {
+        for uri in [
+            "topic://state?address__in[]=3MA",
+            "topic://state?key__match_any[]=*",
+            "topic://state?address__in[]=3MA&key__match_any[]=*&bogus=1",
+            "topic://state?address__in[]=&key__match_any[]=*",
+        ] {
+            let t = Topic::parse_str(uri).unwrap();
+            assert!(t.data().as_state_multi().is_none(), "{uri}");
+        }
+    }
+
+    #[test]
+    fn multi_topic_filter_matches_with_star_globs_only() {
+        let f = StateMulti {
+            addresses: vec!["3MA".to_owned()],
+            key_patterns: vec!["%s%s__staked__*".to_owned(), "exact?".to_owned()],
+        };
+        let single = |a: &str, k: &str| StateSingle {
+            address: a.to_owned(),
+            key: k.to_owned(),
+        };
+        assert!(f.matches(&single("3MA", "%s%s__staked__abc")));
+        assert!(f.matches(&single("3MA", "exact?")));
+        assert!(
+            !f.matches(&single("3MA", "exactX")),
+            "? is literal, not a wildcard"
+        );
+        assert!(!f.matches(&single("3MB", "%s%s__staked__abc")));
+    }
+
+    #[test]
+    fn scan_patterns_escape_redis_glob_specials_except_star() {
+        let f = StateMulti {
+            addresses: vec!["3MA".to_owned()],
+            key_patterns: vec!["a[1]?*".to_owned()],
+        };
+        assert_eq!(
+            f.scan_patterns(),
+            vec![r"topic://state/3MA/a\[1\]\?*".to_owned()]
+        );
     }
 }

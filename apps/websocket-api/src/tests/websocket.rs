@@ -56,6 +56,15 @@ impl Repo for MockRepo {
     async fn get_by_keys(&self, keys: Vec<String>) -> Result<Vec<Option<String>>, Error> {
         Ok(vec![Some("\"mocked_value\"".to_owned()); keys.len()])
     }
+    /// Two current keys for `key_*` on the test address; nothing for other patterns.
+    async fn scan_keys(&self, pattern: String, _limit: usize) -> Result<Vec<String>, Error> {
+        let prefix = "topic://state/3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr/";
+        if pattern == format!("{prefix}key_*") {
+            Ok(vec![format!("{prefix}key_a"), format!("{prefix}key_b")])
+        } else {
+            Ok(vec![])
+        }
+    }
     async fn refresh(&self, topics: Vec<Topic>) -> Result<HashMap<Topic, Instant>, Error> {
         Ok(topics.into_iter().map(|t| (t, Instant::now())).collect())
     }
@@ -425,4 +434,45 @@ async fn subscription_cap_per_connection_returns_error_code_4() {
     .await;
     let v: Value = serde_json::from_str(extract_text(&receive_non_ping(&mut ws).await)).unwrap();
     assert_eq!(v["type"], "subscribed");
+}
+
+/// A state multi-topic resolves immediately to the current values of every
+/// matching key (here two), instead of waiting forever for a list key.
+#[tokio::test]
+async fn multitopic_subscription_resolves_current_keys() {
+    let (server, _rx) = make_server();
+    let mut ws = server.get_websocket("/ws").await.into_websocket().await;
+    let topic =
+        "topic://state?address__in[]=3MNXvMCn9FxPPjc4oe9oRGUSMDBXoQvUAdr&key__match_any[]=key_*";
+
+    ws.send_message(WsMessage::Text(
+        json!({ "type": "subscribe", "topic": topic })
+            .to_string()
+            .into(),
+    ))
+    .await;
+    let v: Value = serde_json::from_str(extract_text(&receive_non_ping(&mut ws).await)).unwrap();
+    assert_eq!(v["type"], "subscribed", "got: {v}");
+    assert_eq!(v["topic"], topic);
+    let values: Vec<String> = serde_json::from_str(v["value"].as_str().unwrap()).unwrap();
+    assert_eq!(values.len(), 2, "one value per matching key: {values:?}");
+}
+
+/// Oversized multi-topics are refused with error code 4.
+#[tokio::test]
+async fn multitopic_with_too_many_addresses_is_refused() {
+    let (server, _rx) = make_server();
+    let mut ws = server.get_websocket("/ws").await.into_websocket().await;
+    let addresses: String = (0..101).map(|i| format!("address__in[]=3MA{i}&")).collect();
+    let topic = format!("topic://state?{addresses}key__match_any[]=*");
+
+    ws.send_message(WsMessage::Text(
+        json!({ "type": "subscribe", "topic": topic })
+            .to_string()
+            .into(),
+    ))
+    .await;
+    let v: Value = serde_json::from_str(extract_text(&receive_non_ping(&mut ws).await)).unwrap();
+    assert_eq!(v["type"], "error", "got: {v}");
+    assert_eq!(v["code"], 4u16);
 }

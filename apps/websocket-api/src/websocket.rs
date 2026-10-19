@@ -13,7 +13,7 @@ use crate::metrics::{
 };
 use crate::repo::Repo;
 use crate::shard::Sharded;
-use crate::topic::{StateSingle, Topic};
+use crate::topic::{StateMulti, StateSingle, Topic};
 
 use self::values::{DataEntry, TopicValue, TopicValues};
 
@@ -21,6 +21,11 @@ const INVALID_MESSAGE_ERROR_CODE: u16 = 1;
 const ALREADY_SUBSCRIBED_ERROR_CODE: u16 = 2;
 const INVALID_TOPIC_ERROR_CODE: u16 = 3;
 const SUBSCRIPTION_LIMIT_ERROR_CODE: u16 = 4;
+
+/// Bounds for one state multi-topic subscription.
+const MAX_MULTITOPIC_ADDRESSES: usize = 100;
+const MAX_MULTITOPIC_KEY_PATTERNS: usize = 20;
+pub const MAX_MULTITOPIC_SUBTOPICS: usize = 1000;
 
 #[derive(Clone, Debug)]
 pub struct HandleConnectionOptions {
@@ -265,7 +270,19 @@ async fn handle_income_message<R: Repo>(
                 "handling subscription"
             );
 
-            let value = repo.get_by_key(&canonical_key).await?;
+            // A state multi-topic resolves to the JSON list of its current concrete
+            // topics (computed here from the state keys BPS SETs); a single topic
+            // reads its current value.
+            let value = if topic.is_multi_topic() {
+                let filter = topic
+                    .data()
+                    .as_state_multi()
+                    .ok_or_else(|| Error::InvalidTopicFromClient(client_key.as_str().to_owned()))?;
+                let subtopics = resolve_multitopic(repo.as_ref(), &filter).await?;
+                Some(serde_json::to_string(&subtopics)?)
+            } else {
+                repo.get_by_key(&canonical_key).await?
+            };
             tracing::debug!(
                 topic = canonical_key,
                 has_value = value.is_some(),
@@ -467,6 +484,10 @@ pub async fn updates_handler<R: Repo>(
     while let Some((topic, value)) = updates_receiver.recv().await {
         REDIS_QUEUE_DEPTH.dec();
 
+        if let Some(single) = topic.data().as_state_single() {
+            expand_multitopics(&topic, &single, &clients, &topics).await;
+        }
+
         // Arc so we can share a single allocation across all per-shard futures.
         let subscribed_clients = Arc::new(topics.read().await.get_subscribed_clients(&topic));
         let has_clients = !subscribed_clients.is_empty();
@@ -598,6 +619,85 @@ pub async fn updates_handler<R: Repo>(
             elapsed_ms = broadcast_start.elapsed().as_millis(),
             "update broadcast complete"
         );
+    }
+}
+
+/// Concrete state topics that currently exist for `filter`, sorted.
+async fn resolve_multitopic<R: Repo>(repo: &R, filter: &StateMulti) -> Result<Vec<String>, Error> {
+    if filter.addresses.len() > MAX_MULTITOPIC_ADDRESSES
+        || filter.key_patterns.len() > MAX_MULTITOPIC_KEY_PATTERNS
+    {
+        return Err(Error::SubscriptionLimit(format!(
+            "a multi-topic may list at most {MAX_MULTITOPIC_ADDRESSES} addresses and \
+             {MAX_MULTITOPIC_KEY_PATTERNS} key patterns"
+        )));
+    }
+    let mut found = std::collections::BTreeSet::new();
+    for pattern in filter.scan_patterns() {
+        for key in repo.scan_keys(pattern, MAX_MULTITOPIC_SUBTOPICS).await? {
+            let Ok(topic) = Topic::parse_str(&key) else {
+                continue;
+            };
+            if topic
+                .data()
+                .as_state_single()
+                .is_some_and(|s| filter.matches(&s))
+            {
+                found.insert(topic.to_string());
+            }
+        }
+        if found.len() > MAX_MULTITOPIC_SUBTOPICS {
+            return Err(Error::SubscriptionLimit(format!(
+                "a multi-topic may resolve to at most {MAX_MULTITOPIC_SUBTOPICS} keys"
+            )));
+        }
+    }
+    Ok(found.into_iter().collect())
+}
+
+/// A new concrete state topic arrived from Redis: add it to every subscribed
+/// multi-topic whose filter matches, so the regular single-topic delivery below
+/// reaches those clients (as `update` frames on the multi-topic key).
+async fn expand_multitopics(
+    topic: &Topic,
+    single: &StateSingle,
+    clients: &Sharded<Clients>,
+    topics: &Topics,
+) {
+    let gained = {
+        let mut topics_lock = topics.write().await;
+        let gaining = topics_lock.multitopics_gaining(topic, single, MAX_MULTITOPIC_SUBTOPICS);
+        let mut out = Vec::with_capacity(gaining.len());
+        for (multitopic, subtopics, direct_clients) in gaining {
+            let update = topics_lock.update_multitopic_info(multitopic.clone(), subtopics);
+            for (client_id, _) in &direct_clients {
+                topics_lock.update_indirect_subscriptions(
+                    multitopic.clone(),
+                    update.clone(),
+                    client_id,
+                );
+            }
+            out.push((multitopic, direct_clients));
+        }
+        out
+    };
+    // topics lock released before taking client locks (lock ordering: topics, then client).
+    for (multitopic, direct_clients) in gained {
+        for (client_id, key) in direct_clients {
+            let client = clients
+                .get(&client_id)
+                .read()
+                .await
+                .get(&client_id)
+                .cloned();
+            if let Some(client) = client {
+                client.lock().await.add_indirect_subscription(
+                    topic.clone(),
+                    multitopic.clone(),
+                    key,
+                );
+            }
+        }
     }
 }
 

@@ -63,6 +63,14 @@ pub trait Repo: Send + Sync {
         keys: Vec<String>,
     ) -> impl std::future::Future<Output = Result<Vec<Option<String>>, Error>> + Send;
 
+    /// Keys matching the Redis glob `pattern`, scanned incrementally. Returns at
+    /// most `limit + 1` keys so callers can tell "exactly limit" from "more".
+    fn scan_keys(
+        &self,
+        pattern: String,
+        limit: usize,
+    ) -> impl std::future::Future<Output = Result<Vec<String>, Error>> + Send;
+
     fn refresh(
         &self,
         topics: Vec<Topic>,
@@ -139,6 +147,24 @@ impl Repo for RepoImpl {
             }
             _ => Ok(self.pool.mget(keys).await?),
         }
+    }
+
+    async fn scan_keys(&self, pattern: String, limit: usize) -> Result<Vec<String>, Error> {
+        let mut cursor = "0".to_owned();
+        let mut keys = Vec::new();
+        loop {
+            let (next, page): (String, Vec<String>) = self
+                .pool
+                .scan_page(cursor, pattern.clone(), Some(1000), None)
+                .await?;
+            keys.extend(page);
+            if keys.len() > limit || next == "0" {
+                break;
+            }
+            cursor = next;
+        }
+        keys.truncate(limit.saturating_add(1));
+        Ok(keys)
     }
 
     async fn refresh(&self, mut topics: Vec<Topic>) -> Result<HashMap<Topic, Instant>, Error> {

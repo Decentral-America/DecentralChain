@@ -35,6 +35,9 @@ impl Repo for OkRepo {
     async fn get_by_keys(&self, keys: Vec<String>) -> Result<Vec<Option<String>>, Error> {
         Ok(vec![None; keys.len()])
     }
+    async fn scan_keys(&self, _pattern: String, _limit: usize) -> Result<Vec<String>, Error> {
+        Ok(vec![])
+    }
     async fn refresh(&self, topics: Vec<Topic>) -> Result<HashMap<Topic, Instant>, Error> {
         Ok(topics.into_iter().map(|t| (t, Instant::now())).collect())
     }
@@ -57,6 +60,9 @@ impl Repo for ErrRepo {
     }
     async fn get_by_keys(&self, _keys: Vec<String>) -> Result<Vec<Option<String>>, Error> {
         Err(Error::ConfigValidation("mock error".to_owned()))
+    }
+    async fn scan_keys(&self, _pattern: String, _limit: usize) -> Result<Vec<String>, Error> {
+        Ok(vec![])
     }
     async fn refresh(&self, _topics: Vec<Topic>) -> Result<HashMap<Topic, Instant>, Error> {
         Err(Error::ConfigValidation("mock error".to_owned()))
