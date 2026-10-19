@@ -187,6 +187,18 @@ export default function BlockDetail() {
                   />
                 </div>
                 <div className="md:col-span-2">
+                  <p className="text-sm text-muted-foreground mb-2">Block ID</p>
+                  <div className="flex items-center gap-2">
+                    <code
+                      data-testid="block-id"
+                      className="text-sm bg-muted p-2 rounded flex-1 overflow-x-auto"
+                    >
+                      {block.id}
+                    </code>
+                    <CopyButton text={block.id} label="Copy block ID" />
+                  </div>
+                </div>
+                <div className="md:col-span-2">
                   <p className="text-sm text-muted-foreground mb-2">Block Signature</p>
                   <div className="flex items-center gap-2">
                     <code className="text-sm bg-muted p-2 rounded flex-1 overflow-x-auto">

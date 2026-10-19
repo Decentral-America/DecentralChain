@@ -115,4 +115,20 @@ describe('SearchBar', () => {
     await typeAndSubmit(user, 'd'.repeat(44));
     await waitFor(() => expect(mockToast).toHaveBeenCalled());
   });
+
+  it('explains that block signatures are not searchable instead of probing the node', async () => {
+    const user = userEvent.setup();
+    renderBar();
+    await typeAndSubmit(user, `z${'2'.repeat(87)}`);
+    await waitFor(() =>
+      expect(mockToast).toHaveBeenCalledWith(
+        expect.objectContaining({
+          description: expect.stringContaining('block signature'),
+          variant: 'destructive',
+        }),
+      ),
+    );
+    expect(mockFetchBlockById).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
 });

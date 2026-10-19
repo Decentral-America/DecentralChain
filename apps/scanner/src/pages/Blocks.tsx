@@ -121,7 +121,7 @@ export default function Blocks() {
                       .reverse()
                       .map((block) => (
                         <TableRow
-                          key={block.signature}
+                          key={block.id}
                           className="hover:bg-muted cursor-pointer transition-colors"
                           onClick={() =>
                             navigate(createPageUrl('BlockDetail', `?height=${block.height}`))
@@ -137,8 +137,8 @@ export default function Blocks() {
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
-                              <code className="text-sm">{truncate(block.signature, 16)}</code>
-                              <CopyButton text={block.signature} />
+                              <code className="text-sm">{truncate(block.id, 16)}</code>
+                              <CopyButton text={block.id} label="Copy block ID" />
                             </div>
                           </TableCell>
                           <TableCell className="text-sm text-muted-foreground">
