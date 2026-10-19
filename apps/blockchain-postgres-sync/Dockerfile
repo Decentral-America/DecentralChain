@@ -22,13 +22,13 @@ RUN mkdir -p src/bin src/lib && \
     echo 'fn main() {}' > src/bin/consumer.rs && \
     echo 'fn main() {}' > src/bin/migration.rs && \
     echo '' > src/lib/lib.rs && \
-    cargo build --release && \
+    cargo build --release --locked && \
     rm -rf src
 
 COPY src/ ./src/
 # Force re-compile of our crate (timestamps on stub artefacts are newer)
 RUN touch src/lib/lib.rs src/bin/consumer.rs src/bin/migration.rs && \
-    cargo build --release
+    cargo build --release --locked
 
 # ─── Stage 2: runtime ────────────────────────────────────────────────────────
 # renovate: image=debian tag=13-slim

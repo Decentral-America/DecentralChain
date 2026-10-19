@@ -67,7 +67,7 @@ jobs:
 
       - name: Build
         working-directory: apps/blockchain-postgres-sync
-        run: cargo build --all-targets
+        run: cargo build --all-targets --locked
 
       - name: Clippy (deny warnings)
         working-directory: apps/blockchain-postgres-sync
