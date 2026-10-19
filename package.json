@@ -3,14 +3,14 @@
   "description": "DecentralChain SDK — Multi-language monorepo for all @decentralchain packages (TypeScript SDK, RIDE lang/repl, JVM libraries)",
   "devDependencies": {
     "@biomejs/biome": "2.5.14",
-    "@nx/devkit": "23.2.1",
-    "@nx/playwright": "23.2.1",
-    "@nx/vitest": "23.2.1",
+    "@nx/devkit": "23.3.0",
+    "@nx/playwright": "23.3.0",
+    "@nx/vitest": "23.3.0",
     "esbuild": "0.28.2",
     "js-yaml": "catalog:",
     "knip": "6.38.0",
     "lefthook": "2.1.14",
-    "nx": "23.2.1",
+    "nx": "23.3.0",
     "typescript": "7.0.2",
     "vite": "8.3.1",
     "vitest": "catalog:"

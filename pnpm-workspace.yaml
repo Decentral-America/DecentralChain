@@ -82,7 +82,7 @@ overrides:
   # >=7.29.0: 5 GHSA advisories (CRLF injection via blob body type, cross-user
   # cache-control disclosure, cookie attribute injection, response desync via
   # retry interceptor, cache-directive parse crash) all fixed in 7.29.0.
-  undici: ">=7.29.0 <8.0.0"
+  undici: ">=7.29.1 <8.0.0"
   esbuild: '>=0.28.1'
   '@xmldom/xmldom': '>=0.9.10'
   # GHSA-2v37-7h3g-55p8: custom generators can loop indefinitely when size is zero.
@@ -91,9 +91,9 @@ overrides:
   extract-zip: '>=2.0.1'
   # axios <1.18.0: NO_PROXY 0.0.0.0 bypass, prototype-pollution auth/request-construction
   # gadgets, Node adapter proxy-after-interceptor-clone (GHSA advisories, several HIGH/MEDIUM).
-  axios: '>=1.18.0'
+  axios: '>=1.20.0'
   # sharp <0.35.0 inherits several libvips CVEs (CVE-2026-33327/33328/35590/35591).
-  sharp: '>=0.35.0'
+  sharp: '>=0.35.5'
   # tmp@0.2.6 is vulnerable (GHSA-7c78-jf6q-g5cm); 0.2.7 patches it
   tmp: '>=0.2.7'
   # form-data@<4.0.6 has CRLF injection (GHSA-hmw2-7cc7-3qxx)
@@ -103,19 +103,33 @@ overrides:
   morgan: '>=1.12.1'
   # @babel/core<=7.29.0 arbitrary file read via sourceMappingURL (GHSA-4x5r-pxfx-6jf8)
   '@babel/core': '>=7.29.6'
-  basic-ftp: '>=5.3.1'
+  basic-ftp: '>=6.2.1'
   # brace-expansion <5.0.8: two DoS advisories -- CVE-2026-14257 (exponential-time
   # expansion of consecutive non-expanding {} groups, fixed 5.0.7) and
   # CVE-2026-69152 (unbounded intermediate arrays bypassing that same fix,
   # fixed 5.0.8). The 5.0.7 floor below was only the first of the two.
-  brace-expansion: '>=5.0.8'
+  brace-expansion: '>=5.0.12'
   defu: '>=6.1.5'
   # fast-xml-parser <5.10.1: repeated DOCTYPE declarations reset entity expansion limits.
   fast-xml-parser: '>=5.10.1'
   follow-redirects: '>=1.16.0'
   # ip-address <10.3.1: inconsistent IP address parsing enables SSRF (CVE-2026-69192).
   # The 10.1.1 floor below predates this fix.
-  ip-address: '>=10.3.1'
+  ip-address: '>=10.7.1'
+  # seroval <=1.6.2: GHSA-p6vx-979v-rg4c (critical), GHSA-jp82-f5mq-hwhp (high). Dev-only
+  # (react-query-devtools > solid-js), loaded behind import.meta.env.DEV in apps/exchange.
+  seroval: '>=1.6.3'
+  # smol-toml <=1.8.0: GHSA-7w5x-hrqm-74c2 (high), GHSA-r4xh-jqrq-34v2 (fixed 1.9.0).
+  smol-toml: '>=1.9.0'
+  # browserslist <=4.28.6: GHSA-c83g-rgw3-j3cx, GHSA-73wf-gq98-2v4g; baseline-browser-mapping <2.11.0: GHSA-w5vr-8v7q-w6rv.
+  browserslist: '>=4.28.7'
+  baseline-browser-mapping: '>=2.11.0'
+  # source-map-js <1.2.2: GHSA-68fv-2mgg-jv7q (via vite>postcss).
+  source-map-js: '>=1.2.2'
+  # postcss-selector-parser <7.1.6: GHSA-rj75-hqrm-r3gf.
+  postcss-selector-parser: '>=7.1.6'
+  # fast-copy <4.1.0: GHSA-jggr-w7fw-pc2j (via pino-pretty, data-service dev logging).
+  fast-copy: '>=4.1.0'
   lodash: '>=4.18.1'
   # Scoped to express: blanket >=0.1.13 resolved to 8.x (different API), breaking express v4.
   # CVE fix: keep 0.1.x for express (where ReDoS is low-risk — routes are dev-defined),
@@ -158,3 +172,10 @@ auditConfig:
     # react-native -> @react-native/community-cli-plugin -> metro -> metro-file-map -> micromatch (the RN
     # bundler CLI), a transitive dependency the web apps never execute. Remove when braces ships a fix.
     - GHSA-vfj7-8cjw-p6xm
+    # extract-zip <=2.0.1 (GHSA-jmr9-qjv8-65gv, GHSA-7pqw-9j4j-h8q3): NO patched release exists (2.0.1 is the
+    # latest, 2020). Only reachable via apps/cubensis-connect devDependency @testing-library/webdriverio ->
+    # webdriverio 9 -> @puppeteer/browsers 2.x, which unpacks browser-driver archives it downloads over HTTPS
+    # during local/CI browser tests. Never shipped to users. Remove when webdriverio adopts
+    # @puppeteer/browsers 3.x (which replaced extract-zip with modern-tar).
+    - GHSA-jmr9-qjv8-65gv
+    - GHSA-7pqw-9j4j-h8q3
