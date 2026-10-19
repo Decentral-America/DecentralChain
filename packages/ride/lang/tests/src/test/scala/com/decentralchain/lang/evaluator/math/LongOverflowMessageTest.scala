@@ -1,12 +1,10 @@
 package com.decentralchain.lang.evaluator.math
 
-import com.decentralchain.lang.directives.values.{StdLibVersion, V3}
+import com.decentralchain.lang.directives.values.V3
 import com.decentralchain.lang.evaluator.EvaluatorSpec
 import com.decentralchain.test.produce
 
 class LongOverflowMessageTest extends EvaluatorSpec {
-  private implicit val startVersion: StdLibVersion = V3
-
   private val max = Long.MaxValue
 
   // node-scala c80c4d1c39: once the JIT is hot, Math.addExact/subtractExact/multiplyExact may
