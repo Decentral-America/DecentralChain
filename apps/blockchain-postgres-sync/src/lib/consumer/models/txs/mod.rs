@@ -535,6 +535,10 @@ pub struct Tx18 {
     pub status: TxStatus,
     pub bytes: Vec<u8>,
     pub function_name: Option<String>,
+    /// Ethereum transfers only: recipient address, amount and asset (`DCC` for the native token).
+    pub recipient_address: Option<String>,
+    pub amount: Option<i64>,
+    pub asset_id: Option<String>,
 }
 
 /// Ethereum `InvokeScript` transaction

@@ -127,7 +127,11 @@ export default (txsServices: ServiceMesh['transactions']) => {
   const ethereumLike = createTransactionHttpHandlers(
     '/transactions/ethereum-like',
     txsServices.ethereumLike,
-    createParseRequest({ function: commonFilters.query, type: commonFilters.query }),
+    createParseRequest({
+      function: commonFilters.query,
+      recipient: commonFilters.query,
+      type: commonFilters.query,
+    }),
   );
 
   const app = new Hono<AppEnv>();

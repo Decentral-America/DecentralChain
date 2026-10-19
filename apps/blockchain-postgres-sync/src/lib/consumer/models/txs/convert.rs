@@ -159,15 +159,25 @@ impl
                     bytes: tx.clone(),
                     block_uid,
                     function_name: None,
+                    recipient_address: None,
+                    amount: None,
+                    asset_id: None,
                 };
                 let result_tx = match meta.action.as_ref().ok_or_else(|| {
                     Error::InconsistentDataError("Ethereum metadata has no action".into())
                 })? {
-                    EthAction::Transfer(_) => Tx18Combined {
-                        tx: eth_tx,
-                        args: vec![],
-                        payments: vec![],
-                    },
+                    EthAction::Transfer(transfer) => {
+                        eth_tx.recipient_address = Some(into_base58(&transfer.recipient_address));
+                        if let Some(Amount { asset_id, amount }) = transfer.amount.as_ref() {
+                            eth_tx.amount = Some(*amount);
+                            eth_tx.asset_id = Some(extract_asset_id(asset_id));
+                        }
+                        Tx18Combined {
+                            tx: eth_tx,
+                            args: vec![],
+                            payments: vec![],
+                        }
+                    }
                     EthAction::Invoke(imeta) => {
                         eth_tx.function_name = Some(imeta.function_name.clone());
                         Tx18Combined {
@@ -949,5 +959,44 @@ mod tests {
             }
             Ok(_) => panic!("expected Err but got Ok"),
         }
+    }
+
+    // ── Ethereum transfer recipient (AUD-151) ────────────────────────────────
+
+    #[test]
+    fn ethereum_transfer_stores_recipient_amount_and_asset() {
+        use crate::proto::dcc::events::transaction_metadata::EthereumTransferMetadata;
+
+        let tx = SignedTransaction {
+            transaction: Some(Transaction::EthereumTransaction(vec![0xf8, 0x6b])),
+            proofs: vec![],
+        };
+        let meta = TransactionMetadata {
+            sender_address: vec![1, 33, 7, 7, 7],
+            metadata: Some(Metadata::Ethereum(EthereumMetadata {
+                timestamp: 1_700_000_000_000,
+                fee: 100_000,
+                sender_public_key: vec![2; 64],
+                action: Some(EthAction::Transfer(EthereumTransferMetadata {
+                    recipient_address: vec![1, 33, 9, 9, 9],
+                    amount: Some(Amount {
+                        asset_id: vec![],
+                        amount: 100_000,
+                    }),
+                })),
+            })),
+        };
+        let id = "ethTxId".to_string();
+        let converted = Tx::try_from((&tx, &id, 73_311, &meta, 1, 2, b'!')).unwrap();
+        let Tx::Ethereum(combined) = converted else {
+            panic!("expected an Ethereum tx");
+        };
+        assert_eq!(
+            combined.tx.recipient_address,
+            Some(into_base58([1u8, 33, 9, 9, 9]))
+        );
+        assert_eq!(combined.tx.amount, Some(100_000));
+        assert_eq!(combined.tx.asset_id, Some(DCC_ID.to_string()));
+        assert_eq!(combined.tx.function_name, None);
     }
 }

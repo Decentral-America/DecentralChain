@@ -406,6 +406,9 @@ diesel::table! {
         block_uid -> Int8,
         bytes -> Bytea,
         function_name -> Nullable<Varchar>,
+        recipient_address -> Nullable<Varchar>,
+        amount -> Nullable<Int8>,
+        asset_id -> Nullable<Varchar>,
     }
 }
 
