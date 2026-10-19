@@ -95,14 +95,24 @@ export function parseCsp(value) {
   return directives;
 }
 
-/** Whether a CSP host-source (`scheme://host` or `scheme://*.host`) allows `url`. */
+/** Port a template-built URL leaves open; matches only a source whose port is `*`. */
+const ANY_PORT = '*';
+
+/**
+ * Whether a CSP host-source (`scheme://host`, `scheme://*.host`, optionally with
+ * `:port` or `:*`) allows `url`. A source with no port allows any port, as before.
+ * `url` may carry `:*` for a port the bundle builds at runtime.
+ */
 export function sourceAllows(source, url) {
-  const match = /^([a-z][a-z0-9+.-]*):\/\/(\*\.)?([^/:*]+)$/.exec(source);
+  const match = /^([a-z][a-z0-9+.-]*):\/\/(\*\.)?([^/:*]+)(?::(\*|\d+))?$/.exec(source);
   if (!match) return false;
-  const [, scheme, wildcard, host] = match;
-  const target = new URL(url);
+  const [, scheme, wildcard, host, sourcePort] = match;
+  const target = new URL(url.replace(/:\*(?=\/|$)/, ':0'));
   if (target.protocol !== `${scheme}:`) return false;
-  return wildcard ? target.hostname.endsWith(`.${host}`) : target.hostname === host;
+  const hostMatches = wildcard ? target.hostname.endsWith(`.${host}`) : target.hostname === host;
+  if (!hostMatches) return false;
+  if (sourcePort === undefined || sourcePort === ANY_PORT) return true;
+  return url.endsWith(`:${ANY_PORT}`) ? false : target.port === sourcePort;
 }
 
 /** Sources that allow every host for a scheme (or everything); never acceptable here. */
@@ -174,6 +184,11 @@ export function checkHeaders(
   if (root.get('x-frame-options') !== 'DENY') problems.push('/* X-Frame-Options must be DENY');
   if (root.get('x-content-type-options') !== 'nosniff') {
     problems.push('/* X-Content-Type-Options must be nosniff');
+  }
+  if (root.get('cross-origin-opener-policy') !== 'same-origin-allow-popups') {
+    problems.push(
+      '/* Cross-Origin-Opener-Policy must be same-origin-allow-popups (wallet popups need opener messaging)',
+    );
   }
   if (root.has('cache-control')) {
     problems.push(
@@ -257,6 +272,21 @@ export const NON_FETCH_ORIGINS = new Map([
   ['ws://localhost:8080', 'rpc-websockets default argument, never used'],
 ]);
 
+/** Stand-in for a bundle origin whose whole host is built at runtime (`wss://${domain}`). */
+export const TEMPLATED_HOST_ORIGIN_SUFFIX = '<templated-host>';
+
+/**
+ * Bundle origins whose host is built at runtime, so no CSP source can be
+ * checked against them. Each entry names the stand-in origin (scheme +
+ * `<templated-host>`) and says why it is acceptable. Anything not listed fails.
+ */
+export const TEMPLATED_ORIGINS = new Map([
+  [
+    `wss://${TEMPLATED_HOST_ORIGIN_SUFFIX}`,
+    'Solana Mobile Wallet Adapter remote (QR/reflector) session: the relay host comes from a remoteHostAuthority option the exchange does not set, so the connection is never opened; the CSP would block it',
+  ],
+]);
+
 /** Absolute http(s)/ws(s) origins referenced by the built js, html and css (source maps excluded). */
 export function scanBundleOrigins(distDir) {
   const origins = new Set();
@@ -272,22 +302,56 @@ export function scanBundleOrigins(distDir) {
   return [...origins].sort();
 }
 
+const PLACEHOLDER = /\$\{[^}/]*\}?/g;
+
+/**
+ * Origin of a bundle URL candidate, with `${...}` template placeholders resolved
+ * to stand-ins: a templated port becomes `:*`, a placeholder inside a host
+ * becomes the label `placeholder`, and a host that is only placeholders becomes
+ * `<templated-host>`. Null when the candidate is not an origin.
+ */
+function originOf(candidate) {
+  const match = /^((?:https?|wss?)):\/\/([^/?#]*)/.exec(candidate);
+  if (!match) return null;
+  const [, scheme, authority] = match;
+  const hostPort = authority.slice(authority.lastIndexOf('@') + 1);
+  const portMatch = /:(\d+|\$\{[^}]*\}?)$/.exec(hostPort);
+  const rawHost = portMatch ? hostPort.slice(0, portMatch.index) : hostPort;
+  let port = portMatch ? portMatch[1] : '';
+  if (port.startsWith('$')) port = ANY_PORT;
+  if (rawHost.includes('$')) {
+    if (rawHost.replace(PLACEHOLDER, '').replace(/[^a-z0-9]/gi, '') === '') {
+      return `${scheme}://${TEMPLATED_HOST_ORIGIN_SUFFIX}`;
+    }
+    const host = rawHost.replace(PLACEHOLDER, 'placeholder').toLowerCase();
+    if (!/^[a-z0-9.-]+$/.test(host) || !/^.+\..+$/.test(host)) return null;
+    return `${scheme}://${host}${port ? `:${port}` : ''}`;
+  }
+  let url;
+  try {
+    url = new URL(`${scheme}://${rawHost}${port && port !== ANY_PORT ? `:${port}` : ''}`);
+  } catch {
+    return null;
+  }
+  // Bare words are not origins.
+  if (!/^[a-z0-9.-]+$/.test(url.hostname) || !/^(localhost|.+\..+)$/.test(url.hostname))
+    return null;
+  return `${url.protocol}//${url.host}${port === ANY_PORT ? `:${ANY_PORT}` : ''}`;
+}
+
 function collectOrigins(text, origins) {
   for (const [candidate] of text.matchAll(/(?:https?|wss?):\/\/[^\s"'`\\)<>,;]+/g)) {
-    let url;
-    try {
-      url = new URL(candidate);
-    } catch {
-      continue;
-    }
-    // Template placeholders and bare words are not origins.
-    if (!/^[a-z0-9.-]+$/.test(url.hostname) || !/^(localhost|.+\..+)$/.test(url.hostname)) continue;
-    origins.add(`${url.protocol}//${url.host}`);
+    const origin = originOf(candidate);
+    if (origin) origins.add(origin);
   }
 }
 
-/** Problems for bundle origins the root CSP blocks and that are not documented non-fetch references. */
-export function checkBundleOrigins(headersText, origins) {
+/**
+ * Problems for bundle origins the root CSP blocks and that are not documented
+ * non-fetch references. A fully templated host cannot be matched against the
+ * CSP, so it is reported unless `allowedTemplated` lists it.
+ */
+export function checkBundleOrigins(headersText, origins, allowedTemplated = TEMPLATED_ORIGINS) {
   const csp = headersForPattern(parseHeadersFile(headersText), '/*').get('content-security-policy');
   if (!csp || origins.length === 0) return [];
   const directives = parseCsp(csp);
@@ -295,10 +359,22 @@ export function checkBundleOrigins(headersText, origins) {
     ...(directives.get('connect-src') ?? []),
     ...(directives.get('frame-src') ?? []),
   ];
-  return origins
-    .filter((origin) => !NON_FETCH_ORIGINS.has(origin))
-    .filter((origin) => !sources.some((source) => sourceAllows(source, origin)))
-    .map((origin) => `bundle references ${origin}, which is not in CSP connect-src or frame-src`);
+  const problems = [];
+  for (const origin of origins) {
+    if (NON_FETCH_ORIGINS.has(origin)) continue;
+    if (origin.endsWith(`//${TEMPLATED_HOST_ORIGIN_SUFFIX}`)) {
+      if (!allowedTemplated.has(origin)) {
+        problems.push(
+          `bundle references ${origin}, a host built at runtime that cannot be checked against CSP connect-src or frame-src`,
+        );
+      }
+      continue;
+    }
+    if (!sources.some((source) => sourceAllows(source, origin))) {
+      problems.push(`bundle references ${origin}, which is not in CSP connect-src or frame-src`);
+    }
+  }
+  return problems;
 }
 
 /** Networks a deploy build may target. */

@@ -38,6 +38,15 @@ describe('faucet config', () => {
     expect(faucetAddress({ DCC_FAUCET_SEED: 'x' })).toBeNull();
     expect(faucetChainId({ DCC_CHAIN_ID: 'abc' })).toBeNull();
   });
+
+  it('parses DCC_CHAIN_ID strictly: digits only, one network byte', () => {
+    expect(faucetChainId({ DCC_CHAIN_ID: '33' })).toBe(33);
+    expect(faucetChainId({ DCC_CHAIN_ID: ' 63 ' })).toBe(63);
+    for (const bad of ['33abc', '3.3', '-1', '0x21', '1e1', '256', '', '  ']) {
+      expect(faucetChainId({ DCC_CHAIN_ID: bad }), bad).toBeNull();
+    }
+    expect(faucetAddress({ DCC_CHAIN_ID: '33abc', DCC_FAUCET_SEED: 'x' })).toBeNull();
+  });
 });
 
 describe('faucet settings', () => {

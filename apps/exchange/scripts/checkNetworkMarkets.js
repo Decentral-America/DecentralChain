@@ -13,6 +13,9 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
+/** A hung node must fail the check, not stall the deploy until the job timeout. */
+const FETCH_TIMEOUT_MS = 15_000;
+
 const APP_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 export function configuredAssetIds(config) {
@@ -36,7 +39,9 @@ async function main(network) {
   if (config.marketSource === 'matcher') {
     let body;
     try {
-      const res = await fetch(`${config.matcher}/orderbook`);
+      const res = await fetch(`${config.matcher}/orderbook`, {
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      });
       if (!res.ok) {
         console.log(`::warning::${network} matcher /orderbook answered HTTP ${res.status}`);
         return 0;
@@ -59,7 +64,9 @@ async function main(network) {
   const missing = [];
   for (const id of ids) {
     try {
-      const res = await fetch(`${config.node}/assets/details/${id}`);
+      const res = await fetch(`${config.node}/assets/details/${id}`, {
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      });
       if (res.status !== 200) missing.push(`${id} (HTTP ${res.status})`);
     } catch (err) {
       missing.push(`${id} (node unreachable: ${err.cause?.code ?? err.message})`);

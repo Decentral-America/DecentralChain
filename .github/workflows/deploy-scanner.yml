@@ -68,7 +68,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          green=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow ci.yml --commit "$GITHUB_SHA" \
+          green=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow ci.yml --event push --commit "$GITHUB_SHA" \
             --json conclusion --jq '[.[] | select(.conclusion == "success")] | length')
           if [[ "$green" -lt 1 ]]; then
             echo "::error::No successful ci.yml run for $GITHUB_SHA. Wait for CI on main, then deploy."

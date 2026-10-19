@@ -42,7 +42,8 @@ jobs:
       contents: read
       actions: read
     steps:
-      # Rust services: bps.yml is path-filtered, so a green-run lookup can miss;
+      # Rust service: websocket-api.yml is path-filtered (apps/websocket-api/**), so a
+      # ci.yml green-run lookup can miss;
       # the docker job below runs `cargo nextest run --all-targets` before building.
       - name: Checkout (full history for the ancestry check)
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

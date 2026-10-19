@@ -9,7 +9,11 @@ export function parseCsp(value: string): Map<string, string[]>;
 export function sourceAllows(source: string, url: string): boolean;
 export function withNoindexHeader(text: string): string;
 export function scanBundleOrigins(distDir: string): string[];
-export function checkBundleOrigins(headersText: string, origins: string[]): string[];
+export function checkBundleOrigins(
+  headersText: string,
+  origins: string[],
+  allowedTemplated?: Map<string, string>,
+): string[];
 export function checkHeaders(
   text: string,
   opts: {
@@ -20,6 +24,7 @@ export function checkHeaders(
   },
 ): string[];
 export const NON_FETCH_ORIGINS: Map<string, string>;
+export const TEMPLATED_ORIGINS: Map<string, string>;
 export function resolveBuildNetwork(
   env: Record<string, string | undefined>,
   isProduction: boolean,

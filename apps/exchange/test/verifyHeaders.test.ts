@@ -11,6 +11,7 @@ import { describe, expect, it } from 'vitest';
 import {
   checkBundleOrigins,
   checkHeaders,
+  headersForPattern,
   NON_FETCH_ORIGINS,
   parseCsp,
   parseHeadersFile,
@@ -51,6 +52,51 @@ describe('public/_headers', () => {
     expect(checkHeaders(HEADERS, { network: 'testnet' })).toContain(
       'testnet build must send X-Robots-Tag: noindex',
     );
+  });
+});
+
+describe('cross-origin policy and local wallet bridge', () => {
+  it('keeps window.opener for popups so the Solflare web wallet can reply', () => {
+    const root = headersForPattern(parseHeadersFile(HEADERS), '/*');
+    expect(root.get('cross-origin-opener-policy')).toBe('same-origin-allow-popups');
+  });
+
+  it('rejects a Cross-Origin-Opener-Policy other than same-origin-allow-popups', () => {
+    const strict = HEADERS.replace('same-origin-allow-popups', 'same-origin');
+    expect(checkHeaders(strict, { network: 'mainnet' })).toContain(
+      '/* Cross-Origin-Opener-Policy must be same-origin-allow-popups (wallet popups need opener messaging)',
+    );
+    const unsafe = HEADERS.replace('same-origin-allow-popups', 'unsafe-none');
+    expect(checkHeaders(unsafe, { network: 'mainnet' })).toContain(
+      '/* Cross-Origin-Opener-Policy must be same-origin-allow-popups (wallet popups need opener messaging)',
+    );
+  });
+
+  it('lets the mobile wallet adapter reach its localhost websocket on any port', () => {
+    const connect = parseCsp(
+      headersForPattern(parseHeadersFile(HEADERS), '/*').get('content-security-policy') ?? '',
+    ).get('connect-src');
+    expect(connect).toContain('ws://localhost:*');
+    expect(checkHeaders(HEADERS, { network: 'mainnet' })).toEqual([]);
+  });
+
+  it('still rejects bare scheme sources', () => {
+    for (const bare of ['ws:', 'wss:', 'http:', 'https:', '*']) {
+      const file = HEADERS.replace('ws://localhost:*', bare);
+      expect(checkHeaders(file, { network: 'mainnet' })).toContain(
+        `CSP connect-src must not contain the bare source ${bare}`,
+      );
+    }
+  });
+
+  it('matches a host source with a wildcard port but not another host or scheme', () => {
+    expect(sourceAllows('ws://localhost:*', 'ws://localhost:51337')).toBe(true);
+    expect(sourceAllows('ws://localhost:*', 'ws://localhost:*')).toBe(true);
+    expect(sourceAllows('ws://localhost:*', 'ws://evil.test:51337')).toBe(false);
+    expect(sourceAllows('ws://localhost:*', 'wss://localhost:51337')).toBe(false);
+    expect(sourceAllows('ws://localhost:8080', 'ws://localhost:9090')).toBe(false);
+    expect(sourceAllows('ws://localhost:8080', 'ws://localhost:8080')).toBe(true);
+    expect(sourceAllows('ws://localhost:8080', 'ws://localhost:*')).toBe(false);
   });
 });
 
@@ -200,6 +246,51 @@ describe('parsing helpers', () => {
     expect(sourceAllows('https://*.decentralchain.io', 'wss://testnet-ws.decentralchain.io')).toBe(
       false,
     );
+  });
+});
+
+describe('template-built bundle origins', () => {
+  const distWith = (body: string): string => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'verify-headers-'));
+    mkdirSync(path.join(dir, 'assets'));
+    writeFileSync(path.join(dir, 'assets/a.js'), body);
+    return dir;
+  };
+
+  it('detects a template-built port as a wildcard-port origin', () => {
+    const dir = distWith('new WebSocket(`ws://localhost:${port}/solana-wallet`)');
+    expect(scanBundleOrigins(dir)).toEqual(['ws://localhost:*']);
+  });
+
+  it('keeps the literal part of a partly templated host', () => {
+    const dir = distWith('fetch(`https://${tenant}.decentralchain.io/x`)');
+    expect(scanBundleOrigins(dir)).toEqual(['https://placeholder.decentralchain.io']);
+  });
+
+  it('reports a fully templated host as unverifiable', () => {
+    const dir = distWith('new WebSocket(`wss://${e.relayDomain}/reflect`)');
+    expect(scanBundleOrigins(dir)).toEqual(['wss://<templated-host>']);
+  });
+
+  it('accepts the wildcard-port origin through connect-src', () => {
+    expect(checkBundleOrigins(HEADERS, ['ws://localhost:*'])).toEqual([]);
+    const without = HEADERS.replace(' ws://localhost:*', '');
+    expect(checkBundleOrigins(without, ['ws://localhost:*'])).toEqual([
+      'bundle references ws://localhost:*, which is not in CSP connect-src or frame-src',
+    ]);
+  });
+
+  it('fails a fully templated host unless an allowlist entry covers it', () => {
+    expect(checkBundleOrigins(HEADERS, ['wss://<templated-host>'], new Map())).toEqual([
+      'bundle references wss://<templated-host>, a host built at runtime that cannot be checked against CSP connect-src or frame-src',
+    ]);
+    expect(
+      checkBundleOrigins(
+        HEADERS,
+        ['wss://<templated-host>'],
+        new Map([['wss://<templated-host>', 'documented relay']]),
+      ),
+    ).toEqual([]);
   });
 });
 

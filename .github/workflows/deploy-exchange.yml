@@ -63,7 +63,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          green=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow ci.yml --commit "$GITHUB_SHA" \
+          green=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow ci.yml --event push --commit "$GITHUB_SHA" \
             --json conclusion --jq '[.[] | select(.conclusion == "success")] | length')
           if [[ "$green" -lt 1 ]]; then
             echo "::error::No successful ci.yml run for $GITHUB_SHA. Wait for CI on main, then deploy."
@@ -221,8 +221,20 @@ jobs:
           # short commit SHA on workflow_dispatch. Sentry rejects branch names like
           # "main" as release identifiers — always use a version string or SHA.
           SENTRY_RELEASE: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || github.sha }}
+          # Mainnet Bridge RPC endpoint (a domain-restricted Helius URL). Held in a
+          # secret and passed only through this env block; the build bakes it into the
+          # public bundle, so restrict the key by domain. Non-mainnet builds keep the
+          # value from their .env file.
+          SOLANA_RPC_URL: ${{ secrets.SOLANA_RPC_URL }}
         run: |
           set -euo pipefail
+          if [[ "${{ needs.resolve.outputs.network }}" == "mainnet" ]]; then
+            if [[ -z "$SOLANA_RPC_URL" ]]; then
+              echo "::error::The SOLANA_RPC_URL secret is empty or missing for the mainnet environment. The Bridge needs VITE_SOLANA_RPC_URL at build time; create the secret and re-run. Nothing was deployed."
+              exit 1
+            fi
+            export VITE_SOLANA_RPC_URL="$SOLANA_RPC_URL"
+          fi
           pnpm --filter ./apps/exchange exec tsc -b
           pnpm --filter ./apps/exchange exec vite build --mode "${{ needs.resolve.outputs.build_mode }}"
 
@@ -380,6 +392,28 @@ jobs:
             fi
           done
           echo "Live security headers present."
+
+      - name: Verify live security headers (mainnet)
+        if: needs.resolve.outputs.network == 'mainnet'
+        run: |
+          set -euo pipefail
+          HDRS=$(curl -sI --max-time 15 -H "Cache-Control: no-cache" "https://decentral.exchange/?cachebust=$(date +%s)")
+          for h in content-security-policy strict-transport-security x-frame-options cross-origin-opener-policy; do
+            if ! grep -qi "^${h}:" <<<"$HDRS"; then
+              echo "::error::live response is missing ${h}"
+              exit 1
+            fi
+          done
+          if ! grep -qi '^cross-origin-opener-policy: *same-origin-allow-popups' <<<"$HDRS"; then
+            echo "::error::live Cross-Origin-Opener-Policy is not same-origin-allow-popups"
+            exit 1
+          fi
+          # Mainnet must stay indexable.
+          if grep -qi '^x-robots-tag:.*noindex' <<<"$HDRS"; then
+            echo "::error::live mainnet response sends X-Robots-Tag noindex"
+            exit 1
+          fi
+          echo "Live mainnet security headers present."
 
       - name: Write deploy summary
         run: |

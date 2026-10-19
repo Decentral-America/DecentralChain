@@ -48,7 +48,6 @@ const TABS = ALL_TABS.filter((tab) => AMM_SUPPORTED || tab.key !== 'swap');
  * Portfolio on screens it does not own. A route missing here lights no tab.
  */
 const ROUTE_TAB: Record<string, TabKey> = {
-  '/desktop/bridge': 'swap',
   '/desktop/dex': 'trade',
   '/desktop/markets': 'trade',
   '/desktop/orderbook': 'trade',
@@ -65,6 +64,8 @@ function tabForPath(pathname: string): TabKey | undefined {
   const path = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
   // The trading screen takes a pair in the path (/desktop/dex/:amount/:price).
   if (path.startsWith('/desktop/dex/')) return 'trade';
+  // The bridge sits under Swap only where Swap is offered; without an AMM it owns no tab.
+  if (path === '/desktop/bridge') return AMM_SUPPORTED ? 'swap' : undefined;
   return ROUTE_TAB[path];
 }
 
