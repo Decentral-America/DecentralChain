@@ -2256,7 +2256,7 @@
           "1_0_18": "{span.line} [1. Sie können jetzt ein Skript für Ihr Konto einrichten.]\n{span.line} [2. Zusätzliche kleinere Fehler wurden behoben.]",
           "1_0_21": "{span.line} [1. Feste Berechtigungsbestätigung per Ledger.]\n{span.line} [2. Zahlreiche kleinere Fehler behoben.]",
           "1_0_22": "{span.line} [1. Erweiterte Funktionen für die Arbeit mit Skriptkonten hinzugefügt.]",
-          "1_0_25": "{span.line} [1. [Cubensis Connect](https://chrome.google.com/webstore/detail/decentralchain-keeper/lpilbniiabackdjcionkobglmddfbcjo?hl=de) Unterstützung wurde hinzugefügt.]",
+          "1_0_25": "{span.line} Cubensis Connect Unterstützung wurde hinzugefügt.]",
           "1_0_27": "{span.line} [1. Kategorie \"Meine Assets\" wurde in Portfolio hinzugefügt.]\n{span.line} [2. Kleinere Fehler wurden behoben.]",
           "1_0_28": "{span.line} [1. Pairing-Funktion hinzugefügt, um vorhandene Konten auf das Mobiltelefon zu importieren.]\n{span.line} [2. Kleinere Fehler wurden behoben.]",
           "1_0_29": "{span.line} [1. Die QR-Code-Generierung mit kyrillischem Alphabet wurde behoben.]\n{span.line} [2. Tooltip für die Watchlist-Suche wurde hinzugefügt.]\n{span.line} [3. Weitere kosmetische Korrekturen. ]",

@@ -45,6 +45,7 @@ import {
 import type React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { CUBENSIS_INSTALL_URL } from '@/config/cubensis';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
 
@@ -204,17 +205,19 @@ export const CubensisConnectImportPage: React.FC = () => {
                       The Cubensis Connect extension is not installed or not available in your
                       browser.
                     </Typography>
-                    <Button
-                      variant="contained"
-                      startIcon={<ExtensionIcon />}
-                      endIcon={<OpenInNewIcon />}
-                      href="https://chrome.google.com/webstore/detail/decentralchain-keeper/lpilbniiabackdjcionkobglmddfbcjo?hl=en"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      sx={{ mb: 2 }}
-                    >
-                      Install Cubensis Connect
-                    </Button>
+                    {CUBENSIS_INSTALL_URL && (
+                      <Button
+                        variant="contained"
+                        startIcon={<ExtensionIcon />}
+                        endIcon={<OpenInNewIcon />}
+                        href={CUBENSIS_INSTALL_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{ mb: 2 }}
+                      >
+                        Install Cubensis Connect
+                      </Button>
+                    )}
                     <Box sx={{ mt: 2 }}>
                       <Button variant="outlined" onClick={handleRetry} startIcon={<RefreshIcon />}>
                         Retry Detection

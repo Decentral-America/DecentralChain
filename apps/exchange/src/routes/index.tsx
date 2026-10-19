@@ -19,6 +19,7 @@
  */
 import { createBrowserRouter, Navigate } from 'react-router';
 import { MobilePageShell } from '@/components/mobile/MobilePageShell';
+import { CUBENSIS_ENABLED } from '@/config/cubensis';
 import { ResponsiveScreen } from '@/layouts/ResponsiveScreen';
 import { RootLayout } from '@/layouts/RootLayout';
 import { ErrorPage } from '@/pages/ErrorPage';
@@ -119,13 +120,19 @@ export const router = createBrowserRouter([
                   import('@/pages/ImportLedger').then((m) => ({ Component: m.ImportLedger })),
                 path: '/import/ledger',
               },
-              {
-                lazy: () =>
-                  import('@/pages/CubensisConnectImportPage').then((m) => ({
-                    Component: m.CubensisConnectImportPage,
-                  })),
-                path: '/import/cubensis-connect',
-              },
+              CUBENSIS_ENABLED
+                ? {
+                    lazy: () =>
+                      import('@/pages/CubensisConnectImportPage').then((m) => ({
+                        Component: m.CubensisConnectImportPage,
+                      })),
+                    path: '/import/cubensis-connect',
+                  }
+                : {
+                    // No store listing yet: the import flow cannot work, so it is not offered.
+                    element: <Navigate to="/import" replace />,
+                    path: '/import/cubensis-connect',
+                  },
             ],
             lazy: legacyOnboarding,
           },

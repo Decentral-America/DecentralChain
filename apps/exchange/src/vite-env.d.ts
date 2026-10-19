@@ -25,6 +25,8 @@ interface ImportMetaEnv {
   readonly VITE_AMPLITUDE_KEY?: string;
   readonly VITE_APP_VERSION?: string;
   readonly VITE_SOLANA_RPC_URL: string;
+  readonly VITE_CUBENSIS_ENABLED?: string;
+  readonly VITE_CUBENSIS_INSTALL_URL?: string;
 }
 
 interface ImportMeta {
