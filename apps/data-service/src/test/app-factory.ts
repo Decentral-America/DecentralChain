@@ -140,11 +140,12 @@ export const mockServices: ServiceMesh = {
 export function buildApp(
   services: ServiceMesh = mockServices,
   pgDriver: PgDriver = mockPgDriver,
+  eventBus: { emit: (name: string, data: unknown) => unknown } = noopEventBus,
 ): Hono<AppEnv> {
   const app = new Hono<AppEnv>();
 
   app.use(requestId());
-  app.use(injectEventBus(noopEventBus));
+  app.use(injectEventBus(eventBus as { emit: (event: string, data: unknown) => void }));
   app.use(secureHeaders({ crossOriginResourcePolicy: 'cross-origin' }));
   app.use(cors({ origin: '*' }));
 

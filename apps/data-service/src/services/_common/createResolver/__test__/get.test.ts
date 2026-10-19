@@ -1,4 +1,4 @@
-import { Effect, Either, Option } from 'effect';
+import { Effect, Either, Exit, Option } from 'effect';
 import { identity } from 'ramda';
 import { type PgDriver } from '../../../../db/driver';
 import { get } from '..';
@@ -19,6 +19,18 @@ describe('Resolver', () => {
     transformInput: (r: any) => Either.right(r),
     transformResult: identity as any,
   };
+
+  it('returns Option.none for a missing row instead of failing', async () => {
+    const resolver = get({
+      ...commonConfig,
+      getData: () => Effect.succeed(Option.none()),
+      validateResult: (v: string) => Either.right(v),
+    } as any);
+
+    const exit = await Effect.runPromiseExit(resolver(assetId));
+    expect(Exit.isSuccess(exit)).toBe(true);
+    expect(Exit.isSuccess(exit) && Option.isNone(exit.value as Option.Option<unknown>)).toBe(true);
+  });
 
   it('should return result if all validation pass', async () => {
     const resolver = get({

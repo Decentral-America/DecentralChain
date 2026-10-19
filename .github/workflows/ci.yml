@@ -149,6 +149,11 @@ jobs:
         # @decentralchain/ride:test requires Scala.js fullLinkJS output (produced by ride.yml)
         run: pnpm nx affected -t test --exclude=blockchain-postgres-sync,blst,crypto,curve25519,groth16,java-sdk,@decentralchain/ride,ride,transactions,e2e-blockchain
 
+      - name: HTTP-level tests (affected)
+        # data-service *.http.spec.ts drive the real router (vitest.http.config.ts);
+        # they are not part of the `test` target, so run them explicitly.
+        run: pnpm nx affected -t test-http
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         # continue-on-error: coverage upload failure must not block CI — tests already passed above.
