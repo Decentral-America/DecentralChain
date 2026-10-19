@@ -30,6 +30,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
+      - name: Let the deploy settle
+        # A just-finished deploy can still be propagating (CDN, container restart).
+        if: github.event_name == 'workflow_run'
+        env:
+          LIVE_SMOKE_SETTLE_MS: ${{ vars.LIVE_SMOKE_SETTLE_MS || '30000' }}
+        run: |
+          set -euo pipefail
+          if ! [[ "${LIVE_SMOKE_SETTLE_MS}" =~ ^[0-9]+$ ]]; then
+            echo "::error::LIVE_SMOKE_SETTLE_MS must be a whole number of milliseconds"
+            exit 1
+          fi
+          sleep "$(awk -v ms="${LIVE_SMOKE_SETTLE_MS}" 'BEGIN { printf "%.3f", ms / 1000 }')"
+
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
