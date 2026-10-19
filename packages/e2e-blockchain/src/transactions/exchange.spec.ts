@@ -23,7 +23,7 @@ import {
 } from '@decentralchain/transactions';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
 import { waitForFinalized } from '../helpers/finality';
-import { API_BASE, CHAIN_ID, MASTER_SEED, MATCHER_URL } from '../setup/env';
+import { API_BASE, CHAIN_ID, MASTER_SEED, MATCHER_API_KEY, MATCHER_URL } from '../setup/env';
 
 const TIMEOUT = 300_000;
 
@@ -108,6 +108,17 @@ describe('Exchange (type 7, matcher)', () => {
   let buyer: ReturnType<typeof randomTestAccount>;
   let seller: ReturnType<typeof randomTestAccount>;
   let assetId: string; // Amount asset in the pair (custom token ↔ DCC)
+
+  // Each run issues a fresh token, so each run leaves an order book behind on
+  // the shared matcher. Delete it when the suite has an API key to do so.
+  afterAll(async () => {
+    if (skip || !assetId || !MATCHER_API_KEY) return;
+    const res = await fetch(`${MATCHER_URL}/matcher/orderbook/${assetId}/DCC`, {
+      headers: { 'X-Api-Key': MATCHER_API_KEY },
+      method: 'DELETE',
+    });
+    if (!res.ok) console.warn(`order book cleanup for ${assetId}/DCC: HTTP ${res.status}`);
+  });
 
   beforeAll(async () => {
     // Check matcher availability first

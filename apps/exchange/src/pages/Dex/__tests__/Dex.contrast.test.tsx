@@ -21,6 +21,9 @@ import { createAppTheme } from '@/theme/mui-theme';
 import { contrastRatio, type ThemeMode, tokens } from '@/theme/tokens/semantic';
 import { Dex } from '../Dex';
 
+vi.mock('@/features/dex/useAvailablePairs', () => ({
+  useAvailablePairs: () => ({ defaultPair: null, error: null, isLoading: false, pairs: [] }),
+}));
 vi.mock('@/features/dex/OrderBook', () => ({ OrderBook: () => <div>order-book</div> }));
 vi.mock('@/features/dex/BuyOrderForm', () => ({ BuyOrderForm: () => <div>buy-form</div> }));
 vi.mock('@/features/dex/SellOrderForm', () => ({ SellOrderForm: () => <div>sell-form</div> }));

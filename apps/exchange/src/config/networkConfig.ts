@@ -15,6 +15,7 @@ import testnetConfigJson from '../configs/testnet.json';
 import {
   type GatewayAssetConfig,
   type MainnetConfig,
+  type MarketSource,
   type MatcherPriorityItem,
   type OracleConfig,
   type TradingPair,
@@ -40,6 +41,8 @@ const _config = {
   gateway: (typeof rawJson.gateway === 'object' && rawJson.gateway !== null
     ? rawJson.gateway
     : {}) as Record<string, GatewayAssetConfig>,
+  hiddenMarketAssetNames: [...rawJson.hiddenMarketAssetNames] as string[],
+  marketSource: (rawJson.marketSource === 'matcher' ? 'matcher' : 'config') as MarketSource,
   tradingPairs: (rawJson.tradingPairs as readonly unknown[]).filter(
     (p): p is TradingPair =>
       Array.isArray(p) && p.length === 2 && typeof p[0] === 'string' && typeof p[1] === 'string',
@@ -104,6 +107,10 @@ const NetworkConfig = {
     return _config.gateway?.[assetId];
   },
 
+  getHiddenMarketAssetNames(): string[] {
+    return [..._config.hiddenMarketAssetNames];
+  },
+
   getMatcherPriorityList(): MatcherPriorityItem[] {
     return [..._config.matcherPriorityList];
   },
@@ -118,6 +125,10 @@ const NetworkConfig = {
 
   isValid(): boolean {
     return !!(_config?.node && _config.matcher && _config.api);
+  },
+
+  get marketSource(): MarketSource {
+    return _config.marketSource;
   },
 
   get matcher(): string {
@@ -145,10 +156,6 @@ const NetworkConfig = {
 
   get oracleTokenomica(): string {
     return _config.oracles.tokenomica;
-  },
-
-  get origin(): string {
-    return _config.origin;
   },
 
   get privacyPolicy(): string {

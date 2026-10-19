@@ -64,7 +64,6 @@ export interface ConfigContextType {
   supportUrl: string;
   termsUrl: string;
   privacyUrl: string;
-  originUrl: string;
   nodeListUrl: string;
   tokenRatingUrl: string;
 

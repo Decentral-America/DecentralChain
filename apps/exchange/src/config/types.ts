@@ -52,9 +52,21 @@ export interface MatcherPriorityItem {
  * Complete mainnet configuration structure
  * This is the single source of truth for all network-specific settings
  */
+/**
+ * Where the DEX market list comes from: the static `tradingPairs` list, or the
+ * matcher's live `GET /matcher/orderbook`.
+ */
+export type MarketSource = 'config' | 'matcher';
+
 export interface MainnetConfig {
   /** Trading pairs available on the DEX - format: [[amount, price], ...] */
   tradingPairs: TradingPair[];
+
+  /** Market-list source. `matcher` ignores `tradingPairs` and lists the matcher's markets. */
+  marketSource: MarketSource;
+
+  /** Matcher markets whose amount- or price-asset name is listed here are not shown. */
+  hiddenMarketAssetNames: string[];
 
   /** Oracle addresses for external data providers */
   oracles: OracleConfig;
@@ -94,9 +106,6 @@ export interface MainnetConfig {
 
   /** Network peers list URL */
   nodeList: string;
-
-  /** Origin URL for the application */
-  origin: string;
 
   /** Token rating service URL (optional, may be empty) */
   tokenrating: string;

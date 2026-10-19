@@ -9,7 +9,7 @@ import { OrderPanel } from '@/features/dex/terminal/OrderPanel';
 import { PairStats } from '@/features/dex/terminal/PairStats';
 import { SymbolButton } from '@/features/dex/terminal/SymbolButton';
 import { BOTTOM_H, RIGHT_COL_W } from '@/features/dex/terminal/terminalTokens';
-import { DEFAULT_PAIR } from '@/features/dex/tradingPairs';
+import { useAvailablePairs } from '@/features/dex/useAvailablePairs';
 import { useHotkey } from '@/hooks';
 import {
   selectSelectedPair,
@@ -54,12 +54,24 @@ export const Dex: React.FC = () => {
     }
   }, [formShare]);
 
-  // Seed the store, and replace a pair carried over from another network — it
-  // arrives with empty asset ids and every panel downstream errors on it.
+  const { defaultPair, isLoading: pairsLoading, pairs } = useAvailablePairs();
+
+  // Seed the store, and replace a pair that is no longer listed: one carried
+  // over from another network (empty asset ids), or a market the matcher no
+  // longer trades. Every panel downstream errors on such a pair.
   useEffect(() => {
-    const stale = selectedPair && (!selectedPair.amountAsset || !selectedPair.priceAsset);
-    if (stale || (!selectedPair && DEFAULT_PAIR)) setSelectedPair(DEFAULT_PAIR);
-  }, [selectedPair, setSelectedPair]);
+    if (pairsLoading) return;
+    const listed =
+      selectedPair !== null &&
+      pairs.some(
+        (p) =>
+          p.amountAsset === selectedPair.amountAsset && p.priceAsset === selectedPair.priceAsset,
+      );
+    const stale =
+      selectedPair !== null &&
+      (!selectedPair.amountAsset || !selectedPair.priceAsset || (pairs.length > 0 && !listed));
+    if (stale || (!selectedPair && defaultPair)) setSelectedPair(defaultPair);
+  }, [defaultPair, pairs, pairsLoading, selectedPair, setSelectedPair]);
 
   useHotkey('k', () => setPickerOpen(true), { metaKey: true });
   useHotkey('k', () => setPickerOpen(true), { ctrlKey: true });
