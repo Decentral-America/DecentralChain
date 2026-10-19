@@ -163,7 +163,7 @@ jobs:
   publish:
     name: Audit · Sign · Upload to Central Portal
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 240
     needs: [resolve-version, build-native]
     environment: maven-central-release
     defaults:
@@ -204,6 +204,20 @@ jobs:
             -DnewVersion="${RELEASE_VERSION}" \
             -DgenerateBackupPoms=false
 
+      - name: Compute weekly cache key for OWASP NVD data
+        id: nvd-cache-week
+        run: echo "week=$(/bin/date -u +%GW%V)" >> "$GITHUB_OUTPUT"
+
+      # Same weekly NVD cache as _publish-maven.yml: a cold full NVD sync can
+      # exceed any short job timeout, so restore (and always save) the synced DB.
+      - name: Restore cached OWASP dependency-check NVD data
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        with:
+          path: ~/.m2/repository/org/owasp/dependency-check-data
+          key: owasp-dependency-check-nvd-${{ steps.nvd-cache-week.outputs.week }}
+          restore-keys: |
+            owasp-dependency-check-nvd-
+
       - name: Full audit gate before release
         env:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
@@ -214,6 +228,13 @@ jobs:
           else
             ./mvnw --batch-mode verify -P audit -Ddependency-check.skip=true
           fi
+
+      - name: Save cached OWASP dependency-check NVD data
+        if: ${{ always() }}
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+        with:
+          path: ~/.m2/repository/org/owasp/dependency-check-data
+          key: owasp-dependency-check-nvd-${{ steps.nvd-cache-week.outputs.week }}
 
       - name: GPG-sign and deploy to Central Portal
         env:
