@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { fetchBlockAt, fetchBlockHeadersSeq, type IBlock, type IBlockHeader } from '@/lib/api';
 import { logError, logWarn } from '@/lib/error-logger';
+import { pageMeta } from '@/lib/page-meta';
 import { txTypeName } from '@/lib/transactionTypes';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext'; // Added import
@@ -19,6 +20,8 @@ import { useBlockHeight, useLatestBlock } from '../hooks/useBlockPolling';
 const MAX_BLOCKS_PER_REQUEST = 100; // API limit for block headers request
 const INITIAL_BLOCKS_TO_FETCH = 20;
 const MAX_GAP_TO_FETCH = 50; // Don't try to fetch more than 50 blocks at once when catching up
+
+export const meta = () => pageMeta('Live Blocks');
 
 export default function BlockFeed() {
   const { t } = useLanguage(); // Added useLanguage hook

@@ -23,6 +23,7 @@ import {
   type OrderbookResponse,
 } from '@/lib/api';
 import { logError } from '@/lib/error-logger';
+import { pageMeta } from '@/lib/page-meta';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import AssetLogo from '../components/shared/AssetLogo';
@@ -34,6 +35,8 @@ type DexPairRow = DexPairData & {
 };
 
 type DexSortKey = 'pairName' | 'lastPrice' | 'change24h' | 'high' | 'low' | 'volume' | 'txsCount';
+
+export const meta = () => pageMeta('DEX Pairs');
 
 export default function DexPairs() {
   const { t } = useLanguage();

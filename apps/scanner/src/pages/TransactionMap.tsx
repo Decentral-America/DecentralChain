@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { fetchAddressTransactions } from '@/lib/api';
 import { logError, logWarn } from '@/lib/error-logger';
+import { pageMeta } from '@/lib/page-meta';
 import { useLanguage } from '../components/contexts/LanguageContext';
 
 // Register fcose layout once
@@ -60,6 +61,8 @@ interface TransactionMapGraphState {
   edges: GraphEdge[];
   hopsBuilt: number;
 }
+
+export const meta = () => pageMeta('Transaction Map');
 
 export default function TransactionMap() {
   const { t } = useLanguage();

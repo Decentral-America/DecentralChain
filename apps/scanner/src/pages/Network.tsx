@@ -72,6 +72,7 @@ import {
   type ISuspendedPeer,
 } from '@/lib/api';
 import { logError } from '@/lib/error-logger';
+import { pageMeta } from '@/lib/page-meta';
 import { type NodeRegistrationRecord, type Peer } from '@/types';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import { fromUnix } from '../components/utils/formatters';
@@ -731,6 +732,8 @@ function NodeTab() {
 }
 
 // ─── Page shell ─────────────────────────────────────────────────────────────
+
+export const meta = () => pageMeta('Network');
 
 export default function Network() {
   return (

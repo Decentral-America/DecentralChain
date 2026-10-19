@@ -14,10 +14,13 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { fetchBlockHeadersSeq, fetchHeight } from '@/lib/api';
+import { pageMeta } from '@/lib/page-meta';
 import { createPageUrl } from '@/utils';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import CopyButton from '../components/shared/CopyButton';
 import { fromUnix, truncate } from '../components/utils/formatters';
+
+export const meta = () => pageMeta('Blocks');
 
 export default function Blocks() {
   const navigate = useNavigate();
@@ -170,8 +173,9 @@ export default function Blocks() {
                 size="sm"
                 onClick={() => goToPage('first')}
                 disabled={!canGoPrev}
+                aria-label="First page"
               >
-                <ChevronsLeft className="w-4 h-4" />
+                <ChevronsLeft className="w-4 h-4" aria-hidden="true" />
               </Button>
               <Button
                 variant="outline"
@@ -208,8 +212,9 @@ export default function Blocks() {
                 size="sm"
                 onClick={() => goToPage('last')}
                 disabled={!canGoNext}
+                aria-label="Last page"
               >
-                <ChevronsRight className="w-4 h-4" />
+                <ChevronsRight className="w-4 h-4" aria-hidden="true" />
               </Button>
             </div>
           </div>

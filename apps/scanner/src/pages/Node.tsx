@@ -4,8 +4,11 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { fetchNodeStatus, fetchNodeVersion, type INodeStatus, type INodeVersion } from '@/lib/api';
+import { pageMeta } from '@/lib/page-meta';
 import { useLanguage } from '../components/contexts/LanguageContext';
 import { fromUnix } from '../components/utils/formatters';
+
+export const meta = () => pageMeta('Node');
 
 export default function Node() {
   const { t } = useLanguage();
