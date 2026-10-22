@@ -120,9 +120,9 @@ jobs:
         working-directory: packages/ride
         run: sbt --no-colors compile
 
-      - name: Run JVM test suite
-        working-directory: packages/ride
-        run: sbt --no-colors test
+      # No separate `sbt test` here: the quality job below runs the same suite inside
+      # `sbt bulletproof` (coverage -> test -> coverageReport) on every pull request and
+      # every push to main, so a second pass in this job only re-ran the same tests.
 
       # Produces packages/ride/lang/js/dist/lang.js + packages/ride/repl/js/dist/repl.js.
       # fullOptJS, not fullLinkJS: only fullOptJS honours the artifactPath in lang/js and

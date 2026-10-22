@@ -40,10 +40,40 @@
   "lockFileMaintenance": {
     "automerge": true,
     "enabled": true,
-    "schedule": ["* * * * 1"]
+    "schedule": ["on the first day of the month"]
   },
   "osvVulnerabilityAlerts": true,
   "packageRules": [
+    {
+      "description": "One weekly PR for all other minor and patch npm updates; the ecosystem groups below take precedence for their packages",
+      "groupName": "all non-major npm dependencies",
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      "description": "One weekly PR for all GitHub Actions minor, patch and digest updates",
+      "groupName": "GitHub Actions",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch", "digest"]
+    },
+    {
+      "description": "One weekly PR for JVM (Maven and sbt) minor and patch updates",
+      "groupName": "JVM dependencies",
+      "matchManagers": ["maven", "maven-wrapper", "sbt", "custom.regex"],
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      "description": "One weekly PR for Rust crate minor and patch updates",
+      "groupName": "Rust crates",
+      "matchManagers": ["cargo"],
+      "matchUpdateTypes": ["minor", "patch"]
+    },
+    {
+      "description": "One weekly PR for Docker base image minor, patch and digest updates",
+      "groupName": "Docker base images",
+      "matchManagers": ["dockerfile", "docker-compose"],
+      "matchUpdateTypes": ["minor", "patch", "digest"]
+    },
     {
       "automerge": false,
       "dependencyDashboardApproval": true,
@@ -207,7 +237,7 @@
   ],
   "platformAutomerge": true,
   "postUpdateOptions": ["pnpmDedupe"],
-  "prConcurrentLimit": 10,
+  "prConcurrentLimit": 5,
   "prCreation": "not-pending",
   "prHourlyLimit": 5,
   "schedule": ["* * * * 1"],

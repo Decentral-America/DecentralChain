@@ -8,7 +8,7 @@ on:
     workflows: [Deploy Exchange, Deploy Scanner, Deploy Admin Dashboard]
     types: [completed]
   schedule:
-    - cron: '17 */6 * * *'
+    - cron: '17 */12 * * *'  # twice a day; every deploy also triggers a run via workflow_run above
   workflow_dispatch:
     inputs:
       exchange_url:

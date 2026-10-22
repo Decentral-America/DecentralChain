@@ -24,10 +24,43 @@ env:
   NATIVE_DIR: packages/jvm/groth16/groth16_jni/javalib/src/main/resources/META-INF/native
 
 jobs:
+  # ── Step 0: choose the native-build matrix ──────────────────────────────────
+  # Pull requests build and test only linux/amd64, the one platform the Java tests load
+  # and the only one that runs the Rust unit tests. The other six targets (macOS and
+  # Windows bill at 10x and 2x of a Linux minute on the free pool) are cross-platform
+  # compile checks that add nothing to a PR review; they run in full on every push to
+  # main and in publish-groth16.yml before any release.
+  plan:
+    name: Plan native build matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - name: Select matrix
+        id: plan
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          linux_amd64='{"platform":"linux","arch":"amd64","os":"ubuntu-latest","rust-target":"x86_64-unknown-linux-gnu","artifact":"libgroth16_jni.so","resource-path":"linux64/amd64"}'
+          others='{"platform":"linux","arch":"aarch64","os":"ubuntu-24.04-arm","rust-target":"aarch64-unknown-linux-gnu","artifact":"libgroth16_jni.so","resource-path":"linux64/aarch64"}'
+          others+=',{"platform":"linux","arch":"x86","os":"ubuntu-latest","rust-target":"i686-unknown-linux-gnu","artifact":"libgroth16_jni.so","resource-path":"linux32/x86","extra-packages":"gcc-multilib"}'
+          others+=',{"platform":"osx","arch":"aarch64","os":"macos-latest","rust-target":"aarch64-apple-darwin","artifact":"libgroth16_jni.dylib","resource-path":"osx64/aarch64"}'
+          others+=',{"platform":"osx","arch":"x86_64","os":"macos-latest","rust-target":"x86_64-apple-darwin","artifact":"libgroth16_jni.dylib","resource-path":"osx64/x86_64"}'
+          others+=',{"platform":"windows","arch":"amd64","os":"windows-latest","rust-target":"x86_64-pc-windows-msvc","artifact":"groth16_jni.dll","resource-path":"windows64/amd64"}'
+          others+=',{"platform":"windows","arch":"x86","os":"windows-latest","rust-target":"i686-pc-windows-msvc","artifact":"groth16_jni.dll","resource-path":"windows32/x86"}'
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            echo "matrix=[${linux_amd64}]" >> "$GITHUB_OUTPUT"
+          else
+            echo "matrix=[${linux_amd64},${others}]" >> "$GITHUB_OUTPUT"
+          fi
+
   # ── Step 1: Build native JNI library for each platform ──────────────────────
   build-native:
     name: Native lib · ${{ matrix.platform }}/${{ matrix.arch }}
     runs-on: ${{ matrix.os }}
+    needs: plan
     timeout-minutes: 60
     env:
       RUST_BACKTRACE: 1
@@ -35,59 +68,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - platform: linux
-            arch: amd64
-            os: ubuntu-latest
-            rust-target: x86_64-unknown-linux-gnu
-            artifact: libgroth16_jni.so
-            resource-path: linux64/amd64
-
-          - platform: linux
-            arch: aarch64
-            # Native ARM64 runner (free for public repos since Jan 2025) —
-            # matches publish-groth16.yml; avoids cross-compiling via
-            # gcc-aarch64-linux-gnu with a different toolchain than what ships.
-            os: ubuntu-24.04-arm
-            rust-target: aarch64-unknown-linux-gnu
-            artifact: libgroth16_jni.so
-            resource-path: linux64/aarch64
-
-          - platform: linux
-            arch: x86
-            os: ubuntu-latest
-            rust-target: i686-unknown-linux-gnu
-            artifact: libgroth16_jni.so
-            resource-path: linux32/x86
-            extra-packages: gcc-multilib
-
-          - platform: osx
-            arch: aarch64
-            os: macos-latest
-            rust-target: aarch64-apple-darwin
-            artifact: libgroth16_jni.dylib
-            resource-path: osx64/aarch64
-
-          - platform: osx
-            arch: x86_64
-            os: macos-latest
-            rust-target: x86_64-apple-darwin
-            artifact: libgroth16_jni.dylib
-            resource-path: osx64/x86_64
-
-          - platform: windows
-            arch: amd64
-            os: windows-latest
-            rust-target: x86_64-pc-windows-msvc
-            artifact: groth16_jni.dll
-            resource-path: windows64/amd64
-
-          - platform: windows
-            arch: x86
-            os: windows-latest
-            rust-target: i686-pc-windows-msvc
-            artifact: groth16_jni.dll
-            resource-path: windows32/x86
+        include: ${{ fromJSON(needs.plan.outputs.matrix) }}
 
     steps:
       - name: Checkout
