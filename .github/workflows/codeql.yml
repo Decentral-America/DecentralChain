@@ -10,7 +10,8 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
+  # A superseded pull-request push is cancelled; main pushes and the weekly run always finish.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions: {}
 
@@ -22,6 +23,7 @@ jobs:
     permissions:
       actions: read
       contents: read
+      pull-requests: read
       security-events: write
 
     strategy:
@@ -43,12 +45,47 @@ jobs:
         #   python       — no Python source in this repo (ops scripts only)
 
     steps:
+      # Pull requests analyse a language only when the PR touches files CodeQL reads for it.
+      # Every leg still starts and reports, so the required "Analyze (...)" checks always
+      # resolve, but a leg with nothing to analyse stops after this ~10 second step instead
+      # of the 1 to 11 minute analysis (rust is the longest). Pushes to main and the weekly
+      # schedule always analyse everything, so no code goes unscanned.
+      - name: Decide whether this language needs analysis
+        id: gate
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          GH_TOKEN: ${{ github.token }}
+          LANGUAGE: ${{ matrix.language }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" != "pull_request" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          case "$LANGUAGE" in
+            javascript-typescript) pattern='\.(m?[jt]sx?|c[jt]s)$|(^|/)(package\.json|pnpm-lock\.yaml)$' ;;
+            actions) pattern='^\.github/(workflows|actions)/' ;;
+            rust) pattern='\.rs$|(^|/)Cargo\.(toml|lock)$' ;;
+            *) echo "run=true" >> "$GITHUB_OUTPUT"; exit 0 ;;
+          esac
+          files="$(gh api --paginate "repos/${REPO}/pulls/${PR_NUMBER}/files" --jq '.[].filename')"
+          if printf '%s\n' "$files" | grep -Eq "$pattern|^\.github/workflows/codeql\.yml$"; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "No ${LANGUAGE} files changed in this pull request; skipping analysis."
+          fi
+
       - name: Checkout repository
+        if: steps.gate.outputs.run == 'true'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           persist-credentials: false
 
       - name: Initialize CodeQL
+        if: steps.gate.outputs.run == 'true'
         uses: github/codeql-action/init@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2  # v4.38.2
         with:
           languages: ${{ matrix.language }}
@@ -57,6 +94,7 @@ jobs:
           queries: security-extended
 
       - name: Perform CodeQL Analysis
+        if: steps.gate.outputs.run == 'true'
         uses: github/codeql-action/analyze@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2  # v4.38.2
         with:
           category: "/language:${{ matrix.language }}"
