@@ -85,7 +85,7 @@
     "@vitest/coverage-v8": "catalog:",
     "babel-plugin-react-compiler": "catalog:",
     "jsdom": "catalog:",
-    "vite": "^8.3.1",
+    "vite": "^8.3.4",
     "vitest": "catalog:"
   },
   "engines": {

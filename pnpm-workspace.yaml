@@ -23,7 +23,7 @@ catalog:
   '@solana/web3.js': 1.99.0
   '@types/babel__core': 7.20.5
   '@types/node': 26.6.3
-  '@vitest/coverage-v8': 4.1.11
+  '@vitest/coverage-v8': 4.1.12
   babel-plugin-react-compiler: ^1.0.0
   bs58: ^6.0.0
   buffer: ^6.0.3
@@ -34,7 +34,7 @@ catalog:
   publint: 0.3.24
   size-limit: 14.1.0
   tsdown: 0.23.0
-  vitest: 4.1.11
+  vitest: 4.1.12
 
 # pnpm v11: non-auth .npmrc settings are ignored; declare them here instead.
 engineStrict: true
@@ -69,6 +69,9 @@ allowBuilds:
   workerd: false
 
 overrides:
+  # vite 8.3.0-8.3.2 advisories (GHSA-698v-4r3x-3vcv, -r825-w8mm-5pxw, -587h-7wmj-h5pm, -rq7h-c2jc-7f22, -vfpm-58rq-9qcg);
+  # fixed in 8.3.3. Reached transitively via vitest and nx with no patched parent range.
+  vite: '>=8.3.3 <9.0.0'
   # GHSA-jqcg-44mw-7w3h (critical): IP spoofing via IPv4-mapped IPv6 trust subnet; fixed in 2.0.8.
   # Pulled by @react-router/serve -> express (scanner, admin-dashboard).
   proxy-addr: '>=2.0.8'
@@ -170,7 +173,7 @@ auditConfig:
   ignoreGhsas:
     # braces <=3.0.3 stack-exhaustion DoS: NO patched release exists (3.0.3 is the latest). Only reachable via
     # react-native -> @react-native/community-cli-plugin -> metro -> metro-file-map -> micromatch (the RN
-    # bundler CLI), a transitive dependency the web apps never execute. Remove when braces ships a fix.
+    # bundler CLI), a transitive dependency the web apps never execute. Remove when braces ships a fix. Review/expiry: 2026-12-01.
     - GHSA-vfj7-8cjw-p6xm
     # extract-zip <=2.0.1 (GHSA-jmr9-qjv8-65gv, GHSA-7pqw-9j4j-h8q3): NO patched release exists (2.0.1 is the
     # latest, 2020). Only reachable via apps/cubensis-connect devDependency @testing-library/webdriverio ->

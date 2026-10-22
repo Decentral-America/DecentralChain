@@ -33,10 +33,10 @@
     "@types/pg": "^8.23.1",
     "@types/qs": "^6.15.1",
     "@types/ramda": "^0.32.0",
-    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/coverage-v8": "^4.1.12",
     "pino-pretty": "^13.1.3",
     "tsdown": "catalog:",
-    "vitest": "^4.1.11"
+    "vitest": "^4.1.12"
   },
   "dependencies": {
     "@decentralchain/assets-pairs-order": "workspace:*",
@@ -44,7 +44,7 @@
     "@decentralchain/parse-json-bignumber": "workspace:*",
     "@hono/node-server": "^2.1.1",
     "effect": "^3.22.2",
-    "hono": "^4.13.9",
+    "hono": "^4.13.13",
     "knex": "^3.3.0",
     "lru-cache": "^11.5.3",
     "pg": "^8.23.0",
