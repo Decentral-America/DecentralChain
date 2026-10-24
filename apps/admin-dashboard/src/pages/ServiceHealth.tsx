@@ -43,6 +43,8 @@ export default function ServiceHealth() {
     degraded: number;
     total: number;
   } | null>(null);
+  const [label, setLabel] = useState('Network Services');
+  const [host, setHost] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -53,9 +55,13 @@ export default function ServiceHealth() {
       const res = await fetch('/api/services/health');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = (await res.json()) as {
+        host?: string;
+        label?: string;
         services: ServiceStatus[];
         summary: { up: number; down: number; degraded: number; total: number };
       };
+      setLabel(data.label ?? 'Network Services');
+      setHost(data.host ?? '');
       setServices(data.services);
       setSummary(data.summary);
     } catch (err) {
@@ -71,7 +77,9 @@ export default function ServiceHealth() {
     return () => clearInterval(interval);
   }, [load]);
 
-  const newarkServices = services.filter((s) => s.category === 'newark');
+  const primaryServices = services.filter((s) => s.category === 'primary');
+
+  const header = host ? `${label} (${host})` : label;
 
   const overallStatus =
     summary === null
@@ -147,12 +155,12 @@ export default function ServiceHealth() {
         </div>
       )}
 
-      {/* Newark services */}
+      {/* Primary services */}
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
             <Activity className="h-4 w-4" />
-            Newark Services (66.228.55.154)
+            {header}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -165,7 +173,7 @@ export default function ServiceHealth() {
             </div>
           ) : (
             <div className="divide-y divide-border">
-              {newarkServices.map((svc) => (
+              {primaryServices.map((svc) => (
                 <div key={svc.name} className="flex items-center gap-4 px-4 py-3">
                   <span className="shrink-0">{statusIcon(svc.status)}</span>
 

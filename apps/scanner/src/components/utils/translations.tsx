@@ -6,8 +6,6 @@ export const translations: Record<Language, Record<string, string>> = {
   en: {
     // Popular Features Section
 
-    aboutYourCasinoRevenue:
-      'As a node owner with {ownership}% ownership of your node, you receive profits from the CR Coin Casino app running on the DecentralChain network. The total casino profit of {totalPnl} is divided equally among all {totalNodes} nodes in the network ({perNode} per node). Your share is then calculated based on your {ownership}% ownership, resulting in {yourProfit} USD in profits. All calculations are transparent and based on actual deposit/withdrawal data from the casino.',
     active: 'Active',
     activeLeases: 'Active Leases',
     address: 'Address',
@@ -35,8 +33,6 @@ export const translations: Record<Language, Record<string, string>> = {
     appName: 'DecentralChain',
     appSubtitle: 'Blockchain Explorer',
 
-    asNodeOwner:
-      'As a node owner with {ownership}% ownership of your node, you receive profits from the CR Coin Casino application running on the DecentralChain network. The total casino profit of {totalProfit} is divided equally among all {totalNodes} nodes in the network ({profitPerNode} per node). Your share is then calculated based on your {ownership}% ownership, resulting in {yourProfit} USD in profits. All calculations are transparent and based on actual deposit/withdrawal data from the casino.',
     asset: 'Asset',
     assetActivity: 'Asset Activity (Last 24h Est.)',
 
@@ -90,8 +86,6 @@ export const translations: Record<Language, Record<string, string>> = {
     buildMapButton: 'Build Map',
     bytes: 'Bytes',
 
-    casinoRevenueExplanation:
-      'As a node owner with {percent}% ownership of your node, you receive profits from the CR Coin Casino app running on the DecentralChain network. The total casino profit of {total} is divided equally among all {nodes} nodes in the network ({perNode} per node). Your share is then calculated based on your {percent}% ownership, resulting in {yourShare} USD in profits. All calculations are transparent and based on actual deposit/withdrawal data from the casino.',
     change24h: 'Change 24h',
     clearButton: 'Clear',
     comprehensiveAnalysis: 'Comprehensive Analysis',
@@ -428,8 +422,6 @@ export const translations: Record<Language, Record<string, string>> = {
   es: {
     // Popular Features Section
 
-    aboutYourCasinoRevenue:
-      'Como propietario de nodo con {ownership}% de propiedad de tu nodo, recibes ganancias de la aplicación CR Coin Casino que se ejecuta en la red DecentralChain. El total casino profit of {totalPnl} is divided equally among all {totalNodes} nodes in the network ({perNode} per node). Your share is then calculated based on your {ownership}% ownership, resulting in {yourProfit} USD in profits. All calculations are transparent and based on actual deposit/withdrawal data from the casino.',
     active: 'Activo',
     activeLeases: 'Arrendamientos Activos',
     address: 'Dirección',
@@ -457,8 +449,6 @@ export const translations: Record<Language, Record<string, string>> = {
     appName: 'DecentralChain',
     appSubtitle: 'Explorador de Blockchain',
 
-    asNodeOwner:
-      'Como propietario de nodo con {ownership}% de propiedad de tu nodo, recibes ganancias de la aplicación CR Coin Casino que se ejecuta en la red DecentralChain. El total de ganancias del casino de {totalProfit} se divide equitativamente entre todos los {totalNodes} nodos en la red ({profitPerNode} por nodo). Tu participación se calcula entonces basándose en tu {ownership}% de propiedad, resultando en {yourProfit} USD en ganancias. Todos los cálculos son transparentes y se basan en datos reales de depósitos/retiros del casino.',
     asset: 'Activo',
     assetActivity: 'Actividad del Activo (Últ. 24h Est.)',
 
@@ -514,8 +504,6 @@ export const translations: Record<Language, Record<string, string>> = {
     cacheInfo1:
       'Los reportes se almacenan en caché durante 24 horas después de la primera obtención',
 
-    casinoRevenueExplanation:
-      'Como propietario de nodo con {percent}% de propiedad de tu nodo, recibes ganancias de la aplicación CR Coin Casino que se ejecuta en la red DecentralChain. La ganancia total del casino de {total} se divide equitativamente entre todos los {nodes} nodos de la red ({perNode} por nodo). Tu parte se calcula luego en función de tu propiedad del {percent}%, lo que resulta en {yourShare} USD en ganancias. Todos los cálculos son transparentes y se basan en datos reales de depósitos/retiros del casino.',
     change24h: 'Cambio 24h',
     clearAllCacheDesc:
       'Limpiar TODOS los datos en caché en toda la aplicación (usar con precaución)',
