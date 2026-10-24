@@ -87,6 +87,10 @@ overrides:
   # retry interceptor, cache-directive parse crash) all fixed in 7.29.0.
   undici: ">=7.29.1 <8.0.0"
   esbuild: '>=0.28.1'
+  # body-parser 2.x <2.4.0: DoS via trailing bytes after a compressed request body (high); fixed 2.4.0.
+  body-parser: '>=2.4.0'
+  # zod <4.6.6: memory exhaustion validating oversized constrained collections (high); fixed 4.6.6.
+  zod: '>=4.6.6'
   '@xmldom/xmldom': '>=0.9.10'
   # GHSA-2v37-7h3g-55p8: custom generators can loop indefinitely when size is zero.
   nanoid: '>=3.3.18'
@@ -151,7 +155,7 @@ overrides:
   '@solana/web3.js>jayson': '^5.0.0'
   # @coral-xyz/anchor 0.32.1 (latest) pins toml@^3 (prototype pollution + uncontrolled
   # recursion, fixed 4.2.0). toml 5 keeps the same single parse() export anchor calls.
-  '@coral-xyz/anchor>toml': '^5.0.0'
+  '@coral-xyz/anchor>toml': '>=5.0.1 <6.0.0'
   # @solflare-wallet/sdk 1.4.2 (latest, unmaintained since 2024-01) pins uuid@^9 (missing
   # buffer bounds check in v3/v5/v6, fixed 11.1.1). It only calls v4(); ^14 matches the
   # uuid rpc-websockets already resolves, and Node >=24 require()s its ESM build.
