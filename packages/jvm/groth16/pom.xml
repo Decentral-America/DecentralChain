@@ -12,7 +12,7 @@
     Version scheme: <upstream-groth16-version>.<dcc-patch>
     upstream 0.2.1 + DCC patch 1 → 0.2.1.1 (POM licence corrected to MIT, matching LICENSE)
   -->
-  <version>0.2.1.1</version>
+  <version>0.2.1.2</version>
   <packaging>jar</packaging>
 
   <!-- ── Project metadata (required for Maven Central) ───────────────── -->

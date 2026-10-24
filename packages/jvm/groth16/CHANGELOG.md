@@ -7,7 +7,12 @@ Versioning: [DecentralChain version conventions](https://github.com/Decentral-Am
 
 ---
 
-## [0.2.1.1] — unreleased
+## [0.2.1.2] — 2026-10-23
+
+### Security
+- Native library rebuilt from the locked dependency set: rustls-webpki 0.103.16 (was 0.103.15). No API change.
+
+## [0.2.1.1]
 
 ### Fixed
 - POM licence metadata now says MIT, matching LICENSE (0.2.1.0's POM said Apache-2.0). No code change.

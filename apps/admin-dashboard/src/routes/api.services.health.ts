@@ -15,7 +15,7 @@ async function getUser(request: Request): Promise<string | null> {
 export interface ServiceStatus {
   name: string;
   url: string;
-  category: 'newark' | 'lke';
+  category: 'primary' | 'lke';
   status: 'up' | 'down' | 'degraded';
   httpCode?: number;
   latencyMs?: number;
@@ -31,7 +31,7 @@ export interface ServiceStatus {
 interface ServiceDef {
   name: string;
   url: string;
-  category: 'newark' | 'lke';
+  category: 'primary' | 'lke';
   // Status codes that are considered "up". Default: [200].
   upCodes?: number[];
   // If true, any HTTP response (including 4xx) means the port is open → "up"
@@ -43,44 +43,44 @@ function buildServices(): ServiceDef[] {
 
   return [
     {
-      category: 'newark',
+      category: 'primary',
       name: 'DCC Node',
       upCodes: [200],
       url: `${nodeUrl}/node/version`,
     },
     {
-      category: 'newark',
+      category: 'primary',
       name: 'Data Service',
       upCodes: [200],
       url: 'https://testnet-data-service.decentralchain.io/health',
     },
     {
-      category: 'newark',
+      category: 'primary',
       name: 'Matcher',
       upCodes: [200],
       url: 'https://testnet-matcher.decentralchain.io/matcher',
     },
     {
-      category: 'newark',
+      category: 'primary',
       name: 'Scanner',
       upCodes: [200, 304],
       url: scannerUrl(),
     },
     {
-      category: 'newark',
+      category: 'primary',
       name: 'Exchange',
       upCodes: [200, 304],
       url: 'https://testnet.decentral.exchange',
     },
     {
       anyResponseIsUp: true,
-      category: 'newark',
+      category: 'primary',
       name: 'WebSocket API',
       // WebSocket-only — any response means the process is listening.
       url: 'https://testnet-ws.decentralchain.io',
     },
     {
-      category: 'newark',
+      category: 'primary',
       name: 'Admin Dashboard',
       upCodes: [200],
       url: 'https://testnet-admin.decentralchain.io/healthz',
@@ -149,6 +149,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const downCount = results.filter((s) => s.status === 'down').length;
 
   return Response.json({
+    // Display label and host come from deploy config, per network.
+    host: process.env.DCC_SERVICES_HOST ?? '',
+    label: process.env.DCC_SERVICES_LABEL ?? 'Network Services',
     services: results,
     summary: {
       degraded: results.filter((s) => s.status === 'degraded').length,

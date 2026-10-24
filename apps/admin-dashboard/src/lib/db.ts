@@ -2,7 +2,7 @@ import postgres from 'postgres';
 import { logger } from './logger';
 
 // ── Connection ────────────────────────────────────────────────────────────────
-// Uses the same PostgreSQL server as the rest of the stack (Newark) but connects
+// Uses the same PostgreSQL server as the rest of the stack but connects
 // to a dedicated `dcc_admin` database so blockchain indexing data is never mixed
 // with admin operational data.
 //
