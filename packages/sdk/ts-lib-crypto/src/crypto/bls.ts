@@ -6,7 +6,8 @@ import { sha256 } from '@noble/hashes/sha2.js';
 import { _fromIn } from '../conversions/param';
 import { type TBinaryIn, type TBLSKeyPair, type TBytes } from './interface';
 
-const DST = new TextEncoder().encode('BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_NUL_');
+/** Legacy (pre-v2) domain separation tag; still the default of blsSign/blsVerify. */
+const DST_LEGACY = 'BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_NUL_';
 const BLS_KEYGEN_SALT_BASE = new TextEncoder().encode('BLS-SIG-KEYGEN-SALT-');
 // biome-ignore lint/security/noSecrets: BLS12-381 curve order, not a secret
 const CURVE_ORDER = BigInt('0x73eda753299d7d483339d80809a1d80553bda402fffe5bfeffffffff00000001');
@@ -31,8 +32,8 @@ function mkBlsSecretKey(seed: Uint8Array): Uint8Array {
   return out;
 }
 
-function hashToPoint(message: Uint8Array) {
-  return bls12_381.G2.hashToCurve(message, { DST });
+function hashToPoint(message: Uint8Array, dst: string) {
+  return bls12_381.G2.hashToCurve(message, { DST: new TextEncoder().encode(dst) });
 }
 
 /** Derive the BLS12-381 public key from a secret key. */
@@ -47,9 +48,16 @@ export const blsKeyPair = (seed: TBinaryIn): TBLSKeyPair => {
   return { blsPublic: publicKey, blsSecret: secretKey };
 };
 
-/** Sign a message using BLS12-381 (hash-to-curve with long signatures). */
-export const blsSign = (secretKey: TBinaryIn, message: TBinaryIn): TBytes => {
-  const msgPoint = hashToPoint(_fromIn(message));
+/**
+ * Sign a message using BLS12-381 (hash-to-curve with long signatures). `dst` is the domain
+ * separation tag; it defaults to the legacy tag; a CommitToGeneration proof uses the POP tag (see transactions).
+ */
+export const blsSign = (
+  secretKey: TBinaryIn,
+  message: TBinaryIn,
+  dst: string = DST_LEGACY,
+): TBytes => {
+  const msgPoint = hashToPoint(_fromIn(message), dst);
 
   return bls.sign(msgPoint, _fromIn(secretKey)).toBytes(true);
 };
@@ -59,8 +67,9 @@ export const blsVerify = (
   publicKey: TBinaryIn,
   message: TBinaryIn,
   signature: TBinaryIn,
+  dst: string = DST_LEGACY,
 ): boolean => {
-  const msgPoint = hashToPoint(_fromIn(message));
+  const msgPoint = hashToPoint(_fromIn(message), dst);
 
   return bls.verify(_fromIn(signature), msgPoint, _fromIn(publicKey));
 };
