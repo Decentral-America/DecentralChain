@@ -225,8 +225,13 @@ export interface IDCCCrypto<TDesiredOut extends TBinaryOut = TBase58> {
   //BLS
   blsKeyPair: (seed: TBinaryIn) => TBLSKeyPair;
   blsPublicKey: (privateKey: TBinaryIn) => TBytes;
-  blsSign: (privateKey: TBinaryIn, message: TBinaryIn) => TBytes;
-  blsVerify: (publicKey: TBinaryIn, message: TBinaryIn, signature: TBinaryIn) => boolean;
+  blsSign: (privateKey: TBinaryIn, message: TBinaryIn, dst?: string) => TBytes;
+  blsVerify: (
+    publicKey: TBinaryIn,
+    message: TBinaryIn,
+    signature: TBinaryIn,
+    dst?: string,
+  ) => boolean;
 
   //Ethereum (secp256k1, Type 18 transactions)
   ethereumKeyPair: (privateKey?: TBinaryIn) => TEthKeyPair;

@@ -27,6 +27,12 @@ import { validate } from '../validators';
 
 const dccCrypto = crypto({ output: 'Bytes' });
 
+// The node verifies the proof of possession under this domain separation tag and over
+// chainId ‖ senderPublicKey ‖ endorserPublicKey ‖ generationPeriodStart (85 bytes). Since the v1.8.1
+// hardening (h90000) the legacy tag and the bare endorserPk ‖ period message are rejected
+// ("Invalid commitment signature"). Mirrors node CommitToGenerationTransaction.popMessage/PopDst.
+const BLS_POP_DST = 'BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_';
+
 const int32ToBigEndianBytes = (value: number): Uint8Array => {
   if (!Number.isInteger(value) || value < -2147483648 || value > 2147483647) {
     throw new Error(`generationPeriodStart should be a 32-bit integer, but got: ${value}`);
@@ -43,6 +49,8 @@ type BlsSigningData = { endorserPublicKey: string; commitmentSignature: string }
 function resolveBlsSigningData(
   paramsOrTx: ICommitToGenerationParams & { proofs?: string[] },
   primarySeed: ReturnType<typeof convertToPairs>[number][0] | undefined,
+  chainId: number,
+  senderPublicKey: string,
 ): BlsSigningData {
   const needsComputation =
     paramsOrTx.endorserPublicKey == null || paramsOrTx.commitmentSignature == null;
@@ -71,9 +79,12 @@ function resolveBlsSigningData(
           dccCrypto.blsSign(
             blsSecret,
             concat(
+              Uint8Array.of(chainId),
+              base58Decode(senderPublicKey),
               base58Decode(endorserPublicKey),
               int32ToBigEndianBytes(paramsOrTx.generationPeriodStart),
             ),
+            BLS_POP_DST,
           ),
         )
       : undefined);
@@ -107,10 +118,16 @@ export function commitToGeneration(
   const senderPublicKey = getSenderPublicKey(seedsAndIndexes, paramsOrTx);
   const primarySeed = seedsAndIndexes[0]?.[0];
 
-  const { endorserPublicKey, commitmentSignature } = resolveBlsSigningData(paramsOrTx, primarySeed);
+  const chainId = networkByte(paramsOrTx.chainId, 63);
+  const { endorserPublicKey, commitmentSignature } = resolveBlsSigningData(
+    paramsOrTx,
+    primarySeed,
+    chainId,
+    senderPublicKey,
+  );
 
   const tx: CommitToGenerationTransaction & WithId & WithProofs = {
-    chainId: networkByte(paramsOrTx.chainId, 63),
+    chainId,
     commitmentSignature,
     endorserPublicKey,
     fee: fee(paramsOrTx, 10000000),

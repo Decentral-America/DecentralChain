@@ -1,4 +1,4 @@
-import { publicKey } from '@decentralchain/ts-lib-crypto';
+import { base58Decode, blsVerify, concat, publicKey } from '@decentralchain/ts-lib-crypto';
 import { commitToGeneration } from '../../src';
 import { validateTxSignature } from '../utils';
 
@@ -16,6 +16,24 @@ describe('commitToGeneration', () => {
     expect(tx.endorserPublicKey).not.toBe(tx.senderPublicKey);
     expect(tx.endorserPublicKey.length).toBeGreaterThan(0);
     expect(tx.commitmentSignature.length).toBeGreaterThan(0);
+  });
+
+  it('signs the v2 proof of possession: POP tag over chainId || sender || endorser || period', () => {
+    const tx = commitToGeneration({ chainId: 'T', generationPeriodStart: 1000 }, stringSeed);
+    const message = concat(
+      Uint8Array.of('T'.charCodeAt(0)),
+      base58Decode(tx.senderPublicKey),
+      base58Decode(tx.endorserPublicKey),
+      Uint8Array.of(0, 0, 0x03, 0xe8),
+    );
+    const popDst = 'BLS_SIG_BLS12381G2_XMD:SHA-256_SSWU_RO_POP_';
+    const sig = base58Decode(tx.commitmentSignature);
+    const pk = base58Decode(tx.endorserPublicKey);
+    expect(blsVerify(pk, message, sig, popDst)).toBe(true);
+    // The legacy tag and the legacy bare message are what the node rejects after h90000.
+    expect(blsVerify(pk, message, sig)).toBe(false);
+    const other = commitToGeneration({ chainId: 'W', generationPeriodStart: 1000 }, stringSeed);
+    expect(other.commitmentSignature).not.toBe(tx.commitmentSignature);
   });
 
   it('should get a correct ed25519 proof signature over the proto-serialized tx', () => {
