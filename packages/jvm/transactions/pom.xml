@@ -160,6 +160,12 @@
   <!-- adding them to the compile classpath.                                -->
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <!-- CVE-2026-102554 (HIGH, DoS), fixed in 33.7.2; reached transitively. -->
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>33.7.2-android</version>
+      </dependency>
       <!-- kotlin-stdlib 2.4.21: transitive runtime dependency; pins past CVE-2026-53914
            (fixed in Kotlin 2.4.20), which the release audit gate (CVSS >= 7) rejects at 2.3.0. -->
       <dependency>

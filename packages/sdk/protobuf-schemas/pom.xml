@@ -179,6 +179,17 @@
     </build>
 
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <!-- CVE-2026-102554 (HIGH, DoS), fixed in 33.7.2; reached transitively. -->
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>33.7.2-android</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>io.grpc</groupId>
