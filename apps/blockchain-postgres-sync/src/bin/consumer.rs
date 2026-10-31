@@ -1,7 +1,7 @@
 use anyhow::{Context, Result};
 use app_lib::{config, consumer, db, publisher};
 use axum::{Router, extract::State, routing::get};
-use std::net::SocketAddr;
+use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicU32, Ordering};
 use tokio::select;
@@ -60,6 +60,13 @@ async fn main() -> Result<()> {
 
     // Health / readiness / metrics HTTP server
     let metrics_port = config.consumer.metrics_port;
+    // BIND_ADDR (optional) restricts the health/metrics listener, e.g. to 127.0.0.1.
+    let bind_ip = match std::env::var("BIND_ADDR") {
+        Ok(v) => v
+            .parse::<IpAddr>()
+            .with_context(|| format!("BIND_ADDR {v:?}"))?,
+        Err(_) => IpAddr::V4(Ipv4Addr::UNSPECIFIED),
+    };
     let health_conn = conn.clone();
     let last_synced_height = Arc::new(AtomicU32::new(0));
     let health_server = tokio::spawn({
@@ -99,7 +106,7 @@ async fn main() -> Result<()> {
             )
             .with_state(last_synced_height);
 
-            let addr = SocketAddr::from(([0, 0, 0, 0], metrics_port));
+            let addr = SocketAddr::from((bind_ip, metrics_port));
             let listener = tokio::net::TcpListener::bind(addr)
                 .await
                 .context("health listener bind failed")?;
