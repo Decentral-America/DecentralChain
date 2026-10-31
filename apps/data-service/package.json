@@ -42,7 +42,7 @@
     "@decentralchain/assets-pairs-order": "workspace:*",
     "@decentralchain/data-entities": "workspace:*",
     "@decentralchain/parse-json-bignumber": "workspace:*",
-    "@hono/node-server": "^2.1.1",
+    "@hono/node-server": "^2.1.5",
     "effect": "^3.22.2",
     "hono": "^4.13.13",
     "knex": "^3.3.0",
