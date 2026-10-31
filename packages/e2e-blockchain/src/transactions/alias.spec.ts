@@ -1,9 +1,10 @@
-import { alias, broadcast, transfer, waitForTx } from '@decentralchain/transactions';
+import { alias, broadcast, transfer } from '@decentralchain/transactions';
 import { address } from '@decentralchain/ts-lib-crypto';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, DS_URL, MASTER_SEED } from '../setup/env';
 
 const MASTER_ADDR = address(MASTER_SEED, CHAIN_ID);
-const TIMEOUT = 120_000;
+const TIMEOUT = 300_000;
 
 describe('Alias (type 10)', () => {
   vi.setConfig({ testTimeout: TIMEOUT });
@@ -24,7 +25,7 @@ describe('Alias (type 10)', () => {
 
     txId = tx.id;
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(txId, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(txId, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
   });
 
@@ -61,7 +62,7 @@ describe('Alias (type 10)', () => {
     );
 
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
   });
 

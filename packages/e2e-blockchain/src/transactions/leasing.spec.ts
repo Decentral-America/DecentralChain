@@ -1,11 +1,12 @@
 import { broadcast, cancelLease, lease, waitForTx } from '@decentralchain/transactions';
 import { address } from '@decentralchain/ts-lib-crypto';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, DS_URL, MASTER_SEED } from '../setup/env';
 
 const MASTER_ADDR = address(MASTER_SEED, CHAIN_ID);
 
-const TIMEOUT = 120_000;
+const TIMEOUT = 300_000;
 
 // Lease recipient must differ from the sender — DCC rejects self-leases.
 // Use a deterministic fresh account so the test is reproducible.
@@ -34,7 +35,7 @@ describe('Lease/CancelLease (types 8/9)', () => {
 
     leaseId = tx.id;
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(leaseId, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(leaseId, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
   });
 
@@ -48,7 +49,7 @@ describe('Lease/CancelLease (types 8/9)', () => {
     );
 
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
   });
 
@@ -99,7 +100,7 @@ describe('Lease/CancelLease (types 8/9)', () => {
         MASTER_SEED,
       );
       await broadcast(cancelTx, API_BASE);
-      await waitForTx(cancelTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+      await waitForFinalTx(cancelTx.id, API_BASE, TIMEOUT);
     }
   });
 

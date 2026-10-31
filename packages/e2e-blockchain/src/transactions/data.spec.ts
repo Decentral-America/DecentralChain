@@ -1,9 +1,10 @@
 import { broadcast, data, waitForTx } from '@decentralchain/transactions';
 import { address } from '@decentralchain/ts-lib-crypto';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, DS_URL, MASTER_SEED } from '../setup/env';
 
 const MASTER_ADDR = address(MASTER_SEED, CHAIN_ID);
-const TIMEOUT = 120_000;
+const TIMEOUT = 300_000;
 
 // Unique key prefix to avoid collisions between test runs
 const PREFIX = `e2e_${Date.now().toString(36)}`;
@@ -29,7 +30,7 @@ describe('Data transaction (type 12)', () => {
 
     txId = tx.id;
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(txId, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(txId, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
   });
 
@@ -83,7 +84,7 @@ describe('Data transaction (type 12)', () => {
       MASTER_SEED,
     );
     await broadcast(tx2, API_BASE);
-    await waitForTx(tx2.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx2.id, API_BASE, TIMEOUT);
 
     const res = await fetch(`${API_BASE}addresses/data/${MASTER_ADDR}/${key}`);
     expect(res.ok).toBe(true);
@@ -114,7 +115,7 @@ describe('Data transaction (type 12)', () => {
       MASTER_SEED,
     );
     await broadcast(deleteTx, API_BASE);
-    await waitForTx(deleteTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(deleteTx.id, API_BASE, TIMEOUT);
 
     const res = await fetch(`${API_BASE}addresses/data/${MASTER_ADDR}/${key}`);
     // Node returns 404 when the key has been deleted, or an entry with null value.

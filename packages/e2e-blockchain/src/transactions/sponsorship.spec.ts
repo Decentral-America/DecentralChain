@@ -8,10 +8,11 @@ import {
 import { address } from '@decentralchain/ts-lib-crypto';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
 import { assertAppearsInDataService } from '../helpers/data-service';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const MASTER_ADDR = address(MASTER_SEED, CHAIN_ID);
-const TIMEOUT = 120_000;
+const TIMEOUT = 300_000;
 
 describe('Sponsorship (type 14)', () => {
   vi.setConfig({ testTimeout: TIMEOUT });
@@ -34,7 +35,7 @@ describe('Sponsorship (type 14)', () => {
     );
 
     await broadcast(issueTx, API_BASE);
-    await waitForTx(issueTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(issueTx.id, API_BASE, TIMEOUT);
     assetId = issueTx.id;
   }, TIMEOUT);
 
@@ -50,7 +51,7 @@ describe('Sponsorship (type 14)', () => {
 
     sponsorTxId = tx.id;
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(sponsorTxId, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(sponsorTxId, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
   });
 
@@ -101,7 +102,7 @@ describe('Sponsorship (type 14)', () => {
       MASTER_SEED,
     );
     await broadcast(disableTx, API_BASE);
-    await waitForTx(disableTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(disableTx.id, API_BASE, TIMEOUT);
 
     // Fetch asset details and confirm sponsorship is removed
     const res = await fetch(`${API_BASE}assets/details/${localAssetId}`);
@@ -181,7 +182,7 @@ describe('Sponsorship (type 14)', () => {
     });
     expect(broadcastRes.ok).toBe(true);
 
-    const confirmed = await waitForTx(userTransferTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(userTransferTx.id, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
   });
 
@@ -224,7 +225,7 @@ describe('Sponsorship (type 14)', () => {
       MASTER_SEED,
     );
     await broadcast(enableAt250, API_BASE);
-    await waitForTx(enableAt250.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(enableAt250.id, API_BASE, TIMEOUT);
 
     // Verify the updated fee
     const res = await fetch(`${API_BASE}assets/details/${localAssetId}`);
@@ -271,7 +272,7 @@ describe('Sponsorship (type 14)', () => {
       sponsor.seed,
     );
     await broadcast(assetTransferTx, API_BASE);
-    await waitForTx(assetTransferTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(assetTransferTx.id, API_BASE, TIMEOUT);
 
     // Sponsor should now have ~0 DCC — confirm before asserting the real behavior.
     const sponsorDcc = await fetch(`${API_BASE}addresses/balance/${sponsor.address}`);

@@ -17,8 +17,9 @@
  * always runs regardless of the cooldown state.
  */
 
-import { broadcast, issue, updateAssetInfo, waitForTx } from '@decentralchain/transactions';
+import { broadcast, issue, updateAssetInfo } from '@decentralchain/transactions';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const TIMEOUT = 300_000;
@@ -54,7 +55,7 @@ async function issueToken(seed: string, name: string, desc: string): Promise<str
     seed,
   );
   await broadcast(tx, API_BASE);
-  await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+  await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
   return tx.id;
 }
 
@@ -93,7 +94,7 @@ describe('UpdateAssetInfo (type 17)', () => {
       throw e;
     }
 
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
     const { name } = await assetDetails(assetId);
     expect(name).toBe(newName);
   });
@@ -118,7 +119,7 @@ describe('UpdateAssetInfo (type 17)', () => {
       throw e;
     }
 
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
     const { description } = await assetDetails(assetId);
     expect(description).toBe(newDesc);
   });
@@ -144,7 +145,7 @@ describe('UpdateAssetInfo (type 17)', () => {
       throw e;
     }
 
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
     const details = await assetDetails(assetId);
     expect(details.name).toBe(newName);
     expect(details.description).toBe(newDesc);

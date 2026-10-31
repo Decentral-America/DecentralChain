@@ -1,11 +1,12 @@
-import { broadcast, massTransfer, transfer, waitForTx } from '@decentralchain/transactions';
+import { broadcast, massTransfer, transfer } from '@decentralchain/transactions';
 import { address } from '@decentralchain/ts-lib-crypto';
 import { randomTestAccount } from '../helpers/accounts';
 import { assertAppearsInDataService } from '../helpers/data-service';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const MASTER_ADDR = address(MASTER_SEED, CHAIN_ID);
-const TIMEOUT = 120_000;
+const TIMEOUT = 300_000;
 
 describe('Full data pipeline', () => {
   vi.setConfig({ testTimeout: TIMEOUT });
@@ -18,7 +19,7 @@ describe('Full data pipeline', () => {
     );
     const _t0 = Date.now();
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
     await assertAppearsInDataService(
       tx.id,
@@ -38,7 +39,7 @@ describe('Full data pipeline', () => {
     );
     const _t0 = Date.now();
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
     await assertAppearsInDataService(
       tx.id,

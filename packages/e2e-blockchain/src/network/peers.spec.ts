@@ -7,6 +7,7 @@
  * from another chain fails the run.
  */
 
+import { pollUntil } from '../helpers/finality';
 import { API_BASE, API_KEY, CHAIN_ID } from '../setup/env';
 
 const TIMEOUT = 180_000;
@@ -33,12 +34,13 @@ describe('Peer network connectivity', () => {
   vi.setConfig({ testTimeout: TIMEOUT });
 
   it('node has at least one connected peer within 120 s', async () => {
-    const deadline = Date.now() + 120_000;
-    let connected = await peers('connected');
-    while (connected.length === 0 && Date.now() < deadline) {
-      await new Promise((r) => setTimeout(r, 10_000));
-      connected = await peers('connected');
-    }
+    const connected = await pollUntil(
+      async () => {
+        const found = await peers('connected');
+        return found.length > 0 ? found : undefined;
+      },
+      { description: 'a connected peer', intervalMs: 10_000, timeoutMs: 120_000 },
+    );
     expect(connected.length).toBeGreaterThanOrEqual(1);
   });
 

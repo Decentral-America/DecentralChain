@@ -53,6 +53,9 @@ Thumbs.db
 .env.*.local
 *.pem
 
+# Cloudflare Wrangler local state (any depth, e.g. apps/exchange/.wrangler/)
+.wrangler/
+
 # Logs
 *.log
 npm-debug.log*

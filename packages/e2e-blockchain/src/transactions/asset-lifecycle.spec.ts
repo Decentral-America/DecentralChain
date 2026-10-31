@@ -1,9 +1,10 @@
-import { broadcast, burn, issue, reissue, waitForTx } from '@decentralchain/transactions';
+import { broadcast, burn, issue, reissue } from '@decentralchain/transactions';
 import { address } from '@decentralchain/ts-lib-crypto';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, DS_URL, MASTER_SEED } from '../setup/env';
 
 const MASTER_ADDR = address(MASTER_SEED, CHAIN_ID);
-const TIMEOUT = 120_000;
+const TIMEOUT = 300_000;
 
 describe('Asset lifecycle: Issue → Reissue → Burn', () => {
   vi.setConfig({ testTimeout: TIMEOUT });
@@ -24,7 +25,7 @@ describe('Asset lifecycle: Issue → Reissue → Burn', () => {
     );
 
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
     assetId = tx.id;
     expect(confirmed.height).toBeGreaterThan(0);
     expect(assetId).toBeTruthy();
@@ -42,7 +43,7 @@ describe('Asset lifecycle: Issue → Reissue → Burn', () => {
     );
 
     await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     // Check via address-specific endpoint
     const addrRes = await fetch(
@@ -67,7 +68,7 @@ describe('Asset lifecycle: Issue → Reissue → Burn', () => {
     );
 
     await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     const { address } = await import('@decentralchain/ts-lib-crypto');
     const addrRes = await fetch(
