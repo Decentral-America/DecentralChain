@@ -10,9 +10,10 @@
  *   4. Data-service history — issue TX is indexed under /v0/transactions/issue
  */
 
-import { broadcast, issue, waitForTx } from '@decentralchain/transactions';
+import { broadcast, issue } from '@decentralchain/transactions';
 import { address } from '@decentralchain/ts-lib-crypto';
 import { assertAppearsInDataService } from '../helpers/data-service';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const MASTER_ADDR = address(MASTER_SEED, CHAIN_ID);
@@ -57,7 +58,7 @@ describe('Issue core tests (type 3)', () => {
     );
 
     await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     const details = await assetDetails(tx.id);
     expect(details.reissuable).toBe(true);
@@ -78,7 +79,7 @@ describe('Issue core tests (type 3)', () => {
     );
 
     await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     const details = await assetDetails(tx.id);
     expect(details.reissuable).toBe(false);
@@ -98,7 +99,7 @@ describe('Issue core tests (type 3)', () => {
     );
 
     await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     const balance = await assetBalance(MASTER_ADDR, tx.id);
     expect(balance).toBe(5_000);
@@ -118,7 +119,7 @@ describe('Issue core tests (type 3)', () => {
     );
 
     await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     await assertAppearsInDataService(
       tx.id,

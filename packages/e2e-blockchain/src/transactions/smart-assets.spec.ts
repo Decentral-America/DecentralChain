@@ -10,16 +10,10 @@
  *   - Burn from a burn-only asset confirms; transfer is rejected
  */
 
-import {
-  broadcast,
-  burn,
-  issue,
-  setAssetScript,
-  transfer,
-  waitForTx,
-} from '@decentralchain/transactions';
+import { broadcast, burn, issue, setAssetScript, transfer } from '@decentralchain/transactions';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
 import { compileScript } from '../helpers/compile';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const TIMEOUT = 300_000;
@@ -120,7 +114,7 @@ describe('Smart assets (type 15 setAssetScript)', () => {
         issuer.seed,
       );
       await broadcast(tx, API_BASE);
-      await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+      await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
       assetId = tx.id;
       const details = await assetDetails(assetId);
@@ -137,7 +131,7 @@ describe('Smart assets (type 15 setAssetScript)', () => {
         issuer.seed,
       );
       await broadcast(tx, API_BASE);
-      const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+      const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
       expect(confirmed.height).toBeGreaterThan(0);
 
       const bal = await assetBalance(recipient.address, assetId);
@@ -152,7 +146,7 @@ describe('Smart assets (type 15 setAssetScript)', () => {
         issuer.seed,
       );
       await broadcast(tx, API_BASE);
-      const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+      const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
       expect(confirmed.height).toBeGreaterThan(0);
 
       // Transfer now must be rejected (freeze script returns false)
@@ -186,7 +180,7 @@ describe('Smart assets (type 15 setAssetScript)', () => {
         issuer.seed,
       );
       await broadcast(tx, API_BASE);
-      await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+      await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
       assetId = tx.id;
     });
 
@@ -223,7 +217,7 @@ describe('Smart assets (type 15 setAssetScript)', () => {
         issuer.seed,
       );
       await broadcast(tx, API_BASE);
-      await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+      await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
       assetId = tx.id;
     });
 
@@ -232,7 +226,7 @@ describe('Smart assets (type 15 setAssetScript)', () => {
 
       const tx = burn({ amount: 100, assetId, chainId: CHAIN_ID, fee: 500_000 }, issuer.seed);
       await broadcast(tx, API_BASE);
-      const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+      const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
       expect(confirmed.height).toBeGreaterThan(0);
 
       const bal = await assetBalance(issuer.address, assetId);

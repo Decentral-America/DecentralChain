@@ -21,6 +21,7 @@ import {
   waitForTx,
 } from '@decentralchain/transactions';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, DS_URL, MASTER_SEED } from '../setup/env';
 
 const TIMEOUT = 600_000;
@@ -104,7 +105,7 @@ describe('E2E: Token launch', () => {
       h0.seed,
     );
     await broadcast(crossTx, API_BASE);
-    await waitForTx(crossTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(crossTx.id, API_BASE, TIMEOUT);
 
     expect(await assetBalance(h0.address, assetId)).toBe(perHolder - 500);
     expect(await assetBalance(h1.address, assetId)).toBe(perHolder + 500);
