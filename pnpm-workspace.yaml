@@ -125,7 +125,8 @@ overrides:
   ip-address: '>=10.7.1'
   # seroval <=1.6.2: GHSA-p6vx-979v-rg4c (critical), GHSA-jp82-f5mq-hwhp (high). Dev-only
   # (react-query-devtools > solid-js), loaded behind import.meta.env.DEV in apps/exchange.
-  seroval: '>=1.6.3'
+  # GHSA-f86p-h4j2-7qgj (moderate, typed-array constructor code injection) is fixed in 1.6.11.
+  seroval: '>=1.6.11 <1.7.0'
   # smol-toml <=1.8.0: GHSA-7w5x-hrqm-74c2 (high), GHSA-r4xh-jqrq-34v2 (fixed 1.9.0).
   smol-toml: '>=1.9.0'
   # browserslist <=4.28.6: GHSA-c83g-rgw3-j3cx, GHSA-73wf-gq98-2v4g; baseline-browser-mapping <2.11.0: GHSA-w5vr-8v7q-w6rv.
@@ -175,6 +176,14 @@ ignoreWorkspaceCycles: true
 
 auditConfig:
   ignoreGhsas:
+    # minimatch <11.0.1 (GHSA-g3hv-75wg-m249, moderate): globparts amplification DoS. No compatible fix: the only path is
+    # nx -> minimatch, and the latest nx (24.0.3) still depends on minimatch ^10; forcing 11 is a major bump of the build
+    # tool's glob engine. Dev-only (Nx task runner), only reachable with attacker-controlled glob patterns. Review/expiry: 2026-12-01.
+    - GHSA-g3hv-75wg-m249
+    # glob <=14.0.1 (GHSA-3g3m-2fjr-6pw4, moderate): AbortSignal cancellation bypass allows post-timeout filesystem traversal.
+    # Only path is apps/cubensis-connect devDependency stylus -> glob ^10 (latest stylus 0.64.0); glob 14 is a major API
+    # change that would break stylus. Dev-only (extension stylesheet build); nothing passes an AbortSignal. Review/expiry: 2026-12-01.
+    - GHSA-3g3m-2fjr-6pw4
     # braces <=3.0.3 stack-exhaustion DoS: NO patched release exists (3.0.3 is the latest). Only reachable via
     # react-native -> @react-native/community-cli-plugin -> metro -> metro-file-map -> micromatch (the RN
     # bundler CLI), a transitive dependency the web apps never execute. Remove when braces ships a fix. Review/expiry: 2026-12-01.
