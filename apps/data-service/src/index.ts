@@ -91,8 +91,9 @@ Effect.runPromise(
     const server = serve(
       {
         fetch: app.fetch,
-        // BIND_ADDR (optional) restricts the listener, e.g. 127.0.0.1 behind a reverse proxy.
-        hostname: process.env['BIND_ADDR'] || '0.0.0.0',
+        // BIND_ADDR (optional) restricts the listener, e.g. 127.0.0.1 behind a reverse proxy. When unset the
+        // listener keeps Node's default (dual-stack ::), so existing deployments are unchanged.
+        ...(process.env['BIND_ADDR'] ? { hostname: process.env['BIND_ADDR'] } : {}),
         port: options.port,
       },
       (info) => {
