@@ -17,6 +17,7 @@
  */
 
 import { address } from '@decentralchain/ts-lib-crypto';
+import { pollUntil } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const MASTER_ADDR = address(MASTER_SEED, CHAIN_ID);
@@ -40,16 +41,15 @@ describe('Node REST API health', () => {
 
     it('height increases (chain is producing blocks)', async () => {
       // Wait at most 90 s for a new block (avg block time ≈ 40 s)
-      const deadline = Date.now() + 90_000;
-      let height2 = height1;
-
-      while (Date.now() < deadline && height2 <= height1) {
-        await new Promise((r) => setTimeout(r, 5_000));
-        const res = await fetch(`${API_BASE}blocks/height`);
-        if (res.ok) {
-          height2 = ((await res.json()) as { height: number }).height;
-        }
-      }
+      const height2 = await pollUntil(
+        async () => {
+          const res = await fetch(`${API_BASE}blocks/height`);
+          if (!res.ok) return;
+          const { height } = (await res.json()) as { height: number };
+          return height > height1 ? height : undefined;
+        },
+        { description: `chain height to pass ${height1}`, intervalMs: 5_000, timeoutMs: 90_000 },
+      );
 
       expect(height2).toBeGreaterThan(height1);
     }, 120_000);

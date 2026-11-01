@@ -3,8 +3,9 @@
  * transaction that is already in the state.
  */
 
-import { broadcast, data, transfer, waitForTx } from '@decentralchain/transactions';
+import { broadcast, data, transfer } from '@decentralchain/transactions';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const TIMEOUT = 180_000;
@@ -50,7 +51,7 @@ describe('Transaction rejections', () => {
       MASTER_SEED,
     );
     await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     const { message, status } = await post(tx);
     expect(status).toBe(400);

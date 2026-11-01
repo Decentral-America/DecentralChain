@@ -6,8 +6,9 @@
  * and every later change is an `update` frame.
  */
 
-import { broadcast, data, waitForTx } from '@decentralchain/transactions';
+import { broadcast, data } from '@decentralchain/transactions';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED, WS_URL } from '../setup/env';
 
 const TIMEOUT = 300_000;
@@ -68,7 +69,7 @@ describe('websocket-api state updates', () => {
           account.seed,
         );
         await broadcast(tx, API_BASE);
-        await waitForTx(tx.id, { apiBase: API_BASE, timeout: 120_000 });
+        await waitForFinalTx(tx.id, API_BASE, 120_000);
       };
 
       await new Promise<void>((resolve, reject) => {

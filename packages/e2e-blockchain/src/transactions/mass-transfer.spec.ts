@@ -1,10 +1,11 @@
 import { broadcast, issue, massTransfer, waitForTx } from '@decentralchain/transactions';
 import { address } from '@decentralchain/ts-lib-crypto';
 import { randomTestAccount } from '../helpers/accounts';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, DS_URL, MASTER_SEED } from '../setup/env';
 
 const MASTER_ADDR = address(MASTER_SEED, CHAIN_ID);
-const TIMEOUT = 120_000;
+const TIMEOUT = 300_000;
 
 describe('MassTransfer (type 11)', () => {
   vi.setConfig({ testTimeout: TIMEOUT });
@@ -23,7 +24,7 @@ describe('MassTransfer (type 11)', () => {
 
     txId = tx.id;
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(txId, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(txId, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
   });
 
@@ -64,7 +65,7 @@ describe('MassTransfer (type 11)', () => {
     );
 
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
 
     for (const account of twoRecipients) {
@@ -87,7 +88,7 @@ describe('MassTransfer (type 11)', () => {
     );
 
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
 
     for (const account of tenRecipients) {
@@ -110,7 +111,7 @@ describe('MassTransfer (type 11)', () => {
     );
 
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
 
     // Spot-check 5 balances from the batch
@@ -137,7 +138,7 @@ describe('MassTransfer (type 11)', () => {
     );
 
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
   });
 
@@ -154,7 +155,7 @@ describe('MassTransfer (type 11)', () => {
     );
 
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
 
     for (let i = 0; i < threeRecipients.length; i++) {
@@ -196,7 +197,7 @@ describe('MassTransfer (type 11)', () => {
     );
 
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
 
     for (const account of fiveRecipients) {

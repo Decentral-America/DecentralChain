@@ -16,14 +16,15 @@
  */
 
 import { create } from '@decentralchain/node-api';
-import { broadcast, issue, transfer, waitForTx } from '@decentralchain/transactions';
+import { broadcast, issue, transfer } from '@decentralchain/transactions';
 import { address } from '@decentralchain/ts-lib-crypto';
 import { randomTestAccount } from '../helpers/accounts';
 import { compileScript } from '../helpers/compile';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const MASTER_ADDR = address(MASTER_SEED, CHAIN_ID);
-const TIMEOUT = 120_000;
+const TIMEOUT = 300_000;
 
 describe('REST endpoint coverage', () => {
   vi.setConfig({ testTimeout: TIMEOUT });
@@ -41,7 +42,7 @@ describe('REST endpoint coverage', () => {
       );
       txId = tx.id;
       await broadcast(tx, API_BASE);
-      await waitForTx(txId, { apiBase: API_BASE, timeout: TIMEOUT });
+      await waitForFinalTx(txId, API_BASE, TIMEOUT);
     }, TIMEOUT);
 
     it('POST /transactions/status returns status for a known and an unknown id', async () => {
@@ -134,7 +135,7 @@ describe('REST endpoint coverage', () => {
       );
       assetId = issueTx.id;
       await broadcast(issueTx, API_BASE);
-      await waitForTx(assetId, { apiBase: API_BASE, timeout: TIMEOUT });
+      await waitForFinalTx(assetId, API_BASE, TIMEOUT);
     }, TIMEOUT);
 
     it('GET /assets/{id}/distribution returns holder distribution', async () => {

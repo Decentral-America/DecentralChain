@@ -15,6 +15,7 @@
 import { broadcast, invokeScript, setScript, waitForTx } from '@decentralchain/transactions';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
 import { compileScript } from '../helpers/compile';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 type InvokeArg =
@@ -134,7 +135,7 @@ describe('RIDE stdlib — collection/pure functions', () => {
       caller.seed,
     );
     await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
   }
 
   it('median, containsElement, and list indexOf match expected results', async () => {
@@ -219,7 +220,7 @@ describe('RIDE stdlib — collection/pure functions', () => {
     try {
       const removeTx = setScript({ chainId: CHAIN_ID, fee: 1_000_000, script: null }, dapp.seed);
       await broadcast(removeTx, API_BASE);
-      await waitForTx(removeTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+      await waitForFinalTx(removeTx.id, API_BASE, TIMEOUT);
     } catch {
       /* best-effort */
     }

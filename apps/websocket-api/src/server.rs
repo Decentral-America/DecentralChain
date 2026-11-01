@@ -9,7 +9,7 @@ use axum::{
     routing::get,
 };
 use prometheus::{Encoder, TextEncoder};
-use std::net::{Ipv4Addr, SocketAddr};
+use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 use std::sync::Arc;
 use std::time::Duration;
 use tokio::sync::{Semaphore, oneshot};
@@ -131,12 +131,25 @@ pub fn start<R: Repo + 'static>(
         .layer(PropagateRequestIdLayer::x_request_id())
         .layer(TraceLayer::new_for_http());
 
-    let addr = SocketAddr::from((Ipv4Addr::UNSPECIFIED, port));
+    // BIND_ADDR (optional) restricts the listener, e.g. 127.0.0.1 behind a reverse proxy.
+    let bind_ip = match std::env::var("BIND_ADDR") {
+        Ok(v) => v
+            .parse::<IpAddr>()
+            .map_err(|e| Error::ConfigValidation(format!("BIND_ADDR {v:?}: {e}"))),
+        Err(_) => Ok(IpAddr::V4(Ipv4Addr::UNSPECIFIED)),
+    };
+    let addr = SocketAddr::from((
+        *bind_ip
+            .as_ref()
+            .unwrap_or(&IpAddr::V4(Ipv4Addr::UNSPECIFIED)),
+        port,
+    ));
     tracing::info!(%addr, "WebSocket server listening");
 
     let (stop_tx, stop_rx) = oneshot::channel::<()>();
 
     let server_fut = async move {
+        bind_ip?;
         let listener = tokio::net::TcpListener::bind(addr)
             .await
             .map_err(|e| Error::ConfigValidation(format!("bind {addr}: {e}")))?;

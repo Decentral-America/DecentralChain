@@ -28,9 +28,10 @@ import { base58Decode, ethereumKeyPair, ethereumSign, keccak } from '@decentralc
 import { RLP } from '@ethereumjs/rlp';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
 import { compileScript } from '../helpers/compile';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
-const TIMEOUT = 120_000;
+const TIMEOUT = 300_000;
 const ETH_RPC = `${API_BASE.replace(/\/$/, '')}/eth`; // node's ETH JSON-RPC endpoint
 const GAS_PRICE_WEI = 10_000_000_000n; // the one value the node accepts
 
@@ -155,7 +156,7 @@ describe('Ethereum compatibility layer (Type 18, EIP-155)', () => {
     const { txId } = await broadcastEthereum(signed.raw, API_BASE);
     expect(txId).toBe(signed.id);
 
-    await waitForTx(ethTxId2dcc(txId), { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(ethTxId2dcc(txId), API_BASE, TIMEOUT);
 
     // Recipient received exactly the transferred amount.
     expect(await dccBalance(recipient.address)).toBe(100_000);
@@ -263,7 +264,7 @@ describe('Ethereum compatibility layer (Type 18, EIP-155)', () => {
       value: 0n,
     });
     const { txId } = await broadcastEthereum(raw, API_BASE);
-    await waitForTx(ethTxId2dcc(txId), { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(ethTxId2dcc(txId), API_BASE, TIMEOUT);
 
     const entryRes = await fetch(`${API_BASE}addresses/data/${dapp.address}/called`);
     expect(entryRes.status).toBe(200);

@@ -18,6 +18,7 @@
 
 import { broadcast, burn, issue, reissue, transfer, waitForTx } from '@decentralchain/transactions';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const TIMEOUT = 300_000;
@@ -62,7 +63,7 @@ describe('Burn edge cases (type 6)', () => {
       issuer.seed,
     );
     await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
     assetId = tx.id;
   }, TIMEOUT);
 
@@ -81,7 +82,7 @@ describe('Burn edge cases (type 6)', () => {
     // Holder burns 200 of their 500
     const burnTx = burn({ amount: 200, assetId, chainId: CHAIN_ID }, holder.seed);
     await broadcast(burnTx, API_BASE);
-    const confirmed = await waitForTx(burnTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(burnTx.id, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
 
     const bal = await assetBalance(holder.address, assetId);
@@ -98,7 +99,7 @@ describe('Burn edge cases (type 6)', () => {
       issuer.seed,
     );
     await broadcast(xfer, API_BASE);
-    await waitForTx(xfer.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(xfer.id, API_BASE, TIMEOUT);
 
     // Try to burn 1,000 — more than they have
     const burnTx = burn({ amount: 1_000, assetId, chainId: CHAIN_ID }, holder.seed);
@@ -140,7 +141,7 @@ describe('Reissue edge cases (type 5)', () => {
       issuer.seed,
     );
     await broadcast(reissueTx, API_BASE);
-    await waitForTx(reissueTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(reissueTx.id, API_BASE, TIMEOUT);
 
     const details = await assetDetails(assetId);
     expect(details.reissuable).toBe(false);
@@ -167,7 +168,7 @@ describe('Reissue edge cases (type 5)', () => {
       issuer.seed,
     );
     await broadcast(issueTx, API_BASE);
-    await waitForTx(issueTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(issueTx.id, API_BASE, TIMEOUT);
     const assetId = issueTx.id;
 
     const reissueTx = reissue(
@@ -201,7 +202,7 @@ describe('Reissue edge cases (type 5)', () => {
       issuer.seed,
     );
     await broadcast(reissueTx, API_BASE);
-    const confirmed = await waitForTx(reissueTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(reissueTx.id, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
 
     const details = await assetDetails(assetId);

@@ -10,8 +10,9 @@
  *   - NFT: quantity=1, decimals=0, reissuable=false
  */
 
-import { broadcast, issue, waitForTx } from '@decentralchain/transactions';
+import { broadcast, issue } from '@decentralchain/transactions';
 import { address } from '@decentralchain/ts-lib-crypto';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const TIMEOUT = 300_000;
@@ -55,7 +56,7 @@ describe('Issue edge cases (type 3)', () => {
       MASTER_SEED,
     );
     await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     const details = await assetDetails(tx.id);
     expect(details.decimals).toBe(8);
@@ -75,7 +76,7 @@ describe('Issue edge cases (type 3)', () => {
       MASTER_SEED,
     );
     await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     const details = await assetDetails(tx.id);
     expect(details.quantity).toBe(1);
@@ -97,7 +98,7 @@ describe('Issue edge cases (type 3)', () => {
       MASTER_SEED,
     );
     await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     const details = await assetDetails(tx.id);
     expect(details.description).toBe('');
@@ -117,7 +118,7 @@ describe('Issue edge cases (type 3)', () => {
       MASTER_SEED,
     );
     await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     const details = await assetDetails(tx.id);
     expect(details.quantity).toBe(1);

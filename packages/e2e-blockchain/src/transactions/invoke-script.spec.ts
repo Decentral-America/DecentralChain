@@ -14,9 +14,10 @@
  * The dApp is deployed once in beforeAll; all `it` blocks share it.
  */
 
-import { broadcast, invokeScript, setScript, waitForTx } from '@decentralchain/transactions';
+import { broadcast, invokeScript, setScript } from '@decentralchain/transactions';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
 import { compileScript } from '../helpers/compile';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const TIMEOUT = 300_000;
@@ -113,7 +114,7 @@ describe('InvokeScript (type 16)', () => {
       dapp.seed,
     );
     await broadcast(deployTx, API_BASE);
-    await waitForTx(deployTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(deployTx.id, API_BASE, TIMEOUT);
   }, TIMEOUT);
 
   // ── noop() ────────────────────────────────────────────────────────────────
@@ -126,7 +127,7 @@ describe('InvokeScript (type 16)', () => {
       caller.seed,
     );
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
   });
 
@@ -154,7 +155,7 @@ describe('InvokeScript (type 16)', () => {
       caller.seed,
     );
     await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     const entry = await dataKey(dapp.address, key);
     expect(entry).not.toBeNull();
@@ -186,7 +187,7 @@ describe('InvokeScript (type 16)', () => {
       caller.seed,
     );
     await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     const entry = await dataKey(dapp.address, key);
     expect(entry).not.toBeNull();
@@ -214,7 +215,7 @@ describe('InvokeScript (type 16)', () => {
       caller.seed,
     );
     await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     const entry = await dataKey(dapp.address, key);
     expect(entry).not.toBeNull();
@@ -241,7 +242,7 @@ describe('InvokeScript (type 16)', () => {
       caller.seed,
     );
     await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     const after = await dccBalance(dapp.address);
     expect(after).toBeGreaterThanOrEqual(before + payment);
@@ -271,7 +272,7 @@ describe('InvokeScript (type 16)', () => {
       caller.seed,
     );
     await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     const changes = await stateChanges(tx.id);
     const written = changes.stateChanges.data.find((d) => d.key === key);
@@ -304,7 +305,7 @@ describe('InvokeScript (type 16)', () => {
     try {
       const removeTx = setScript({ chainId: CHAIN_ID, fee: 1_000_000, script: null }, dapp.seed);
       await broadcast(removeTx, API_BASE);
-      await waitForTx(removeTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+      await waitForFinalTx(removeTx.id, API_BASE, TIMEOUT);
     } catch {
       /* best-effort */
     }

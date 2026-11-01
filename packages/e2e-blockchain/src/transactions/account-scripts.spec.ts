@@ -14,6 +14,7 @@
 import { broadcast, data, setScript, transfer, waitForTx } from '@decentralchain/transactions';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
 import { compileScript } from '../helpers/compile';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const TIMEOUT = 300_000;
@@ -77,7 +78,7 @@ describe('Account scripts (type 13)', () => {
     it('deploys always-true verifier (type=13)', async () => {
       const tx = setScript({ chainId: CHAIN_ID, fee: 1_000_000, script: compiledB64 }, wallet.seed);
       await broadcast(tx, API_BASE);
-      const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+      const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
       expect(confirmed.height).toBeGreaterThan(0);
     });
 
@@ -94,14 +95,14 @@ describe('Account scripts (type 13)', () => {
         wallet.seed,
       );
       await broadcast(tx, API_BASE);
-      const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+      const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
       expect(confirmed.height).toBeGreaterThan(0);
     });
 
     it('removes script (setScript null) — account reverts to plain', async () => {
       const tx = setScript({ chainId: CHAIN_ID, fee: 1_000_000, script: null }, wallet.seed);
       await broadcast(tx, API_BASE);
-      const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+      const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
       expect(confirmed.height).toBeGreaterThan(0);
 
       const info = await scriptInfoOf(wallet.address);
@@ -126,7 +127,7 @@ describe('Account scripts (type 13)', () => {
 
       const tx = setScript({ chainId: CHAIN_ID, fee: 1_000_000, script: compiledB64 }, wallet.seed);
       await broadcast(tx, API_BASE);
-      await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+      await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
     }, TIMEOUT);
 
     it('data TX from restricted account is rejected by the node', async () => {
@@ -158,7 +159,7 @@ describe('Account scripts (type 13)', () => {
       try {
         const tx = setScript({ chainId: CHAIN_ID, fee: 1_000_000, script: null }, wallet.seed);
         await broadcast(tx, API_BASE);
-        await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+        await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
       } catch {
         /* ignore */
       }

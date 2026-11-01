@@ -22,7 +22,7 @@ import {
   waitForTx,
 } from '@decentralchain/transactions';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
-import { waitForFinalized } from '../helpers/finality';
+import { PollTimeoutError, pollUntil, waitForFinalized, waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED, MATCHER_API_KEY, MATCHER_URL } from '../setup/env';
 
 const TIMEOUT = 300_000;
@@ -83,17 +83,18 @@ async function waitForFill(
   const amt = amountAsset ?? 'DCC';
   const price = priceAsset ?? 'DCC';
   const url = `${MATCHER_URL}/matcher/orderbook/${amt}/${price}/${orderId}`;
-  const deadline = Date.now() + timeoutMs;
-
-  while (Date.now() < deadline) {
-    const res = await fetch(url);
-    if (res.ok) {
+  return pollUntil(
+    async () => {
+      const res = await fetch(url);
+      if (!res.ok) return;
       const body = (await res.json()) as { status: string };
-      if (body.status === 'Filled' || body.status === 'PartiallyFilled') return true;
-    }
-    await new Promise((r) => setTimeout(r, 3_000));
-  }
-  return false;
+      return body.status === 'Filled' || body.status === 'PartiallyFilled' ? true : undefined;
+    },
+    { description: `matcher order ${orderId} to fill`, intervalMs: 3_000, timeoutMs },
+  ).catch((error: unknown) => {
+    if (error instanceof PollTimeoutError) return false;
+    throw error;
+  });
 }
 
 // ── Suite ─────────────────────────────────────────────────────────────────────
@@ -166,7 +167,7 @@ describe('Exchange (type 7, matcher)', () => {
       buyer.seed,
     );
     await broadcast(xferTx, API_BASE);
-    await waitForTx(xferTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(xferTx.id, API_BASE, TIMEOUT);
     // The settlement test snapshots balances and diffs them; a setup transfer that is only in the
     // liquid state could still be orphaned and re-mined between those reads.
     await waitForFinalized(xferTx.id, API_BASE);
@@ -459,16 +460,16 @@ async function dccBalance(addr: string): Promise<number> {
   return balance;
 }
 
-/** Polls an address's on-chain asset balance until it differs from `before` or times out. */
+/** Polls an address's on-chain asset balance until it differs from `before`; throws on timeout. */
 async function waitForAssetBalanceChange(
   addr: string,
   assetId: string,
   before: number,
   timeoutMs: number,
 ): Promise<void> {
-  const deadline = Date.now() + timeoutMs;
-  while (Date.now() < deadline) {
-    if ((await assetBalance(addr, assetId)) !== before) return;
-    await new Promise((r) => setTimeout(r, 3_000));
-  }
+  await pollUntil(async () => ((await assetBalance(addr, assetId)) !== before ? true : undefined), {
+    description: `asset ${assetId} balance of ${addr} to change from ${before}`,
+    intervalMs: 3_000,
+    timeoutMs,
+  });
 }

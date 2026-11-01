@@ -10,7 +10,7 @@ export default mergeConfig(baseConfig, {
     include: ['src/**/*.spec.ts'],
     setupFiles: ['src/setup/env.ts'],
     singleThread: true,
-    testTimeout: 120_000,
+    testTimeout: 300_000,
     typecheck: { enabled: false },
   },
 });

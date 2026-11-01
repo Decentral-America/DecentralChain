@@ -15,10 +15,10 @@ import {
   commitToGeneration,
   invokeExpression,
   setScript,
-  waitForTx,
 } from '@decentralchain/transactions';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
 import { compileScript } from '../helpers/compile';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const TIMEOUT = 300_000;
@@ -203,7 +203,7 @@ describe('InvokeExpression (type 20)', () => {
     await fundAccount(dapp.address, 10_000_000, MASTER_SEED, API_BASE, CHAIN_ID);
     const deployTx = setScript({ chainId: CHAIN_ID, fee: 1_000_000, script: compiled }, dapp.seed);
     await broadcast(deployTx, API_BASE);
-    await waitForTx(deployTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(deployTx.id, API_BASE, TIMEOUT);
 
     const res = await fetch(`${API_BASE}utils/script/evaluate/${dapp.address}`, {
       body: JSON.stringify({ expr: '1 + 1' }),

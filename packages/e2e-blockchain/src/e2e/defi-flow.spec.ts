@@ -22,6 +22,7 @@ import {
 import { address } from '@decentralchain/ts-lib-crypto';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
 import { compileScript } from '../helpers/compile';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const TIMEOUT = 600_000;
@@ -67,7 +68,7 @@ describe('E2E DeFi flows', () => {
     // Cancel
     const cancelTx = cancelLease({ chainId: CHAIN_ID, leaseId: leaseTx.id }, lessor.seed);
     await broadcast(cancelTx, API_BASE);
-    await waitForTx(cancelTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(cancelTx.id, API_BASE, TIMEOUT);
 
     // Must be gone from active leases
     const activeAfter = await activeLeases(lessor.address);
@@ -94,7 +95,7 @@ describe('E2E DeFi flows', () => {
     // Cancel
     const cancelTx = cancelLease({ chainId: CHAIN_ID, leaseId: leaseTx.id }, staker.seed);
     await broadcast(cancelTx, API_BASE);
-    const confirmed = await waitForTx(cancelTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(cancelTx.id, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
   });
 
@@ -146,7 +147,7 @@ true
     try {
       const removeTx = setScript({ chainId: CHAIN_ID, fee: 1_000_000, script: null }, account.seed);
       await broadcast(removeTx, API_BASE);
-      await waitForTx(removeTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+      await waitForFinalTx(removeTx.id, API_BASE, TIMEOUT);
     } catch {
       /* best-effort */
     }
@@ -187,7 +188,7 @@ true
         creator.seed,
       );
       await broadcast(tx, API_BASE);
-      await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+      await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
     }
 
     // Verify all holders received their tokens

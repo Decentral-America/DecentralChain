@@ -19,14 +19,15 @@
  *   - GET /blocks/height/{blockId}, /blocks/finalized/at/{height}, /blocks/headers/finalized
  */
 
-import { alias, broadcast, lease, transfer, waitForTx } from '@decentralchain/transactions';
+import { alias, broadcast, lease, transfer } from '@decentralchain/transactions';
 import { address, publicKey } from '@decentralchain/ts-lib-crypto';
 import { randomTestAccount } from '../helpers/accounts';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const MASTER_ADDR = address(MASTER_SEED, CHAIN_ID);
 const MASTER_PUBLIC_KEY = publicKey(MASTER_SEED);
-const TIMEOUT = 120_000;
+const TIMEOUT = 300_000;
 
 async function currentHeight(): Promise<number> {
   const res = await fetch(`${API_BASE}blocks/height`);
@@ -50,7 +51,7 @@ describe('REST endpoint coverage, round 2', () => {
       );
       txId = tx.id;
       await broadcast(tx, API_BASE);
-      await waitForTx(txId, { apiBase: API_BASE, timeout: TIMEOUT });
+      await waitForFinalTx(txId, API_BASE, TIMEOUT);
     }, TIMEOUT);
 
     it('GET /transactions/address/{addr}/limit/{n} returns this tx for the sender', async () => {
@@ -118,7 +119,7 @@ describe('REST endpoint coverage, round 2', () => {
       aliasName = `e2ercv2${Date.now().toString(36)}`.slice(0, 20);
       const tx = alias({ alias: aliasName, chainId: CHAIN_ID }, MASTER_SEED);
       await broadcast(tx, API_BASE);
-      await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+      await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
     }, TIMEOUT);
 
     it('GET /alias/by-alias/{name} resolves back to the owning address', async () => {
@@ -142,7 +143,7 @@ describe('REST endpoint coverage, round 2', () => {
       );
       leaseId = tx.id;
       await broadcast(tx, API_BASE);
-      await waitForTx(leaseId, { apiBase: API_BASE, timeout: TIMEOUT });
+      await waitForFinalTx(leaseId, API_BASE, TIMEOUT);
     }, TIMEOUT);
 
     it('GET /leasing/info/{leaseId} returns the lease details', async () => {

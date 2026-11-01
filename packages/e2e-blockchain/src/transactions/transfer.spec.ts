@@ -1,10 +1,11 @@
 import { broadcast, issue, transfer, waitForTx } from '@decentralchain/transactions';
 import { address } from '@decentralchain/ts-lib-crypto';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, DS_URL, MASTER_SEED } from '../setup/env';
 
 const MASTER_ADDR = address(MASTER_SEED, CHAIN_ID);
-const TIMEOUT = 120_000;
+const TIMEOUT = 300_000;
 
 describe('Transfer (type 4)', () => {
   vi.setConfig({ testTimeout: TIMEOUT });
@@ -27,7 +28,7 @@ describe('Transfer (type 4)', () => {
 
     txId = tx.id;
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(txId, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(txId, API_BASE, TIMEOUT);
 
     expect(confirmed.height).toBeGreaterThan(0);
   });
@@ -67,7 +68,7 @@ describe('Transfer (type 4)', () => {
     );
 
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     expect(confirmed.height).toBeGreaterThan(0);
   });
@@ -83,7 +84,7 @@ describe('Transfer (type 4)', () => {
     );
 
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     expect(confirmed.height).toBeGreaterThan(0);
   });
@@ -106,7 +107,7 @@ describe('Transfer (type 4)', () => {
     );
 
     await broadcast(txBC, API_BASE);
-    await waitForTx(txBC.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(txBC.id, API_BASE, TIMEOUT);
 
     const res = await fetch(`${API_BASE}addresses/balance/${walletC.address}`);
     expect(res.ok).toBe(true);
@@ -127,7 +128,7 @@ describe('Transfer (type 4)', () => {
     );
 
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     expect(confirmed.height).toBeGreaterThan(0);
   });
@@ -161,7 +162,7 @@ describe('Transfer (type 4)', () => {
     );
 
     await broadcast(transferTx, API_BASE);
-    await waitForTx(transferTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(transferTx.id, API_BASE, TIMEOUT);
 
     const res = await fetch(`${API_BASE}assets/balance/${recipient.address}/${issueTx.id}`);
     expect(res.ok).toBe(true);
@@ -199,7 +200,7 @@ describe('Transfer (type 4)', () => {
     );
 
     await broadcast(transferTx, API_BASE);
-    const confirmed = await waitForTx(transferTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(transferTx.id, API_BASE, TIMEOUT);
 
     expect(confirmed.height).toBeGreaterThan(0);
   });
@@ -252,7 +253,7 @@ describe('Transfer (type 4)', () => {
     );
 
     await broadcast(drainTx, API_BASE);
-    await waitForTx(drainTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(drainTx.id, API_BASE, TIMEOUT);
 
     const [senderRes, destRes] = await Promise.all([
       fetch(`${API_BASE}assets/balance/${sender.address}/${issueTx.id}`),

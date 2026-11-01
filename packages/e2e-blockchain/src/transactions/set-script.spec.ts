@@ -3,10 +3,11 @@ import { address } from '@decentralchain/ts-lib-crypto';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
 import { compileScript } from '../helpers/compile';
 import { assertAppearsInDataService } from '../helpers/data-service';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const MASTER_ADDR = address(MASTER_SEED, CHAIN_ID);
-const TIMEOUT = 120_000;
+const TIMEOUT = 300_000;
 
 const FUND = 20_000_000; // 0.2 DCC — covers setScript fees + transfers
 
@@ -57,7 +58,7 @@ describe('SetScript (type 13)', () => {
 
     txId = tx.id;
     await broadcast(tx, API_BASE);
-    const confirmed = await waitForTx(txId, { apiBase: API_BASE, timeout: TIMEOUT });
+    const confirmed = await waitForFinalTx(txId, API_BASE, TIMEOUT);
     expect(confirmed.height).toBeGreaterThan(0);
   });
 
@@ -88,7 +89,7 @@ describe('SetScript (type 13)', () => {
     // Cleanup: remove script
     const removeTx = setScript({ chainId: CHAIN_ID, fee: 1_000_000, script: null }, wallet.seed);
     await broadcast(removeTx, API_BASE);
-    await waitForTx(removeTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(removeTx.id, API_BASE, TIMEOUT);
   });
 
   // ── smart account with always-true can still send transfers ─────────────────
@@ -118,7 +119,7 @@ describe('SetScript (type 13)', () => {
     // Cleanup: remove script
     const removeTx = setScript({ chainId: CHAIN_ID, fee: 1_000_000, script: null }, wallet.seed);
     await broadcast(removeTx, API_BASE);
-    await waitForTx(removeTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(removeTx.id, API_BASE, TIMEOUT);
   });
 
   // ── transfer-only script blocks data entries ─────────────────────────────────
@@ -165,7 +166,7 @@ describe('SetScript (type 13)', () => {
     try {
       const removeTx = setScript({ chainId: CHAIN_ID, fee: 1_000_000, script: null }, wallet.seed);
       await broadcast(removeTx, API_BASE);
-      await waitForTx(removeTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+      await waitForFinalTx(removeTx.id, API_BASE, TIMEOUT);
     } catch {
       /* removal blocked by transfer-only script — wallet is ephemeral, acceptable */
     }

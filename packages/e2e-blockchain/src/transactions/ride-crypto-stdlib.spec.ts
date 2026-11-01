@@ -25,6 +25,7 @@ import { broadcast, invokeScript, setScript, waitForTx } from '@decentralchain/t
 import { blake2b, keccak } from '@decentralchain/ts-lib-crypto';
 import { fundAccount, randomTestAccount } from '../helpers/accounts';
 import { compileScript } from '../helpers/compile';
+import { waitForFinalTx } from '../helpers/finality';
 import { API_BASE, CHAIN_ID, MASTER_SEED } from '../setup/env';
 
 const TIMEOUT = 300_000;
@@ -90,7 +91,7 @@ describe('RIDE stdlib — crypto functions', () => {
       dapp.seed,
     );
     await broadcast(deployTx, API_BASE);
-    await waitForTx(deployTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(deployTx.id, API_BASE, TIMEOUT);
   }, TIMEOUT);
 
   it('keccak256 and blake2b256 match client-side computed hashes', async () => {
@@ -113,7 +114,7 @@ describe('RIDE stdlib — crypto functions', () => {
       caller.seed,
     );
     await broadcast(tx, API_BASE);
-    await waitForTx(tx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+    await waitForFinalTx(tx.id, API_BASE, TIMEOUT);
 
     const keccakEntry = await dataKey(dapp.address, 'keccak256Result');
     const blake2bEntry = await dataKey(dapp.address, 'blake2b256Result');
@@ -165,7 +166,7 @@ describe('RIDE stdlib — crypto functions', () => {
     try {
       const removeTx = setScript({ chainId: CHAIN_ID, fee: 1_000_000, script: null }, dapp.seed);
       await broadcast(removeTx, API_BASE);
-      await waitForTx(removeTx.id, { apiBase: API_BASE, timeout: TIMEOUT });
+      await waitForFinalTx(removeTx.id, API_BASE, TIMEOUT);
     } catch {
       /* best-effort */
     }

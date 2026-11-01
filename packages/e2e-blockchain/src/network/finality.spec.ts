@@ -15,7 +15,13 @@
  *     it must be advancing too
  */
 
+import { PollTimeoutError, pollUntil } from '../helpers/finality';
 import { API_BASE } from '../setup/env';
+
+/** Swallows only `pollUntil` timeouts so callers can assert on the last observed values. */
+function ignorePollTimeout(error: unknown): void {
+  if (!(error instanceof PollTimeoutError)) throw error;
+}
 
 const TIMEOUT = 180_000;
 // Same max-rollback ceiling referenced throughout node-scala docs (dcc.blockchain.custom
@@ -61,21 +67,23 @@ describe('Finality health', () => {
       // The real "pinned at max lag" incident (empty/stuck committed-generators committee) is
       // SUSTAINED — lag never recovers. So poll across a window and require lag to be healthy at
       // least once; only a lag that stays at/above the ceiling for the WHOLE window is a stall.
-      const deadline = Date.now() + 90_000;
       const observed: number[] = [];
-      let healthy = false;
-      do {
-        const [tip, finalized] = await Promise.all([height(), finalizedHeight()]);
-        const lag = tip - finalized;
-        expect(lag).toBeGreaterThanOrEqual(0);
-        observed.push(lag);
-        if (lag < SAFE_LAG_CEILING) {
-          healthy = true;
-          break;
-        }
-        if (Date.now() >= deadline) break;
-        await new Promise((r) => setTimeout(r, 10_000));
-      } while (Date.now() < deadline);
+      const healthy = await pollUntil(
+        async () => {
+          const [tip, finalized] = await Promise.all([height(), finalizedHeight()]);
+          const lag = tip - finalized;
+          expect(lag).toBeGreaterThanOrEqual(0);
+          observed.push(lag);
+          return lag < SAFE_LAG_CEILING ? true : undefined;
+        },
+        { description: 'T0 finality lag below the ceiling', intervalMs: 10_000, timeoutMs: 90_000 },
+      ).then(
+        () => true,
+        (error: unknown) => {
+          ignorePollTimeout(error);
+          return false;
+        },
+      );
       expect(
         healthy,
         `T0 finality lag stayed >= ${SAFE_LAG_CEILING} for the whole ~90s window (sustained stall, not a boundary blip); observed lags=${observed.join(', ')}`,
@@ -97,16 +105,18 @@ describe('Finality health', () => {
       const before = await finalizedHeight();
       const tipBefore = await height();
 
-      const deadline = Date.now() + 240_000;
       let after = before;
       let tip = tipBefore;
       let lag = tip - after;
-      while (Date.now() < deadline && after <= before && lag < SAFE_LAG_CEILING) {
-        await new Promise((r) => setTimeout(r, 10_000));
-        after = await finalizedHeight();
-        tip = await height();
-        lag = tip - after;
-      }
+      await pollUntil(
+        async () => {
+          after = await finalizedHeight();
+          tip = await height();
+          lag = tip - after;
+          return after > before || lag >= SAFE_LAG_CEILING ? true : undefined;
+        },
+        { description: 'T0 finalized height to advance', intervalMs: 10_000, timeoutMs: 240_000 },
+      ).catch(ignorePollTimeout);
 
       if (after > before) return; // finalized advanced — unambiguously healthy
 
@@ -137,16 +147,27 @@ describe('Finality health', () => {
       // failed the whole nightly on a single transient pause that had fully recovered minutes
       // later. Give it a realistic window so only a SUSTAINED T2 stall (minutes without a single
       // advance) trips it — consistent with this block being observational/soft by design.
-      const deadline = Date.now() + 180_000;
       let after = before;
-      while (Date.now() < deadline && after <= before) {
-        await new Promise((r) => setTimeout(r, 10_000));
-        const next = await hotStuffFinalizedHeight();
-        if (next === null) {
-          console.warn('hotStuffFinalizedHeight disappeared mid-poll — not asserting further');
-          return;
-        }
-        after = next;
+      let disappeared = false;
+      await pollUntil(
+        async () => {
+          const next = await hotStuffFinalizedHeight();
+          if (next === null) {
+            disappeared = true;
+            return true;
+          }
+          after = next;
+          return after > before ? true : undefined;
+        },
+        {
+          description: 'T2 hotStuffFinalizedHeight to advance',
+          intervalMs: 10_000,
+          timeoutMs: 180_000,
+        },
+      ).catch(ignorePollTimeout);
+      if (disappeared) {
+        console.warn('hotStuffFinalizedHeight disappeared mid-poll — not asserting further');
+        return;
       }
 
       expect(after).toBeGreaterThan(before);
