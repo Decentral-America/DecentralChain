@@ -74,7 +74,9 @@ describe('REST endpoint coverage', () => {
 
   describe('/blocks', () => {
     it('GET /blocks/heightByTimestamp returns a height at or before now', async () => {
-      const res = await fetch(`${API_BASE}blocks/heightByTimestamp/${Date.now()}`);
+      // One minute in the past: the node rejects a timestamp ahead of its own clock, and the runner's clock
+      // can run a few hundred milliseconds ahead of the node's (seen in run 41339728527).
+      const res = await fetch(`${API_BASE}blocks/heightByTimestamp/${Date.now() - 60_000}`);
       expect(res.ok).toBe(true);
       const body = (await res.json()) as { height: number };
       expect(body.height).toBeGreaterThan(0);

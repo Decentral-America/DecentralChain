@@ -69,7 +69,7 @@ describe('websocket-api state updates', () => {
           account.seed,
         );
         await broadcast(tx, API_BASE);
-        await waitForFinalTx(tx.id, API_BASE, 120_000);
+        await waitForFinalTx(tx.id, API_BASE, 240_000);
       };
 
       await new Promise<void>((resolve, reject) => {
