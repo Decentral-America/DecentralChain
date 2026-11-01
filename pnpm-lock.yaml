@@ -289,7 +289,7 @@ overrides:
   fast-xml-parser: '>=5.10.1'
   follow-redirects: '>=1.16.0'
   ip-address: '>=10.7.1'
-  seroval: '>=1.6.3'
+  seroval: '>=1.6.11 <1.7.0'
   smol-toml: '>=1.9.0'
   browserslist: '>=4.28.7'
   baseline-browser-mapping: '>=2.11.0'
@@ -3694,9 +3694,11 @@ packages:
 
   '@ledgerhq/errors@6.37.0':
     resolution: {integrity: sha512-T5yiKI5UX7ugeocdTF3TUsCIN2BH41Bio4ZeN410YFjFOf3es08n/5JyMzzKwzRgP0blG3HfBf7s7vJKqCSAeg==}
+    deprecated: This package is no longer maintained and will not receive updates. Published versions remain available.
 
   '@ledgerhq/hw-transport-webusb@6.35.0':
     resolution: {integrity: sha512-8fBNqzQnyR3pKLE2AVxCAc54nHMEKz9/eAYLDENVRuDp+A23lBJYWErxSyoZ6riCM19jIhRvtHjB0o4PXpa2tg==}
+    deprecated: This package is no longer maintained. Use @ledgerhq/device-transport-kit-web-hid instead.
 
   '@ledgerhq/hw-transport@6.35.5':
     resolution: {integrity: sha512-P4+wtLewLWgxPtIb90h5kjpzXVlC6f4IBQBmvowVFkInvZt34ffXkX7wa5KfMzu4l3cqCcpNSqtPSCMp+0vuqg==}
@@ -10783,10 +10785,10 @@ packages:
     resolution: {integrity: sha512-HXuLAX2pu/UByPpaeo/TaMfvMIi+1QqIoPJYCcAtU8QkVNwgR6MPlGuCQTErV1JwraaMbYaWVIBX7mppzGLATQ==}
     engines: {node: '>=10'}
     peerDependencies:
-      seroval: '>=1.6.3'
+      seroval: '>=1.6.11 <1.7.0'
 
-  seroval@1.6.10:
-    resolution: {integrity: sha512-GKZbsOHLV6GToR1rNQc9CZ+s8HZTS5X5N9D++z/xUh4SV9UwepLzqc60pKJTEEfEHzGdtWTXHpp+GhLoGLT1UA==}
+  seroval@1.6.12:
+    resolution: {integrity: sha512-CqbIVfk/7GL3ITwZI55lcPbpQbjHZ2DD5cUj4iH7E9YsCfHNJV1mx7yNp86Z84w5IpmkZZS/2s5vPOWmVWSdQg==}
     engines: {node: '>=10'}
 
   serve-static@1.16.3:
@@ -21389,11 +21391,11 @@ snapshots:
 
   serialize-error@2.1.0: {}
 
-  seroval-plugins@1.5.6(seroval@1.6.10):
+  seroval-plugins@1.5.6(seroval@1.6.12):
     dependencies:
-      seroval: 1.6.10
+      seroval: 1.6.12
 
-  seroval@1.6.10: {}
+  seroval@1.6.12: {}
 
   serve-static@1.16.3(supports-color@10.2.2):
     dependencies:
@@ -21565,8 +21567,8 @@ snapshots:
   solid-js@1.9.15:
     dependencies:
       csstype: 3.2.3
-      seroval: 1.6.10
-      seroval-plugins: 1.5.6(seroval@1.6.10)
+      seroval: 1.6.12
+      seroval-plugins: 1.5.6(seroval@1.6.12)
 
   solid-presence@0.2.0(solid-js@1.9.15):
     dependencies:
